@@ -1,9 +1,9 @@
 import axios from "axios";
-import { getProductsReducer, getProductByIdReducer, filterByRoomsReducer, filterByTypeReducer, orderByPriceReducer, orderBySizeReducer } from "./productSlice";
+import { getProductsReducer, getProductByIdReducer } from "./productSlice.js";
 
 export const getProducts = () => {
     return async (dispatch) => {
-        const { data } = await axios.get("/house");
+        const { data } = await axios.get("/products");
         dispatch(getProductsReducer(data));
     };
 };
@@ -13,27 +13,3 @@ export const getProductById = (productId) => {
             dispatch(getProductByIdReducer(productId));
     };
 };
-
-export const filterByRooms = (rooms) => {
-    return async (dispatch) => {
-        dispatch(filterByRoomsReducer(rooms));
-    }
-}
-
-export const filterByType = (type) => {
-    return async (dispatch) => {
-        dispatch(filterByTypeReducer(type));
-    }
-}
-
-export const orderByPrice = (order) => {
-    return async (dispatch) => {
-        dispatch(orderByPriceReducer(order));
-    }
-}
-
-export const orderBySize = (order) => {
-    return async (dispatch) => {
-        dispatch(orderBySizeReducer(order));
-    }
-}

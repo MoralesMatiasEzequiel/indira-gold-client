@@ -4,8 +4,7 @@ export const productSlice = createSlice({
     name: "product",
     initialState: {
         products: [],
-        productsCopy: [],
-        selectedProduct: null
+        productsCopy: []
     },
     reducers: {
         getProductsReducer: (state, action) => {
