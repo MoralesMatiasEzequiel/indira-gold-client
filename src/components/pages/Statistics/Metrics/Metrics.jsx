@@ -1,13 +1,13 @@
 import React from 'react';
 
 
-const Products = () => {
+const Metrics = () => {
 
     return(
         <div>
-            <h1>Productss</h1>
+            <h1>Metrics!</h1>
         </div>
     );
 };
 
-export default Products;
+export default Metrics;

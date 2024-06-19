@@ -1,13 +1,14 @@
 import React from 'react';
 
 
-const Products = () => {
+
+const Rating = () => {
 
     return(
         <div>
-            <h1>Productss</h1>
+            <h1>Rating!</h1>
         </div>
     );
 };
 
-export default Products;
+export default Rating;
