@@ -4,7 +4,16 @@ const BarGraph = () => {
 
     return(
         <div>
-            <h1>BarGraph!</h1>
+            <div>
+                <span>Ventas por mes</span>
+            </div>
+            <div>
+                <p>Online</p>
+                <p>Local</p>
+            </div>
+            <div>
+                <p>Grafico</p>
+            </div>
         </div>
     );
 };
