@@ -5,7 +5,7 @@ import Rating from './Rating/Rating.jsx';
 import Piechart from './PieChart/PieChart.jsx'
 
 
-const Statistics = () => {
+const Stats = () => {
 
     return(
         <div>
@@ -18,4 +18,4 @@ const Statistics = () => {
     );
 };
 
-export default Statistics;
+export default Stats;

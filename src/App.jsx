@@ -1,14 +1,16 @@
 import React from "react";
-import axios from "axios";
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import Stats from "./components/pages/Stats/Stats.jsx";
 
-// axios.defaults.baseURL = "http://localhost:3001";
 
 const App = () => {
 
   return (
     <div className="App">
-        <h1>Holuuu</h1>
+      <h1>HOME</h1>
+      <Routes>
+        <Route path='/main_window' element={<Stats />}/>
+      </Routes>
     </div>
   );
 };

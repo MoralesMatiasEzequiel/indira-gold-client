@@ -5,7 +5,7 @@ const PieChart = () => {
 
     return(
         <div>
-            <h1>Piechartt</h1>
+            <h1>Piechart!</h1>
         </div>
     );
 };
