@@ -9,11 +9,11 @@ const Stats = () => {
 
     return(
         <div>
-            <h1>Staditsss</h1>
-            <BarGraph/>
-            <Metrics/>
+            <h1>Estadísticas</h1>
+            <Metrics/>  
             <Rating/>
             <Piechart/>
+            <BarGraph/>
         </div>
     );
 };

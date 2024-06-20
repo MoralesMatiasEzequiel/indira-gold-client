@@ -5,7 +5,23 @@ const Sales = () => {
 
     return(
         <div>
-            <h1>Salesss</h1>
+            <div>
+                <h1>Ventas</h1>
+            </div>
+            <div>
+                <h2>Nueva venta</h2>
+            </div>
+            <div>
+                <span>Productos</span>
+            </div>
+            <div>
+                <div>
+                    <span>N° de orden</span>
+                    <span>Total</span>
+                </div>
+                <label htmlFor="client">Cliente: </label>
+                <input name="client" type="client" />
+            </div>
         </div>
     );
 };
