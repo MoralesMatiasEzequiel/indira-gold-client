@@ -10,10 +10,14 @@ const Stats = () => {
     return(
         <div>
             <h1>Estadísticas</h1>
-            <Metrics/>  
-            <Rating/>
-            <Piechart/>
-            <BarGraph/>
+            <div>
+                <Metrics/>  
+            </div>
+            <div>
+                <Rating/>
+                <Piechart/>
+                <BarGraph/>
+            </div>
         </div>
     );
 };
