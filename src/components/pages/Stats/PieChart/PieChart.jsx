@@ -5,7 +5,16 @@ const PieChart = () => {
 
     return(
         <div>
-            <h1>Piechart!</h1>
+            <div>
+                <span>Ventas de producto</span>
+            </div>
+            <div>
+                <p>5 Categorias más vendidas</p>
+            </div>
+            <div>
+                <p>Grafico</p>
+            </div>
+
         </div>
     );
 };
