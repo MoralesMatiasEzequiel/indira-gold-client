@@ -4,12 +4,18 @@ export const productSlice = createSlice({
     name: "product",
     initialState: {
         products: [],
-        productsCopy: []
+        productsCopy: [],
+        allProducts: [],
+        selectedProduct: []
     },
     reducers: {
         getProductsReducer: (state, action) => {
             state.products = action.payload;
             state.productsCopy = action.payload;
+        },
+        getAllProductsReducer: (state, action) => {
+            state.allProducts = action.payload;
+            // state.productsCopy = action.payload; // esto va? cual es el criterio de cuando va y cuando no?
         },
         getProductByIdReducer: (state, action) => {
             const productId = action.payload;
@@ -18,6 +24,6 @@ export const productSlice = createSlice({
     }
 });
 
-export const { getProductsReducer, getProductByIdReducer } = productSlice.actions;
+export const { getProductsReducer, getAllProductsReducer, getProductByIdReducer } = productSlice.actions;
 
 export default productSlice.reducer;

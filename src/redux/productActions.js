@@ -1,10 +1,18 @@
 import axios from "axios";
-import { getProductsReducer, getProductByIdReducer } from "./productSlice.js";
+import { getProductsReducer, getAllProductsReducer, getProductByIdReducer } from "./productSlice.js";
 
 export const getProducts = () => {
     return async (dispatch) => {
         const { data } = await axios.get("/products");
         dispatch(getProductsReducer(data));
+    };
+};
+
+export const getAllProducts = () => {
+    return async (dispatch) => {
+        const { data } = await axios.get("/products/all");
+        console.log(data);
+        dispatch(getAllProductsReducer(data));
     };
 };
 
