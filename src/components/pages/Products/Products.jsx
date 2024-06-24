@@ -39,8 +39,8 @@ const Products = () => {
                                     <td>{product.category}</td>
                                     <td>Available</td>
                                     <td>
-                                        <Link to='/main_window/detail'>
-                                            <button id={product._id}>Detalle</button>
+                                        <Link to={`/main_window/detail/${product._id}`}>
+                                            <button>Detalle</button>
                                         </Link>
                                     </td>
                                 </tr>
