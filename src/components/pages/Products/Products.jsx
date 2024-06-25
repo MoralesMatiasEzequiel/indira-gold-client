@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import { getProducts } from '../../../redux/productActions.js';
 // import { getAllProducts } from '../../../redux/productActions.js';
-import FormProduct from './FormProduct/FormProduct.jsx';
-
 
 
 const Products = () => {

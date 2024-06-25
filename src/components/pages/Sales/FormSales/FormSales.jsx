@@ -5,7 +5,7 @@ const FormSales = () => {
 
     return(
         <div>
-            <span>Formulario Ventas</span>
+            <h1>NUEVA VENTA</h1>
         </div>
     );
 };
