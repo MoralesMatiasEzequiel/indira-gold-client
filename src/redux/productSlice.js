@@ -19,14 +19,9 @@ export const productSlice = createSlice({
             // state.productsCopy = action.payload; // esto va? cual es el criterio de cuando va y cuando no?
         },
         getProductByIdReducer: (state, action) => {
-            const productId = action.payload;
-            state.productDetail = state.products.find(product => product._id === productId);
-            // console.log(state.products);
+            state.productDetail = action.payload;
         },
-        // getProductByIdReducer: (state, action) => {
-        //     const productId = action.payload;
-        //     state.selectedProduct = state.products.find(product => product._id === productId);
-        // },
+        
     }
 });
 

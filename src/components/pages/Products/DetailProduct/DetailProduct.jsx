@@ -8,19 +8,20 @@ const Detail = () => {
 
     let { id } = useParams();
     const dispatch = useDispatch();
-    const productDetail = useSelector(state => state.productDetail);
+    const productDetail = useSelector(state => state.products.productDetail);
 
     useEffect(() => {
         dispatch(getProductById(id));
-    }, []);
-// console.log(productDetail);
+    }, [dispatch, id]);
+    
     return(
         <div>
             <h1>Detalle del Producto</h1>
             <p>Producto ID: {id}</p>
-            {/* {productDetail.name && <p>{productDetail.name}</p>} */}
-            {/* {productDetail.image && <img src={productDetail.color[0].image} alt="Product Image"/>}
-            {productDetail.description && <p>{productDetail.description}</p>} */}
+            {productDetail.color[0].image && <img src={productDetail.color[0].image} alt="Product Image"/>}
+            {productDetail.name && <p>Nombre: {productDetail.name}</p>}
+            {productDetail.category && <p>Categoría: {productDetail.category}</p>}
+            {productDetail.description && <p>Descripción: {productDetail.description}</p>}
         </div>
     );
 };

@@ -11,13 +11,13 @@ export const getProducts = () => {
 export const getAllProducts = () => {
     return async (dispatch) => {
         const { data } = await axios.get("/products/all");
-        console.log(data);
         dispatch(getAllProductsReducer(data));
     };
 };
 
 export const getProductById = (productId) => {
     return async (dispatch) =>{
-            dispatch(getProductByIdReducer(productId));
+        const { data } = await axios.get(`/products/${productId}`);
+        dispatch(getProductByIdReducer(data));
     };
 };

@@ -8,12 +8,13 @@ import { getProducts } from '../../../redux/productActions.js';
 
 const Products = () => {
     
-    const products = useSelector(state => state.products);
+    const products = useSelector(state => state.products.products);
     const dispatch = useDispatch();
     
     useEffect(() => {
         dispatch(getProducts());
     }, [dispatch]);
+    
     
     return (
         <div>
@@ -31,7 +32,7 @@ const Products = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.products.map(product => (
+                        {products.map(product => (
                                 <tr key={product._id}>
                                     <td><img src={product.color[0].image} alt="Product Image"/></td>
                                     <td>{product.name}</td>
