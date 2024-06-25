@@ -13,7 +13,6 @@ const Sales = () => {
     useEffect(() => {
         dispatch(getSales());
     }, [dispatch]);
-console.log(sales);
 
     return(
         <div>

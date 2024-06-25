@@ -5,6 +5,7 @@ export const clientSlice = createSlice({
     initialState: {
         clients: [],
         clientsCopy: [],
+        clientDetail: {}
     },
     reducers: {
 
@@ -14,12 +15,11 @@ export const clientSlice = createSlice({
         },
 
         getClientByIdReducer: (state, action) => {
-            const clientId = action.payload;
-            state.selectedProduct = state.clients.find(client => client._id === clientId);
-        }
+            state.clientDetail = action.payload;
+        },
     }
 });
 
-export const { getClientsReducer, geClientByIdReducer } = clientSlice.actions;
+export const { getClientsReducer, getClientByIdReducer } = clientSlice.actions;
 
 export default clientSlice.reducer;

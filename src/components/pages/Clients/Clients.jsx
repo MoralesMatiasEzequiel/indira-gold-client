@@ -1,6 +1,8 @@
 import React, { useEffect} from 'react';
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from 'react-router-dom';
 import { getClients } from '../../../redux/clientActions.js';
+
 
 const Clients = () => {
 
@@ -22,9 +24,7 @@ const Clients = () => {
                             <th>Apellido</th>
                             <th>Correo electrónico</th>
                             <th>Teléfono</th>
-                            <th>Ventas</th>
-                            <th>Estado</th>
-                            <th>Fecha de inscripción</th>
+                            <th>Productos</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,13 +35,11 @@ const Clients = () => {
                                     <td>{client.email}</td>
                                     <td>{client.phone}</td>
                                     <td>{client.sale[0] ? client.sale : '0'}</td>
-                                    <td>{client.active ? 'Activo' : 'Inactivo'}</td>
-                                    <td>{client.date}</td>
-                                    {/* <td>
-                                        <Link to={`/main_window/detail/${client._id}`}>
+                                    <td>
+                                        <Link to={`/main_window/clients/${client._id}`}>
                                             <button>Detalle</button>
-                                        </Link>s
-                                    </td> */}
+                                        </Link>
+                                    </td>
                                 </tr>
                             ))}
                     </tbody>

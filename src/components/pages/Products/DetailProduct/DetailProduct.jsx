@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getProductById } from '../../../../redux/productActions.js';
 
 
-const Detail = () => {
+const DetailProduct = () => {
 
     let { id } = useParams();
     const dispatch = useDispatch();
@@ -26,7 +26,7 @@ const Detail = () => {
     );
 };
 
-export default Detail;
+export default DetailProduct;
 
 //Si 'productDetail.color[0].image' tira error porque todavia no se carga el productDetail en el estado global, probr con este código:
 // {productDetail.color && productDetail.color.length > 0 && (

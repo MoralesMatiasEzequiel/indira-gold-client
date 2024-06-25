@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getClientsReducer, geClientByIdReducer } from "./clientSlice.js";
+import { getClientsReducer, getClientByIdReducer } from "./clientSlice.js";
 
 export const getClients = () => {
     return async (dispatch) => {
@@ -8,8 +8,9 @@ export const getClients = () => {
     };
 };
 
-export const getProductById = (clientId) => {
+export const getClientById = (clientId) => {
     return async (dispatch) =>{
-            dispatch(geClientByIdReducer(clientId));
+        const { data } = await axios.get(`/clients/${clientId}`);
+        dispatch(getClientByIdReducer(data));
     };
 };
