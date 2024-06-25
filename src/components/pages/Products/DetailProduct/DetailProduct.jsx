@@ -18,7 +18,7 @@ const Detail = () => {
         <div>
             <h1>Detalle del Producto</h1>
             <p>Producto ID: {id}</p>
-            {productDetail.color[0].image && <img src={productDetail.color[0].image} alt="Product Image"/>}
+            {productDetail.color && <img src={productDetail.color[0].image} alt="Product Image"/>}
             {productDetail.name && <p>Nombre: {productDetail.name}</p>}
             {productDetail.category && <p>Categoría: {productDetail.category}</p>}
             {productDetail.description && <p>Descripción: {productDetail.description}</p>}
@@ -27,3 +27,8 @@ const Detail = () => {
 };
 
 export default Detail;
+
+//Si 'productDetail.color[0].image' tira error porque todavia no se carga el productDetail en el estado global, probr con este código:
+// {productDetail.color && productDetail.color.length > 0 && (
+//     <img src={productDetail.color[0].image} alt="Product Image" />
+// )}
