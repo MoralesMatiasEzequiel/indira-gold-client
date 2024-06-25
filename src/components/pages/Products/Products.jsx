@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import { getProducts } from '../../../redux/productActions.js';
 // import { getAllProducts } from '../../../redux/productActions.js';
+import FormProduct from './FormProduct/FormProduct.jsx';
 
 
 
@@ -21,6 +22,9 @@ const Products = () => {
                 <h1>GESTIÓN DE PRODUCTOS</h1>
                 <button>Cambio</button>
                 <button>x</button>
+                <Link to={'/main_window/products/form'}>
+                    <button>Nuevo producto</button>
+                </Link>
             </div>
             <div>
                 <table>
