@@ -15,16 +15,22 @@ const Products = () => {
         dispatch(getProducts());
     }, [dispatch]);
     
-    
     return (
         <div>
-            <span>Productos</span>
+            <div>
+                <h1>GESTIÓN DE PRODUCTOS</h1>
+                <button>Cambio</button>
+                <button>x</button>
+            </div>
             <div>
                 <table>
                     <thead>
                         <tr>
-                            <th>Imagen</th>
                             <th>Nombre</th>
+                            <th>Color</th>
+                            <th>Imagen</th>
+                            <th>Talle</th>
+                            <th>Stock</th>
                             <th>Precio</th>
                             <th>Categoría</th>
                             <th>Estado</th>
@@ -34,11 +40,14 @@ const Products = () => {
                     <tbody>
                         {products.map(product => (
                                 <tr key={product._id}>
-                                    <td><img src={product.color[0].image} alt="Product Image"/></td>
                                     <td>{product.name}</td>
+                                    <td>{product.color[0].color_name}</td>
+                                    <td><img src={product.color[0].image} alt="Product Image"/></td>
+                                    <td>{product.color[0].size[0].size_name}</td>
+                                    <td>{product.color[0].size[0].stock}</td>
                                     <td>$19.99</td>
                                     <td>{product.category}</td>
-                                    <td>Available</td>
+                                    <td>Estado del stock?</td>
                                     <td>
                                         <Link to={`/main_window/detail/${product._id}`}>
                                             <button>Detalle</button>

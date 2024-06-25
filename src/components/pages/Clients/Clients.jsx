@@ -10,7 +10,6 @@ const Clients = () => {
     useEffect(() => {
         dispatch(getClients());
     }, [dispatch]);
-    // console.log(clients);
 
     return(
         <div>
