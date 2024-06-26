@@ -12,10 +12,12 @@ export const saleSlice = createSlice({
             state.sales = action.payload;
             state.salesCopy = action.payload;
         },
-        
+        getSaleByIdReducer: (state, action) => {
+            state.saleDetail = action.payload;
+        },
     }
 });
 
-export const { getSalesReducer } = saleSlice.actions;
+export const { getSalesReducer, getSaleByIdReducer } = saleSlice.actions;
 
 export default saleSlice.reducer;
