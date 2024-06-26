@@ -13,7 +13,7 @@ const Sales = () => {
     useEffect(() => {
         dispatch(getSales());
     }, [dispatch]);
-
+    
     return(
         <div>
             <div>
@@ -43,12 +43,13 @@ const Sales = () => {
                                     <tr key={sale._id}>
                                         <td>{sale.date}</td>
                                         <td>{sale.orderNumber}</td>
-                                        <td>{sale.product}</td>
-                                        {/* <td>{sale.sale}</td> */}
-                                        <td>Desc. %</td>
-                                        <td>{sale.totalAmount}</td>
+                                        <td>{sale.client}</td>
+                                        <td>{sale.products}</td>
+                                        <td>{sale.paymentMethod}</td>
+                                        <td>{sale.discount} %</td>
+                                        <td>$ Total</td>
                                         {/* <td>
-                                            <Link to={`/main_window/detail/${sale._id}`}>
+                                            <Link to={`/main_window/sale/${sale._id}`}>
                                                 <button>Detalle</button>
                                             </Link>
                                         </td> */}
