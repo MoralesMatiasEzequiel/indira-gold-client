@@ -30,7 +30,7 @@ const DetailClient = () => {
             </div>
             <div>
                 <p>Historial de compras</p>
-                {clientDetail.sale && <p>{clientDetail.sale}</p>}
+                {clientDetail.shopping && <p>{clientDetail.shopping}</p>}
             </div>
             
             

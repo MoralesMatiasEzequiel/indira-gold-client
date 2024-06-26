@@ -34,7 +34,7 @@ const Clients = () => {
                                     <td>{client.lastname}</td>
                                     <td>{client.email}</td>
                                     <td>{client.phone}</td>
-                                    <td>{client.sale[0] ? client.sale : '0'}</td>
+                                    <td>{client.shopping[0] ? client.shopping : '0'}</td>
                                     <td>
                                         <Link to={`/main_window/clients/${client._id}`}>
                                             <button>Detalle</button>
