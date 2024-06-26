@@ -17,17 +17,22 @@ const DetailProduct = () => {
     return(
         <div>
             <h1>Detalle del Producto</h1>
-            <p>Producto ID: {id}</p>
             {productDetail.color && <img src={productDetail.color[0].image} alt="Product Image"/>}
             {productDetail.name && <p>Nombre: {productDetail.name}</p>}
-            {productDetail.category && <p>Categoría: {productDetail.category}</p>}
+            {productDetail.color?.length && <p>Color: {productDetail.color[0].color_name}</p>}
+            {productDetail.color?.length && <p>Talle: {productDetail.color[0].size[0].size_name}</p>}
+            {productDetail.color?.length && <p>Medidas:</p>}
+            {productDetail.color?.length && <li>Ancho: {productDetail.color[0].size[0].measures[0].broad}</li>}
+            {productDetail.color?.length && <li>Largo: {productDetail.color[0].size[0].measures[0].long}</li>}
+            {productDetail.color?.length && <li>Tiro: {productDetail.color[0].size[0].measures[0].rise}</li>}
+            {productDetail.category?.length > 0 
+            ? <p>Categoría: {productDetail.category[0].name}</p>
+            : <p>Categoría: No tiene categoría</p>}
+            {productDetail.color?.length && <p>Código: {productDetail.color[0].size[0].code}</p>}
+            {productDetail.color?.length && <p>Stock: {productDetail.color[0].size[0].stock}</p>}
+            {productDetail.price && <p>Precio: $ {productDetail.price}.-</p>}
         </div>
     );
 };
 
 export default DetailProduct;
-
-//Si 'productDetail.color[0].image' tira error porque todavia no se carga el productDetail en el estado global, probr con este código:
-// {productDetail.color && productDetail.color.length > 0 && (
-//     <img src={productDetail.color[0].image} alt="Product Image" />
-// )}

@@ -47,18 +47,10 @@ const Sales = () => {
                         <tbody>
                             {sales.map(sale => (
                                     <tr key={sale._id}>
-                                        {/* <td>{new Date(sale.date).toLocaleString()}</td> */}
                                         <td>{formatDate(sale.date)}</td>
                                         <td>{sale.orderNumber}</td>
                                         <td>{sale.client.length > 0 ? `${sale.client[0].name} ${sale.client[0].lastname}` : 'Anónimo'}</td>
                                         <td>{sale.products.length}</td>
-                                        {/* <td>
-                                            {sale.products.map(product => (
-                                                <div key={product._id}>
-                                                    {product.name}
-                                                </div>
-                                            ))}
-                                        </td> */}
                                         <td>{sale.paymentMethod.join(', ')}</td>
                                         <td>{sale.discount} %</td>
                                         <td>$ Total</td>
@@ -78,3 +70,14 @@ const Sales = () => {
 };
 
 export default Sales;
+
+/* <td>{new Date(sale.date).toLocaleString()}</td> */
+
+
+/* <td>
+    {sale.products.map(product => (
+        <div key={product._id}>
+            {product.name}
+        </div>
+    ))}
+</td> */
