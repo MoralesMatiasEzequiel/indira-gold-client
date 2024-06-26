@@ -21,7 +21,6 @@ const DetailProduct = () => {
             {productDetail.color && <img src={productDetail.color[0].image} alt="Product Image"/>}
             {productDetail.name && <p>Nombre: {productDetail.name}</p>}
             {productDetail.category && <p>Categoría: {productDetail.category}</p>}
-            {productDetail.description && <p>Descripción: {productDetail.description}</p>}
         </div>
     );
 };

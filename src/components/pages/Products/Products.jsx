@@ -47,7 +47,7 @@ const Products = () => {
                                     <td><img src={product.color[0].image} alt="Product Image"/></td>
                                     <td>{product.color[0].size[0].size_name}</td>
                                     <td>{product.color[0].size[0].stock}</td>
-                                    <td>$19.99</td>
+                                    <td>${product.price}</td>
                                     <td>{product.category}</td>
                                     <td>Estado del stock?</td>
                                     <td>
