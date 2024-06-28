@@ -35,8 +35,8 @@ const DetailSale = () => {
                     <div key={product._id}>
                         <li>
                             {product.name}, 
-                            Color: {product.color[0]?.color_name},
-                            Talle: {product.color[0]?.size[0]?.size_name},
+                            Color: {product.color[0]?.colorName},
+                            Talle: {product.color[0]?.size[0]?.sizeName},
                             Precio: ${product.price}.-
                         </li>
                     </div>

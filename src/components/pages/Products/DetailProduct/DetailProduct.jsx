@@ -19,12 +19,12 @@ const DetailProduct = () => {
             <h1>Detalle del Producto</h1>
             {productDetail.color && <img src={productDetail.color[0].image} alt="Product Image"/>}
             {productDetail.name && <p>Nombre: {productDetail.name}</p>}
-            {productDetail.color?.length && <p>Color: {productDetail.color[0].color_name}</p>}
-            {productDetail.color?.length && <p>Talle: {productDetail.color[0].size[0].size_name}</p>}
+            {productDetail.color?.length && <p>Color: {productDetail.color[0].colorName}</p>}
+            {productDetail.color?.length && <p>Talle: {productDetail.color[0].size[0].sizeName}</p>}
             {productDetail.color?.length && <p>Medidas:</p>}
-            {productDetail.color?.length && <li>Ancho: {productDetail.color[0].size[0].measures[0].broad}</li>}
-            {productDetail.color?.length && <li>Largo: {productDetail.color[0].size[0].measures[0].long}</li>}
-            {productDetail.color?.length && <li>Tiro: {productDetail.color[0].size[0].measures[0].rise}</li>}
+            {productDetail.color?.length && <li>Ancho: {productDetail.color[0].size[0].measurements[0].width}</li>}
+            {productDetail.color?.length && <li>Largo: {productDetail.color[0].size[0].measurements[0].long}</li>}
+            {productDetail.color?.length && <li>Tiro: {productDetail.color[0].size[0].measurements[0].rise}</li>}
             {productDetail.category?.length > 0 
             ? <p>Categoría: {productDetail.category[0].name}</p>
             : <p>Categoría: No tiene categoría</p>}

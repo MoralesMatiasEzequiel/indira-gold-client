@@ -23,6 +23,7 @@ const Products = () => {
                 <Link to={'/main_window/products/form'}>
                     <button>Nuevo producto</button>
                 </Link>
+                <input type="text" />
             </div>
             <div>
                 <table>
@@ -43,10 +44,10 @@ const Products = () => {
                         {products.map(product => (
                                 <tr key={product._id}>
                                     <td>{product.name}</td>
-                                    <td>{product.color[0].color_name}</td>
-                                    <td><img src={product.color[0].image} alt="Product Image"/></td>
-                                    <td>{product.color[0].size[0].size_name}</td>
-                                    <td>{product.color[0].size[0].stock}</td>
+                                    <td>{product.color[0]?.colorName}</td>
+                                    <td><img src={product.color[0]?.image} alt="Product Image"/></td>
+                                    <td>{product.color[0]?.size[0].sizeName}</td>
+                                    <td>{product.color[0]?.size[0].stock}</td>
                                     <td>$ {product.price}</td>
                                     <td>{product.category.length > 0 ? product.category[0].name : 'No tiene categoría'}</td>
                                     <td>Estado del stock?</td>
