@@ -53,7 +53,7 @@ const Sales = () => {
                                         <td>{sale.products.length}</td>
                                         <td>{sale.paymentMethod.join(', ')}</td>
                                         <td>{sale.discount} %</td>
-                                        <td>$ Total</td>
+                                        <td>$ {sale.totalPrice}</td>
                                         <td>
                                             <Link to={`/main_window/sales/${sale._id}`}>
                                                 <button>Detalle</button>

@@ -31,7 +31,6 @@ const DetailSale = () => {
                  : <p>Anónimo</p>}
                 {saleDetail.paymentMethod && <p>Modo de pago: {saleDetail.paymentMethod.join(', ')}</p>}
                 {saleDetail.soldIn && <p>Venta: {saleDetail.soldIn[0]}</p>}
-                {saleDetail.discount && <p>Descuento: {saleDetail.discount}%</p>}
                 {saleDetail.products?.length && <>Productos: {saleDetail.products.map(product => (
                     <div key={product._id}>
                         <li>
@@ -42,8 +41,9 @@ const DetailSale = () => {
                         </li>
                     </div>
                 ))}</>}
-                <p>Sub total: $0.-</p>
-                <p>Total: $0.-</p>
+                {saleDetail.subTotal && <p>Sub total: ${saleDetail.subTotal}.-</p>}
+                {saleDetail.discount && <p>Descuento: {saleDetail.discount}% {`(- $${saleDetail.discountApplied})`}</p>}
+                {saleDetail.totalPrice && <p>Total: ${saleDetail.totalPrice}.-</p>}
             </div>          
         </div>
     );
