@@ -24,16 +24,16 @@ const SideBar = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to={"/main_window/stats"}>
+                        <NavLink to={"/main_window/clients"}>
                             <div>
-                                <p>Estadísticas</p>
+                                <p>Clientes</p>
                             </div>
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to={"/main_window/clients"}>
+                        <NavLink to={"/main_window/stats"}>
                             <div>
-                                <p>Clientes</p>
+                                <p>Estadísticas</p>
                             </div>
                         </NavLink>
                     </li>

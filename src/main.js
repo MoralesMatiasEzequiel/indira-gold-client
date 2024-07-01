@@ -4,7 +4,7 @@ const path = require('path');
 let mainWindow;
 
 const createWindow = () => {
-  // Create the browser window.
+  // Crea la ventana del navegador
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 780,
@@ -13,17 +13,19 @@ const createWindow = () => {
     },
   });
 
-  // and load the index.html of the app.
+  // Maximiza la ventana
+  mainWindow.maximize();
+
+  // Carga el index.html de la aplicación
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
+  // Abre las herramientas de desarrollo
   mainWindow.webContents.openDevTools();
 };
 
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+// Este método se llamará cuando Electron haya terminado
+// la inicialización y esté listo para crear ventanas del navegador.
+// Algunas API solo pueden usarse después de que ocurra este evento.
 app.whenReady().then(() => {
   createWindow();
 
