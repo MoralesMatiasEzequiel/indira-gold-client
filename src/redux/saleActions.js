@@ -15,3 +15,10 @@ export const getSaleById = (saleId) => {
         dispatch(getSaleByIdReducer(data));
     };
 };
+
+export const postSale = (saleData) => {
+    return async (dispatch) => {
+       
+        const response = await axios.post('/sale', saleData);
+    };
+};
