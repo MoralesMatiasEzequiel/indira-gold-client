@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from 'react-router-dom';
-import SideBar from "./components/common/SideBar/SideBar.jsx"; 
+import SideBar from "./components/common/SideBar.jsx"; 
 import Stats from "./components/pages/Stats/Stats.jsx";
 import Sales from "./components/pages/Sales/Sales.jsx";
 import DetailSale from "./components/pages/Sales/DetailSale/DetailSale.jsx";
@@ -9,6 +9,7 @@ import DetailProduct from "./components/pages/Products/DetailProduct/DetailProdu
 import FormProduct from "./components/pages/Products/FormProduct/FormProduct.jsx";
 import Clients from "./components/pages/Clients/Clients.jsx";
 import DetailClient from "./components/pages/Clients/DetailClient/DetailClient.jsx";
+import './App.css';
 
 
 const App = () => {
@@ -18,7 +19,7 @@ const App = () => {
       <SideBar />
       <Routes>
         <Route path='/main_window/stats' element={<Stats />}/>
-        <Route path='/main_window/sales' element={<Sales />}/>
+        <Route path='/main_window/' element={<Sales />}/>
         <Route path='/main_window/sales/:id' element={<DetailSale />}/>
         <Route path='/main_window/products' element={<Products />}/>
         <Route path='/main_window/detail/:id' element={<DetailProduct />}/>

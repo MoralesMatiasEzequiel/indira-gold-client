@@ -5,6 +5,7 @@ import axios from "axios";
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import store from './redux/store.js';
+import './index.css';
 
 
 axios.defaults.baseURL = "http://localhost:3001/";
