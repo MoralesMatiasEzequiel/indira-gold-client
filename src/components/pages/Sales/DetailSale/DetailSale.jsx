@@ -21,16 +21,17 @@ const DetailSale = () => {
             </div>
             <div>
                 {saleDetail.orderNumber && <p>N° de orden: {saleDetail.orderNumber}</p>}
-                {saleDetail.client?.length > 0
+                {saleDetail.client
                  ?  <>
-                        Cliente: {saleDetail.client[0].name} {saleDetail.client[0].lastname}
-                        <Link to={`/main_window/clients/${saleDetail.client[0]._id}`}>
+                        Cliente: {saleDetail.client.name} {saleDetail.client.lastname}
+                        <Link to={`/main_window/clients/${saleDetail.client._id}`}>
                             <button>Detalle</button>
                         </Link>
                     </>
                  : <p>Anónimo</p>}
-                {saleDetail.paymentMethod && <p>Modo de pago: {saleDetail.paymentMethod.join(', ')}</p>}
-                {saleDetail.soldIn && <p>Venta: {saleDetail.soldIn[0]}</p>}
+                {saleDetail.paymentMethod && <p>Modo de pago: {saleDetail.paymentMethod}</p>}
+                {/* {saleDetail.paymentMethod && <p>Modo de pago: {saleDetail.paymentMethod.join(', ')}</p>} */}
+                {saleDetail.soldAt && <p>Venta: {saleDetail.soldAt}</p>}
                 {saleDetail.products?.length && <>Productos: {saleDetail.products.map(product => (
                     <div key={product._id}>
                         <li>
@@ -42,7 +43,7 @@ const DetailSale = () => {
                     </div>
                 ))}</>}
                 {saleDetail.subTotal && <p>Sub total: ${saleDetail.subTotal}.-</p>}
-                {saleDetail.discount && <p>Descuento: {saleDetail.discount}% {`(- $${saleDetail.discountApplied})`}</p>}
+                {<p>Descuento: {saleDetail.discount}% {`(- $${saleDetail.discountApplied})`}</p>}
                 {saleDetail.totalPrice && <p>Total: ${saleDetail.totalPrice}.-</p>}
             </div>          
         </div>
