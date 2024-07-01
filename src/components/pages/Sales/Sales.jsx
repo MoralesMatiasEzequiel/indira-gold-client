@@ -49,10 +49,11 @@ const Sales = () => {
                                     <tr key={sale._id}>
                                         <td>{formatDate(sale.date)}</td>
                                         <td>{sale.orderNumber}</td>
-                                        <td>{sale.client.length > 0 ? `${sale.client[0].name} ${sale.client[0].lastname}` : 'Anónimo'}</td>
+                                        <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
                                         <td>{sale.products.length}</td>
-                                        <td>{sale.paymentMethod.join(', ')}</td>
-                                        <td>{sale.discount} %</td>
+                                        <td>{sale.paymentMethod}</td>
+                                        {/* <td>{sale.paymentMethod.join(', ')}</td> */}
+                                        <td>{sale.discount ? `${sale.discount}%` : '-'}</td>
                                         <td>$ {sale.totalPrice}</td>
                                         <td>
                                             <Link to={`/main_window/sales/${sale._id}`}>
