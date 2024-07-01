@@ -1,0 +1,52 @@
+.containerTitle {
+    background: rgb(243, 4, 36);
+    padding: 1em;
+}
+
+.title {
+    font-size: 25px;
+    font-weight: 700;
+    margin: auto 15px;
+    color: #ff9e5c;
+}
+
+.containerTable {
+    padding: 1em;
+    overflow-x: auto; /* Para manejar tablas anchas */
+}
+
+.containerTable table {
+    width: 100%; /* Opcional: Para ocupar todo el ancho del contenedor */
+    border-collapse: collapse;
+}
+
+.containerTable th, .containerTable td {
+    border: 1px solid #ddd; /* Borde delgado gris */
+    padding: 8px; /* Espaciado interno */
+    text-align: left;
+}
+
+.containerTable th {
+    background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
+    color: #333; /* Color del texto de encabezado */
+}
+
+.containerTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Color de fondo para filas pares */
+}
+
+.containerTable tbody tr:hover {
+    background-color: #ddd; /* Color de fondo al pasar el mouse */
+}
+
+.containerTable button {
+    padding: 6px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.containerTable button:hover {
+    background-color: #45a049;
+}

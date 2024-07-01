@@ -18,6 +18,8 @@ const DetailSale = () => {
         <div>
             <div>
                 <h1>Detalle de la venta</h1>
+                <button>Cambio</button>
+                <button>x</button>
             </div>
             <div>
                 {saleDetail.orderNumber && <p>N° de orden: {saleDetail.orderNumber}</p>}
