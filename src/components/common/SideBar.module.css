@@ -19,14 +19,14 @@
 }
 
 .content{
-    width: 70%;
+    width: 100%;
     margin: 0 auto;
     padding-top: 3rem;
     box-sizing: border-box;
 }
 
 h1{
-    width: 70%;
+    width: 40%;
     margin: 0 auto;
 }
 
@@ -34,7 +34,58 @@ h1 img{
     width: 100%;
 }
 
-.content div ul li a{
-    color: var(--dark-grey); 
+.nav{
+    margin-top: 4rem;
+}
+
+.nav a{
+    color: var(--dark-grey);
+    font-size: 1.3rem;
+    letter-spacing: 0.1rem;
+}
+
+.nav li{
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    padding-left: 3rem;
+}
+
+.nav li:hover{
+    background-color: rgba(255,255,255,0.5);
+}
+
+.nav a.selected{
+    color: black;
+}
+
+.icon{
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+}
+
+.icon img{
+    width: 100%;
+}
+
+.subMenu {
+    display: none;
+    background-color: rgba(255,255,255,0.5);
+    padding-left: 2rem;
+}
+
+.subMenu li{
+    height: 3rem;
+}
+
+.subMenu a div p{
+    letter-spacing: 0;
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+.subMenuVisible {
+    display: block;
 }
 
