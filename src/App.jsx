@@ -16,17 +16,19 @@ const App = () => {
 
   return (
     <div className="App">
-      <SideBar />
-      <Routes>
-        <Route path='/main_window/stats' element={<Stats />}/>
-        <Route path='/main_window/' element={<Sales />}/>
-        <Route path='/main_window/sales/:id' element={<DetailSale />}/>
-        <Route path='/main_window/products' element={<Products />}/>
-        <Route path='/main_window/detail/:id' element={<DetailProduct />}/>
-        <Route path='/main_window/products/form' element={<FormProduct />}/>
-        <Route path='/main_window/clients' element={<Clients />}/>
-        <Route path='/main_window/clients/:id' element={<DetailClient />}/>
-      </Routes>
+      <div className="SideBar"><SideBar /></div>
+      <div className="content">
+        <Routes>
+          <Route path='/main_window/stats' element={<Stats />}/>
+          <Route path='/main_window/' element={<Sales />}/>
+          <Route path='/main_window/sales/:id' element={<DetailSale />}/>
+          <Route path='/main_window/products' element={<Products />}/>
+          <Route path='/main_window/detail/:id' element={<DetailProduct />}/>
+          <Route path='/main_window/products/form' element={<FormProduct />}/>
+          <Route path='/main_window/clients' element={<Clients />}/>
+          <Route path='/main_window/clients/:id' element={<DetailClient />}/>
+        </Routes>
+      </div>
     </div>
   );
 };

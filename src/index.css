@@ -1,15 +1,107 @@
+/*--CSS RESET--*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    text-decoration: none;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/*--FONTS--*/
+
+@font-face {
+    font-family: 'OpenSans';
+    src: url('./assets/fonts/openSans/OpenSans-Regular.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans-Italic';
+    src: url('./assets/fonts/openSans/OpenSans-Italic.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans-SemiBold';
+    src: url('./assets/fonts/openSans/OpenSans-SemiBold.ttf') format('ttf');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans-SemiBoldItalic';
+    src: url('./assets/fonts/openSans/OpenSans-SemiBoldItalic.ttf') format('ttf');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'OpenSans-Light';
+    src: url('./assets/fonts/openSans/OpenSans-Light.ttf') format('ttf');
+    font-weight: light;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans-LightItalic';
+    src: url('./assets/fonts/openSans/OpenSans-LightItalic.ttf') format('ttf');
+    font-weight: light;
+    font-style: italic;
+}
+
+/*--ACTUAL CSS--*/
+
+body {
+  font-family: 'OpenSans', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: var(--light-gray);
+  background-color: var(--light-grey);
 }
 
 :root {
   --white: #ffffff;
-  --light-gray: #f9f9f9;
-  --dark-gray: #3c3c3b;
+  --light-grey: #f9f9f9;
+  --dark-grey: #3c3c3b;
   --black: #000000;
   --gold: #e4b61a;
   --red: #ad0000;
