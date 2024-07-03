@@ -43,16 +43,14 @@
     background-color: #dddddd52; /* Color de fondo al pasar el mouse */
 }
 
-.containerTable button {
-    padding: 6px 12px;
-    background-color: #4CAF50;
-    color: white;
+.buttonDate{
     border: none;
-    cursor: pointer;
+    background-color: #ffffff;
+    padding: 3px;
 }
 
-.containerTable button:hover {
-    background-color: #45a049;
+.buttonDate:hover {
+    background-color: #dddddd52; 
 }
 
 input {
