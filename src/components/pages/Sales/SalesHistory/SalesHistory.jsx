@@ -12,6 +12,7 @@ const SalesHistory = () => {
 
     const [orderNumber, setOrderNumber] = useState('');
     const [client, setClient] = useState('');
+    const [sortByDate, setSortByDate] = useState('desc');
     
     useEffect(() => {
         dispatch(getSales());
@@ -36,6 +37,18 @@ const SalesHistory = () => {
         return formattedDate;
     };
 
+    const toggleSortOrder = () => {
+        // Función para cambiar el orden de la fecha
+        setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc');
+    };
+
+    const sortedSales = [...sales].sort((a, b) => {
+        // Función para ordenar las ventas por fecha
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return sortByDate === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+
     return(
         <div>
             <div className={style.containerTitle}>
@@ -45,24 +58,24 @@ const SalesHistory = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Fecha y hora</th>
+                            <th>Fecha y hora <button className={style.buttonDate} onClick={toggleSortOrder}>{sortByDate === 'asc' ? '▴' : '▾'}</button></th>
                             <th>Orden <input type="search" name="searchOrder" onChange={handleChangeOrderNumber} value={orderNumber} placeholder="Buscar" autoComplete="off"/></th>
                             <th>Cliente <input type="search" name="searchClient" onChange={handleChangeClient} value={client} placeholder="Buscar" autoComplete="off"/></th>
                             <th>Productos</th>
                             <th>Medio de pago</th>
                             <th>Descuento</th>
                             <th>Total</th>
+                            <th>Detalle</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {sales.map(sale => (
+                    {sortedSales.map(sale => (
                             <tr key={sale._id}>
                                 <td className={style.dataNumber}>{formatDate(sale.date)}</td>
                                 <td className={style.dataNumber}>{sale.orderNumber}</td>
                                 <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
                                 <td className={style.dataNumber}>{sale.products.length}</td>
                                 <td>{sale.paymentMethod}</td>
-                                {/* <td>{sale.paymentMethod.join(', ')}</td> */}
                                 <td className={style.dataNumber}>{sale.discount ? `${sale.discount}%` : '-'}</td>
                                 <td className={style.dataNumber}>$ {sale.totalPrice}</td>
                                 <td>
@@ -80,3 +93,21 @@ const SalesHistory = () => {
 };
 
 export default SalesHistory;
+
+// {sales.map(sale => (
+//     <tr key={sale._id}>
+//         <td className={style.dataNumber}>{formatDate(sale.date)}</td>
+//         <td className={style.dataNumber}>{sale.orderNumber}</td>
+//         <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
+//         <td className={style.dataNumber}>{sale.products.length}</td>
+//         <td>{sale.paymentMethod}</td>
+//         {/* <td>{sale.paymentMethod.join(', ')}</td> */}
+//         <td className={style.dataNumber}>{sale.discount ? `${sale.discount}%` : '-'}</td>
+//         <td className={style.dataNumber}>$ {sale.totalPrice}</td>
+//         <td>
+//             <Link to={`/main_window/sales/${sale._id}`}>
+//                 <button>Detalle</button>
+//             </Link>
+//         </td>
+//     </tr>
+// ))}
