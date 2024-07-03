@@ -1,18 +1,23 @@
+.container {
+    padding: 10px;
+}
+
 .containerTitle {
-    background: rgb(243, 4, 36);
     padding: 1em;
+    border-bottom: 1px solid #ececec;
 }
 
 .title {
     font-size: 25px;
     font-weight: 700;
-    margin: auto 15px;
-    color: #ff9e5c;
+    margin: auto 0px;
+    color: #e4b61a;
 }
 
 .containerTable {
     padding: 1em;
-    overflow-x: auto; /* Para manejar tablas anchas */
+    /* overflow-x: auto;  */
+    /* Para manejar tablas anchas */
 }
 
 .containerTable table {
@@ -53,13 +58,33 @@
     background-color: #dddddd52; 
 }
 
+.containerTable th .thOrderClient {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.containerTable th .spanOrderClient {
+    margin-left: 5px; 
+    /* margin-right: 5px;  */
+    /* Ajusta el margen entre "Orden" y el input */
+}
+
+/* .containerTable th .orderInput { */
+    /* flex: 1;  */
+    /* El input ocupa todo el espacio restante */
+    /* text-align: right;  */
+    /* Alinea el texto del input a la derecha */
+    /* margin-left: 10px;  */
+    /* Ajusta el margen izquierdo del input */
+/* } */
+
 input {
     border: none;
-    padding: 4px;
     width: 130px;
     border-bottom: 1px solid #797979;
-    padding-bottom: 2px;
     padding-right: 0px;
+    padding-bottom: 2px;
     text-align: right;
 }
 

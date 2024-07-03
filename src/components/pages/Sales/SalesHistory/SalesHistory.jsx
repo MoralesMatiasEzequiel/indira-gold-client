@@ -50,7 +50,7 @@ const SalesHistory = () => {
     });
 
     return(
-        <div>
+        <div className={style.container}>
             <div className={style.containerTitle}>
                 <h2 className={style.title}>HISTORIAL DE VENTAS</h2>
             </div>
@@ -59,8 +59,20 @@ const SalesHistory = () => {
                     <thead>
                         <tr>
                             <th>Fecha y hora <button className={style.buttonDate} onClick={toggleSortOrder}>{sortByDate === 'asc' ? '▴' : '▾'}</button></th>
-                            <th>Orden <input type="search" name="searchOrder" onChange={handleChangeOrderNumber} value={orderNumber} placeholder="Buscar" autoComplete="off"/></th>
-                            <th>Cliente <input type="search" name="searchClient" onChange={handleChangeClient} value={client} placeholder="Buscar" autoComplete="off"/></th>
+                            <th>
+                                <div className={style.thOrderClient}>
+                                    <span className={style.spanOrderClient}>Orden</span>
+                                    <input type="search"name="searchOrder" onChange={handleChangeOrderNumber} value={orderNumber} placeholder="Buscar" autoComplete="off" className={style.orderInput} 
+                                    />
+                                </div>
+                            </th>
+                            <th>
+                                <div className={style.thOrderClient}>
+                                    <span className={style.spanOrderClient}>Cliente</span>
+                                    <input type="search"name="searchClient" onChange={handleChangeClient} value={client} placeholder="Buscar" autoComplete="off" className={style.orderInput} 
+                                    />
+                                </div>
+                            </th>
                             <th>Productos</th>
                             <th>Medio de pago</th>
                             <th>Descuento</th>
