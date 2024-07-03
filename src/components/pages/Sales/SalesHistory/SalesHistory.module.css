@@ -16,18 +16,22 @@
 }
 
 .containerTable table {
-    width: 100%; /* Opcional: Para ocupar todo el ancho del contenedor */
+    width: 100%; 
     border-collapse: collapse;
 }
 
 .containerTable th, .containerTable td {
     border: 1px solid #ddd; /* Borde delgado gris */
-    padding: 8px; /* Espaciado interno */
-    text-align: left;
+    padding: 6px; /* Espaciado interno */
+    /* text-align: left; */
+}
+
+.dataNumber {
+    text-align: center;
 }
 
 .containerTable th {
-    background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
+    background-color: #ffffff; /* Color de fondo para las celdas de encabezado */
     color: #333; /* Color del texto de encabezado */
 }
 
@@ -36,7 +40,7 @@
 }
 
 .containerTable tbody tr:hover {
-    background-color: #ddd; /* Color de fondo al pasar el mouse */
+    background-color: #dddddd52; /* Color de fondo al pasar el mouse */
 }
 
 .containerTable button {
@@ -49,4 +53,22 @@
 
 .containerTable button:hover {
     background-color: #45a049;
+}
+
+input {
+    border: none;
+    padding: 4px;
+    width: 130px;
+    border-bottom: 1px solid #797979;
+    padding-bottom: 2px;
+    padding-right: 0px;
+    text-align: right;
+}
+
+input::placeholder {
+    font-style: italic; 
+}
+
+input:focus {
+    outline: none; 
 }

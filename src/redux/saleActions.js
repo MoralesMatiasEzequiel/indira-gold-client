@@ -16,9 +16,16 @@ export const getSaleById = (saleId) => {
     };
 };
 
-export const postSale = (saleData) => {
+export const searchSales = (orderNumber, client) => {
     return async (dispatch) => {
-       
-        const response = await axios.post('/sale', saleData);
+        let query = '/sale?';
+        if (orderNumber) {
+            query += `orderNumber=${orderNumber}&`;
+        }
+        if (client) {
+            query += `clientName=${client}&`;
+        }
+        const { data } = await axios.get(query);
+        dispatch(getSalesReducer(data));
     };
 };
