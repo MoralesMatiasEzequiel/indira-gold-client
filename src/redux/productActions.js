@@ -21,3 +21,10 @@ export const getProductById = (productId) => {
         dispatch(getProductByIdReducer(data));
     };
 };
+
+export const getProductByName = (productName) => {
+    return async (dispatch) => {
+        const { data } = await axios.get(`/products?name=${productName}&`);
+        dispatch(getProductsReducer(data));
+    };
+};
