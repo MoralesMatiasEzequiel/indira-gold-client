@@ -2,7 +2,7 @@ import style from "./SalesHistory.module.css";
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
-import { getSales, searchSales } from '../../../../redux/saleActions.js';
+import { searchSales } from '../../../../redux/saleActions.js';
 
 
 const SalesHistory = () => {
@@ -14,9 +14,6 @@ const SalesHistory = () => {
     const [client, setClient] = useState('');
     const [sortByDate, setSortByDate] = useState('desc');
     
-    useEffect(() => {
-        dispatch(getSales());
-    }, [dispatch]);
 
     useEffect(() => {
         dispatch(searchSales(orderNumber, client));
