@@ -14,3 +14,17 @@ export const getClientById = (clientId) => {
         dispatch(getClientByIdReducer(data));
     };
 };
+
+export const getClientByName = (name) => {
+    return async (dispatch) => {
+        const { data } = await axios.get(`/clients?name=${name}&`);
+        dispatch(getClientsReducer(data));
+    };
+};
+
+export const getClientByLastname = (lastname) => {
+    return async (dispatch) => {
+        const { data } = await axios.get(`/clients?lastname=${lastname}&`);
+        dispatch(getClientsReducer(data));
+    };
+};

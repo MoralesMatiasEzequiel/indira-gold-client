@@ -29,3 +29,10 @@ export const searchSales = (orderNumber, client) => {
         dispatch(getSalesReducer(data));
     };
 };
+
+export const postSale = (saleData) => {
+    return async (dispatch) => {
+       
+        const response = await axios.post('/sale', saleData);
+    };
+};
