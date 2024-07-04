@@ -20,13 +20,14 @@ const FormSales = () => {
     const [selectedProducts, setSelectedProducts] = useState([null]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
-    const [newSale, setNewSale] = useState({
+    const initialSaleState = {
         client: '',
         paymentMethod: '',
         soldAt: '',
         discount: 0,
         products: []
-    });
+    };
+    const [newSale, setNewSale] = useState(initialSaleState);
 
     const productRefs = useRef([]); // Referencias a los campos de productos
 
@@ -155,6 +156,13 @@ const FormSales = () => {
         };
         console.log(saleData);
         dispatch(postSale(saleData));
+
+        // Resetear el formulario
+        setNewSale(initialSaleState);
+        setSelectedProducts([null]);
+        setSubtotal(0);
+        setSelectedClient(null);
+        setIsSubmitDisabled(true); // Opcional si quieres deshabilitar el botón después de enviar
     };
 
     const validateForm = () => {
@@ -170,7 +178,7 @@ const FormSales = () => {
     }, [newSale, selectedProducts]);
 
     const DropdownIndicator = (props) => {
-        return null; // Eliminate the dropdown arrow
+        return null; // Eliminar la flecha del dropdown
     };
 
     const customNoOptionsMessage = () => "Nombre del producto buscado";
