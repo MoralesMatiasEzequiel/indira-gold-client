@@ -115,6 +115,17 @@ const FormSales = () => {
         });
     };
 
+    // Manejar la eliminación de un producto
+    const handleRemoveProduct = (index) => {
+        setSelectedProducts((prevSelectedProducts) => {
+            const newSelectedProducts = [...prevSelectedProducts];
+            newSelectedProducts.splice(index, 1); // Eliminar el producto en el índice especificado
+            setSubtotal(calculateSubtotal(newSelectedProducts));
+            validateForm();
+            return newSelectedProducts;
+        });
+    };
+
     const handleClientChange = (selectedOption) => {
         setSelectedClient(selectedOption);
         setNewSale((prevNewSale) => ({
@@ -157,6 +168,12 @@ const FormSales = () => {
     useEffect(() => {
         validateForm();
     }, [newSale, selectedProducts]);
+
+    const DropdownIndicator = (props) => {
+        return null; // Eliminate the dropdown arrow
+    };
+
+    const customNoOptionsMessage = () => "Nombre del producto buscado";
 
     return (
         <div>
@@ -210,15 +227,20 @@ const FormSales = () => {
 
                 <label htmlFor="products">Productos</label>
                 {selectedProducts.map((product, index) => (
-                    <AsyncSelect
-                        name="products"
-                        key={index}
-                        value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
-                        loadOptions={loadProductOptions}
-                        onChange={(selectedOption) => handleProductChange(selectedOption, index)}
-                        placeholder="Buscar Producto"
-                        ref={(element) => productRefs.current[index] = element}
-                    />
+                    <div key={index} style={{ display: 'flex', marginBottom: '10px' }}>
+                        <AsyncSelect
+                            name="products"
+                            value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
+                            loadOptions={loadProductOptions}
+                            onChange={(selectedOption) => handleProductChange(selectedOption, index)}
+                            placeholder="Buscar Producto"
+                            ref={(element) => productRefs.current[index] = element}
+                            style={{ flex: '1', marginRight: '10px' }}
+                            components={{DropdownIndicator}}
+                            noOptionsMessage={customNoOptionsMessage}
+                        />
+                        <button type="button" onClick={() => handleRemoveProduct(index)}>X</button>
+                    </div>
                 ))}
                 <div>
                     <div>Subtotal</div>
