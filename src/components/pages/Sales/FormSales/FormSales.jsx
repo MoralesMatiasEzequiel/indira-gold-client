@@ -15,6 +15,7 @@ const FormSales = () => {
         dispatch(getClients());
     }, [dispatch]);
 
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const paymentMethods = ['Efectivo', 'Crédito', 'Débito', 'Transferencia'];
     const [selectedProducts, setSelectedProducts] = useState([null]);
     const [selectedClient, setSelectedClient] = useState(null);
@@ -100,15 +101,16 @@ const FormSales = () => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
             newSelectedProducts[index] = selectedOption ? selectedOption.value : null; // Almacenar solo el _id
-
+    
             if (index === newSelectedProducts.length - 1 && selectedOption) {
                 newSelectedProducts.push(null);
                 setTimeout(() => {
                     productRefs.current[index + 1].focus();
                 }, 0);
             }
-
+    
             setSubtotal(calculateSubtotal(newSelectedProducts));
+            validateForm();
             return newSelectedProducts;
         });
     };
@@ -119,6 +121,7 @@ const FormSales = () => {
             ...prevNewSale,
             client: selectedOption ? selectedOption.value : ''
         }));
+        validateForm();
     };
 
     const handleInputChange = (e) => {
@@ -127,6 +130,7 @@ const FormSales = () => {
             ...prevNewSale,
             [name]: name === 'discount' ? Number(value) : value
         }));
+        validateForm();
     };
 
     const handleSubmit = (event) => {
@@ -141,6 +145,18 @@ const FormSales = () => {
         console.log(saleData);
         dispatch(postSale(saleData));
     };
+
+    const validateForm = () => {
+        const isClientSelected = selectedClient !== null; // Permitir "Anónimo" que tiene valor nulo
+        const isPaymentMethodSelected = newSale.paymentMethod !== '';
+        const isSoldAtSelected = newSale.soldAt !== '';
+        const areProductsSelected = selectedProducts.some(product => product !== null);
+        setIsSubmitDisabled(!(isClientSelected && isPaymentMethodSelected && isSoldAtSelected && areProductsSelected));
+    };
+
+    useEffect(() => {
+        validateForm();
+    }, [newSale, selectedProducts]);
 
     return (
         <div>
@@ -214,7 +230,7 @@ const FormSales = () => {
                     <div>{newSale.discount}%</div>
                     <div>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
                 </div>
-                <button type='submit'>Aceptar</button>
+                <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
             </form>
         </div>
     );
