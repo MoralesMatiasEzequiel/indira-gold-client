@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../../../../redux/productActions.js';
 import { getClients } from '../../../../redux/clientActions.js';
 import { postSale } from '../../../../redux/saleActions.js';
+import FormClient from '../../Clients/FormClient/FormClient.jsx';
 
 const FormSales = () => {
     const products = useSelector(state => state.products.products);
@@ -15,11 +16,13 @@ const FormSales = () => {
         dispatch(getClients());
     }, [dispatch]);
 
+    const [showClientForm, setShowClientForm] = useState(false);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const paymentMethods = ['Efectivo', 'Crédito', 'Débito', 'Transferencia'];
     const [selectedProducts, setSelectedProducts] = useState([null]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
+    
     const initialSaleState = {
         client: '',
         paymentMethod: '',
@@ -31,7 +34,6 @@ const FormSales = () => {
 
     const productRefs = useRef([]); // Referencias a los campos de productos
 
-    // Transformar productos a opciones para el select
     const transformProductOptions = (products) => {
         let productOptions = [];
         products.forEach(product => {
@@ -50,7 +52,6 @@ const FormSales = () => {
         return productOptions;
     };
 
-    // Transformar clientes a opciones para el select
     const transformClientOptions = (clients) => {
         const clientOptions = clients.map(client => ({
             value: client._id,
@@ -60,7 +61,6 @@ const FormSales = () => {
         return clientOptions;
     };
 
-    // Cargar opciones de productos para el select
     const loadProductOptions = (inputValue, callback) => {
         const productOptions = transformProductOptions(products);
         const filteredOptions = productOptions.filter(product =>
@@ -69,7 +69,6 @@ const FormSales = () => {
         callback(filteredOptions);
     };
 
-    // Cargar opciones de clientes para el select
     const loadClientOptions = (inputValue, callback) => {
         const clientOptions = transformClientOptions(clients);
         const filteredOptions = clientOptions.filter(client =>
@@ -78,7 +77,6 @@ const FormSales = () => {
         callback(filteredOptions);
     };
 
-    // Calcular el subtotal de los productos seleccionados
     const calculateSubtotal = (selectedProducts) => {
         let subtotal = 0;
         selectedProducts.forEach(productId => {
@@ -92,12 +90,10 @@ const FormSales = () => {
         return subtotal;
     };
 
-    // Formatear números según el formato español
     const formatNumber = (number) => {
         return number.toLocaleString('es-ES');
     };
 
-    // Manejar el cambio de productos seleccionados
     const handleProductChange = (selectedOption, index) => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
@@ -116,7 +112,6 @@ const FormSales = () => {
         });
     };
 
-    // Manejar la eliminación de un producto
     const handleRemoveProduct = (index) => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
@@ -183,6 +178,15 @@ const FormSales = () => {
 
     const customNoOptionsMessage = () => "Nombre del producto buscado";
 
+    const handleShowClientForm = () => {
+        setShowClientForm(!showClientForm);
+    };
+
+    const handleClientAdded = () => {
+        setShowClientForm(false);
+        dispatch(getClients());
+    };
+
     return (
         <div>
             <form onSubmit={handleSubmit}>
@@ -196,6 +200,7 @@ const FormSales = () => {
                     placeholder="Buscar Cliente"
                     defaultOptions={transformClientOptions(clients)}
                 />
+                <button type="button" onClick={handleShowClientForm}>+</button>
                 <label htmlFor="paymentMethod">Medio de pago</label>
                 <select
                     name="paymentMethod"
@@ -262,6 +267,7 @@ const FormSales = () => {
                 </div>
                 <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
             </form>
+            {showClientForm && <FormClient onClientAdded={handleClientAdded} />}
         </div>
     );
 };
