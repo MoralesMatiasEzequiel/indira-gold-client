@@ -28,3 +28,9 @@ export const getClientByLastname = (lastname) => {
         dispatch(getClientsReducer(data));
     };
 };
+
+export const postClient = (clientData) => {
+    return async (dispatch) => {
+        const response = await axios.post('/clients', clientData);
+    };
+};
