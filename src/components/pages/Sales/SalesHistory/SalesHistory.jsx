@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import { searchSales } from '../../../../redux/saleActions.js';
+import detail from './img/detail.png';
 
 
 const SalesHistory = () => {
@@ -89,7 +90,7 @@ const SalesHistory = () => {
                                 <td className={style.dataNumber}>$ {sale.totalPrice}</td>
                                 <td>
                                     <Link to={`/main_window/sales/${sale._id}`}>
-                                        <button>Detalle</button>
+                                        <img src={detail} alt=""/>
                                     </Link>
                                 </td>
                             </tr>
