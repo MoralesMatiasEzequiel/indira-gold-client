@@ -49,43 +49,43 @@ table {
 
 @font-face {
     font-family: 'OpenSans';
-    src: url('./assets/fonts/openSans/OpenSans-Regular.ttf') format('ttf');
-    font-weight: normal;
+    src: url('./assets/fonts/openSans/OpenSans-Regular.ttf') format('truetype');
+    font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'OpenSans-Italic';
-    src: url('./assets/fonts/openSans/OpenSans-Italic.ttf') format('ttf');
-    font-weight: normal;
-    font-style: normal;
+    font-family: 'OpenSans';
+    src: url('./assets/fonts/openSans/OpenSans-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
 }
 
 @font-face {
-    font-family: 'OpenSans-SemiBold';
-    src: url('./assets/fonts/openSans/OpenSans-SemiBold.ttf') format('ttf');
+    font-family: 'OpenSans';
+    src: url('./assets/fonts/openSans/OpenSans-SemiBold.ttf') format('truetype');
     font-weight: 600;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'OpenSans-SemiBoldItalic';
-    src: url('./assets/fonts/openSans/OpenSans-SemiBoldItalic.ttf') format('ttf');
+    font-family: 'OpenSans';
+    src: url('./assets/fonts/openSans/OpenSans-SemiBoldItalic.ttf') format('truetype');
     font-weight: 600;
     font-style: italic;
 }
 
 @font-face {
-    font-family: 'OpenSans-Light';
-    src: url('./assets/fonts/openSans/OpenSans-Light.ttf') format('ttf');
-    font-weight: light;
+    font-family: 'OpenSans';
+    src: url('./assets/fonts/openSans/OpenSans-Light.ttf') format('truetype');
+    font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'OpenSans-LightItalic';
-    src: url('./assets/fonts/openSans/OpenSans-LightItalic.ttf') format('ttf');
-    font-weight: light;
+    font-family: 'OpenSans';
+    src: url('./assets/fonts/openSans/OpenSans-LightItalic.ttf') format('truetype');
+    font-weight: 300;
     font-style: italic;
 }
 
@@ -147,4 +147,31 @@ h2{
 
 .container{
     padding: 1.5rem;
+}
+
+/*--FORMS--*/
+
+form label{
+    font-weight: 300;
+    letter-spacing: 0.05rem;
+    font-size: 1rem;
+}
+
+/*--TABLES--*/
+
+.filterSearch {
+    border: none;
+    width: 130px;
+    border-bottom: 1px solid #797979;
+    padding-right: 0px;
+    padding-bottom: 2px;
+    text-align: right;
+}
+
+.filterSearch::placeholder {
+    font-style: italic; 
+}
+
+.filterSearch:focus {
+    outline: none; 
 }

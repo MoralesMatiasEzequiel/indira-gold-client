@@ -1,0 +1,45 @@
+.salesForm{
+    display: flex;
+    gap: 1rem;
+}
+
+.salesForm .column1, .salesForm .column2{
+    width: 35%;
+}
+
+.salesForm .column3{
+    width: 30%;
+}
+
+.salesForm .column1{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.salesForm .column1 .left{
+    display: flex;
+    flex-direction: column;
+    width: calc(40% - 0.5rem);
+    justify-content: space-between;
+}
+
+.salesForm .column1 .right{
+    display: flex;
+    flex-direction: column;
+    width: calc(60% - 0.5rem);
+    
+    justify-content: space-between;
+}
+
+.salesForm .column1 .right .clientInput{
+    display: flex;
+    justify-content: end;
+}
+
+.salesForm .column1 .right .soldAt{
+    display: flex;
+    justify-content: end;
+    gap: 0.5rem;
+}
