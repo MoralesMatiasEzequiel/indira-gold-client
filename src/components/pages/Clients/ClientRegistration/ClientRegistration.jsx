@@ -48,14 +48,14 @@ const ClientRegistration = () => {
                             <th>
                                 <div className={style.thOrderClient}>
                                     <span className={style.spanOrderClient}>Nombre(s)</span>
-                                    <input type="search" name="searchName" onChange={handleChangeName} value={name} placeholder="Buscar" autoComplete="off" className={style.orderInput} 
+                                    <input type="search" name="searchName" onChange={handleChangeName} value={name} placeholder="Buscar" autoComplete="off" className="filterSearch"  
                                     />
                                 </div>
                             </th>
                             <th>
                                 <div className={style.thOrderClient}>
                                     <span className={style.spanOrderClient}>Apellido(s)</span>
-                                    <input type="search"name="searchLastname" onChange={handleChangeLastname} value={lastname} placeholder="Buscar" autoComplete="off" className={style.orderInput} 
+                                    <input type="search"name="searchLastname" onChange={handleChangeLastname} value={lastname} placeholder="Buscar" autoComplete="off" className="filterSearch" 
                                     />
                                 </div>
                             </th>

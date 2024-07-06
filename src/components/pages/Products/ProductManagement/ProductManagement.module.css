@@ -79,19 +79,3 @@
     /* Ajusta el margen izquierdo del input */
 /* } */
 
-input {
-    border: none;
-    width: 130px;
-    border-bottom: 1px solid #797979;
-    padding-right: 0px;
-    padding-bottom: 2px;
-    text-align: right;
-}
-
-input::placeholder {
-    font-style: italic; 
-}
-
-input:focus {
-    outline: none; 
-}

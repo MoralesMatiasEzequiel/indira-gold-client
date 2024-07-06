@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import style from "./FormSales.module.css";
 import AsyncSelect from 'react-select/async';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../../../../redux/productActions.js';
@@ -187,88 +188,129 @@ const FormSales = () => {
         dispatch(getClients());
     };
 
+    const customStyles = {
+        control: (provided) => ({
+            ...provided,
+            minHeight: 'auto',
+            height: 'auto'
+        }),
+        indicatorsContainer: (provided) => ({
+            ...provided,
+            height: 'auto'
+        }),
+        valueContainer: (provided) => ({
+            ...provided,
+            padding: '2px 8px'
+        }),
+        input: (provided) => ({
+            ...provided,
+            margin: '0'
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            margin: '0'
+        })
+    };
+
     return (
         <div className="component">
             <div className="title">
                 <h2>NUEVA VENTA</h2>
             </div>
             <div className="container">
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="client">Cliente</label>
-                <AsyncSelect
-                    name="client"
-                    value={selectedClient}
-                    loadOptions={loadClientOptions}
-                    onChange={handleClientChange}
-                    placeholder="Buscar Cliente"
-                    defaultOptions={transformClientOptions(clients)}
-                />
-                <button type="button" onClick={handleShowClientForm}>+</button>
-                <label htmlFor="paymentMethod">Medio de pago</label>
-                <select
-                    name="paymentMethod"
-                    placeholder="Seleccionar"
-                    value={newSale.paymentMethod}
-                    onChange={handleInputChange}
-                >
-                    <option value="">Seleccionar</option>
-                    {paymentMethods.map(method => (
-                        <option key={method} value={method}>{method}</option>
-                    ))}
-                </select>
-                <label htmlFor="discount">Descuento</label>
-                <input 
-                    name="discount"
-                    placeholder='%'
-                    value={newSale.discount}
-                    onChange={handleInputChange}
-                />
-
-                <input
-                    type="radio"
-                    name="soldAt"
-                    value="Local"
-                    checked={newSale.soldAt === 'Local'}
-                    onChange={handleInputChange}
-                />
-                <label htmlFor="Local">Local</label>
-                <input
-                    type="radio"
-                    name="soldAt"
-                    value="Online"
-                    checked={newSale.soldAt === 'Online'}
-                    onChange={handleInputChange}
-                />
-                <label htmlFor="Online">Online</label>
-
-                <label htmlFor="products">Productos</label>
-                {selectedProducts.map((product, index) => (
-                    <div key={index} style={{ display: 'flex', marginBottom: '10px' }}>
-                        <AsyncSelect
-                            name="products"
-                            value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
-                            loadOptions={loadProductOptions}
-                            onChange={(selectedOption) => handleProductChange(selectedOption, index)}
-                            placeholder="Buscar Producto"
-                            ref={(element) => productRefs.current[index] = element}
-                            style={{ flex: '1', marginRight: '10px' }}
-                            components={{DropdownIndicator}}
-                            noOptionsMessage={customNoOptionsMessage}
-                        />
-                        <button type="button" onClick={() => handleRemoveProduct(index)}>X</button>
+            <form onSubmit={handleSubmit} className={style.salesForm}>
+                <div className={style.column1}>
+                    <div className={style.left}>
+                        <label htmlFor="client">Cliente</label>
+                        <label htmlFor="paymentMethod">Medio de pago</label>
+                        <label htmlFor="discount">Descuento</label>
+                        <label htmlFor="soldAt">Tipo de venta</label>
                     </div>
-                ))}
-                <div>
-                    <div>Subtotal</div>
-                    <div>Descuento</div>
-                    <div>Total</div>
+                    <div className={style.right}>
+                        <div className={style.clientInput}>
+                            <AsyncSelect
+                                name="client"
+                                value={selectedClient}
+                                loadOptions={loadClientOptions}
+                                onChange={handleClientChange}
+                                placeholder="Buscar Cliente"
+                                defaultOptions={transformClientOptions(clients)}
+                            />
+                            <button type="button" onClick={handleShowClientForm}>+</button>
+                        </div>
+                        <select
+                            name="paymentMethod"
+                            placeholder="Seleccionar"
+                            value={newSale.paymentMethod}
+                            onChange={handleInputChange}
+                        >
+                            <option value="">Seleccionar</option>
+                            {paymentMethods.map(method => (
+                                <option key={method} value={method}>{method}</option>
+                            ))}
+                        </select>
+                        <input 
+                            name="discount"
+                            placeholder='%'
+                            value={newSale.discount}
+                            onChange={handleInputChange}
+                        />
+                        <div className={style.soldAt}>
+                            <label htmlFor="Local">
+                                <input
+                                    type="radio"
+                                    name="soldAt"
+                                    value="Local"
+                                    checked={newSale.soldAt === 'Local'}
+                                    onChange={handleInputChange}
+                                />
+                                Local
+                            </label>
+                            <label htmlFor="Online">
+                                <input
+                                    type="radio"
+                                    name="soldAt"
+                                    value="Online"
+                                    checked={newSale.soldAt === 'Online'}
+                                    onChange={handleInputChange}
+                                />      
+                                Online
+                            </label>
+                        </div>
+                    </div>              
                 </div>
-                <div>
-                    <div>${formatNumber(subtotal)}</div>
-                    <div>{newSale.discount}%</div>
-                    <div>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
+                <div className={style.column2}>
+                    <label htmlFor="products">Productos</label>
+                    {selectedProducts.map((product, index) => (
+                        <div key={index}>
+                            <AsyncSelect
+                                name="products"
+                                value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
+                                loadOptions={loadProductOptions}
+                                onChange={(selectedOption) => handleProductChange(selectedOption, index)}
+                                placeholder="Buscar Producto"
+                                ref={(element) => productRefs.current[index] = element}
+                                components={{DropdownIndicator}}
+                                noOptionsMessage={customNoOptionsMessage}
+                                styles={customStyles}
+                            />
+                            <button type="button" onClick={() => handleRemoveProduct(index)}>X</button>
+                        </div>
+                    ))}
                 </div>
-                <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
+                <div className={style.column3}>
+                    <div>
+                        <div>Subtotal</div>
+                        <div>Descuento</div>
+                        <div>Total</div>
+                    </div>
+                    <div>
+                        <div>${formatNumber(subtotal)}</div>
+                        <div>{newSale.discount}%</div>
+                        <div>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
+                    </div>
+                    <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
+                </div>
             </form>
             {showClientForm && <FormClient onClientAdded={handleClientAdded} />}
             </div>

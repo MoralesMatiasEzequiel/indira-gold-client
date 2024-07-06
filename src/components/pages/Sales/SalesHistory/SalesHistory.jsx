@@ -60,14 +60,14 @@ const SalesHistory = () => {
                             <th>
                                 <div className={style.thOrderClient}>
                                     <span className={style.spanOrderClient}>Orden</span>
-                                    <input type="search"name="searchOrder" onChange={handleChangeOrderNumber} value={orderNumber} placeholder="Buscar" autoComplete="off" className={style.orderInput} 
+                                    <input type="search"name="searchOrder" onChange={handleChangeOrderNumber} value={orderNumber} placeholder="Buscar" autoComplete="off" className="filterSearch"  
                                     />
                                 </div>
                             </th>
                             <th>
                                 <div className={style.thOrderClient}>
                                     <span className={style.spanOrderClient}>Cliente</span>
-                                    <input type="search"name="searchClient" onChange={handleChangeClient} value={client} placeholder="Buscar" autoComplete="off" className={style.orderInput} 
+                                    <input type="search"name="searchClient" onChange={handleChangeClient} value={client} placeholder="Buscar" autoComplete="off" className="filterSearch"  
                                     />
                                 </div>
                             </th>
