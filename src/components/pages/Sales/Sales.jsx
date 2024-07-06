@@ -12,7 +12,7 @@ const Sales = () => {
     }, [dispatch]);
     
     return(
-        <div>
+        <div className="page">
             <div>
                 <FormSales />
             </div>

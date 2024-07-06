@@ -48,11 +48,11 @@ const SalesHistory = () => {
     });
 
     return(
-        <div className={style.container}>
-            <div className={style.containerTitle}>
-                <h2 className={style.title}>HISTORIAL DE VENTAS</h2>
+        <div className="component">
+            <div className="title">
+                <h2>HISTORIAL DE VENTAS</h2>
             </div>
-            <div className={style.containerTable}>
+            <div className="container">
                 <table>
                     <thead>
                         <tr>

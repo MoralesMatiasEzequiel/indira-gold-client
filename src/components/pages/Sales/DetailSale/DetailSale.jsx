@@ -15,9 +15,9 @@ const DetailSale = () => {
     }, [dispatch, id]);
     
     return(
-        <div>
+        <div className="component">
             <div>
-                <h1>Detalle de la venta</h1>
+                <h2>Detalle de la venta</h2>
                 <button>Cambio</button>
                 <button>x</button>
             </div>
