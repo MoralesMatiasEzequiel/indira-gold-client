@@ -1,5 +1,5 @@
 import React from 'react';
-import BarGraph from './BarGraph/BarGraph.jsx'
+import BarChart from './BarChart/BarChart.jsx'
 import Metrics from './Metrics/Metrics.jsx'
 import Rating from './Rating/Rating.jsx';
 import Piechart from './PieChart/PieChart.jsx'
@@ -11,12 +11,12 @@ const Stats = () => {
         <div>
             <h1>Estadísticas</h1>
             <div>
-                <Metrics/>  
+                {/* <Metrics/>   */}
             </div>
             <div>
-                <Rating/>
-                <Piechart/>
-                <BarGraph/>
+                {/* <Rating/> */}
+                {/* <Piechart/> */}
+                <BarChart/>
             </div>
         </div>
     );
