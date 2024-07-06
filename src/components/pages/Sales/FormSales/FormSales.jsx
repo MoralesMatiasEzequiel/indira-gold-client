@@ -188,9 +188,12 @@ const FormSales = () => {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className="component">
+            <div className="title">
                 <h2>NUEVA VENTA</h2>
+            </div>
+            <div className="container">
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="client">Cliente</label>
                 <AsyncSelect
                     name="client"
@@ -268,6 +271,7 @@ const FormSales = () => {
                 <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
             </form>
             {showClientForm && <FormClient onClientAdded={handleClientAdded} />}
+            </div>
         </div>
     );
 };

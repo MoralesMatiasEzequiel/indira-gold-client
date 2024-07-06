@@ -14,7 +14,7 @@ const Products = () => {
     }, [dispatch]);
     
     return (
-        <div>
+        <div className="page">
             <Link to={'/main_window/products/form'}>
                     <button>Nuevo producto</button>
                 </Link>

@@ -13,7 +13,7 @@ const Clients = () => {
     }, [dispatch]);
 
     return(
-        <div>
+        <div className="page">
             <ClientRegistration />
         </div>
     );
