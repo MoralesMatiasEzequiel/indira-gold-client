@@ -22,6 +22,7 @@ ChartJS.register(
 
 
 const BarChart = () => {
+    
     const options = {};
     const barCharData = {
         labels: ['Mayo', 'Junio', 'Julio', 'Agosto'],

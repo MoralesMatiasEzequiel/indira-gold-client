@@ -15,7 +15,7 @@ const Stats = () => {
             </div>
             <div>
                 {/* <Rating/> */}
-                {/* <Piechart/> */}
+                <Piechart/>
                 <BarChart/>
             </div>
         </div>
