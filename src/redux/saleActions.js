@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getSalesReducer, getSaleByIdReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, getSalesOnlineReducer, getSalesLocalReducer } from "./saleSlice.js";
 
 
 export const getSales = () => {
@@ -13,6 +13,20 @@ export const getSaleById = (saleId) => {
     return async (dispatch) =>{
         const { data } = await axios.get(`/sale/${saleId}`);
         dispatch(getSaleByIdReducer(data));
+    };
+};
+
+export const getSalesOnline = () => {
+    return async (dispatch) => {
+        const { data } = await axios.get("/sale/online");
+        dispatch(getSalesOnlineReducer(data));
+    };
+};
+
+export const getSalesLocal = () => {
+    return async (dispatch) => {
+        const { data } = await axios.get("/sale/local");
+        dispatch(getSalesLocalReducer(data));
     };
 };
 
