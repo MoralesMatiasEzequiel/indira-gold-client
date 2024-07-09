@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from "react-redux";
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Tooltip, Legend, ArcElement } from 'chart.js';
 
@@ -6,9 +7,14 @@ ChartJS.register(Tooltip, Legend, ArcElement);
 
 const PieChart = () => {
 
+    const categories = useSelector(state => state.categories.categories);
+
+    const namesCategories = [];
+    categories.map(category => namesCategories.push(category.name)); //Vamos a necesitar que se pusheen las categorias con productos mas vendidos
+// console.log(categories);
     const options = {};
     const pieCharData = {
-        labels: ['Remeras', 'Pantalones', 'Sweaters', 'Cinturones', 'Buzos'],
+        labels: namesCategories,
         datasets: [
             {
                 label: "Vendido",

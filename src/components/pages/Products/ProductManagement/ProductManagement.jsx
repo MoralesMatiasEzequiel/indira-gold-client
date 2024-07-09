@@ -37,7 +37,7 @@ const ProductManagement = () => {
                             <th>
                                 <div className={style.thOrderClient}>
                                     <span className={style.spanOrderClient}>Nombre</span>
-                                    <input type="search"name="searchProduct" onChange={handleChangeClient} value={productName} placeholder="Buscar" autoComplete="off" className="filterSearch"  
+                                    <input type="search"name="searchProduct" onChange={handleChangeClient} value={productName} placeholder="Buscar" autoComplete="off" className={style.orderInput} 
                                     />
                                 </div>
                             </th>
