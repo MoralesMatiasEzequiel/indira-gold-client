@@ -37,9 +37,9 @@ const ClientRegistration = () => {
     }, [lastname, dispatch]);
 
     return(
-        <div>
-            <div className={style.containerTitle}>
-                <h2 className={style.title}>REGISTRO DE CLIENTES</h2>
+        <div className="component">
+            <div className="title">
+                <h2>REGISTRO DE CLIENTES</h2>
             </div>
             <div className={style.containerTable}>
                 <table>
