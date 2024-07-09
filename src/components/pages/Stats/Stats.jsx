@@ -19,8 +19,10 @@ const Stats = () => {
     }, [dispatch]);
 
     return(
-        <div>
-            <h1>Estadísticas</h1>
+        <div className="page">
+            {/* <div className="title">
+                <h2>ESTADÍSTICAS</h2>
+            </div> */}
             <div>
                 {/* <Metrics/>   */}
             </div>

@@ -77,9 +77,13 @@ const BarChart = () => {
     };
 
     return(
-        <div>
-            <h2>POR MES</h2>
-            <Bar options={options} data={barCharData} />
+        <div className="component">
+            <div className="title">
+                <h2>POR MES</h2>
+            </div>
+            <div className="container">
+                <Bar options={options} data={barCharData} />
+            </div>
         </div>
     );
 };
