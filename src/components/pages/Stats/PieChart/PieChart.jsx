@@ -37,8 +37,8 @@ const PieChart = () => {
                 backgroundColor: [
                     "rgba(228, 182, 26, 1)",
                     "rgba(11, 12, 11, 1)",
-                    "rgba(42, 46, 52, 1)",
                     "rgba(233, 234, 236, 1)",
+                    "rgba(42, 46, 52, 1)",
                     "rgba(251, 225, 52, 1)",
                 ],
                 borderWidth: 4,
