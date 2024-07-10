@@ -34,7 +34,7 @@ const FormClient = ({ onClientAdded }) => {
     };
 
     return (
-        <div>
+        <div className="component">
             <h2>NUEVO CLIENTE</h2>
             <form onSubmit={handleSubmit}>
                 <div>
