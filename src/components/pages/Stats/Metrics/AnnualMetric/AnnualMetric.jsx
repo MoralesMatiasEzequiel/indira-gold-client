@@ -9,26 +9,24 @@ const AnnualMetric = () => {
 
     return(
         <div>
-            <div className={style.containerCards}>
-                <div className={style.cards}>
-                    <div className={style.card}>
-                        <div className={style.cardContent}>
-                            <p>Anual</p>
-                        </div>
-                        <div className={style.cardContent}>
-                            <p>👕</p>
-                            <div className={style.numberCard}>{salesBalance.annually?.soldProducts}</div>
-                            <div className={style.cardName}>productos</div>
-                        </div>
-                        <div className={style.cardContent}>
-                            <p>💲</p>
-                            <div className={style.numberCard}>{salesBalance.annually?.totalRevenue}k</div>
-                            <div className={style.cardName}>ganancias</div>
-                        </div>
-                        <div className={style.cardContent}>
-                            <div>3% más que el año pasado</div>
-                        </div>
+            <div className={style.card}>
+                <div className={style.titleBalance}>
+                    <p>Anual</p>
+                </div>
+                <div className={style.cardContent}>
+                    <div className={style.labels}>
+                        <p>👕</p>
+                        <div className={style.numberCard}>{salesBalance.annually?.soldProducts}</div>
+                        <span className={style.cardName}>productos</span>
                     </div>
+                    <div className={style.labels}>
+                        <p>💲</p>
+                        <div className={style.numberCard}>{salesBalance.annually?.totalRevenue}k</div>
+                        <span className={style.cardName}>ganancias</span>
+                    </div>
+                </div>
+                <div className={style.textBalance}>
+                    <div>3% más que el año pasado</div>
                 </div>
             </div>
         </div>

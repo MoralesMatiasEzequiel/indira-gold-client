@@ -31,8 +31,12 @@ const Stats = () => {
             </div>
             <div>
                 <Rating/>
-                <Piechart/>
+            </div>
+            <div>
                 <BarChart/>
+            </div>
+            <div>
+                <Piechart/>
             </div>
         </div>
     );

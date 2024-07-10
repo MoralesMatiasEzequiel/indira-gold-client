@@ -9,26 +9,24 @@ const MonthlyMetric = () => {
 
     return(
         <div>
-            <div className={style.containerCards}>
-                <div className={style.cards}>
-                    <div className={style.card}>
-                        <div className={style.cardContent}>
-                            <p>Mensual</p>
-                        </div>
-                        <div className={style.cardContent}>
-                            <p>👕</p>
-                            <div className={style.numberCard}>{salesBalance.monthly?.soldProducts}</div>
-                            <div className={style.cardName}>productos</div>
-                        </div>
-                        <div className={style.cardContent}>
-                            <p>💲</p>
-                            <div className={style.numberCard}>{salesBalance.monthly?.totalRevenue}k</div>
-                            <div className={style.cardName}>ganancias</div>
-                        </div>
-                        <div className={style.cardContent}>
-                            <div>3% menos que el mes pasado</div>
-                        </div>
+            <div className={style.card}>
+                <div className={style.titleBalance}>
+                    <p>Mensual</p>
+                </div>
+                <div className={style.cardContent}>
+                    <div className={style.labels}>
+                        <p>👕</p>
+                        <div className={style.numberCard}>{salesBalance.monthly?.soldProducts}</div>
+                        <span className={style.cardName}>productos</span>
                     </div>
+                    <div className={style.labels}>
+                        <p>💲</p>
+                        <div className={style.numberCard}>{salesBalance.monthly?.totalRevenue}k</div>
+                        <span className={style.cardName}>ganancias</span>
+                    </div>
+                </div>
+                <div className={style.textBalance}>
+                    <div>3% menos que el mes pasado</div>
                 </div>
             </div>
         </div>
