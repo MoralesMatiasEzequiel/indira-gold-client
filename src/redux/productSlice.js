@@ -8,7 +8,8 @@ export const productSlice = createSlice({
         allProducts: [],
         productDetail: {},
         selectedProduct: [],
-        soldProducts: []
+        soldProducts: [],
+        topFiveProducts: []
     },
     reducers: {
         getProductsReducer: (state, action) => {
@@ -25,9 +26,12 @@ export const productSlice = createSlice({
         getSoldProductsReducer: (state, action) => {
             state.soldProducts = action.payload;
         },
+        getTopFiveProductsReducer: (state, action) => {
+            state.topFiveProducts = action.payload;
+        },
     }
 });
 
-export const { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getSoldProductsReducer } = productSlice.actions;
+export const { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getSoldProductsReducer, getTopFiveProductsReducer } = productSlice.actions;
 
 export default productSlice.reducer;
