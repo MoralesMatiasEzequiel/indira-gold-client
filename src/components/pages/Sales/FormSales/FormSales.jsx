@@ -269,7 +269,7 @@ const FormSales = () => {
                     <div className={style.column2}>
                         <label htmlFor="products">Productos</label>
                         {selectedProducts.map((product, index) => (
-                            <div key={index} style={{ display: 'flex', marginBottom: '10px' }}>
+                            <div key={index}>
                                 <AsyncSelect
                                     name="products"
                                     value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
@@ -277,7 +277,6 @@ const FormSales = () => {
                                     onChange={(selectedOption) => handleProductChange(selectedOption, index)}
                                     placeholder="Buscar Producto"
                                     ref={(element) => productRefs.current[index] = element}
-                                    style={{ flex: '1', marginRight: '10px' }}
                                     components={{DropdownIndicator}}
                                     noOptionsMessage={customNoOptionsMessage}
                                 />
@@ -287,16 +286,20 @@ const FormSales = () => {
                     </div>
                     
                     <div className={style.column3}>
-                        <div>
-                            <div>Subtotal</div>
-                            <div>Descuento</div>
-                            <div>Total</div>
+                        <div className={style.subtotal}>
+                            <div className={style.left}>Subtotal</div>
+                            <div className={style.right}>${formatNumber(subtotal)}</div>
                         </div>
-                        <div>
-                            <div>${formatNumber(subtotal)}</div>
-                            <div>{newSale.discount}%</div>
-                            <div>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
+                        <div className={style.discount}>
+                            <div className={style.left}>Descuento</div>
+                            <div className={style.right}>{newSale.discount}%</div>
+                            
                         </div>
+                        <div className={style.total}>
+                            <div className={style.left}>Total</div>
+                            <div className={style.right}>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
+                        </div>
+                        
                         <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                     </div> 
                 </form>
