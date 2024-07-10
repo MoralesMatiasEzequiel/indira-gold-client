@@ -14,12 +14,10 @@ const Rating = () => {
             </div>
             {topFiveProducts?.map((product, index) => (
                 <div key={product._id} className={style.containerTopFive}>
-                    <div>
-                        <span className={style.ratingNumber}>{index + 1}</span>
-                    </div>
-                    <div>
+                    <div className={style.ratingNumber}>{index + 1}</div>
+                    <div className={style.productDetails}>
                         <p className={style.productName}>{product.name}</p>
-                        <span>{product.color[0].colorName} - Talle {product.color[0].size[0].sizeName}</span>
+                        <p>{product.color[0].colorName} - Talle {product.color[0].size[0].sizeName}</p>
                     </div>
                 </div>
             ))}

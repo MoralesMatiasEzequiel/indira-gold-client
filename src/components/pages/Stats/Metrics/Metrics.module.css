@@ -1,0 +1,5 @@
+.metrics {
+    /* display: flex; Utilizamos flexbox para el diseño */
+    /* justify-content: center; Centra los elementos horizontalmente */
+    padding: 1.5rem;
+}
