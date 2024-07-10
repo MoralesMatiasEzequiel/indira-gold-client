@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getProductsReducer, getAllProductsReducer, getProductByIdReducer } from "./productSlice.js";
+import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getSoldProductsReducer } from "./productSlice.js";
 
 export const getProducts = () => {
     return async (dispatch) => {
@@ -26,5 +26,12 @@ export const getProductByName = (productName) => {
     return async (dispatch) => {
         const { data } = await axios.get(`/products?name=${productName}&`);
         dispatch(getProductsReducer(data));
+    };
+};
+
+export const getSoldProducts = () => {
+    return async (dispatch) => {
+        const { data } = await axios.get("/products/sold");
+        dispatch(getSoldProductsReducer(data));
     };
 };
