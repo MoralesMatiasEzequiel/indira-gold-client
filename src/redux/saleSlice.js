@@ -7,7 +7,8 @@ export const saleSlice = createSlice({
         salesCopy: [],
         saleDetail: {},
         salesOnline: [],
-        salesLocal: []
+        salesLocal: [],
+        salesBalance: {}
     },
     reducers: {
         getSalesReducer: (state, action) => {
@@ -23,9 +24,12 @@ export const saleSlice = createSlice({
         getSalesLocalReducer: (state, action) => {
             state.salesLocal = action.payload;
         },
+        getSalesBalanceReducer: (state, action) => {
+            state.salesBalance = action.payload;
+        },
     }
 });
 
-export const { getSalesReducer, getSaleByIdReducer, getSalesOnlineReducer, getSalesLocalReducer } = saleSlice.actions;
+export const { getSalesReducer, getSaleByIdReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer } = saleSlice.actions;
 
 export default saleSlice.reducer;

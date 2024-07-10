@@ -27,7 +27,7 @@ const Stats = () => {
                 <h2>ESTADÍSTICAS</h2>
             </div> */}
             <div>
-                {/* <Metrics/>   */}
+                <Metrics/>  
             </div>
             <div>
                 <Rating/>
