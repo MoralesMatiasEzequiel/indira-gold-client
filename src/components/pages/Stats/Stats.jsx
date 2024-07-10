@@ -6,6 +6,7 @@ import Rating from './Rating/Rating.jsx';
 import Piechart from './PieChart/PieChart.jsx'
 import { getCategories } from '../../../redux/categoryActions.js';
 import { getSalesOnline, getSalesLocal } from '../../../redux/saleActions.js';
+import { getSoldProducts } from '../../../redux/productActions.js';
 
 
 const Stats = () => {
@@ -16,6 +17,7 @@ const Stats = () => {
         dispatch(getCategories());
         dispatch(getSalesOnline());
         dispatch(getSalesLocal());
+        dispatch(getSoldProducts());
     }, [dispatch]);
 
     return(
@@ -28,7 +30,7 @@ const Stats = () => {
             </div>
             <div>
                 {/* <Rating/> */}
-                {/* <Piechart/> */}
+                <Piechart/>
                 <BarChart/>
             </div>
         </div>
