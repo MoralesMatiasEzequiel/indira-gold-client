@@ -1,3 +1,4 @@
+import style from './Metrics.module.css';
 import React, { useEffect } from 'react';
 import { useDispatch } from "react-redux";
 import DailyMetric from './DailyMetric/DailyMetric.jsx';
@@ -20,7 +21,7 @@ const Metrics = () => {
             <div className="title">
                 <h2>MÉTRICAS</h2>
             </div>
-            <div className="container">
+            <div className={style.metrics}>
                 <DailyMetric />
                 <WeeklyMetric />
                 <MonthMetric />
