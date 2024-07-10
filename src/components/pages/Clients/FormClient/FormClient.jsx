@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { postClient } from '../../../../redux/clientActions';
+import { postClient, getClients } from '../../../../redux/clientActions';
 import { useDispatch } from 'react-redux';
 
 const FormClient = ({ onClientAdded }) => {
@@ -27,6 +27,7 @@ const FormClient = ({ onClientAdded }) => {
         e.preventDefault();
         console.log(newClient);
         dispatch(postClient(newClient));
+        dispatch(getClients());
         if (onClientAdded) {
             onClientAdded();
         }
