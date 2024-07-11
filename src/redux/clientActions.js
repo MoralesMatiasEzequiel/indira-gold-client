@@ -32,5 +32,6 @@ export const getClientByLastname = (lastname) => {
 export const postClient = (clientData) => {
     return async (dispatch) => {
         const response = await axios.post('/clients', clientData);
+        return response;
     };
 };

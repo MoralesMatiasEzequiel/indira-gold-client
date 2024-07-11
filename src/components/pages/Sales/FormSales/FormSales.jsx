@@ -247,9 +247,24 @@ const FormSales = () => {
         setShowClientForm(!showClientForm);
     };
 
-    const handleClientAdded = () => {
+    const handleClientAdded = (newClient) => {
         setShowClientForm(false);
-        dispatch(getClients());
+        if(newClient !== undefined){
+            setSelectedClient({ value: newClient._id, label: `${newClient.name} ${newClient.lastname}` });
+        }
+
+        
+
+        if(newClient !== undefined){
+            setNewSale((prevNewSale) => ({
+            
+                ...prevNewSale,
+                client: newClient._id
+            }));
+        }
+        console.log(newClient._id);
+
+        validateForm();
     };
 
     return (
@@ -270,6 +285,7 @@ const FormSales = () => {
                                 <div className={style.clientInput}>
                                     <AsyncSelect
                                         key={selectKey} // Forzar re-render cuando las opciones cambian
+                                        cacheOptions
                                         name="client"
                                         value={selectedClient}
                                         loadOptions={loadClientOptions}
@@ -384,7 +400,9 @@ const FormSales = () => {
                         <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                     </div> 
                 </form>
-                {showClientForm && <FormClient onClientAdded={handleClientAdded} />}
+                <div className={`${style.addClientComponent} ${showClientForm ? style.addClientComponentBorder : ''}` }>
+                    {showClientForm && <FormClient onClientAdded={handleClientAdded} />}
+                </div>
             </div>
         </div>
     );
