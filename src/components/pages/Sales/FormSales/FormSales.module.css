@@ -1,45 +1,129 @@
 .salesForm{
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .salesForm .column1, .salesForm .column2{
-    width: 35%;
+    width: 33%;
 }
 
 .salesForm .column3{
-    width: 30%;
+    width: 25%;
 }
 
 .salesForm .column1{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-.salesForm .column1 .left{
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    width: calc(40% - 0.5rem);
     justify-content: space-between;
 }
 
-.salesForm .column1 .right{
+.salesForm .column1 .labelInput{
     display: flex;
-    flex-direction: column;
-    width: calc(60% - 0.5rem);
-    
-    justify-content: space-between;
+    align-items: center;
+}
+
+.salesForm .column1 .labelInput .left{
+    width: 40%;
+}
+
+.salesForm .column1 .labelInput .right{
+    width: 60%;
+}
+
+.salesForm .column1 select, .salesForm .column1 input.discount{
+    width: 100%;
+    box-sizing: border-box;
+    height: 1.75rem;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+    border: lightgrey solid 1px;
+    border-radius: 4px;
+}
+
+.salesForm .column1 input.discount{
+    text-align: right;
 }
 
 .salesForm .column1 .right .clientInput{
     display: flex;
     justify-content: end;
+    gap: 0.5rem;
+    position: relative;
 }
 
 .salesForm .column1 .right .soldAt{
     display: flex;
     justify-content: end;
     gap: 0.5rem;
+}
+
+.salesForm .addClient{
+    background: none;
+    border: none;
+    padding: 0;
+    position: absolute;
+    right: -2.2rem;
+}
+
+.salesForm .addClient img{
+    width: 2rem;
+}
+
+.salesForm .column2 label{
+    margin-bottom: 0.5rem;
+}
+
+.salesForm .column2 .product{
+    margin-top: 0.75rem;
+    display: flex;
+}
+
+.salesForm .removeProduct{
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.salesForm .removeProduct img{
+    width: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+.column3{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-weight: 300;
+    letter-spacing: 0.05rem;
+    font-size: 1rem;
+}
+
+.column3 .subtotal, .column3 .discount, .column3 .total{
+    display: flex;
+    border-bottom: var(--border-light);
+    padding-bottom: 0.75rem;
+}
+
+.column3 .left, .column3 .right{
+    width: 50%;
+}
+
+.column3 .left{
+    text-align: left;
+}
+
+.column3 .right{
+    text-align: right;
+}
+
+.column3 .total{
+    font-weight: 400;
+    border-bottom: none;
+}
+
+.column3 .total .left{
+    color: var(--gold);
 }

@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import FormSales from './FormSales/FormSales.jsx';
 import SalesHistory from './SalesHistory/SalesHistory.jsx';
 import { getSales } from '../../../redux/saleActions.js';
+import style from './Sales.module.css';
 
 const Sales = () => {
     const dispatch = useDispatch();
@@ -13,10 +14,12 @@ const Sales = () => {
     
     return(
         <div className="page">
-            <div>
+            <div className={style.form}>
                 <FormSales />
             </div>
-            <div>
+            <div className={style.history
+                
+            }>
                 <SalesHistory />
             </div>      
         </div>

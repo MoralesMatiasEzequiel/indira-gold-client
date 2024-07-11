@@ -130,23 +130,47 @@ h2{
     box-sizing: border-box;
 }
 
-.component{
+.component {
     background-color: white;
-    width: 100%;
-    height: 100%;
     box-sizing: border-box;
     border-radius: 4px;
     border: var(--border-light);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    height: 100%; /* Asegura que el componente ocupe toda la altura disponible */
+    overflow: hidden; /* Evita desbordamientos visuales */
+    display: flex; /* Para usar flexbox */
+    flex-direction: column; /* Columna para el diseño vertical */
 }
 
-.title{
+.title {
     border-bottom: var(--border-medium);
     padding: 1.5rem;
 }
 
-.container{
+.container {
+    flex: 1; /* Para que ocupe todo el espacio disponible en la columna */
     padding: 1.5rem;
+    box-sizing: border-box;
+    overflow-y: auto; /* Para permitir desplazamiento vertical si el contenido excede */
+}
+
+button{
+    background-color: var(--dark-grey);
+    color: white;
+    border-radius: 2px;
+    padding: 0.5rem;
+    font-weight: 300;
+    letter-spacing: 0.1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+}
+
+button:disabled {
+    background-color: var(--dark-grey); /* Color de fondo para el botón deshabilitado */
+    color: #ccc; /* Color del texto para el botón deshabilitado */
+    cursor: not-allowed; /* Cambia el cursor para indicar que no se puede interactuar con el botón */
+    opacity: 0.6; /* Cambia la opacidad para que el botón deshabilitado parezca más tenue */
 }
 
 /*--FORMS--*/
