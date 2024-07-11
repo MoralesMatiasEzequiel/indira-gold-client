@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { postClient, getClients } from '../../../../redux/clientActions';
 import { useDispatch } from 'react-redux';
+import style from './FormClient.module.css';
 
 const FormClient = ({ onClientAdded }) => {
     const dispatch = useDispatch();
@@ -25,9 +26,12 @@ const FormClient = ({ onClientAdded }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(newClient);
-        dispatch(postClient(newClient));
+        dispatch(postClient(newClient)).then((response) => {
+            onClientAdded(response.data);
+            
+        });
         dispatch(getClients());
+        setNewClient(initialClientState); // Reset form
         if (onClientAdded) {
             onClientAdded();
         }
@@ -35,54 +39,63 @@ const FormClient = ({ onClientAdded }) => {
 
     return (
         <div className="component">
-            <h2>NUEVO CLIENTE</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Nombre(s)</label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        value={newClient.name} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <div>
-                    <label htmlFor="lastname">Apellido(s)</label>
-                    <input 
-                        type="text" 
-                        id="lastname" 
-                        name="lastname" 
-                        value={newClient.lastname} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        value={newClient.email} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <div>
-                    <label htmlFor="phone">Teléfono</label>
-                    <input 
-                        type="number" 
-                        id="phone" 
-                        name="phone" 
-                        value={newClient.phone} 
-                        onChange={handleChange} 
-                        required 
-                    />
-                </div>
-                <button type="submit">Agregar</button>
-            </form>
+            <div className="title">
+                <h2>NUEVO CLIENTE</h2>
+            </div>
+            <div className="container">
+                <form onSubmit={handleSubmit} className={style.clientForm}>
+                    <div className={style.column}>
+                        <div className={style.labelInput}>
+                            <label htmlFor="name">Nombre(s)</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                value={newClient.name} 
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+                        <div className={style.labelInput}>
+                            <label htmlFor="lastname">Apellido(s)</label>
+                            <input 
+                                type="text" 
+                                id="lastname" 
+                                name="lastname" 
+                                value={newClient.lastname} 
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+                    </div>
+                    <div className={style.column}>
+                        <div className={style.labelInput}>
+                            <label htmlFor="email">Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                value={newClient.email} 
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+                        <div className={style.labelInput}>
+                            <label htmlFor="phone">Teléfono</label>
+                            <input 
+                                type="number" 
+                                id="phone" 
+                                name="phone" 
+                                value={newClient.phone} 
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+                    </div>
+                    
+                    <button type="submit">Agregar</button>
+                </form>
+            </div>
         </div>
     );
 };

@@ -92,7 +92,7 @@
     margin-left: 0.5rem;
 }
 
-.column3{
+.salesForm .column3{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -101,29 +101,43 @@
     font-size: 1rem;
 }
 
-.column3 .subtotal, .column3 .discount, .column3 .total{
+.salesForm .column3 .subtotal, .column3 .discount, .column3 .total{
     display: flex;
     border-bottom: var(--border-light);
     padding-bottom: 0.75rem;
 }
 
-.column3 .left, .column3 .right{
+.salesForm .column3 .left, .column3 .right{
     width: 50%;
 }
 
-.column3 .left{
+.salesForm .column3 .left{
     text-align: left;
 }
 
-.column3 .right{
+.salesForm .column3 .right{
     text-align: right;
 }
 
-.column3 .total{
+.salesForm .column3 .total{
     font-weight: 400;
     border-bottom: none;
 }
 
-.column3 .total .left{
+.salesForm .column3 .total .left{
     color: var(--gold);
+}
+
+.addClientComponent{
+    position: absolute;
+    width: 55%;
+    top: 10rem;
+    right: 1.5rem;
+    height: 11rem;
+
+}
+
+.addClientComponentBorder{
+    border: 1px solid #6e6e6e;
+    border-radius: 4px;
 }
