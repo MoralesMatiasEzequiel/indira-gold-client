@@ -57,7 +57,10 @@ const BarChart = () => {
     const onlineSalesCount = countSalesByMonth(salesOnline);
     const localSalesCount = countSalesByMonth(salesLocal);
     
-    const options = {};
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+    };
     const barCharData = {
         labels: lastFourMonths,
         datasets: [

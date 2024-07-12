@@ -1,0 +1,6 @@
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 1rem; /* Espacio entre las tarjetas */
+    padding: 1rem;
+}
