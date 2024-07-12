@@ -1,3 +1,4 @@
+import style from './Stats.module.css';
 import React, { useEffect } from 'react';
 import { useDispatch } from "react-redux";
 import BarChart from './BarChart/BarChart.jsx'
@@ -29,14 +30,10 @@ const Stats = () => {
             <div>
                 <Metrics/>  
             </div>
-            <div>
+            <div className={style.stats}>
                 <Rating/>
-            </div>
-            <div>
-                <BarChart/>
-            </div>
-            <div>
                 <Piechart/>
+                <BarChart/>
             </div>
         </div>
     );
