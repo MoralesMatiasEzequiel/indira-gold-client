@@ -1,5 +1,7 @@
 .metrics {
-    padding: 1.5rem;
     display: flex;
-    width: 35%;
+    justify-content: center;
+    gap: 2rem; /* Espacio entre las tarjetas */
+    /* width: 100%;  */
+    padding: 1.5rem;
 }

@@ -6,13 +6,16 @@ import React from 'react';
 const AnnualMetric = () => {
 
     const salesBalance = useSelector(state => state.sales.salesBalance);
+    const totalRevenue = salesBalance.annually?.totalRevenue ?? 0;
 
-    const totalRevenue = ~~salesBalance.annually?.totalRevenue;
-
+    let displayRevenue = totalRevenue;
     let suffix = '';
     if (totalRevenue >= 1000 && totalRevenue < 1000000) {
+        displayRevenue = Math.floor(totalRevenue / 1000);
+        console.log(displayRevenue);
         suffix = 'k';
     } else if (totalRevenue >= 1000000) {
+        displayRevenue = Math.floor(totalRevenue / 1000000);
         suffix = 'M';
     };
 
@@ -30,12 +33,12 @@ const AnnualMetric = () => {
                     </div>
                     <div className={style.labels}>
                         <p>💲</p>
-                        <div className={style.numberCard}>{totalRevenue.toLocaleString()}{suffix}</div>
+                        <div className={style.numberCard}>{displayRevenue.toLocaleString()}{suffix}</div>
                         <span className={style.cardName}>ganancias</span>
                     </div>
                 </div>
                 <div className={style.textBalance}>
-                    <div>3% más que el año pasado</div>
+                    <div>+3% que el año pasado</div>
                 </div>
             </div>
         </div>

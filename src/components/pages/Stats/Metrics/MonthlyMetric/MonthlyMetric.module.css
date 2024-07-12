@@ -13,6 +13,7 @@
 
 .titleBalance{
     text-align: end;
+    font-size: 14px;
 }
 
 .labels{
@@ -26,16 +27,18 @@
 
 .numberCard{
     padding: 5px;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: bold;
 }
 
 .cardName{
     color: #888;
     font-weight: bold;
+    font-size: 14px;
     /* font-weight: 600; */
 }
 
 .textBalance{
     text-align: center;
+    font-size: 14px;
 }
