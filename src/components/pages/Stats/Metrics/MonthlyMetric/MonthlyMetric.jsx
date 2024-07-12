@@ -6,6 +6,15 @@ import React from 'react';
 const MonthlyMetric = () => {
 
     const salesBalance = useSelector(state => state.sales.salesBalance);
+    
+    const totalRevenue = ~~salesBalance.monthly?.totalRevenue;
+
+    let suffix = '';
+    if (totalRevenue >= 1000 && totalRevenue < 1000000) {
+        suffix = 'k';
+    } else if (totalRevenue >= 1000000) {
+        suffix = 'M';
+    };
 
     return(
         <div>
@@ -21,7 +30,7 @@ const MonthlyMetric = () => {
                     </div>
                     <div className={style.labels}>
                         <p>💲</p>
-                        <div className={style.numberCard}>{salesBalance.monthly?.totalRevenue}k</div>
+                        <div className={style.numberCard}>{totalRevenue.toLocaleString()}{suffix}</div>
                         <span className={style.cardName}>ganancias</span>
                     </div>
                 </div>

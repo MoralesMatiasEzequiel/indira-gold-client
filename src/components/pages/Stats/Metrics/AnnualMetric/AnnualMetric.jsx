@@ -7,6 +7,15 @@ const AnnualMetric = () => {
 
     const salesBalance = useSelector(state => state.sales.salesBalance);
 
+    const totalRevenue = ~~salesBalance.annually?.totalRevenue;
+
+    let suffix = '';
+    if (totalRevenue >= 1000 && totalRevenue < 1000000) {
+        suffix = 'k';
+    } else if (totalRevenue >= 1000000) {
+        suffix = 'M';
+    };
+
     return(
         <div>
             <div className={style.card}>
@@ -21,7 +30,7 @@ const AnnualMetric = () => {
                     </div>
                     <div className={style.labels}>
                         <p>💲</p>
-                        <div className={style.numberCard}>{salesBalance.annually?.totalRevenue}k</div>
+                        <div className={style.numberCard}>{totalRevenue.toLocaleString()}{suffix}</div>
                         <span className={style.cardName}>ganancias</span>
                     </div>
                 </div>

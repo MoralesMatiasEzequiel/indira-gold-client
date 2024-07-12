@@ -7,6 +7,15 @@ const WeeklyMetric = () => {
 
     const salesBalance = useSelector(state => state.sales.salesBalance);
 
+    const totalRevenue = ~~salesBalance.weekly?.totalRevenue;  //Con el operador de doble tilde "~~" obtenemos el número entero.
+
+    let suffix = '';
+    if (totalRevenue >= 1000 && totalRevenue < 1000000) {
+        suffix = 'k';
+    } else if (totalRevenue >= 1000000) {
+        suffix = 'M';
+    };
+
     return(
         <div>
             <div className={style.card}>
@@ -21,7 +30,7 @@ const WeeklyMetric = () => {
                     </div>
                     <div className={style.labels}>
                         <p>💲</p>
-                        <div className={style.numberCard}>{salesBalance.weekly?.totalRevenue}k</div>
+                        <div className={style.numberCard}>{totalRevenue.toLocaleString()}{suffix}</div>
                         <span className={style.cardName}>ganancias</span>
                     </div>
                 </div>
