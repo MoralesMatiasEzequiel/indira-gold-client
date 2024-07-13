@@ -53,20 +53,25 @@ const SalesHistory = () => {
                 <h2>HISTORIAL DE VENTAS</h2>
             </div>
             <div className="container">
-                <table>
+                <table className={style.salesTable}>
                     <thead>
                         <tr>
-                            <th>Fecha y hora <button className={style.buttonDate} onClick={toggleSortOrder}>{sortByDate === 'asc' ? '▴' : '▾'}</button></th>
                             <th>
-                                <div className={style.thOrderClient}>
-                                    <span className={style.spanOrderClient}>Orden</span>
+                                <div className="withFilter">
+                                    <span>Fecha y hora</span>
+                                    <button className="sort" onClick={toggleSortOrder}>{sortByDate === 'asc' ? '▴' : '▾'}</button>
+                                </div>
+                            </th>
+                            <th>
+                                <div className="withFilter">
+                                    <span>Orden</span>
                                     <input type="search"name="searchOrder" onChange={handleChangeOrderNumber} value={orderNumber} placeholder="Buscar" autoComplete="off" className="filterSearch"  
                                     />
                                 </div>
                             </th>
                             <th>
-                                <div className={style.thOrderClient}>
-                                    <span className={style.spanOrderClient}>Cliente</span>
+                                <div className="withFilter">
+                                    <span>Cliente</span>
                                     <input type="search"name="searchClient" onChange={handleChangeClient} value={client} placeholder="Buscar" autoComplete="off" className="filterSearch"  
                                     />
                                 </div>
@@ -84,13 +89,13 @@ const SalesHistory = () => {
                                 <td className={style.dataNumber}>{formatDate(sale.date)}</td>
                                 <td className={style.dataNumber}>{sale.orderNumber}</td>
                                 <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
-                                <td className={style.dataNumber}>{sale.products.length}</td>
+                                <td className="center">{sale.products.length}</td>
                                 <td>{sale.paymentMethod}</td>
-                                <td className={style.dataNumber}>{sale.discount ? `${sale.discount}%` : '-'}</td>
-                                <td className={style.dataNumber}>$ {sale.totalPrice}</td>
+                                <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
+                                <td className="center">$ {sale.totalPrice}</td>
                                 <td>
                                     <Link to={`/main_window/sales/${sale._id}`}>
-                                        <img src={detail} alt=""/>
+                                        <img src={detail} alt="" className="detailImg"/>
                                     </Link>
                                 </td>
                             </tr>
