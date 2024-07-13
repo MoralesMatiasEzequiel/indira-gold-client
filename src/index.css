@@ -41,7 +41,6 @@ q:before, q:after {
     content: none;
 }
 table {
-    border-collapse: collapse;
     border-spacing: 0;
 }
 
@@ -185,11 +184,12 @@ form label{
 
 .filterSearch {
     border: none;
-    width: 130px;
+    width: 6rem;
     border-bottom: 1px solid #797979;
     padding-right: 0px;
     padding-bottom: 2px;
     text-align: right;
+    font-size: 0.75rem;
 }
 
 .filterSearch::placeholder {
@@ -198,4 +198,54 @@ form label{
 
 .filterSearch:focus {
     outline: none; 
+}
+
+table{
+    font-size: 0.75rem;
+    width: 100%;
+    border: var(--border-dark);
+    border-radius: 3px;
+}
+
+th{
+    font-weight: 600;
+}
+
+th.center, td.center{
+    text-align: center;
+}
+
+th, td{
+    border: var(--border-light);
+    padding: 0.5rem;
+}
+
+td a{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+td a img.detailImg{
+    width: 1rem;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Color de fondo para filas pares */
+}
+
+tbody tr:hover {
+    background-color: #dddddd52; /* Color de fondo al pasar el mouse */
+}
+
+th div.withFilter{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+th div.withFilter button.sort{
+    background: none;
+    color: var(--dark-grey);
+    padding: 0;
 }
