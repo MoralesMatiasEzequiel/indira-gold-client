@@ -86,8 +86,8 @@ const SalesHistory = () => {
                     <tbody>
                     {sortedSales.map(sale => (
                             <tr key={sale._id}>
-                                <td className={style.dataNumber}>{formatDate(sale.date)}</td>
-                                <td className={style.dataNumber}>{sale.orderNumber}</td>
+                                <td>{formatDate(sale.date)}</td>
+                                <td className="center">{sale.orderNumber}</td>
                                 <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
                                 <td className="center">{sale.products.length}</td>
                                 <td>{sale.paymentMethod}</td>
