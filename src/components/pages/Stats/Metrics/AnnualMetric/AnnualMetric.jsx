@@ -1,6 +1,8 @@
 import style from './AnnualMetric.module.css';
-import { useSelector } from "react-redux";
+import iconClothes from '../img/icons-camiseta.png';
+import iconMoney from '../img/icons-monedas.png';
 import React from 'react';
+import { useSelector } from "react-redux";
 
 
 const AnnualMetric = () => {
@@ -27,12 +29,12 @@ const AnnualMetric = () => {
                 </div>
                 <div className={style.cardContent}>
                     <div className={style.labels}>
-                        <p>👕</p>
+                        <p className={style.pp}><img className={style.icon} src={iconClothes} alt="icon"/></p>
                         <div className={style.numberCard}>{salesBalance.annually?.soldProducts}</div>
                         <span className={style.cardName}>productos</span>
                     </div>
                     <div className={style.labels}>
-                        <p>💲</p>
+                        <p className={style.pp}><img className={style.icon} src={iconMoney} alt="icon"/></p>
                         <div className={style.numberCard}>{displayRevenue.toLocaleString()}{suffix}</div>
                         <span className={style.cardName}>ganancias</span>
                     </div>
