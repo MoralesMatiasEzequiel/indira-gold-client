@@ -38,7 +38,7 @@ const SideBar = () => {
                             <div className={style.icon}><img src={`${location.pathname.includes('/main_window/products') ? itemSelected : item}`} alt=""/></div>
                             <div className={style.text}>
                                 <NavLink
-                                    className={`${style.NavLink} ${location.pathname.includes('/main_window/products') ? style.selected : ''}` } to="/main_window/products/form"
+                                    className={`${style.NavLink} ${location.pathname.includes('/main_window/products') ? style.selected : ''}` } to="/main_window/products"
                                 >
                                     <div>
                                         <p>Productos</p>
