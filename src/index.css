@@ -183,6 +183,14 @@ form label{
     font-size: 1rem;
 }
 
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--gold);
+  border-radius: 2px;
+  border: none;
+}
+
 /*--TABLES--*/
 
 .filterSearch {

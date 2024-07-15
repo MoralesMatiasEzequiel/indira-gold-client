@@ -99,11 +99,16 @@ const FormSales = () => {
     };
 
     const clientInputStyles = {
-        control: (provided) => ({
+        control: (provided, state) => ({
             ...provided,
             minHeight: '20px',
             fontSize: '0.75rem',
-            width: '200px'
+            width: '200px',
+            borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            boxShadow: state.isFocused ? '0 0 0 1px #e4b61a' : provided.boxShadow,
+            '&:hover': {
+                borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            }
         }),
         input: (provided) => ({
             ...provided,
@@ -127,11 +132,16 @@ const FormSales = () => {
     };
 
     const productInputStyles = {
-        control: (provided) => ({
+        control: (provided, state) => ({
             ...provided,
             minHeight: '20px',
             fontSize: '0.75rem',
-            width: '20rem'
+            width: '20rem',
+            borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            boxShadow: state.isFocused ? '0 0 0 1px #e4b61a' : provided.boxShadow,
+            '&:hover': {
+                borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            }
         }),
         input: (provided) => ({
             ...provided,
