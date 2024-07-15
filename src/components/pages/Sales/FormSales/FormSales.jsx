@@ -142,7 +142,7 @@ const FormSales = () => {
             ...provided,
             minHeight: '20px',
             fontSize: '0.75rem',
-            width: '20rem',
+            width: '100%',
             borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
             boxShadow: state.isFocused ? '0 0 0 1px #e4b61a' : provided.boxShadow,
             '&:hover': {
@@ -383,17 +383,20 @@ const FormSales = () => {
                         <label htmlFor="products">Productos</label>
                         {selectedProducts.map((product, index) => (
                             <div key={index} className={style.product}>
-                                <AsyncSelect
-                                    name="products"
-                                    value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
-                                    loadOptions={loadProductOptions}
-                                    onChange={(selectedOption) => handleProductChange(selectedOption, index)}
-                                    placeholder="Buscar Producto"
-                                    ref={(element) => productRefs.current[index] = element}
-                                    components={{DropdownIndicator}}
-                                    noOptionsMessage={customNoOptionsMessage}
-                                    styles={productInputStyles}
-                                />
+                                
+                                <div className={style.productSelect}>
+                                    <AsyncSelect
+                                        name="products"
+                                        value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
+                                        loadOptions={loadProductOptions}
+                                        onChange={(selectedOption) => handleProductChange(selectedOption, index)}
+                                        placeholder="Buscar Producto"
+                                        ref={(element) => productRefs.current[index] = element}
+                                        components={{DropdownIndicator}}
+                                        noOptionsMessage={customNoOptionsMessage}
+                                        styles={productInputStyles}
+                                    />
+                                </div>
                                 {index ? <button type="button" onClick={() => handleRemoveProduct(index)} className={style.removeProduct}><img src={x} alt=""/></button> : ''}
                             </div>
                         ))}

@@ -48,9 +48,6 @@
 }
 
 .salesForm .column1 .right .clientInput{
-  
-    justify-content: end;
-    gap: 0.5rem;
     position: relative;
 }
 
@@ -80,6 +77,12 @@
 .salesForm .column2 .product{
     margin-top: 0.75rem;
     display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.salesForm .column2 .product .productSelect{
+    width: 92%;
 }
 
 .salesForm .removeProduct{
@@ -90,7 +93,6 @@
 
 .salesForm .removeProduct img{
     width: 0.75rem;
-    margin-left: 0.5rem;
 }
 
 .salesForm .column3{
