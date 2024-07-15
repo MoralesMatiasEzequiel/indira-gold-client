@@ -10,9 +10,9 @@ const SideBar = () => {
     const location = useLocation();
     const [subMenuVisible, setSubMenuVisible] = useState(false);
 
-    useEffect(() => {
-        setSubMenuVisible(location.pathname.includes('/main_window/products'));
-    }, [location.pathname]);
+    const toggleSubMenu = () => {
+        setSubMenuVisible(!subMenuVisible);
+    };
 
     return (
         <div className={style.div}>
@@ -20,22 +20,19 @@ const SideBar = () => {
             <div className={style.content}>
                 <h1><img src={logo} alt="Indira Gold"/></h1>
                 <div className={style.nav}>
-                    <ul>
-                        <li>
-                            <div className={style.icon}></div>
-                            <div className={style.text}>
-                                <NavLink
-                                    className={`${style.NavLink} ${location.pathname === '/main_window' ? style.selected : ''}`}
-                                    to="/main_window"
-                                >
+                    <ul>                                
+                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window' ? style.selected : ''}`} to="/main_window">
+                            <li>
+                                <div className={style.icon}></div>
+                                <div className={style.text}>
                                     <div>
                                         <p>Ventas</p>
                                     </div>
-                                </NavLink>
-                            </div>
-                        </li>
-                        <li>
-                            <div className={style.icon}><img src={`${location.pathname.includes('/main_window/products') ? itemSelected : item}`} alt=""/></div>
+                                </div>
+                            </li>
+                        </NavLink>
+                        <li className={`${style.NavLink} ${subMenuVisible ? style.selected : ''}`} onClick={toggleSubMenu}>
+                            <div className={style.icon}><img src={`${subMenuVisible ? itemSelected : item}`} alt=""/></div>
                             <div className={style.text}>
                                 <NavLink
                                     className={`${style.NavLink} ${location.pathname.includes('/main_window/products') ? style.selected : ''}` } to="/main_window/products"
@@ -47,57 +44,51 @@ const SideBar = () => {
                             </div>
                         </li>
                         {subMenuVisible && (
-                                <div className={`${style.subMenu} ${subMenuVisible ? style.subMenuVisible : ''}`}>
-                                    <ul>
-                                        <li>
-                                            <NavLink
-                                                className={`${style.NavLink} ${location.pathname === '/main_window/products/form' ? style.selected : ''}`}
-                                                to="/main_window/products/form"
-                                            >
-                                                <div>
-                                                    <p>Nuevo Producto</p>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink
-                                                className={`${style.NavLink} ${location.pathname === '/main_window/products' ? style.selected : ''}`}
-                                                to="/main_window/products"
-                                            >
-                                                <div>
-                                                    <p>Gestión de Productos</p>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        <li>
-                            <div className={style.icon}></div>
-                            <div className={style.text}>
-                                <NavLink
-                                    className={`${style.NavLink} ${location.pathname === '/main_window/clients' ? style.selected : ''}`}
-                                    to="/main_window/clients"
-                                >
+                            <div className={`${style.subMenu} ${subMenuVisible ? style.subMenuVisible : ''}`}>
+                                <ul>
+                                    <li>
+                                        <NavLink
+                                            className={`${style.NavLink} ${location.pathname === '/main_window/products/form' ? style.selected : ''}`}
+                                            to="/main_window/products/form"
+                                        >
+                                            <div>
+                                                <p>Nuevo Producto</p>
+                                            </div>
+                                        </NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink
+                                            className={`${style.NavLink} ${location.pathname === '/main_window/products' ? style.selected : ''}`}
+                                            to="/main_window/products"
+                                        >
+                                            <div>
+                                                <p>Gestión de Productos</p>
+                                            </div>
+                                        </NavLink>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window/clients' ? style.selected : ''}`} to="/main_window/clients">
+                            <li>
+                                <div className={style.icon}></div>
+                                <div className={style.text}>
                                     <div>
                                         <p>Clientes</p>
                                     </div>
-                                </NavLink>
-                            </div>
-                        </li>
-                        <li>
-                            <div className={style.icon}></div>
-                            <div className={style.text}>
-                                <NavLink
-                                    className={`${style.NavLink} ${location.pathname === '/main_window/stats' ? style.selected : ''}`}
-                                    to="/main_window/stats"
-                                >
+                                </div>
+                            </li>
+                        </NavLink>
+                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window/stats' ? style.selected : ''}`} to="/main_window/stats">
+                            <li>
+                                <div className={style.icon}></div>
+                                <div className={style.text}>
                                     <div>
                                         <p>Estadísticas</p>
                                     </div>
-                                </NavLink>
-                            </div>
-                        </li>
+                                </div>
+                            </li>
+                        </NavLink>
                     </ul>
                 </div>
             </div>
