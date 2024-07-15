@@ -34,9 +34,13 @@ const SideBar = () => {
                         <li className={`${style.NavLink} ${subMenuVisible ? style.selected : ''}`} onClick={toggleSubMenu}>
                             <div className={style.icon}><img src={`${subMenuVisible ? itemSelected : item}`} alt=""/></div>
                             <div className={style.text}>
-                                <div>
-                                    <p>Productos</p>
-                                </div>
+                                <NavLink
+                                    className={`${style.NavLink} ${location.pathname.includes('/main_window/products') ? style.selected : ''}` } to="/main_window/products"
+                                >
+                                    <div>
+                                        <p>Productos</p>
+                                    </div>
+                                </NavLink>
                             </div>
                         </li>
                         {subMenuVisible && (

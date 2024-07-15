@@ -1,6 +1,6 @@
 import React, { useEffect} from 'react';
 import { useDispatch } from "react-redux";
-import { Link } from 'react-router-dom';
+import FormProduct from './FormProduct/FormProduct.jsx';
 import ProductManagement from './ProductManagement/ProductManagement.jsx';
 import { getProducts } from '../../../redux/productActions.js';
 
@@ -15,10 +15,12 @@ const Products = () => {
     
     return (
         <div className="page">
-            <Link to={'/main_window/products/form'}>
-                    <button>Nuevo producto</button>
-                </Link>
-            <ProductManagement />
+            <div>
+                <FormProduct />
+            </div>
+            {/* <div>
+                <ProductManagement />
+            </div> */}
         </div>
     );
 };
