@@ -53,55 +53,57 @@ const SalesHistory = () => {
                 <h2>HISTORIAL DE VENTAS</h2>
             </div>
             <div className="container">
-                <table className={style.salesTable}>
-                    <thead>
-                        <tr>
-                            <th>
-                                <div className="withFilter">
-                                    <span>Fecha y hora</span>
-                                    <button className="sort" onClick={toggleSortOrder}>{sortByDate === 'asc' ? '▴' : '▾'}</button>
-                                </div>
-                            </th>
-                            <th>
-                                <div className="withFilter">
-                                    <span>Orden</span>
-                                    <input type="search"name="searchOrder" onChange={handleChangeOrderNumber} value={orderNumber} placeholder="Buscar" autoComplete="off" className="filterSearch"  
-                                    />
-                                </div>
-                            </th>
-                            <th>
-                                <div className="withFilter">
-                                    <span>Cliente</span>
-                                    <input type="search"name="searchClient" onChange={handleChangeClient} value={client} placeholder="Buscar" autoComplete="off" className="filterSearch"  
-                                    />
-                                </div>
-                            </th>
-                            <th>Productos</th>
-                            <th>Medio de pago</th>
-                            <th>Descuento</th>
-                            <th>Total</th>
-                            <th>Detalle</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {sortedSales.map(sale => (
-                            <tr key={sale._id}>
-                                <td>{formatDate(sale.date)}</td>
-                                <td className="center">{sale.orderNumber}</td>
-                                <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
-                                <td className="center">{sale.products.length}</td>
-                                <td>{sale.paymentMethod}</td>
-                                <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
-                                <td className="center">$ {sale.totalPrice}</td>
-                                <td>
-                                    <Link to={`/main_window/sales/${sale._id}`}>
-                                        <img src={detail} alt="" className="detailImg"/>
-                                    </Link>
-                                </td>
+                <div className="tableContainer">
+                    <table className={style.salesTable}>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div className="withFilter">
+                                        <span>Fecha y hora</span>
+                                        <button className="sort" onClick={toggleSortOrder}>{sortByDate === 'asc' ? '▴' : '▾'}</button>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div className="withFilter">
+                                        <span>Orden</span>
+                                        <input type="search"name="searchOrder" onChange={handleChangeOrderNumber} value={orderNumber} placeholder="Buscar" autoComplete="off" className="filterSearch"  
+                                        />
+                                    </div>
+                                </th>
+                                <th>
+                                    <div className="withFilter">
+                                        <span>Cliente</span>
+                                        <input type="search"name="searchClient" onChange={handleChangeClient} value={client} placeholder="Buscar" autoComplete="off" className="filterSearch"  
+                                        />
+                                    </div>
+                                </th>
+                                <th>Productos</th>
+                                <th>Medio de pago</th>
+                                <th>Descuento</th>
+                                <th>Total</th>
+                                <th>Detalle</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {sortedSales.map(sale => (
+                                <tr key={sale._id}>
+                                    <td>{formatDate(sale.date)}</td>
+                                    <td className="center">{sale.orderNumber}</td>
+                                    <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
+                                    <td className="center">{sale.products.length}</td>
+                                    <td>{sale.paymentMethod}</td>
+                                    <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
+                                    <td className="center">$ {sale.totalPrice}</td>
+                                    <td>
+                                        <Link to={`/main_window/sales/${sale._id}`}>
+                                            <img src={detail} alt="" className="detailImg"/>
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
