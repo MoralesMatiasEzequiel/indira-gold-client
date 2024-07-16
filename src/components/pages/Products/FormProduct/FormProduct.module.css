@@ -1,0 +1,62 @@
+.olContainer{
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+    width: 20%;
+}
+
+.inputAdd{
+    margin-left: 5px;
+    border: none;
+    width: 6rem;
+    justify-content: space-between;
+    align-items: center;    
+    width: 81%;
+
+}
+
+.inputAdd input{
+    width: 100%;
+
+}
+
+.inputAdd::placeholder {
+    font-style: italic; 
+}
+
+.inputAdd:focus {
+    outline: none; 
+}
+
+.buttonAdd {
+    background: none;
+    color: #e4b61a;
+    font-weight: bold;
+}
+
+.list{
+    border-bottom: 1px solid #d4d4d4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spanList{
+    font-size: 0.75rem;
+    margin: 5px;
+    padding: 5px;
+}
+
+.buttonDelete{
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.buttonDelete img{
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
