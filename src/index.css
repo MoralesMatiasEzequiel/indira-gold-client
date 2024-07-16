@@ -109,6 +109,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--light-grey);
+  overflow: hidden;
 }
 
 h2{
@@ -150,7 +151,9 @@ h2{
     flex: 1; /* Para que ocupe todo el espacio disponible en la columna */
     padding: 1.5rem;
     box-sizing: border-box;
-    overflow-y: auto; /* Para permitir desplazamiento vertical si el contenido excede */
+    display: flex; /* Para usar flexbox */
+    flex-direction: column; /* Columna para el diseño vertical */
+    overflow: hidden; /* Evita desbordamientos visuales */
 }
 
 button{
@@ -180,6 +183,16 @@ form label{
     font-size: 1rem;
 }
 
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--gold);
+  border-radius: 2px;
+  border: none;
+}
+
+
+
 /*--TABLES--*/
 
 .filterSearch {
@@ -200,11 +213,48 @@ form label{
     outline: none; 
 }
 
+.tableContainer {
+    flex: 1; /* Ocupa todo el espacio disponible */
+    overflow-y: auto; /* Agrega scroll vertical */
+    border: var(--border-dark);
+    border-radius: 3px;
+}
+
+/* Personalización de la barra de desplazamiento */
+.tableContainer::-webkit-scrollbar {
+    width: 10px; /* Ancho de la barra de desplazamiento */
+}
+
+.tableContainer::-webkit-scrollbar-track {
+    background: var(--light-grey); /* Color del fondo de la barra de desplazamiento */
+    border-radius: 10px; /* Redondea los bordes del fondo */
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+    background-color: var(--dark-grey); /* Color de la "thumb" (parte desplazable) */
+    border-radius: 10px; /* Redondea los bordes de la "thumb" */
+    border: 2px solid var(--light-grey); /* Espacio alrededor de la "thumb" */
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover {
+    background-color: var(--gold); /* Color de la "thumb" al pasar el mouse por encima */
+}
+
+/* Opcional: Personalización para Firefox */
+.tableContainer {
+    scrollbar-width: thin; /* Ancho de la barra de desplazamiento */
+    scrollbar-color: var(--dark-grey) var(--light-grey); /* Color de la "thumb" y del fondo */
+}
+
+/* Opcional: Personalización para IE y Edge */
+.tableContainer {
+    -ms-overflow-style: -ms-autohiding-scrollbar; /* Desaparece la barra de desplazamiento cuando no se usa */
+}
+
 table{
     font-size: 0.75rem;
     width: 100%;
-    border: var(--border-dark);
-    border-radius: 3px;
+    border-collapse: collapse;
 }
 
 th{

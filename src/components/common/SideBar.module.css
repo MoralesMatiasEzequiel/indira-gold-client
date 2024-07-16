@@ -38,7 +38,7 @@ h1 img{
     margin-top: 4rem;
 }
 
-.nav a{
+.nav a, .nav li{
     color: var(--dark-grey);
     font-size: 1.3rem;
     letter-spacing: 0.1rem;
@@ -49,14 +49,16 @@ h1 img{
     display: flex;
     align-items: center;
     padding-left: 3rem;
+    cursor: pointer;
 }
 
 .nav li:hover{
     background-color: rgba(255,255,255,0.5);
 }
 
-.nav a.selected{
+.nav a.selected li{
     color: black;
+    background-color: rgba(255,255,255,0.5);
 }
 
 .icon{
@@ -87,5 +89,9 @@ h1 img{
 
 .subMenuVisible {
     display: block;
+}
+
+.subMenu a.selected p{
+    font-weight: 400 !important;
 }
 

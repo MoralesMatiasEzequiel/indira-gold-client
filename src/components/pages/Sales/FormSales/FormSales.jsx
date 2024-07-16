@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../../../../redux/productActions.js';
 import { getClients } from '../../../../redux/clientActions.js';
@@ -21,7 +22,12 @@ const FormSales = () => {
 
     const [showClientForm, setShowClientForm] = useState(false);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-    const paymentMethods = ['Efectivo', 'Crédito', 'Débito', 'Transferencia'];
+    const paymentMethods = [
+        { value: 'Efectivo', label: 'Efectivo' },
+        { value: 'Crédito', label: 'Crédito' },
+        { value: 'Débito', label: 'Débito' },
+        { value: 'Transferencia', label: 'Transferencia' }
+    ];
     const [selectedProducts, setSelectedProducts] = useState([null]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
@@ -37,7 +43,7 @@ const FormSales = () => {
     };
     const [newSale, setNewSale] = useState(initialSaleState);
 
-    const productRefs = useRef([]); // Referencias a los campos de productos
+    const productRefs = useRef([]);
 
     const transformProductOptions = (products) => {
         let productOptions = [];
@@ -62,7 +68,7 @@ const FormSales = () => {
             value: client._id,
             label: `${client.name} ${client.lastname}`
         }));
-        clientOptions.unshift({ value: '', label: 'Anónimo' }); // Opción para cliente anónimo
+        clientOptions.unshift({ value: '', label: 'Anónimo' });
         return clientOptions;
     };
 
@@ -99,11 +105,15 @@ const FormSales = () => {
     };
 
     const clientInputStyles = {
-        control: (provided) => ({
+        control: (provided, state) => ({
             ...provided,
             minHeight: '20px',
             fontSize: '0.75rem',
-            width: '200px'
+            borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            boxShadow: state.isFocused ? '0 0 0 1px #e4b61a' : provided.boxShadow,
+            '&:hover': {
+                borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            }
         }),
         input: (provided) => ({
             ...provided,
@@ -111,7 +121,8 @@ const FormSales = () => {
         }),
         placeholder: (provided) => ({
             ...provided,
-            color: '#3c3c3b',
+            color: '#797979',
+            fontStyle: 'italic'
         }),
         dropdownIndicator: (provided) => ({
             ...provided,
@@ -127,11 +138,16 @@ const FormSales = () => {
     };
 
     const productInputStyles = {
-        control: (provided) => ({
+        control: (provided, state) => ({
             ...provided,
             minHeight: '20px',
             fontSize: '0.75rem',
-            width: '20rem'
+            width: '100%',
+            borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            boxShadow: state.isFocused ? '0 0 0 1px #e4b61a' : provided.boxShadow,
+            '&:hover': {
+                borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            }
         }),
         input: (provided) => ({
             ...provided,
@@ -139,7 +155,8 @@ const FormSales = () => {
         }),
         placeholder: (provided) => ({
             ...provided,
-            color: '#3c3c3b',
+            color: '#797979',
+            fontStyle: 'italic'
         }),
         dropdownIndicator: (provided) => ({
             ...provided,
@@ -157,15 +174,15 @@ const FormSales = () => {
     const handleProductChange = (selectedOption, index) => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
-            newSelectedProducts[index] = selectedOption ? selectedOption.value : null; // Almacenar solo el _id
-    
+            newSelectedProducts[index] = selectedOption ? selectedOption.value : null;
+
             if (index === newSelectedProducts.length - 1 && selectedOption) {
                 newSelectedProducts.push(null);
                 setTimeout(() => {
                     productRefs.current[index + 1].focus();
                 }, 0);
             }
-    
+
             setSubtotal(calculateSubtotal(newSelectedProducts));
             validateForm();
             return newSelectedProducts;
@@ -175,7 +192,7 @@ const FormSales = () => {
     const handleRemoveProduct = (index) => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
-            newSelectedProducts.splice(index, 1); // Eliminar el producto en el índice especificado
+            newSelectedProducts.splice(index, 1);
             setSubtotal(calculateSubtotal(newSelectedProducts));
             validateForm();
             return newSelectedProducts;
@@ -200,6 +217,14 @@ const FormSales = () => {
         validateForm();
     };
 
+    const handlePaymentMethodChange = (selectedOption) => {
+        setNewSale((prevNewSale) => ({
+            ...prevNewSale,
+            paymentMethod: selectedOption ? selectedOption.value : ''
+        }));
+        validateForm();
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -217,11 +242,11 @@ const FormSales = () => {
         setSelectedProducts([null]);
         setSubtotal(0);
         setSelectedClient(null);
-        setIsSubmitDisabled(true); // Opcional si quieres deshabilitar el botón después de enviar
+        setIsSubmitDisabled(true);
     };
 
     const validateForm = () => {
-        const isClientSelected = selectedClient !== null; // Permitir "Anónimo" que tiene valor nulo
+        const isClientSelected = selectedClient !== null;
         const isPaymentMethodSelected = newSale.paymentMethod !== '';
         const isSoldAtSelected = newSale.soldAt !== '';
         const areProductsSelected = selectedProducts.some(product => product !== null);
@@ -238,7 +263,7 @@ const FormSales = () => {
     }, [clients]);
 
     const DropdownIndicator = (props) => {
-        return null; // Eliminar la flecha del dropdown
+        return null;
     };
 
     const customNoOptionsMessage = () => "Nombre del producto buscado";
@@ -253,11 +278,8 @@ const FormSales = () => {
             setSelectedClient({ value: newClient._id, label: `${newClient.name} ${newClient.lastname}` });
         }
 
-        
-
         if(newClient !== undefined){
             setNewSale((prevNewSale) => ({
-            
                 ...prevNewSale,
                 client: newClient._id
             }));
@@ -269,11 +291,9 @@ const FormSales = () => {
 
     return (
         <div className="component">
-
             <div className="title">
                 <h2>NUEVA VENTA</h2>
             </div>
-
             <div className="container">
                 <form onSubmit={handleSubmit} className={style.salesForm}>
                     <div className={style.column1}>
@@ -284,7 +304,7 @@ const FormSales = () => {
                             <div className={style.right}>
                                 <div className={style.clientInput}>
                                     <AsyncSelect
-                                        key={selectKey} // Forzar re-render cuando las opciones cambian
+                                        key={selectKey}
                                         cacheOptions
                                         name="client"
                                         value={selectedClient}
@@ -296,6 +316,7 @@ const FormSales = () => {
                                     />
                                     <button type="button" onClick={handleShowClientForm} className={style.addClient}><img src={add} alt=""/></button>
                                 </div>
+                                
                             </div>
                         </div>
                         <div className={style.labelInput}>
@@ -303,17 +324,14 @@ const FormSales = () => {
                                 <label htmlFor="paymentMethod">Medio de pago</label>
                             </div>
                             <div className={style.right}>
-                                <select
+                                <Select
                                     name="paymentMethod"
+                                    value={paymentMethods.find(method => method.value === newSale.paymentMethod)}
+                                    onChange={handlePaymentMethodChange}
+                                    options={paymentMethods}
+                                    styles={clientInputStyles}
                                     placeholder="Seleccionar"
-                                    value={newSale.paymentMethod}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value="">Seleccionar</option>
-                                    {paymentMethods.map(method => (
-                                        <option key={method} value={method}>{method}</option>
-                                    ))}
-                                </select>
+                                />
                             </div>
                         </div>
                         <div className={style.labelInput}>
@@ -361,27 +379,28 @@ const FormSales = () => {
                             </div>
                         </div>
                     </div>
-                    
                     <div className={style.column2}>
                         <label htmlFor="products">Productos</label>
                         {selectedProducts.map((product, index) => (
                             <div key={index} className={style.product}>
-                                <AsyncSelect
-                                    name="products"
-                                    value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
-                                    loadOptions={loadProductOptions}
-                                    onChange={(selectedOption) => handleProductChange(selectedOption, index)}
-                                    placeholder="Buscar Producto"
-                                    ref={(element) => productRefs.current[index] = element}
-                                    components={{DropdownIndicator}}
-                                    noOptionsMessage={customNoOptionsMessage}
-                                    styles={productInputStyles}
-                                />
+                                
+                                <div className={style.productSelect}>
+                                    <AsyncSelect
+                                        name="products"
+                                        value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
+                                        loadOptions={loadProductOptions}
+                                        onChange={(selectedOption) => handleProductChange(selectedOption, index)}
+                                        placeholder="Buscar Producto"
+                                        ref={(element) => productRefs.current[index] = element}
+                                        components={{DropdownIndicator}}
+                                        noOptionsMessage={customNoOptionsMessage}
+                                        styles={productInputStyles}
+                                    />
+                                </div>
                                 {index ? <button type="button" onClick={() => handleRemoveProduct(index)} className={style.removeProduct}><img src={x} alt=""/></button> : ''}
                             </div>
                         ))}
                     </div>
-                    
                     <div className={style.column3}>
                         <div className={style.subtotal}>
                             <div className={style.left}>Subtotal</div>
@@ -390,17 +409,15 @@ const FormSales = () => {
                         <div className={style.discount}>
                             <div className={style.left}>Descuento</div>
                             <div className={style.right}>- ${formatNumber(subtotal * newSale.discount / 100)}</div>
-                            
                         </div>
                         <div className={style.total}>
                             <div className={style.left}>Total</div>
                             <div className={style.right}>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
                         </div>
-                        
                         <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                     </div> 
                 </form>
-                <div className={`${style.addClientComponent} ${showClientForm ? style.addClientComponentBorder : ''}` }>
+                <div className={`${style.addClientComponent} ${showClientForm ? style.addClientComponentBorder : ''}`}>
                     {showClientForm && <FormClient onClientAdded={handleClientAdded} />}
                 </div>
             </div>
