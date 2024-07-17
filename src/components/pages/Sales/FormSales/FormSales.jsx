@@ -284,6 +284,7 @@ const FormSales = () => {
 
     const handleClientAdded = (newClient) => {
         setShowClientForm(false);
+
         if(newClient !== undefined){
             setSelectedClient({ value: newClient._id, label: `${newClient.name} ${newClient.lastname}` });
         }
@@ -294,6 +295,7 @@ const FormSales = () => {
                 client: newClient._id
             }));
         }
+
 
         validateForm();
     };
