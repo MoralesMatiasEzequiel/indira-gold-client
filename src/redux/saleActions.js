@@ -55,5 +55,6 @@ export const postSale = (saleData) => {
     return async (dispatch) => {
        
         const response = await axios.post('/sale', saleData);
+        return response;
     };
 };
