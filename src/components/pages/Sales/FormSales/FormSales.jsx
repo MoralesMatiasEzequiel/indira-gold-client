@@ -41,7 +41,7 @@ const FormSales = () => {
         client: '',
         paymentMethod: '',
         soldAt: '',
-        discount: 0,
+        discount: '',
         products: []
     };
     const [newSale, setNewSale] = useState(initialSaleState);
@@ -263,15 +263,14 @@ const FormSales = () => {
         event.preventDefault();
 
         const productsToSend = selectedProducts.filter(product => product !== null);
-
         const saleData = {
             ...newSale,
+            discount: newSale.discount === '' ? 0 : newSale.discount,
             products: productsToSend
         };
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
-            dispatch(getSales);
-
+            
             // Resetear el formulario
             setNewSale(initialSaleState);
             setSelectedProducts([null]);
@@ -285,12 +284,18 @@ const FormSales = () => {
 
     const handleClientAdded = (newClient) => {
         setShowClientForm(false);
-        setSelectedClient({ value: newClient._id, label: `${newClient.name} ${newClient.lastname}` });
-        
-        setNewSale((prevNewSale) => ({
-            ...prevNewSale,
-            client: newClient._id
-        }));
+
+        if(newClient !== undefined){
+            setSelectedClient({ value: newClient._id, label: `${newClient.name} ${newClient.lastname}` });
+        }
+
+        if(newClient !== undefined){
+            setNewSale((prevNewSale) => ({
+                ...prevNewSale,
+                client: newClient._id
+            }));
+        }
+
 
         validateForm();
     };

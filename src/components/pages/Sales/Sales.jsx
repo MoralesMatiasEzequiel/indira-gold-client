@@ -10,8 +10,8 @@ const Sales = () => {
     const sales = useSelector(state => state.sales.sales);
 
     useEffect(() => {
-        dispatch(getSales());
-    }, [dispatch, sales]);
+        //dispatch(getSales());
+    }, [sales]);
     
     return(
         <div className="page">
