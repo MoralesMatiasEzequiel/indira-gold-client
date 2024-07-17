@@ -1,36 +1,32 @@
-.olContainer{
+.productForm{
+    display: flex;
+}
+
+.column1{
+    /* background-color: rgb(81, 255, 0); */
+    width: 60%;
+}
+
+.column2{
+    /* background-color: red; */
+    width: 40%;
+}
+
+/* ----------------- NOMBRE ----------------- */
+
+.nameTitle{
+    margin-right: 5px;
+}
+
+.inputName{
     border: 1px solid #aaaaaa;
     border-radius: 3px;
-    width: 20%;
 }
 
-.inputAdd{
-    margin-left: 5px;
-    border: none;
-    width: 6rem;
-    justify-content: space-between;
-    align-items: center;    
-    width: 81%;
+/* ----------------- OTROS GRAL ----------------- */
 
-}
-
-.inputAdd input{
-    width: 100%;
-
-}
-
-.inputAdd::placeholder {
-    font-style: italic; 
-}
-
-.inputAdd:focus {
-    outline: none; 
-}
-
-.buttonAdd {
-    background: none;
-    color: #e4b61a;
-    font-weight: bold;
+.detailProduct{
+    display: flex;
 }
 
 .list{
@@ -46,6 +42,12 @@
     padding: 5px;
 }
 
+.buttonAdd {
+    background: none;
+    color: #e4b61a;
+    font-weight: bold;
+}
+
 .buttonDelete{
     background: none;
     border: none;
@@ -59,4 +61,188 @@
     padding: 5px;
     display: flex;
     align-items: center;
+}
+
+/* ----------------- COLOR ----------------- */
+
+.colorContainer{
+    margin-top: 15px;
+    margin-right: 15px;
+    width: 26%;
+}
+
+.colorCard{
+    margin-top: 10px;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+}
+
+.inputAddColor{
+    margin-left: 5px;
+    border: none;
+    width: 6rem;
+    justify-content: space-between;
+    align-items: center;    
+    width: 75%;
+}
+
+.inputAddColor input{
+    width: 100%;
+}
+
+.inputAddColor::placeholder {
+    font-style: italic; 
+}
+
+.inputAddColor:focus {
+    outline: none; 
+}
+
+/* ----------------- TALLE ----------------- */
+
+.sizeContainer{
+    margin-top: 15px;
+    margin-right: 15px;
+    width: 17%;
+}
+
+.sizeCard{
+    margin-top: 10px;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+}
+
+.inputAddSize{
+    margin-left: 5px;
+    border: none;
+    width: 6rem;
+    justify-content: space-between;
+    align-items: center;    
+    width: 62%;
+}
+
+.inputAddSize input{
+    width: 100%;
+}
+
+.inputAddSize::placeholder {
+    font-style: italic; 
+}
+
+.inputAddSize:focus {
+    outline: none; 
+}
+
+/* ----------------- MEDIDAS ----------------- */
+
+.measurementContainer{
+    margin-top: 15px;
+    margin-right: 15px;
+    width: 20%;
+}
+
+.measurementCard{
+    margin-top: 10px;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+}
+
+.inputsMeasurement{
+    margin: 5px;
+    justify-content: space-between;
+}
+
+.inputslabels{
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.inputslabels input{
+    width: 40%;
+    border: 1px solid #b9b8b8;
+    border-radius: 3px;
+}
+
+.labelsMeasurement{
+    font-size: small;
+    margin-right: 5px;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+/* ----------------- STOCK ----------------- */
+
+.stockContainer{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-right: 15px;
+    width: 95%;
+}
+
+.stockCard{
+    margin-top: 10px;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+}
+
+.list input{
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+    width: 10%;
+    margin-right: 15px;
+
+}
+
+/* ----------------- PROVEEDOR ----------------- */
+
+.supplierContainer{
+    display:grid;
+}
+
+.supplierTitle{
+    margin-bottom: 15px;
+}
+
+.dataSupplierContainer{
+    margin-bottom: 15px;
+}
+/* ----------------- IMAGEN ----------------- */
+
+.imageContainer{
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.imageCard{
+    margin-top: 10px;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+}
+
+/* ----------------- CATEGORÍA ----------------- */
+
+.categoryContainer{
+    margin-bottom: 15px;
+}
+
+/* ----------------- PRECIO ----------------- */
+
+.priceContainer{
+    margin-bottom: 15px;
+}
+
+/* ----------------- DESCRIPCION ----------------- */
+
+.descriptionContainer{
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.descriptionContainer textarea{
+    width: 100%;
+    padding: 3px;
 }
