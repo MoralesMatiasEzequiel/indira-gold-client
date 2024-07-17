@@ -27,7 +27,7 @@ const FormClient = ({ onClientAdded }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(postClient(newClient)).then((response) => {
-            onClientAdded(response.data);
+            onClientAdded(response);
             
         });
         dispatch(getClients());
