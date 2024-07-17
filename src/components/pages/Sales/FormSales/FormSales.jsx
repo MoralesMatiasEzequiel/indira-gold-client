@@ -285,17 +285,12 @@ const FormSales = () => {
 
     const handleClientAdded = (newClient) => {
         setShowClientForm(false);
-        if(newClient !== undefined){
-            setSelectedClient({ value: newClient._id, label: `${newClient.name} ${newClient.lastname}` });
-        }
-
-        if(newClient !== undefined){
-            setNewSale((prevNewSale) => ({
-                ...prevNewSale,
-                client: newClient._id
-            }));
-        }
-        console.log(newClient._id);
+        setSelectedClient({ value: newClient._id, label: `${newClient.name} ${newClient.lastname}` });
+        
+        setNewSale((prevNewSale) => ({
+            ...prevNewSale,
+            client: newClient._id
+        }));
 
         validateForm();
     };

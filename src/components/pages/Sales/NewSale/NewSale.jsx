@@ -9,7 +9,6 @@ const NewSale = ({ saleResponse }) => {
     }
 
     const { client, paymentMethod, discount, products, orderNumber, subTotal, totalPrice } = saleResponse.data;
-    console.log(saleResponse.data);
     const dispatch = useDispatch();
 
     useEffect(() => {
