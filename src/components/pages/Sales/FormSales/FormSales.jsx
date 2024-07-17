@@ -4,8 +4,9 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../../../../redux/productActions.js';
 import { getClients } from '../../../../redux/clientActions.js';
-import { postSale } from '../../../../redux/saleActions.js';
+import { getSales, postSale } from '../../../../redux/saleActions.js';
 import FormClient from '../../Clients/FormClient/FormClient.jsx';
+import NewSale from '../NewSale/NewSale.jsx';
 import style from "./FormSales.module.css"
 import add from "./img/add.png";
 import x from "./img/x.png";
@@ -33,6 +34,8 @@ const FormSales = () => {
     const [subtotal, setSubtotal] = useState(0);
     const [clientOptions, setClientOptions] = useState([]);
     const [selectKey, setSelectKey] = useState(Date.now());
+    const [saleMade, setSaleMade] = useState(true);
+    const [saleResponse, setSaleResponse] = useState(null);
 
     const initialSaleState = {
         client: '',
@@ -225,26 +228,6 @@ const FormSales = () => {
         validateForm();
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        const productsToSend = selectedProducts.filter(product => product !== null);
-
-        const saleData = {
-            ...newSale,
-            products: productsToSend
-        };
-        console.log(saleData);
-        dispatch(postSale(saleData));
-
-        // Resetear el formulario
-        setNewSale(initialSaleState);
-        setSelectedProducts([null]);
-        setSubtotal(0);
-        setSelectedClient(null);
-        setIsSubmitDisabled(true);
-    };
-
     const validateForm = () => {
         const isClientSelected = selectedClient !== null;
         const isPaymentMethodSelected = newSale.paymentMethod !== '';
@@ -272,6 +255,34 @@ const FormSales = () => {
         setShowClientForm(!showClientForm);
     };
 
+    const toggleSaleMade = () => {
+        setSaleMade(prevSaleMade => !prevSaleMade);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        const productsToSend = selectedProducts.filter(product => product !== null);
+
+        const saleData = {
+            ...newSale,
+            products: productsToSend
+        };
+        dispatch(postSale(saleData)).then((response) => {
+            setSaleResponse(response);
+            dispatch(getSales);
+
+            // Resetear el formulario
+            setNewSale(initialSaleState);
+            setSelectedProducts([null]);
+            setSubtotal(0);
+            setSelectedClient(null);
+            setIsSubmitDisabled(true);
+
+            toggleSaleMade();
+        });
+    };
+
     const handleClientAdded = (newClient) => {
         setShowClientForm(false);
         if(newClient !== undefined){
@@ -290,11 +301,12 @@ const FormSales = () => {
     };
 
     return (
+ 
         <div className="component">
-            <div className="title">
+            <div className="title" style={{ display: saleMade ? 'none' : 'block' }}>
                 <h2>NUEVA VENTA</h2>
             </div>
-            <div className="container">
+            <div className="container" style={{ display: saleMade ? 'none' : 'block' }}>
                 <form onSubmit={handleSubmit} className={style.salesForm}>
                     <div className={style.column1}>
                         <div className={style.labelInput}>
@@ -421,6 +433,18 @@ const FormSales = () => {
                     {showClientForm && <FormClient onClientAdded={handleClientAdded} />}
                 </div>
             </div>
+            
+            {saleMade ? (
+                <div className={`${style.newSaleModal} ${"component"}`}>
+                    <div className="title">
+                        <h2>NUEVA VENTA REGISTRADA</h2>
+                        <button onClick={toggleSaleMade}>X</button>
+                    </div>
+                    <NewSale saleResponse={saleResponse}/>
+                </div>
+            ) : (
+                <div></div>
+            )}
         </div>
     );
 };
