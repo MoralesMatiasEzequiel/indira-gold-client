@@ -145,15 +145,18 @@ h2{
 .title {
     border-bottom: var(--border-medium);
     padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
 }
 
 .container {
+    
     flex: 1; /* Para que ocupe todo el espacio disponible en la columna */
     padding: 1.5rem;
     box-sizing: border-box;
     display: flex; /* Para usar flexbox */
     flex-direction: column; /* Columna para el diseño vertical */
-    overflow: hidden; /* Evita desbordamientos visuales */
+    overflow: auto; /* Evita desbordamientos visuales */
 }
 
 button{
