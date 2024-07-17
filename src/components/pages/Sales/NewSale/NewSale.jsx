@@ -1,25 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getClientById } from "../../../../redux/clientActions";
+import style from './NewSale.module.css';
 
 const NewSale = ({ saleResponse }) => {
     if (!saleResponse) {
         return null;
     }
 
-    const { client, paymentMethod, discount, products, orderNumber } = saleResponse.data;
-    const { status, statusText } = saleResponse;
+    const { client, paymentMethod, discount, products, orderNumber, subTotal, totalPrice } = saleResponse.data;
+    console.log(saleResponse.data);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getClientById(client));
+    }, [client])
+
+    const clientById = useSelector(state => state.clients.clientDetail);
 
     return (
-        <div className="newSaleDetails">
-            <p>Número de orden: {orderNumber}</p>
-            <p><strong>Cliente:</strong> {client}</p>
-            <p><strong>Método de Pago:</strong> {orderNumber}</p>
-            <p><strong>Descuento:</strong> {discount}%</p>
-            <p><strong>Productos:</strong></p>
-            <ul>
-                {products.map((product, index) => (
-                    <li key={index}>{product}</li>
-                ))}
-            </ul>
+        <div className={style.content}>
+            <p className={style.orderNumber}>N° de orden: {orderNumber}</p>
+
+            <div className={style.column}>
+                <p><span className={style.key}>Cliente:</span> {`${clientById.name} ${clientById.lastname}`}</p>
+                <p><span className={style.key}>Método de Pago:</span> {paymentMethod}</p>
+                <p><span className={style.key}>Productos comprados:</span> {products.length}</p>
+            </div>
+            <div className={style.column}>
+                <p><span className={style.key}>Subtotal:</span> ${subTotal}</p>
+                <p><span className={style.key}>Descuento:</span> {discount}%</p>
+                <p><span className={style.key}>Total:</span> ${totalPrice}</p>
+            </div>
         </div>
     );
 };

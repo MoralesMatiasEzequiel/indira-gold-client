@@ -34,7 +34,7 @@ const FormSales = () => {
     const [subtotal, setSubtotal] = useState(0);
     const [clientOptions, setClientOptions] = useState([]);
     const [selectKey, setSelectKey] = useState(Date.now());
-    const [saleMade, setSaleMade] = useState(true);
+    const [saleMade, setSaleMade] = useState(false);
     const [saleResponse, setSaleResponse] = useState(null);
 
     const initialSaleState = {
@@ -357,6 +357,7 @@ const FormSales = () => {
                                     value={newSale.discount}
                                     onChange={handleInputChange}
                                     className={style.discount}
+                                    type='number'
                                 />
                             </div>
                         </div>
