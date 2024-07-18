@@ -11,6 +11,53 @@ const ClientRegistration = () => {
 
     const [name, setName] = useState('');
     const [lastname, setLastname] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const itemsPerPage = 20;
+
+    const paginatedClients = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.ceil(clients.length / itemsPerPage);
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
+
+    const getPageButtons = () => {
+        const buttons = [];
+        let startPage, endPage;
+
+        if (totalPages <= 5) {
+            startPage = 1;
+            endPage = totalPages;
+        } else {
+            if (currentPage <= 3) {
+                startPage = 1;
+                endPage = 5;
+            } else if (currentPage + 2 >= totalPages) {
+                startPage = totalPages - 4;
+                endPage = totalPages;
+            } else {
+                startPage = currentPage - 2;
+                endPage = currentPage + 2;
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            buttons.push(
+                <button
+                    key={i}
+                    className={`pageButton ${currentPage === i ? 'currentPage' : ''}`}
+                    onClick={() => handlePageChange(i)}
+                >
+                    {i}
+                </button>
+            );
+        }
+
+        return buttons;
+    };
 
     const handleChangeName = (event) => {
         setName(event.target.value);
@@ -40,6 +87,15 @@ const ClientRegistration = () => {
         <div className="component">
             <div className="title">
                 <h2>REGISTRO DE CLIENTES</h2>
+                <div className="pagination">
+                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                        ◂
+                    </button>
+                    {getPageButtons()}
+                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                        ▸
+                    </button>
+                </div>
             </div>
             <div className="container">
                 <div className="tableContainer">
@@ -67,7 +123,7 @@ const ClientRegistration = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {clients.map(client => (
+                            {paginatedClients.map(client => (
                                     <tr key={client._id}>
                                         <td>{client.name}</td>
                                         <td>{client.lastname}</td>
