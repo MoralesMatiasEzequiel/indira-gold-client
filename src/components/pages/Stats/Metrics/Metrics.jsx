@@ -21,13 +21,14 @@ const Metrics = () => {
             <div className="title">
                 <h2>MÉTRICAS</h2>
             </div>
-            <div className={style.metrics}>
-                <DailyMetric />
-                <WeeklyMetric />
-                <MonthMetric />
-                <AnnualMetric />
+            <div className="container">
+                <div className={style.metrics}>
+                    <div className={style.component}><DailyMetric /></div>
+                    <div className={style.component}><WeeklyMetric /></div>
+                    <div className={style.component}><MonthMetric /></div>
+                    <div className={style.component}><AnnualMetric /></div>
+                </div>
             </div>
-
         </div>
     );
 };
