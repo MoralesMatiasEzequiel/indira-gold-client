@@ -1,10 +1,11 @@
 .card{
-    padding: 10px;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    border: var(--border-dark);
+    min-height: 100%;
 }
 
 .cardContent{

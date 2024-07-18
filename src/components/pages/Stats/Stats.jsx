@@ -24,16 +24,13 @@ const Stats = () => {
 
     return(
         <div className="page">
-            {/* <div className="title">
-                <h2>ESTADÍSTICAS</h2>
-            </div> */}
-            <div>
+            <div className={style.metrics}>
                 <Metrics/>  
             </div>
             <div className={style.stats}>
-                <Rating/>
-                <Piechart/>
-                <BarChart/>
+                <div className={style.component}><Rating/></div>
+                <div className={style.middleComponent}><Piechart  /></div>
+                <div className={style.component}><BarChart /></div>
             </div>
         </div>
     );
