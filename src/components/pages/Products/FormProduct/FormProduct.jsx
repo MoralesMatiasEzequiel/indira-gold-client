@@ -29,14 +29,14 @@ const FormProduct = () => {
     };
     const [newProduct, setNewProduct] = useState(initialProductState);
 
-
+    const categories = useSelector(state => state.categories.categories);
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
     const [sizes, setSizes] = useState([]);
     const [newSize, setNewSize] = useState('');
     const [measurements, setMeasurements] = useState([]);
     const [newMeasurements, setNewMeasurements] = useState({width:'', long:'', rise:''});
-// console.log(measurements);
+// console.log(categories);
 
     //------------COLOR-----------------//
     const handleInputColorChange = (event) => {
@@ -181,7 +181,7 @@ const FormProduct = () => {
                                 <ol>
                                     {colors?.map((color, index) => (
                                         <li key={index} className={style.list}>
-                                            <span className={style.spanList}>{color}</span>
+                                            <span className={style.spanList}>Color {color} - Talle {sizes[index]}</span>
                                             <button className={style.buttonDelete} onClick={() => deleteColor(index)}>
                                                 <img src={x} alt="x"/>
                                             </button>
@@ -221,11 +221,18 @@ const FormProduct = () => {
                         </div>      
                         <div className={style.categoryContainer}>
                             <label htmlFor="category" className={style.nameTitle}>Categoría</label>
-                            <input type="text" name="category" className={style.inputName}/>
+                            <select name="category" className={style.selectCategory}>
+                                <option value="" disabled selected>Seleccionar</option>
+                                {categories?.map((category, index) => (
+                                    <option key={index}>{category.name}</option>
+                                ))}
+                                {/* <option value="">Agregar</option> */}
+                            </select>
+                            {/* <input type="text" name="category" className={style.inputName}/> */}
                         </div>   
                         <div className={style.priceContainer}>
-                            <label htmlFor="price" className={style.nameTitle}>Precio</label>
-                            <input type="text" name="price" className={style.inputName}/>
+                            <label htmlFor="price" className={style.nameTitle}>Precio $</label>
+                            <input type="number" name="price" className={style.inputName}/>
                         </div>     
                         <div className={style.descriptionContainer}>
                             <label htmlFor="description" className={style.nameTitle}>Descripción</label>
