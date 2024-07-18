@@ -233,6 +233,14 @@
     margin-bottom: 15px;
 }
 
+.selectCategory{
+    width: 50%;
+}
+
+/* select option em {
+    font-style: italic;
+} */
+
 /* ----------------- PRECIO ----------------- */
 
 .priceContainer{
