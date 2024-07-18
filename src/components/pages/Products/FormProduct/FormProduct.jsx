@@ -36,6 +36,7 @@ const FormProduct = () => {
     const [newSize, setNewSize] = useState('');
     const [measurements, setMeasurements] = useState([]);
     const [newMeasurements, setNewMeasurements] = useState({width:'', long:'', rise:''});
+// console.log(measurements);
 
     //------------COLOR-----------------//
     const handleInputColorChange = (event) => {
@@ -69,18 +70,23 @@ const FormProduct = () => {
 
     //------------MEDIDAS----------------//
     const handleInputMeasurementsChange = (event) => {
-        setNewMeasurements(event.target.value);
+        const { name, value } = event.target;
+        setNewMeasurements((prevState) => ({
+            ...prevState,
+            [name]: name === "width" || name === "long" || name === "rise" ? String(value) : value,
+        }));
     };
     const addMeasurements = () => {
-        if(newMeasurements.trim() !== null){ //Esta bien?
+        if(newMeasurements.width !== '' && newMeasurements.long !== '' && newMeasurements.rise !== ''){
             setMeasurements([...measurements, newMeasurements]);
-            setNewMeasurements('');
+            setNewMeasurements({width:'', long:'', rise:''});
         };
     };
     const deleteMeasurements = (index) => {
         const updatedMeasurements = measurements.filter((_, i) => i !== index);
         setMeasurements(updatedMeasurements);
     };
+
     
 
     const handleSubmit = (event) => {
@@ -140,7 +146,9 @@ const FormProduct = () => {
                                     <ol>
                                         {measurements?.map((measurement, index) => (
                                             <li key={index} className={style.list}>
-                                                <span className={style.spanList}>{measurement}</span>
+                                                <span className={style.spanList}>
+                                                    Ancho: {measurement.width}, Largo: {measurement.long}, Tiro: {measurement.rise}
+                                                </span>
                                                 <button className={style.buttonDelete} onClick={() => deleteMeasurements(index)}>
                                                     <img src={x} alt="x"/>
                                                 </button>
@@ -159,11 +167,11 @@ const FormProduct = () => {
                                         <div className={style.inputslabels}>    
                                             <label htmlFor="rise" className={style.labelsMeasurement}>Tiro</label>
                                             <input type="number" name="rise" value={newMeasurements.rise} onChange={handleInputMeasurementsChange} placeholder='0'/>
-                                        </div>                                     
+                                        </div>
+                                        <div className={style.buttonAddMeasurement}>
+                                            <button className={style.buttonAdd} onClick={addMeasurements}>+</button>
+                                        </div>                          
                                     </div>
-                                    
-                                    {/* <input className={style.inputAdd} type="text" name="measurement" value={newMeasurements} onChange={handleInputMeasurementsChange} placeholder='Agregar'/>       */}
-                                    {/* <button className={style.buttonAdd} onClick={addMeasurements}>+</button>                                                   */}
                                 </div>                 
                             </div>                           
                         </div>
