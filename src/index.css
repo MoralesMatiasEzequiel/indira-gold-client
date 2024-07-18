@@ -109,7 +109,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--light-grey);
-  overflow: hidden;
+  overflow: auto;
 }
 
 h2{
@@ -301,4 +301,27 @@ th div.withFilter button.sort{
     background: none;
     color: var(--dark-grey);
     padding: 0;
+}
+
+/*--PAGINATION--*/
+
+.pagination{
+     display: flex;
+     gap: 0.5rem;
+}
+
+.pagination button{
+    background-color: var(--light-grey);
+    color: var(--gold);
+    padding: 0.25rem 0.5rem;
+}
+
+.pagination button:hover, .pagination button.currentPage{
+    background-color: var(--dark-grey);
+}
+
+.pagination button:disabled{
+    color: var(--light-grey);
+    opacity: 1;
+    background-color: white;
 }

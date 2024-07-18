@@ -270,7 +270,7 @@ const FormSales = () => {
         };
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
-            
+            dispatch(getSales());
             // Resetear el formulario
             setNewSale(initialSaleState);
             setSelectedProducts([null]);
