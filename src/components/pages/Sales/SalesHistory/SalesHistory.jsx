@@ -1,4 +1,3 @@
-import style from "./SalesHistory.module.css";
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
@@ -106,7 +105,7 @@ const SalesHistory = () => {
             </div>
             <div className="container">
                 <div className="tableContainer">
-                    <table className={style.salesTable}>
+                    <table>
                         <thead>
                             <tr>
                                 <th>

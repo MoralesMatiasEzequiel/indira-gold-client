@@ -1,3 +1,7 @@
 .formClient{
     min-height: 25%;
 }
+
+.clientRegistration{
+    height: calc(75% - 1.5rem);
+}
