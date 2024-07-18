@@ -178,6 +178,17 @@ button:disabled {
     opacity: 0.6; /* Cambia la opacidad para que el botón deshabilitado parezca más tenue */
 }
 
+.titleButtons{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.titleButtons button{
+    letter-spacing: 0.05rem;
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+}
+
 /*--FORMS--*/
 
 form label{
