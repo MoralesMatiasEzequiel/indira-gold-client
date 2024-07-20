@@ -40,9 +40,6 @@ const DailyMetric = () => {
                         <span className={style.cardName}>ganancias</span>
                     </div>
                 </div>
-                <div className={style.textBalance}>
-                    <div>+3% que ayer</div>
-                </div>
             </div>
         </div>
     );

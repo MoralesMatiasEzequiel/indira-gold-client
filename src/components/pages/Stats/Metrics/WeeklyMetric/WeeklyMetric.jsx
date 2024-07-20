@@ -39,9 +39,6 @@ const WeeklyMetric = () => {
                         <span className={style.cardName}>ganancias</span>
                     </div>
                 </div>
-                <div className={style.textBalance}>
-                    <div>+3% que el año pasado</div>
-                </div>
             </div>
         </div>
     );
