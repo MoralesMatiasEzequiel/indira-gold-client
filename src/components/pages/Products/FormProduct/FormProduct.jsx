@@ -1,14 +1,12 @@
 import style from './FormProduct.module.css';
-import React, { useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import x from '../../Sales/FormSales/img/x.png';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { postProduct } from '../../../../redux/productActions';
 
-
 const FormProduct = () => {
-
     const dispatch = useDispatch();
-    
+
     const initialProductState = {
         name: '',
         color: [{
@@ -29,221 +27,163 @@ const FormProduct = () => {
         category: [],
         description: ''
     };
-    const [newProduct, setNewProduct] = useState(initialProductState);
-    const [newColorName, setNewColorName] = useState('');
-    const [newSizeName, setNewSizeName] = useState('');
-    // console.log(newProduct);
-
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-
-        setNewProduct({
-            ...newProduct,
-            [name]: value
-        });
-    };
-
-    const handleColorChange = (index, event) => {
-        const { value } = event.target;
-        const updatedColors = [...newProduct.color];
-        updatedColors[index].colorName = value;
-
-        setNewProduct({
-            ...newProduct,
-            color: updatedColors
-        });
-    };
-
-    const handleSizeChange = (index, event) => {
-        const { value } = event.target;
-        const updatedSizes = [...newProduct.color];
-        updatedSizes[index].size[0].sizeName = value;
-
-        setNewProduct({
-            ...newProduct,
-            color: updatedSizes
-        });
-    };
 
     const categories = useSelector(state => state.categories.categories);
+    const [newProduct, setNewProduct] = useState(initialProductState);
+    const [name, setName] = useState('');
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
     const [sizes, setSizes] = useState([]);
     const [newSize, setNewSize] = useState('');
     const [measurements, setMeasurements] = useState([]);
-    const [newMeasurements, setNewMeasurements] = useState({width:'', long:'', rise:''});
-    const [stock, setStock] = useState([]);
-    const [newStock, setNewStock] = useState(0);
-    const [category, setCategory] = useState([]);
     const [price, setPrice] = useState(0);
+    const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
-// console.log(category);
+console.log(newProduct);
 
-    //------------ COLOR -----------------//  
-    // const addColor = () => {
-    //     // if(newColor.trim() !== ''){
-    //     //     setColors([...colors, newColor]);
-    //     //     setNewColor('');
-    //     // };
-    //     setNewProduct({...newProduct,color: [...newProduct.color, 
-    //         {
-    //             colorName: '',
-    //             size: [{
-    //                 sizeName: '',
-    //                 measurements: [{
-    //                     width: '',
-    //                     long: '',
-    //                     rise: ''
-    //                 }],
-    //                 code: '',
-    //                 stock: 0
-    //             }],
-    //             image: ''
-    //         }]
-    //     });
-    // };
-    // const deleteColor = (index) => {
-    //     const updatedColors = colors.filter((_, i) => i !== index);
-    //     setColors(updatedColors);
-    // };
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        if(name === 'category'){
+            let array = [];
+            array.push(value);
+            setNewProduct({
+                ...newProduct,
+                category: array
+            });
+        }else{
+            setNewProduct({
+                ...newProduct,
+                [name]: value
+            });
+        }
+    };
+
+    const handleInputColorChange = (event) => {
+        setNewColor(event.target.value);
+    };
 
     const addColor = () => {
-        setNewProduct({
-            ...newProduct,
-            color: [
-                ...newProduct.color,
-                {
-                    colorName: newColorName,
-                    size: [{
-                        sizeName: '',
-                        measurements: {
-                            width: '',
-                            long: '',
-                            rise: ''
-                        },
-                        code: '',
-                        stock: 0
-                    }],
-                    imageGlobal: ''
-                }
-            ]
-        });
-        setNewColorName(''); // Limpiar el input de nuevo color después de agregar
+        if (newColor !== '') {
+            setColors([...colors, newColor]);
+            setNewColor('');
+        }
     };
-    
-    const deleteProduct = (index) => {
-        const updatedColors = [...newProduct.color];
+
+    const deleteColor = (index) => {
+        const updatedColors = [...colors];
         updatedColors.splice(index, 1);
-
-        setNewProduct({
-            ...newProduct,
-            color: updatedColors
-        });
+        setColors(updatedColors);
     };
 
-    //------------ TALLE -----------------//
+    const handleInputSizeChange = (event) => {
+        setNewSize(event.target.value);
+    };
 
     const addSize = () => {
-        setNewProduct({
-            ...newProduct,
-            color: [
-                ...newProduct.color,
-                {
-                    colorName: '',
-                    size: [{
-                        sizeName: newSizeName,
-                        measurements: {
-                            width: '',
-                            long: '',
-                            rise: ''
-                        },
-                        code: '',
-                        stock: 0
-                    }],
-                    imageGlobal: ''
-                }
-            ]
-        });
-        setNewSizeName(''); 
+        if (newSize !== '') {
+            setSizes([...sizes, newSize]);
+            setNewSize('');
+        }
     };
-    // const addSize = () => {
-    //     if(newSize.trim() !== ''){
-    //         setSizes([...sizes, newSize]);
-    //         setNewSize('');
-    //     };
-    // };
+
     const deleteSize = (index) => {
-        const updatedSizes = [...newProduct.color[index].size];
+        const updatedSizes = [...sizes];
         updatedSizes.splice(index, 1);
-        setNewProduct({
-            ...newProduct,
-            color: updatedSizes
-        });
+        setSizes(updatedSizes);
     };
 
-    //------------ MEASUREMENTS ----------------//
-    const handleInputMeasurementsChange = (event) => {
+    const generateCombinations = () => {
+        return colors.flatMap(color =>
+            sizes.map(size => ({ color, size }))
+        );
+    };
+    const combinations = generateCombinations();
+
+    const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
-        setNewMeasurements((prevState) => ({
-            ...prevState,
-            [name]: name === "width" || name === "long" || name === "rise" ? String(value) : value,
-        }));
-    };
-    const addMeasurements = () => {
-        if(newMeasurements.width !== '' && newMeasurements.long !== '' && newMeasurements.rise !== ''){
-            setMeasurements([...measurements, newMeasurements]);
-            setNewMeasurements({width:'', long:'', rise:''});
-        };
-    };
-    const deleteMeasurements = (index) => {
-        const updatedMeasurements = measurements.filter((_, i) => i !== index);
-        setMeasurements(updatedMeasurements);
+
+        // Construir una copia del nuevo estado
+        const updatedProduct = { ...newProduct };
+
+        // Encontrar el índice de color existente o añadir uno nuevo si no existe
+        let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
+
+        if (colorIndex === -1) {
+            updatedProduct.color.push({
+                colorName: combination.color,
+                size: []
+            });
+
+            // Reasignar el índice para el color recién añadido
+            colorIndex = updatedProduct.color.length - 1;
+        }
+
+        // Encontrar el índice de tamaño existente o añadir uno nuevo si no existe
+        let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
+
+        if (sizeIndex === -1) {
+            updatedProduct.color[colorIndex].size.push({
+                sizeName: combination.size,
+                measurements: {
+                    width: '',
+                    long: '',
+                    rise: ''
+                },
+                stock: 0
+            });
+
+            // Reasignar el índice para el tamaño recién añadido
+            sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
+        }
+
+        // Actualizar las medidas (width, long, rise) y el stock
+        if (name === 'width' || name === 'long' || name === 'rise') {
+            updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
+        } else if (name === 'stock' && value > 0) {
+            updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
+        }
+
+        // Actualizar el estado
+        setNewProduct(updatedProduct);
     };
 
-    //------------ STOCK ----------------//
-    const handleInputStockChange = (event) => {
-        setNewStock(event.target.value);
-    };
-    const addStock = () => {
-        if(newStock !== 0){
-            setStock([...stock, newStock]);
-            setNewStock(0);
-        };
-    };
-
-    //------------ CATEGORY ----------------//
-    const handleCategoryChange = (event) => {
-        // console.log(event);
-        setCategory(event.target.value);
-    };
-
-    //------------ PRICE ----------------//
-    const handleInputPriceChange = (event) => {
-        setPrice(event.target.value);
-    };
-
-    //------------ DESCRIPTION ----------------//
-    const handleDescriptionChange = (event) => {
-        setDescription(event.target.value);
-    };
-
-
-
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     // const productData = {...newProduct};
-    //     // dispatch(postProduct(productData));
-    // };
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch(postProduct(newProduct)); // Enviar el producto al store o realizar la acción correspondiente
-        setNewProduct(initialProductState); // Limpiar el formulario después de enviar
+
+        // const productData = {
+        //     name: name,
+        //     color: colors.map((color, index) => ({
+        //         colorName: color,
+        //         size: sizes.map((size, idx) => ({
+        //             sizeName: size,
+        //             measurements: measurements[idx],
+        //             code: '000', // Ajustar según sea necesario
+        //             stock: 0 // Ajustar según sea necesario
+        //         })),
+        //         imageGlobal: '' // Ajustar según sea necesario
+        //     })),
+        //     price: price,
+        //     category: category,
+        //     description: description
+        // };
+
+        // dispatch(postProduct(productData));
+
+        // // Reiniciar el formulario después de enviar
+        // setName('');
+        // setColors([]);
+        // setSizes([]);
+        // setMeasurements([]);
+        // setPrice(0);
+        // setCategory('');
+        // setDescription('');
     };
 
-    return(
+
+    return (
         <div className="component">
             <div className="title">
-                <h2>NUEVA PRODUCTO</h2>
+                <h2>NUEVO PRODUCTO</h2>
             </div>
             <div className="container">
                 <form onSubmit={handleSubmit} className={style.productForm}>
@@ -256,152 +196,97 @@ const FormProduct = () => {
                             <div className={style.colorContainer}>
                                 <label htmlFor="color">Colores</label>
                                 <div className={style.colorCard}>
-                                <ol>
-                                    {newProduct?.color.map((color, colorIndex) => (
-                                        <li key={colorIndex} className={style.list}>
-                                            <input
-                                                type="text"
-                                                value={color.colorName}
-                                                onChange={(event) => handleColorChange(colorIndex, event)}
-                                                className={style.inputColorName}
-                                            />                                              
-                                            <button className={style.buttonDelete} type="button" onClick={() => deleteProduct(colorIndex)}>
-                                                <img src={x} alt="x"/>
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ol> 
-                                <input
-                                    className={style.inputAddColor}
-                                    type="text"
-                                    value={newColorName}
-                                    onChange={(event) => setNewColorName(event.target.value)}
-                                    placeholder='Agregar'
-                                />       
-                                <button className={style.buttonAdd} type="button" onClick={addColor}>+</button>                                             
-                                </div>
-                            </div>
-                            <div className={style.sizeContainer}> 
-                                <label htmlFor="size">Talle</label>
-                                <div className={style.sizeCard}>
                                     <ol>
-                                        {newProduct?.color.map((color, index) => (
-                                            <li key={index} className={style.list}>
-                                                <input
-                                                type="text"
-                                                value={color.size[0].sizeName}
-                                                onChange={(event) => handleSizeChange(index, event)}
-                                                className={style.inputsizeName}
-                                                />
-                                                <button className={style.buttonDelete} type="button" onClick={() => deleteProduct(index)}>
-                                                <img src={x} alt="x"/>
-                                            </button>
-                                            </li>
-                                        ))}
-                                    </ol> 
-                                    <input
-                                    className={style.inputAddSize}
-                                    type="text"
-                                    value={newSizeName}
-                                    onChange={(event) => setNewSizeName(event.target.value)}
-                                    placeholder='Agregar'
-                                    />       
-                                    <button className={style.buttonAdd} type="button" onClick={addSize}>+</button>                                                 
-                                </div>                 
-                            </div> 
-                            <div className={style.measurementContainer}>
-                                <label htmlFor="measurements">Medidas</label>
-                                <div className={style.measurementCard}>
-                                    <ol>
-                                        {measurements?.map((measurement, index) => (
-                                            <li key={index} className={style.list}>
-                                                <span className={style.spanList}>
-                                                    Ancho: {measurement.width}, Largo: {measurement.long}, Tiro: {measurement.rise}
-                                                </span>
-                                                <button className={style.buttonDelete} onClick={() => deleteMeasurements(index)}>
-                                                    <img src={x} alt="x"/>
+                                        {colors.map((color, colorIndex) => (
+                                            <li key={colorIndex} className={style.list}>
+                                                <span className={style.spanList}>{color}</span>
+                                                <button type="button" className={style.buttonDelete} onClick={() => deleteColor(colorIndex)}>
+                                                    <img src={x} alt="x" />
                                                 </button>
                                             </li>
                                         ))}
-                                    </ol> 
-                                    <div className={style.inputsMeasurement}>
-                                        <div className={style.inputslabels}>
-                                            <label htmlFor="width" className={style.labelsMeasurement}>Ancho</label>
-                                            <input type="number" name="width" value={newMeasurements.width} onChange={handleInputMeasurementsChange} placeholder='0'/>
-                                        </div>
-                                        <div className={style.inputslabels}>
-                                            <label htmlFor="long" className={style.labelsMeasurement}>Largo</label>
-                                            <input type="number" name="long" value={newMeasurements.long} onChange={handleInputMeasurementsChange} placeholder='0'/>
-                                        </div>
-                                        <div className={style.inputslabels}>    
-                                            <label htmlFor="rise" className={style.labelsMeasurement}>Tiro</label>
-                                            <input type="number" name="rise" value={newMeasurements.rise} onChange={handleInputMeasurementsChange} placeholder='0'/>
-                                        </div>
-                                        <div className={style.buttonAddMeasurement}>
-                                            <button className={style.buttonAdd} onClick={addMeasurements}>+</button>
-                                        </div>                          
-                                    </div>
-                                </div>                 
-                            </div>                           
+                                    </ol>
+                                    <input className={style.inputAddColor} type="text" name="color" value={newColor} onChange={handleInputColorChange} placeholder='Agregar' />
+                                    <button type="button" className={style.buttonAdd} onClick={addColor}>+</button>
+                                </div>
+                            </div>
+                            <div className={style.sizeContainer}>
+                                <label htmlFor="size">Talle</label>
+                                <div className={style.sizeCard}>
+                                    <ol>
+                                        {sizes.map((size, index) => (
+                                            <li key={index} className={style.list}>
+                                                <span className={style.spanList}>{size}</span>
+                                                <button type="button" className={style.buttonDelete} onClick={() => deleteSize(index)}>
+                                                    <img src={x} alt="x" />
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ol>
+                                    <input className={style.inputAddSize} type="text" name="size" value={newSize} onChange={handleInputSizeChange} placeholder='Agregar' />
+                                    <button type="button" className={style.buttonAdd} onClick={addSize}>+</button>
+                                </div>
+                            </div>
                         </div>
                         <div className={style.stockContainer}>
-                            <label htmlFor="color">Stock</label>
+                            <label htmlFor="color">Medidas y stock</label>
                             <div className={style.stockCard}>
-                                <ol>
-                                    {colors?.map((color, index) => (
-                                        <li key={index} className={style.list}>
-                                            <span className={style.spanList}>Color {color} - Talle {sizes[index]}</span>
-                                            {/* <button className={style.buttonDelete} onClick={() => deleteColor(index)}>
-                                                <img src={x} alt="x"/>
-                                            </button> */}
-                                            <input type="number" name="stock" placeholder='0' value={newStock} onChange={handleInputStockChange}/>   
-                                        </li>
-                                    ))}
-                                </ol> 
-                            </div>
-                        </div>    
-                        {/* <div className={style.supplierContainer}>
-                            <label htmlFor="supplier" className={style.supplierTitle}>Proveedor</label>
-                            <div className={style.dataSupplierContainer}>
-                                <label htmlFor="name" className={style.nameTitle}>Nombre</label>
-                                <input type="text" name="name" className={style.inputName}/>
-                            </div>
-                            <div>
-                                <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
-                                <input type="text" name="phone" className={style.inputName}/>
-                            </div>
-                        </div>     */}
+                            <ol>
+                                {combinations.map((combination, index) => (
+                                    <li key={index} className={style.list}>
+                                        <span className={style.spanList}>
+                                            Color {combination.color} - Talle {combination.size}
+                                        </span>
+                                        <span className={style.spansinMed} htmlFor="width">Ancho:</span>
+                                        <input className={style.inputsinMed} type="number" name="width" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                        <span className={style.spansinMed} htmlFor="long">Largo:</span>
+                                        <input className={style.inputsinMed} type="number" name="long" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                        <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
+                                        <input className={style.inputsinMed} type="number" name="rise" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                        <span className={style.spansinMed} htmlFor="stock">Stock:</span>
+                                        <input className={style.inputsinStock} type="number" name="stock" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                            <div className={style.supplierContainer}>
+                                <label htmlFor="supplier" className={style.supplierTitle}>Proveedor</label>
+                                <div className={style.dataSupplierContainer}>
+                                    <label htmlFor="name" className={style.nameTitle}>Nombre</label>
+                                    <input type="text" name="name" className={style.inputName}/>
+                                </div>
+                                <div>
+                                    <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
+                                    <input type="text" name="phone" className={style.inputName}/>
+                                </div>
+                            </div> 
+                        </div>  
                     </div>
                     <div className={style.column2}>
-                        {/* <div className={style.imageContainer}>
+                        <div className={style.imageContainer}>
                             <label htmlFor="image">Imágenes</label>
                             <div className={style.imageCard}>
                                 <ol>
                                     {colors?.map((color, index) => (
                                         <li key={index} className={style.list}>
                                             <span className={style.spanList}>{color}</span>
-                                            <button className={style.buttonDelete} onClick={() => deleteColor(index)}>
-                                                <img src={x} alt="x"/>
-                                            </button>
                                         </li>
                                     ))}
                                 </ol>                                                
                             </div>
-                        </div>       */}
+                        </div>
                         <div className={style.categoryContainer}>
                             <label htmlFor="category" className={style.nameTitle}>Categoría</label>
-                            <select name="category" className={style.selectCategory}>
-                                <option value="" disabled selected>Seleccionar</option>
-                                {categories?.map((category, index) => (
-                                    <option key={index} value={category._id} onChange={handleCategoryChange}>{category.name}</option>
+                            <select name="category" className={style.selectCategory} value={newProduct.category} onChange={handleInputChange}>
+                                <option value="" disabled>Seleccionar</option>
+                                {categories.map((category) => (
+                                    <option key={category._id} value={category._id}>{category.name}</option>
                                 ))}
-                                {/* <option value="">Agregar</option> */}
                             </select>
-                            {/* <input type="text" name="category" className={style.inputName}/> */}
-                        </div>   
+                        </div>
                         <div className={style.priceContainer}>
                             <label htmlFor="price" className={style.nameTitle}>Precio $</label>
-                            <input type="number" name="price" value={newProduct.price} onChange={handleInputChange} className={style.inputName}/>
+                            <input type="number" name="price" value={newProduct.price} onChange={handleInputChange} placeholder='0'/>
                         </div>     
                         <div className={style.descriptionContainer}>
                             <label htmlFor="description" className={style.nameTitle}>Descripción</label>
@@ -409,7 +294,7 @@ const FormProduct = () => {
                         </div> 
                         <div>
                             <button type="submit">Agregar</button>
-                        </div>        
+                        </div>
                     </div>
                 </form>
             </div>
