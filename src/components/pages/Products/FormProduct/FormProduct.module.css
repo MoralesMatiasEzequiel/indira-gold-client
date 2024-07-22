@@ -248,6 +248,12 @@
     margin-bottom: 15px;
 }
 
+.imageTitleContainer{
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+}
+
 .title{
     display: flex;
     align-items: center;
@@ -266,6 +272,31 @@
     height: 25%;
     width: 25%;
 }
+
+.checkboxContainer{
+    margin-left: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.spanImage{
+    font-size: 0.75rem;
+}
+
+.inputCheckbox {
+    cursor: pointer;
+}
+
+/* .inputCheckbox:checked {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+    border: 1px solid #929292;
+    border-radius: 2px;
+    width: 13px;
+    height: 13px;
+    background-color: red; 
+} */
 
 .imageComponent{
     margin-top: 10px;
