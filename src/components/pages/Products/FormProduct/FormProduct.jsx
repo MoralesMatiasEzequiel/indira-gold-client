@@ -2,6 +2,8 @@ import style from './FormProduct.module.css';
 import x from '../../Sales/FormSales/img/x.png';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import imgProduct from './img/imgProduct.jpeg';
+import add from '../../Sales/FormSales/img/add.png';
 import { postProduct } from '../../../../redux/productActions';
 
 const FormProduct = () => {
@@ -39,7 +41,7 @@ const FormProduct = () => {
     const [price, setPrice] = useState(0);
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
-console.log(newProduct);
+// console.log(newProduct);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -264,12 +266,19 @@ console.log(newProduct);
                     </div>
                     <div className={style.column2}>
                         <div className={style.imageContainer}>
-                            <label htmlFor="image">Imágenes</label>
-                            <div className={style.imageCard}>
+                            <div className={style.title}>
+                                <label htmlFor="image">Imágenes</label>
+                                <button type='button' className={style.butonImage}>
+                                    <img className={style.addImage} src={add} alt="+" />
+                                </button>
+                            </div>
+                            <div className={style.imageComponent}>
                                 <ol>
-                                    {colors?.map((color, index) => (
+                                    {newProduct.color?.slice(1).map((color, index) => (
                                         <li key={index} className={style.list}>
-                                            <span className={style.spanList}>{color}</span>
+                                            <span className={style.spanList}>{color.colorName}</span>
+                                            {/* <span className={style.spanList}>Código: 101015405405</span> */}
+                                            <img className={style.imgProduct} src={imgProduct} alt="image-product" />
                                         </li>
                                     ))}
                                 </ol>                                                
@@ -287,7 +296,11 @@ console.log(newProduct);
                         <div className={style.priceContainer}>
                             <label htmlFor="price" className={style.nameTitle}>Precio $</label>
                             <input type="number" name="price" value={newProduct.price} onChange={handleInputChange} placeholder='0'/>
-                        </div>     
+                        </div>    
+                        <div className={style.priceContainer}>
+                            <label htmlFor="price" className={style.nameTitle}>Código</label>
+                            <input type="text" name="code" />
+                        </div> 
                         <div className={style.descriptionContainer}>
                             <label htmlFor="description" className={style.nameTitle}>Descripción</label>
                             <textarea type="text" name="description" value={newProduct.description} onChange={handleInputChange}/>

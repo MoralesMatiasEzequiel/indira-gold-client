@@ -206,17 +206,31 @@
     border-radius: 3px;
 }
 
-/* .list input{
-    border: 1px solid #aaaaaa;
-    border-radius: 3px;
-    width: 10%;
-    margin-right: 15px;
+.inputsinMed{
+    width: 5%;
+    margin-left: 1px;
+    margin-right: 5px;
+    border: none;
+}
+.inputsinMed::-webkit-inner-spin-button,
+.inputsinMed::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
-} */
+.spansinMed{
+    font-size: 0.75rem;
+}
+
+.inputsinStock{
+    width: 10%;
+    margin-right: 10px;
+}
 
 /* ----------------- PROVEEDOR ----------------- */
 
 .supplierContainer{
+    margin-top: 10px;
     display:grid;
 }
 
@@ -234,10 +248,35 @@
     margin-bottom: 15px;
 }
 
-.imageCard{
+.title{
+    display: flex;
+    align-items: center;
+}
+
+.butonImage{
+    background: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.addImage{
+    display: flex;
+    height: 25%;
+    width: 25%;
+}
+
+.imageComponent{
     margin-top: 10px;
     border: 1px solid #aaaaaa;
     border-radius: 3px;
+}
+
+.imgProduct{
+    margin: 10px;
+    width: 20%;
+    height: 20%;
 }
 
 /* ----------------- CATEGORÍA ----------------- */
@@ -249,10 +288,6 @@
 .selectCategory{
     width: 50%;
 }
-
-/* select option em {
-    font-style: italic;
-} */
 
 /* ----------------- PRECIO ----------------- */
 
