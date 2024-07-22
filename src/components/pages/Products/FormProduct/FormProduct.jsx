@@ -41,6 +41,7 @@ const FormProduct = () => {
     const [price, setPrice] = useState(0);
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
+    const [selectedOptionImage, setSelectedOptionImage] = useState(null);
 // console.log(newProduct);
 
     const handleInputChange = (event) => {
@@ -148,6 +149,10 @@ const FormProduct = () => {
         // Actualizar el estado
         setNewProduct(updatedProduct);
     };
+
+    const handleCheckboxChange = (option) => {
+        setSelectedOptionImage(option === selectedOptionImage ? null : option);
+      };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -266,11 +271,19 @@ const FormProduct = () => {
                     </div>
                     <div className={style.column2}>
                         <div className={style.imageContainer}>
-                            <div className={style.title}>
-                                <label htmlFor="image">Imágenes</label>
-                                <button type='button' className={style.butonImage}>
-                                    <img className={style.addImage} src={add} alt="+" />
-                                </button>
+                            <div className={style.imageTitleContainer}>
+                                <div className={style.title}>
+                                    <label htmlFor="image">Imágenes</label>
+                                    <button type='button' className={style.butonImage}>
+                                        <img className={style.addImage} src={add} alt="+" />
+                                    </button>
+                                </div>
+                                <div >
+                                    <input className={style.inputCheckbox} type="checkbox" name="unique" id="unique" checked={selectedOptionImage === 'unique'} onChange={() => handleCheckboxChange('unique')} />
+                                    <span className={style.spanImage}>Único</span>
+                                    <input className={style.inputCheckbox} type="checkbox" name="byColor" id="byColor" checked={selectedOptionImage === 'byColor'} onChange={() => handleCheckboxChange('byColor')} />
+                                    <span className={style.spanImage}>Por color</span>
+                                </div>
                             </div>
                             <div className={style.imageComponent}>
                                 <ol>
