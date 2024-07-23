@@ -9,34 +9,13 @@ import { postProduct } from '../../../../redux/productActions';
 const FormProduct = () => {
     const dispatch = useDispatch();
 
-    // const initialProductState = {
-    //     name: '',
-    //     color: [{
-    //         colorName: '',
-    //         size: [{
-    //             sizeName:'',
-    //             measurements: [{
-    //                 width: '',
-    //                 long: '',
-    //                 rise: ''
-    //             }],
-    //             code: '',
-    //             stock: 0
-    //         }],
-    //         image: ''
-    //     }],
-    //     price: 0,
-    //     category: [],
-    //     description: ''
-    // };
-
     const initialProductState = {
         name: '',
         color: [], 
         price: 0,
         category: [],
         description: ''
-    }
+    };
 
     const categories = useSelector(state => state.categories.categories);
     const [newProduct, setNewProduct] = useState(initialProductState);
@@ -53,7 +32,7 @@ const FormProduct = () => {
     const [images, setImages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
-console.log(newProduct);
+// console.log(newProduct);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -139,28 +118,26 @@ console.log(newProduct);
 
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
-        // console.log(value);
-
-        // Construir una copia del nuevo estado
+    
         const updatedProduct = { ...newProduct };
-
-        // Encontrar el índice de color existente o añadir uno nuevo si no existe
+    
+        //Se encuentra el índice de color existente o se añade uno nuevo si no existe
         let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
-
+    
         if (colorIndex === -1) {
             updatedProduct.color.push({
                 colorName: combination.color,
                 size: [],
                 image: ''
             });
-
-            // Reasignar el índice para el color recién añadido
+    
+            //Se reasigna el índice para el color recién añadido
             colorIndex = updatedProduct.color.length - 1;
-        }
-
-        // Encontrar el índice de tamaño existente o añadir uno nuevo si no existe
+        };
+    
+        //idem
         let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
-
+    
         if (sizeIndex === -1) {
             updatedProduct.color[colorIndex].size.push({
                 sizeName: combination.size,
@@ -170,24 +147,33 @@ console.log(newProduct);
                     rise: ''
                 },
                 stock: 0
-            });
-
-            // Reasignar el índice para el tamaño recién añadido
+            });    
+            //idem
             sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
-        }
-
-        // Actualizar las medidas (width, long, rise) y el stock
+        };
+    
+        //Se actualiza las medidas (width, long, rise) y el stock
         if (name === 'width' || name === 'long' || name === 'rise') {
             updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
-        } else if (name === 'stock' && value > 0) {
-            updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
-        }
-        
+        } else if (name === 'stock') {
+            if (value > 0) {
+                updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
+            } else {
+                //Si el stock es 0, eliminamos el objeto del array size
+                updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
+            }
+        };
+    
+        // i el array size está vacío después de eliminar el objeto, eliminamos el objeto color
+        if (updatedProduct.color[colorIndex].size.length === 0) {
+            updatedProduct.color.splice(colorIndex, 1);
+        };
+    
         setNewProduct(updatedProduct);
     };
 
     const handleCheckboxChange = (option) => {
-        setSelectedOptionImage(option === selectedOptionImage ? 'unique' : option);
+        setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
     };
 
     // const handleAddImageChange = (event) => {
