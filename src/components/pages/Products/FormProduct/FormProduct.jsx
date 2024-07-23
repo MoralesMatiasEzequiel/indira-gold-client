@@ -53,7 +53,7 @@ const FormProduct = () => {
     const [images, setImages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
-console.log(newProduct);
+// console.log(newProduct);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -99,6 +99,12 @@ console.log(newProduct);
         const updatedColors = [...colors];
         updatedColors.splice(index, 1);
         setColors(updatedColors);
+
+        // const updatedProductsColor = [...newProduct.color]
+        // if (updatedProductsColor[index]) {
+        //     updatedProductsColor.splice(index, 1);
+        // setNewProduct(updatedProductsColor);
+        // }
     };
 
     const handleInputSizeChange = (event) => {
@@ -372,7 +378,7 @@ console.log(newProduct);
                                                 onChange={(event) => handleImageChange(event, index)} 
                                                 id={`imageProduct-${index}`}
                                             />
-                                            <img className={style.imgProduct} src={color.image || imagePreview} alt="image-product" />
+                                            <img className={style.imgProduct} src={color.image || imgProduct} alt="image-product" />
                                         </li>
                                     ))}
                                 </ol>                                                
