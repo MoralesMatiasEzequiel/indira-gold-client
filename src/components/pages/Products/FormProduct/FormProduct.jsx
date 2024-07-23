@@ -53,7 +53,7 @@ const FormProduct = () => {
     const [images, setImages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
-// console.log(newProduct);
+console.log(newProduct);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -80,7 +80,7 @@ const FormProduct = () => {
         if (newColor !== '') {
             setColors([...colors, newColor]);
             setNewColor('');
-        }
+        };
     };
 
     // const addColor = () => {
@@ -99,12 +99,18 @@ const FormProduct = () => {
         const updatedColors = [...colors];
         updatedColors.splice(index, 1);
         setColors(updatedColors);
-
-        // const updatedProductsColor = [...newProduct.color]
-        // if (updatedProductsColor[index]) {
-        //     updatedProductsColor.splice(index, 1);
-        // setNewProduct(updatedProductsColor);
-        // }
+    
+        const updatedProductsColor = [...newProduct.color];
+    
+        // Se busca el color a eliminar basado en el índice de colors
+        const colorToDelete = colors[index]; 
+        // Y aca filtramos el array color de newProduct para eliminar el objeto correspondiente
+        const filteredProductsColor = updatedProductsColor.filter(item => item.colorName !== colorToDelete);
+    
+        setNewProduct({
+            ...newProduct,
+            color: filteredProductsColor
+        });
     };
 
     const handleInputSizeChange = (event) => {
