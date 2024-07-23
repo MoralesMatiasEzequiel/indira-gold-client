@@ -23,7 +23,7 @@ const FormProduct = () => {
                 code: '',
                 stock: 0
             }],
-            imageGlobal: ''
+            image: ''
         }],
         price: 0,
         category: [],
@@ -42,6 +42,9 @@ const FormProduct = () => {
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
     const [selectedOptionImage, setSelectedOptionImage] = useState(null);
+    const [images, setImages] = useState([]);
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(imgProduct);
 // console.log(newProduct);
 
     const handleInputChange = (event) => {
@@ -104,6 +107,7 @@ const FormProduct = () => {
 
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
+        // console.log(value);
 
         // Construir una copia del nuevo estado
         const updatedProduct = { ...newProduct };
@@ -114,7 +118,8 @@ const FormProduct = () => {
         if (colorIndex === -1) {
             updatedProduct.color.push({
                 colorName: combination.color,
-                size: []
+                size: [],
+                image: ''
             });
 
             // Reasignar el índice para el color recién añadido
@@ -145,14 +150,63 @@ const FormProduct = () => {
         } else if (name === 'stock' && value > 0) {
             updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
         }
-
-        // Actualizar el estado
+        
         setNewProduct(updatedProduct);
     };
 
     const handleCheckboxChange = (option) => {
         setSelectedOptionImage(option === selectedOptionImage ? null : option);
-      };
+    };
+
+    // const handleAddImageChange = (event) => {
+    //     // console.log(event.target.files[0]);
+    //     setImageFile(event);
+
+    // };
+
+    // const insertarArchivos = async() =>{
+    //     const f = new FormData();
+
+    //     for (let index = 0; index < imageFile.length; index++) {
+    //         f.append('file', imageFile[index]);
+            
+    //     }
+    // };
+
+    // const handleImageChange = (event, colorIndex) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             setImageFile(file);
+    //             setImagePreview(reader.result);
+
+    //             const updatedProduct = { ...newProduct };
+    //             updatedProduct.color[colorIndex].image = reader.result;
+    //             setNewProduct(updatedProduct);
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
+
+    const handleImageChange = (event, colorIndex) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                // Actualiza la imagen de vista previa
+                setImagePreview(reader.result);
+    
+                // Construir una copia del nuevo estado
+                const updatedProduct = { ...newProduct };
+                updatedProduct.color[colorIndex].image = reader.result; // Guardar la ruta de la imagen
+    
+                // Actualizar el estado
+                setNewProduct(updatedProduct);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -251,7 +305,7 @@ const FormProduct = () => {
                                         <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
                                         <input className={style.inputsinMed} type="number" name="rise" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
                                         <span className={style.spansinMed} htmlFor="stock">Stock:</span>
-                                        <input className={style.inputsinStock} type="number" name="stock" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                        <input className={style.inputsinStock} type="number" name="stock" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
                                     </li>
                                 ))}
                             </ol>
@@ -274,9 +328,9 @@ const FormProduct = () => {
                             <div className={style.imageTitleContainer}>
                                 <div className={style.title}>
                                     <label htmlFor="image">Imágenes</label>
-                                    <button type='button' className={style.butonImage}>
-                                        <img className={style.addImage} src={add} alt="+" />
-                                    </button>
+                                    {/* <button type='button' className={style.butonImage}> */}
+                                        {/* <img className={style.addImage} src={add} alt="+" /> */}
+                                    {/* </button> */}
                                 </div>
                                 <div >
                                     <input className={style.inputCheckbox} type="checkbox" name="unique" id="unique" checked={selectedOptionImage === 'unique'} onChange={() => handleCheckboxChange('unique')} />
@@ -287,11 +341,18 @@ const FormProduct = () => {
                             </div>
                             <div className={style.imageComponent}>
                                 <ol>
-                                    {newProduct.color?.slice(1).map((color, index) => (
+                                    {newProduct.color.map((color, index) => (
                                         <li key={index} className={style.list}>
                                             <span className={style.spanList}>{color.colorName}</span>
-                                            {/* <span className={style.spanList}>Código: 101015405405</span> */}
-                                            <img className={style.imgProduct} src={imgProduct} alt="image-product" />
+                                            <label className={style.labelImage} htmlFor={`imageProduct-${index}`}>Haz click aquí</label>
+                                            <input 
+                                                className={style.inputImage} 
+                                                type="file" 
+                                                accept="image/*" 
+                                                onChange={(event) => handleImageChange(event, index)} 
+                                                id={`imageProduct-${index}`}
+                                            />
+                                            <img className={style.imgProduct} src={color.image || imagePreview} alt="image-product" />
                                         </li>
                                     ))}
                                 </ol>                                                
@@ -308,7 +369,7 @@ const FormProduct = () => {
                         </div>
                         <div className={style.priceContainer}>
                             <label htmlFor="price" className={style.nameTitle}>Precio $</label>
-                            <input type="number" name="price" value={newProduct.price} onChange={handleInputChange} placeholder='0'/>
+                            <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
                         </div>    
                         <div className={style.priceContainer}>
                             <label htmlFor="price" className={style.nameTitle}>Código</label>
