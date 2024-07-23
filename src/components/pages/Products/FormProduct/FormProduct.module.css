@@ -304,6 +304,15 @@
     border-radius: 3px;
 }
 
+.inputImage{
+    display: none;    
+}
+
+.labelImage{
+    cursor: pointer;
+    /* display: block; */
+}
+
 .imgProduct{
     margin: 10px;
     width: 20%;
