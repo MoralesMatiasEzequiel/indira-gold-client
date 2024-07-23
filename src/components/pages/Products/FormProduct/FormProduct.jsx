@@ -9,26 +9,34 @@ import { postProduct } from '../../../../redux/productActions';
 const FormProduct = () => {
     const dispatch = useDispatch();
 
+    // const initialProductState = {
+    //     name: '',
+    //     color: [{
+    //         colorName: '',
+    //         size: [{
+    //             sizeName:'',
+    //             measurements: [{
+    //                 width: '',
+    //                 long: '',
+    //                 rise: ''
+    //             }],
+    //             code: '',
+    //             stock: 0
+    //         }],
+    //         image: ''
+    //     }],
+    //     price: 0,
+    //     category: [],
+    //     description: ''
+    // };
+
     const initialProductState = {
         name: '',
-        color: [{
-            colorName: '',
-            size: [{
-                sizeName:'',
-                measurements: [{
-                    width: '',
-                    long: '',
-                    rise: ''
-                }],
-                code: '',
-                stock: 0
-            }],
-            image: ''
-        }],
+        color: [], 
         price: 0,
         category: [],
         description: ''
-    };
+    }
 
     const categories = useSelector(state => state.categories.categories);
     const [newProduct, setNewProduct] = useState(initialProductState);
@@ -45,7 +53,7 @@ const FormProduct = () => {
     const [images, setImages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
-// console.log(newProduct);
+console.log(newProduct);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -74,6 +82,18 @@ const FormProduct = () => {
             setNewColor('');
         }
     };
+
+    // const addColor = () => {
+    //     if (newColor !== '') {
+    //         const updatedColors = [...colors, newColor];
+    //         setColors(updatedColors);
+            
+    //         const updatedProduct = { ...newProduct, color: [...newProduct.color, { colorName: newColor, size: [], image: '' }] };
+    //         setNewProduct(updatedProduct);
+            
+    //         setNewColor('');
+    //     }
+    // };
 
     const deleteColor = (index) => {
         const updatedColors = [...colors];
