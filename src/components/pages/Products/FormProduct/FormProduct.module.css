@@ -254,6 +254,17 @@
     justify-content:space-between;
 }
 
+.imageTitleContainer .labelImage{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 0px;
+    color: #e4b61a;
+    font-size: 35px;
+    font-weight: bold;
+}
+
 .title{
     display: flex;
     align-items: center;

@@ -49,7 +49,7 @@ const FormProduct = () => {
     const [price, setPrice] = useState(0);
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
-    const [selectedOptionImage, setSelectedOptionImage] = useState(null);
+    const [selectedOptionImage, setSelectedOptionImage] = useState('unique');
     const [images, setImages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
@@ -187,7 +187,7 @@ console.log(newProduct);
     };
 
     const handleCheckboxChange = (option) => {
-        setSelectedOptionImage(option === selectedOptionImage ? null : option);
+        setSelectedOptionImage(option === selectedOptionImage ? 'unique' : option);
     };
 
     // const handleAddImageChange = (event) => {
@@ -223,7 +223,8 @@ console.log(newProduct);
 
     const handleImageChange = (event, colorIndex) => {
         const file = event.target.files[0];
-        if (file) {
+
+        if (colorIndex !== undefined && file) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 // Actualiza la imagen de vista previa
@@ -237,7 +238,23 @@ console.log(newProduct);
                 setNewProduct(updatedProduct);
             };
             reader.readAsDataURL(file);
-        }
+        };
+
+        if (colorIndex === undefined && file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                // Actualiza la imagen de vista previa
+                setImagePreview(reader.result);
+    
+                // Construir una copia del nuevo estado
+                const updatedProduct = { ...newProduct };
+                updatedProduct.color.map(color => {color.image = reader.result})
+
+                // Actualizar el estado
+                setNewProduct(updatedProduct);
+            };
+            reader.readAsDataURL(file);
+        };
     };
 
     const handleSubmit = (event) => {
@@ -360,9 +377,12 @@ console.log(newProduct);
                             <div className={style.imageTitleContainer}>
                                 <div className={style.title}>
                                     <label htmlFor="image">Imágenes</label>
-                                    {/* <button type='button' className={style.butonImage}> */}
-                                        {/* <img className={style.addImage} src={add} alt="+" /> */}
-                                    {/* </button> */}
+                                    {selectedOptionImage === 'unique' && (
+                                        <div>
+                                            <label htmlFor={'imageUniqueProduct'} className={style.labelImage}>+</label>
+                                            <input type="file" accept="image/*" id={'imageUniqueProduct'} onChange={(event) => handleImageChange(event)} className={style.inputImage} />
+                                        </div>
+                                    )}
                                 </div>
                                 <div >
                                     <input className={style.inputCheckbox} type="checkbox" name="unique" id="unique" checked={selectedOptionImage === 'unique'} onChange={() => handleCheckboxChange('unique')} />
@@ -371,19 +391,23 @@ console.log(newProduct);
                                     <span className={style.spanImage}>Por color</span>
                                 </div>
                             </div>
-                            <div className={style.imageComponent}>
+                            <div className={style.imageComponent}>  
                                 <ol>
                                     {newProduct.color.map((color, index) => (
                                         <li key={index} className={style.list}>
                                             <span className={style.spanList}>{color.colorName}</span>
-                                            <label className={style.labelImage} htmlFor={`imageProduct-${index}`}>Haz click aquí</label>
-                                            <input 
-                                                className={style.inputImage} 
-                                                type="file" 
-                                                accept="image/*" 
-                                                onChange={(event) => handleImageChange(event, index)} 
-                                                id={`imageProduct-${index}`}
-                                            />
+                                            {selectedOptionImage === 'byColor' && (
+                                                <div>
+                                                    <label className={style.labelImage} htmlFor={`imageProduct-${index}`}>Cargar imagen</label>
+                                                    <input 
+                                                        className={style.inputImage} 
+                                                        type="file" 
+                                                        accept="image/*" 
+                                                        onChange={(event) => handleImageChange(event, index)} 
+                                                        id={`imageProduct-${index}`}
+                                                    />
+                                                </div>
+                                            )}
                                             <img className={style.imgProduct} src={color.image || imgProduct} alt="image-product" />
                                         </li>
                                     ))}
