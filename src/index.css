@@ -109,7 +109,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--light-grey);
-  overflow: auto;
+  overflow: hidden;
 }
 
 h2{
@@ -187,6 +187,22 @@ button:disabled {
     letter-spacing: 0.05rem;
     font-size: 0.75rem;
     padding: 0.5rem 1rem;
+}
+
+.titleButtons button a{
+    color: white;
+}
+
+.titleButtons button.delete{
+    background-color: var(--red);
+}
+
+.titleButtons button:hover{
+    background-color: black;
+}
+
+.titleButtons button img{
+    width: 1rem;
 }
 
 /*--FORMS--*/
