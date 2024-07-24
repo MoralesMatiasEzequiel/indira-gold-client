@@ -7,11 +7,10 @@ import style from './Sales.module.css';
 
 const Sales = () => {
     const dispatch = useDispatch();
-    const sales = useSelector(state => state.sales.sales);
 
     useEffect(() => {
-        //dispatch(getSales());
-    }, [sales]);
+        dispatch(getSales());
+    }, [dispatch]);
     
     return(
         <div className="page">
