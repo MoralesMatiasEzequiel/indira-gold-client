@@ -1,9 +1,8 @@
 import style from './FormProduct.module.css';
 import x from '../../Sales/FormSales/img/x.png';
+import imgProduct from './img/imgProduct.jpeg';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import imgProduct from './img/imgProduct.jpeg';
-import add from '../../Sales/FormSales/img/add.png';
 import { postProduct } from '../../../../redux/productActions';
 
 const FormProduct = () => {
@@ -19,23 +18,30 @@ const FormProduct = () => {
 
     const categories = useSelector(state => state.categories.categories);
     const [newProduct, setNewProduct] = useState(initialProductState);
-    const [name, setName] = useState('');
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
     const [sizes, setSizes] = useState([]);
     const [newSize, setNewSize] = useState('');
-    const [measurements, setMeasurements] = useState([]);
-    const [price, setPrice] = useState(0);
-    const [category, setCategory] = useState('');
-    const [description, setDescription] = useState('');
     const [selectedOptionImage, setSelectedOptionImage] = useState('unique');
-    const [images, setImages] = useState([]);
-    const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
-// console.log(newProduct);
+// console.log(newProduct); 
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+
+        if(name === 'name'){
+            setNewProduct({
+                ...newProduct,
+                name: value
+            });
+        };
+        if(name === 'price'){
+            let priceNumber = Number(value);
+            setNewProduct({
+                ...newProduct,
+                price: priceNumber
+            });
+        };
         if(name === 'category'){
             let array = [];
             array.push(value);
@@ -43,14 +49,22 @@ const FormProduct = () => {
                 ...newProduct,
                 category: array
             });
-        }else{
+        };
+        if(name === 'description'){
             setNewProduct({
                 ...newProduct,
-                [name]: value
+                description: value
             });
-        }
+        };
+        // else{
+        //     setNewProduct({
+        //         ...newProduct,
+        //         [name]: value
+        //     });
+        // }
     };
 
+    //-----------COLOR-----------//
     const handleInputColorChange = (event) => {
         setNewColor(event.target.value);
     };
@@ -92,6 +106,7 @@ const FormProduct = () => {
         });
     };
 
+    //-----------SIZE-----------//
     const handleInputSizeChange = (event) => {
         setNewSize(event.target.value);
     };
@@ -109,6 +124,7 @@ const FormProduct = () => {
         setSizes(updatedSizes);
     };
 
+    //-----------COMBINACION(COLOR/SIZE)-----------//
     const generateCombinations = () => {
         return colors.flatMap(color =>
             sizes.map(size => ({ color, size }))
@@ -116,6 +132,7 @@ const FormProduct = () => {
     };
     const combinations = generateCombinations();
 
+    //-----------STOCK-----------//
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
     
@@ -146,6 +163,7 @@ const FormProduct = () => {
                     long: '',
                     rise: ''
                 },
+                code: 'CÓDIGO QR',
                 stock: 0
             });    
             //idem
@@ -172,40 +190,10 @@ const FormProduct = () => {
         setNewProduct(updatedProduct);
     };
 
+    //-----------IMAGEN-----------//
     const handleCheckboxChange = (option) => {
         setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
     };
-
-    // const handleAddImageChange = (event) => {
-    //     // console.log(event.target.files[0]);
-    //     setImageFile(event);
-
-    // };
-
-    // const insertarArchivos = async() =>{
-    //     const f = new FormData();
-
-    //     for (let index = 0; index < imageFile.length; index++) {
-    //         f.append('file', imageFile[index]);
-            
-    //     }
-    // };
-
-    // const handleImageChange = (event, colorIndex) => {
-    //     const file = event.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             setImageFile(file);
-    //             setImagePreview(reader.result);
-
-    //             const updatedProduct = { ...newProduct };
-    //             updatedProduct.color[colorIndex].image = reader.result;
-    //             setNewProduct(updatedProduct);
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
 
     const handleImageChange = (event, colorIndex) => {
         const file = event.target.files[0];
@@ -243,38 +231,16 @@ const FormProduct = () => {
         };
     };
 
+    //-----------SUBMIT-----------//
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        // const productData = {
-        //     name: name,
-        //     color: colors.map((color, index) => ({
-        //         colorName: color,
-        //         size: sizes.map((size, idx) => ({
-        //             sizeName: size,
-        //             measurements: measurements[idx],
-        //             code: '000', // Ajustar según sea necesario
-        //             stock: 0 // Ajustar según sea necesario
-        //         })),
-        //         imageGlobal: '' // Ajustar según sea necesario
-        //     })),
-        //     price: price,
-        //     category: category,
-        //     description: description
-        // };
+        dispatch(postProduct(newProduct));
 
-        // dispatch(postProduct(productData));
-
-        // // Reiniciar el formulario después de enviar
-        // setName('');
-        // setColors([]);
-        // setSizes([]);
-        // setMeasurements([]);
-        // setPrice(0);
-        // setCategory('');
-        // setDescription('');
+        setColors([]);
+        setSizes([]);
+        setNewProduct(initialProductState);
     };
-
 
     return (
         <div className="component">
