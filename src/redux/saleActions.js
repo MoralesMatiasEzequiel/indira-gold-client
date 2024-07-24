@@ -58,3 +58,9 @@ export const postSale = (saleData) => {
         return response;
     };
 };
+
+export const deleteSale = (saleId) => {
+    return async (dispatch) => {
+        const { data } = await axios.put(`/sale/deactive/${saleId}`);
+    }
+}

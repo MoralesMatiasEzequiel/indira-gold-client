@@ -171,6 +171,10 @@ button{
     border: none;
 }
 
+button:hover, button.delete:hover{
+    background-color: #000000;
+}
+
 button:disabled {
     background-color: var(--dark-grey); /* Color de fondo para el botón deshabilitado */
     color: #ccc; /* Color del texto para el botón deshabilitado */
@@ -193,7 +197,7 @@ button:disabled {
     color: white;
 }
 
-.titleButtons button.delete{
+button.delete{
     background-color: var(--red);
 }
 
