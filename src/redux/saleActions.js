@@ -4,7 +4,7 @@ import { getSalesReducer, getSaleByIdReducer, getSalesOnlineReducer, getSalesLoc
 
 export const getSales = () => {
     return async (dispatch) => {
-        const { data } = await axios.get("/sale");
+        const { data } = await axios.get("/sale/active");
         dispatch(getSalesReducer(data));
     };
 };
@@ -58,3 +58,9 @@ export const postSale = (saleData) => {
         return response;
     };
 };
+
+export const deleteSale = (saleId) => {
+    return async (dispatch) => {
+        const { data } = await axios.put(`/sale/deactive/${saleId}`);
+    }
+}

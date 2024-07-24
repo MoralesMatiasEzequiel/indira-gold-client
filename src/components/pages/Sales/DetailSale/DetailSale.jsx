@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link } from 'react-router-dom';
-import { getSaleById } from '../../../../redux/saleActions.js';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { getSaleById, deleteSale } from '../../../../redux/saleActions.js';
 import print from "../../../../assets/img/print.png";
 import detail from "../../../../assets/img/detail.png";
 import style from "./DetailSale.module.css";
@@ -11,12 +11,24 @@ const DetailSale = () => {
 
     let { id } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const saleDetail = useSelector(state => state.sales.saleDetail);
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         dispatch(getSaleById(id));
     }, [dispatch, id]);
+
+    const toggleShowDeleteModal = () => {
+        setShowDeleteModal(!showDeleteModal);
+    }
     
+    const handleDelete = () => {
+        dispatch(deleteSale(id));
+        navigate('/main_window/');
+    }
+
     return(
         <div className="page">
             <div className="component">
@@ -25,7 +37,7 @@ const DetailSale = () => {
                     <div className="titleButtons">
                         <button><img src={print} alt=""/></button>
                         <button>Cambio</button>
-                        <button className="delete">Eliminar</button>
+                        <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>
                         <button><Link to={`/main_window/`}>Atrás</Link></button>
                     </div>
                 </div>
@@ -65,6 +77,15 @@ const DetailSale = () => {
                         </div>}
                     </div>
                 </div>          
+            </div>
+            <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
+                <div className={style.deleteContent}>
+                    <p>¿Está seguro que desea eliminar esta venta?</p>
+                    <div className={style.deleteButtons}>
+                        <button onClick={toggleShowDeleteModal}>Cancelar</button>
+                        <button onClick={handleDelete} className="delete">Eliminar</button>
+                    </div>
+                </div>
             </div>
         </div>
         
