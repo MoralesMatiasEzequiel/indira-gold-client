@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
-import { getClientByName, getClientByLastname } from "../../../../redux/clientActions.js";
+import { getClientByName, getClientByLastname, getClients } from "../../../../redux/clientActions.js";
 import detail from '../../../../assets/img/detail.png';
+import style from "./ClientRegistration.module.css";
 
 const ClientRegistration = () => {
 
@@ -17,6 +18,11 @@ const ClientRegistration = () => {
 
     const paginatedClients = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const totalPages = Math.ceil(clients.length / itemsPerPage);
+
+
+    useEffect(() => {
+        dispatch(getClients());
+    }, [dispatch])
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -119,17 +125,19 @@ const ClientRegistration = () => {
                                 <th>Email</th>
                                 <th>Teléfono</th>
                                 <th>Productos</th>
+                                <th>Estado</th>
                                 <th>Detalle</th>
                             </tr>
                         </thead>
                         <tbody>
                             {paginatedClients.map(client => (
-                                    <tr key={client._id}>
+                                    <tr key={client._id} className={!client.active ? style.inactive : ''}>
                                         <td>{client.name}</td>
                                         <td>{client.lastname}</td>
                                         <td>{client.email}</td>
                                         <td>{client.phone}</td>
-                                        <td>{client.shopping[0] ? client.shopping : '0'}</td>
+                                        <td>{client.shopping[0] ? client.shopping : '0'}</td>                                        
+                                        <td>{client.active ? "Activo" : "Inactivo"}</td>
                                         <td>
                                             <Link to={`/main_window/clients/${client._id}`}>
                                                 <img src={detail} alt="" className="detailImg" />

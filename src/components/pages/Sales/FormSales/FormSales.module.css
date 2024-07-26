@@ -110,8 +110,12 @@
     padding-bottom: 0.75rem;
 }
 
-.salesForm .column3 .left, .column3 .right{
-    width: 50%;
+.salesForm .column3 .left{
+    width: 70%;
+}
+
+.salesForm .column3 .right{
+    width: 30%;
 }
 
 .salesForm .column3 .left{
