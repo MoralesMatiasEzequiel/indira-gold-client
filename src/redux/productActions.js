@@ -42,3 +42,10 @@ export const getTopFiveProducts = () => {
         dispatch(getTopFiveProductsReducer(data));
     };
 };
+
+export const postProduct = (productData) => {
+    return async (dispatch) => {     
+        const response = await axios.post('/products', productData);
+        return response;
+    };
+};
