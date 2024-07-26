@@ -216,8 +216,7 @@ const FormSales = () => {
         const { name, value } = e.target;
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
-            [name]: name === 'discount' ? Number(value) : value,
-            [name]: name === 'paymentFee' ? Number(value) : value
+            [name]: name === 'discount' || name === 'paymentFee' ? Number(value) : value
         }));
         validateForm();
     };
@@ -271,6 +270,8 @@ const FormSales = () => {
             paymentFee: newSale.paymentFee === '' ? 0 : newSale.paymentFee,
             products: productsToSend
         };
+
+        console.log(saleData);
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
             dispatch(getSales());
