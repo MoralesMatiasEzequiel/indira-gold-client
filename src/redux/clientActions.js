@@ -35,3 +35,9 @@ export const postClient = (clientData) => {
         return response.data;
     };
 };
+
+export const deleteClient = (clientId) => {
+    return async (dispatch) => {
+        const { data } = await axios.put(`/clients/${clientId}`);
+    }
+}
