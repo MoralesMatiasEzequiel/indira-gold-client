@@ -1,9 +1,11 @@
 import style from './FormProduct.module.css';
 import x from '../../Sales/FormSales/img/x.png';
 import imgProduct from './img/imgProduct.jpeg';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { postProduct } from '../../../../redux/productActions';
+import FormCategory from '../FormCategory/FormCategory.jsx';
+import { getCategories } from '../../../../redux/categoryActions.js';
+import { postProduct } from '../../../../redux/productActions.js';
 
 const FormProduct = () => {
     const dispatch = useDispatch();
@@ -16,6 +18,10 @@ const FormProduct = () => {
         description: ''
     };
 
+    useEffect(() => {
+        dispatch(getCategories());
+    }, [dispatch]);
+
     const categories = useSelector(state => state.categories.categories);
     const [newProduct, setNewProduct] = useState(initialProductState);
     const [colors, setColors] = useState([]);
@@ -24,6 +30,8 @@ const FormProduct = () => {
     const [newSize, setNewSize] = useState('');
     const [selectedOptionImage, setSelectedOptionImage] = useState('unique');
     const [imagePreview, setImagePreview] = useState(imgProduct);
+    const [showCategoryForm, setShowCategoryForm] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
 // console.log(newProduct); 
 
     const handleInputChange = (event) => {
@@ -231,6 +239,23 @@ const FormProduct = () => {
         };
     };
 
+    //-----------CATEGORY-----------//
+    const handleShowCategoryForm = () => {
+        setShowCategoryForm(!showCategoryForm);
+    };
+
+    const handleCategoryAdded = (newCategory) => {
+        setShowCategoryForm(false);
+        
+        if(newCategory !== undefined){
+            setSelectedCategory({ value: newCategory._id, label: newCategory.name });
+            setNewProduct((prevNewProduct) => ({
+                ...prevNewProduct,
+                category: [newCategory._id]
+            }));
+        };
+    };
+
     //-----------SUBMIT-----------//
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -374,15 +399,14 @@ const FormProduct = () => {
                                     <option key={category._id} value={category._id}>{category.name}</option>
                                 ))}
                             </select>
+                            <div className={style.containerAddCategory}>
+                                <button className={style.buttonAddCategory} type='button' onClick={handleShowCategoryForm}>+</button>
+                            </div>
                         </div>
                         <div className={style.priceContainer}>
                             <label htmlFor="price" className={style.nameTitle}>Precio $</label>
                             <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
                         </div>    
-                        <div className={style.priceContainer}>
-                            <label htmlFor="price" className={style.nameTitle}>Código</label>
-                            <input type="text" name="code" />
-                        </div> 
                         <div className={style.descriptionContainer}>
                             <label htmlFor="description" className={style.nameTitle}>Descripción</label>
                             <textarea type="text" name="description" value={newProduct.description} onChange={handleInputChange}/>
@@ -392,6 +416,9 @@ const FormProduct = () => {
                         </div>
                     </div>
                 </form>
+                <div className={`${style.addCategoryComponent} ${showCategoryForm ? style.addCategoryComponentBorder : ''}`}>
+                    {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded}/>}
+                </div>
             </div>
         </div>
     );

@@ -333,13 +333,46 @@
 /* ----------------- CATEGORÍA ----------------- */
 
 .categoryContainer{
-    margin-bottom: 15px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
 }
 
 .selectCategory{
     width: 50%;
 }
 
+.containerAddCategory{
+    margin-bottom: 10px;
+}
+
+.buttonAddCategory{
+    background: none;
+    padding: 0;
+    margin-left: 5px;   
+    /* display: flex; */
+    /* justify-content: center; */
+    /* width: 25px; */
+    height: 0px;
+    color: #e4b61a;
+    /* font-weight: bold; */
+    font-size: 35px;
+}
+
+.addCategoryComponent{
+    position: absolute;
+    /* width: 25%; */
+    top: 10rem;
+    right: 1.5rem;
+    /* height: 11rem; */
+    display: none;
+}
+
+.addCategoryComponentBorder{
+    border: 1px solid #6e6e6e;
+    border-radius: 4px;
+    display: block;
+}
 /* ----------------- PRECIO ----------------- */
 
 .priceContainer{
