@@ -42,6 +42,7 @@ const FormSales = () => {
         paymentMethod: '',
         soldAt: '',
         discount: '',
+        paymentFee: '',
         products: []
     };
     const [newSale, setNewSale] = useState(initialSaleState);
@@ -215,7 +216,8 @@ const FormSales = () => {
         const { name, value } = e.target;
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
-            [name]: name === 'discount' ? Number(value) : value
+            [name]: name === 'discount' ? Number(value) : value,
+            [name]: name === 'paymentFee' ? Number(value) : value
         }));
         validateForm();
     };
@@ -266,6 +268,7 @@ const FormSales = () => {
         const saleData = {
             ...newSale,
             discount: newSale.discount === '' ? 0 : newSale.discount,
+            paymentFee: newSale.paymentFee === '' ? 0 : newSale.paymentFee,
             products: productsToSend
         };
         dispatch(postSale(saleData)).then((response) => {
@@ -363,6 +366,21 @@ const FormSales = () => {
                         </div>
                         <div className={style.labelInput}>
                             <div className={style.left}>
+                                <label htmlFor="paymentFee">Retención</label>
+                            </div>
+                            <div className={style.right}>
+                                <input 
+                                    name="paymentFee"
+                                    placeholder='%'
+                                    value={newSale.paymentFee}
+                                    onChange={handleInputChange}
+                                    className={style.discount}
+                                    type='number'
+                                />
+                            </div>
+                        </div>
+                        <div className={style.labelInput}>
+                            <div className={style.left}>
                                 <label htmlFor="soldAt">Tipo de venta</label>
                             </div>
                             <div className={style.right}>
@@ -423,10 +441,19 @@ const FormSales = () => {
                             <div className={style.left}>Descuento</div>
                             <div className={style.right}>- ${formatNumber(subtotal * newSale.discount / 100)}</div>
                         </div>
+                        <div className={style.discount}>
+                            <div className={style.left}>Retención</div>
+                            <div className={style.right}>- ${formatNumber((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100))}</div>
+                        </div>
+                        <div className={style.discount}>
+                            <div className={style.left}>Total con retención</div>
+                            <div className={style.right}>${formatNumber((subtotal * (1 - newSale.discount / 100)) - ((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100)))}</div>
+                        </div>
                         <div className={style.total}>
                             <div className={style.left}>Total</div>
                             <div className={style.right}>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
                         </div>
+                       
                         <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                     </div> 
                 </form>
