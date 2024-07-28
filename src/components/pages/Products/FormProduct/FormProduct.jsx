@@ -32,7 +32,7 @@ const FormProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
-// console.log(newProduct); 
+console.log(newProduct); 
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -205,7 +205,7 @@ const FormProduct = () => {
 
     const handleImageChange = (event, colorIndex) => {
         const file = event.target.files[0];
-
+    
         if (colorIndex !== undefined && file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -214,14 +214,15 @@ const FormProduct = () => {
     
                 // Construir una copia del nuevo estado
                 const updatedProduct = { ...newProduct };
-                updatedProduct.color[colorIndex].image = reader.result; // Guardar la ruta de la imagen
+                updatedProduct.color[colorIndex].imageFile = file; // Guardar el archivo de la imagen
+                updatedProduct.color[colorIndex].image = reader.result; // Guardar la vista previa
     
                 // Actualizar el estado
                 setNewProduct(updatedProduct);
             };
             reader.readAsDataURL(file);
-        };
-
+        }
+    
         if (colorIndex === undefined && file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -230,14 +231,53 @@ const FormProduct = () => {
     
                 // Construir una copia del nuevo estado
                 const updatedProduct = { ...newProduct };
-                updatedProduct.color.map(color => {color.image = reader.result})
-
-                // Actualizar el estado
+                updatedProduct.color.forEach(color => {
+                    color.imageFile = file; 
+                    color.image = reader.result;
+                });
+    
                 setNewProduct(updatedProduct);
             };
             reader.readAsDataURL(file);
-        };
+        }
     };
+
+    // const handleImageChange = (event, colorIndex) => {
+    //     const file = event.target.files[0];
+
+    //     if (colorIndex !== undefined && file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             // Actualiza la imagen de vista previa
+    //             setImagePreview(reader.result);
+    
+    //             // Construir una copia del nuevo estado
+    //             const updatedProduct = { ...newProduct };
+    //             // updatedProduct.color[colorIndex].image = reader.result; // Guardar la ruta de la imagen
+    //             updatedProduct.color[colorIndex].image = file;
+
+    //             // Actualizar el estado
+    //             setNewProduct(updatedProduct);
+    //         };
+    //         reader.readAsDataURL(file);
+    //     };
+
+    //     // if (colorIndex === undefined && file) {
+    //     //     const reader = new FileReader();
+    //     //     reader.onloadend = () => {
+    //     //         // Actualiza la imagen de vista previa
+    //     //         setImagePreview(reader.result);
+    
+    //     //         // Construir una copia del nuevo estado
+    //     //         const updatedProduct = { ...newProduct };
+    //     //         updatedProduct.color.map(color => {color.image = reader.result})
+
+    //     //         // Actualizar el estado
+    //     //         setNewProduct(updatedProduct);
+    //     //     };
+    //     //     reader.readAsDataURL(file);
+    //     // };
+    // };
 
     //-----------CATEGORY-----------//
     const handleShowCategoryForm = () => {
@@ -257,15 +297,44 @@ const FormProduct = () => {
     };
 
     //-----------SUBMIT-----------//
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+    
+        const formData = new FormData();
+        newProduct.color.forEach((color, index) => {
+            if (color.imageFile) {
+                formData.append('images', color.imageFile);
+            }
+        });
+    
+        formData.append("name", newProduct.name);
+        formData.append("color", JSON.stringify(newProduct.color));
+        formData.append("price", newProduct.price);
+        formData.append("category", JSON.stringify(newProduct.category));
+        formData.append("description", newProduct.description);
 
-        dispatch(postProduct(newProduct));
-
-        setColors([]);
-        setSizes([]);
-        setNewProduct(initialProductState);
+        try {
+            const response = await dispatch(postProduct(formData));
+    
+            if (response.data) {
+                console.log("Product successfully saved");
+                setColors([]);
+                setSizes([]);
+                setNewProduct(initialProductState); // Reset form
+            }
+        } catch (error) {
+            console.error("Error saving product:", error);
+        }
     };
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
+
+    //     dispatch(postProduct(newProduct));
+
+    //     setColors([]);
+    //     setSizes([]);
+    //     setNewProduct(initialProductState);
+    // };
 
     return (
         <div className="component">

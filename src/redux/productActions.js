@@ -45,7 +45,18 @@ export const getTopFiveProducts = () => {
 
 export const postProduct = (productData) => {
     return async (dispatch) => {     
-        const response = await axios.post('/products', productData);
+        const response = await axios.post('/products', productData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response;
     };
-};
+}
+
+// export const postProduct = (productData) => {
+//     return async (dispatch) => {     
+//         const response = await axios.post('/products', productData);
+//         return response;
+//     };
+// };
