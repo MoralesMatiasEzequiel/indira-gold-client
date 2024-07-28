@@ -13,6 +13,10 @@ const FormProduct = () => {
     const initialProductState = {
         name: '',
         color: [],
+        supplier: {
+            name: '',
+            phone: ''
+        },
         price: 0,
         category: [],
         description: ''
@@ -33,7 +37,7 @@ const FormProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
-// console.log(newProduct); 
+console.log(newProduct); 
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -199,6 +203,21 @@ const FormProduct = () => {
         setNewProduct(updatedProduct);
     };
 
+    //-----------SUPPLIER-----------//
+    const handleSupplierChange = (event) => {
+        const { name, value } = event.target;
+    
+        const updatedProduct = {
+            ...newProduct,
+            supplier: {
+                ...newProduct.supplier, 
+                [name]: value
+            }
+        };
+        setNewProduct(updatedProduct);
+    };
+    
+
     //-----------IMAGEN-----------//
     const handleCheckboxChange = (option) => {
         setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
@@ -311,6 +330,7 @@ const FormProduct = () => {
     
         formData.append("name", newProduct.name);
         formData.append("color", JSON.stringify(newProduct.color));
+        formData.append("supplier", JSON.stringify(newProduct.supplier));
         formData.append("price", newProduct.price);
         formData.append("category", JSON.stringify(newProduct.category));
         formData.append("description", newProduct.description);
@@ -390,36 +410,36 @@ const FormProduct = () => {
                         <div className={style.stockContainer}>
                             <label htmlFor="color">Medidas y stock</label>
                             <div className={style.stockCard}>
-                            <ol>
-                                {combinations.map((combination, index) => (
-                                    <li key={index} className={style.list}>
-                                        <span className={style.spanList}>
-                                            Color {combination.color} - Talle {combination.size}
-                                        </span>
-                                        <span className={style.spansinMed} htmlFor="width">Ancho:</span>
-                                        <input className={style.inputsinMed} type="number" name="width" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                        <span className={style.spansinMed} htmlFor="long">Largo:</span>
-                                        <input className={style.inputsinMed} type="number" name="long" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                        <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
-                                        <input className={style.inputsinMed} type="number" name="rise" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                        <span className={style.spansinMed} htmlFor="stock">Stock:</span>
-                                        <input className={style.inputsinStock} type="number" name="stock" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                    </li>
-                                ))}
-                            </ol>
+                                <ol>
+                                    {combinations.map((combination, index) => (
+                                        <li key={index} className={style.list}>
+                                            <span className={style.spanList}>
+                                                Color {combination.color} - Talle {combination.size}
+                                            </span>
+                                            <span className={style.spansinMed} htmlFor="width">Ancho:</span>
+                                            <input className={style.inputsinMed} type="number" name="width" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                            <span className={style.spansinMed} htmlFor="long">Largo:</span>
+                                            <input className={style.inputsinMed} type="number" name="long" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                            <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
+                                            <input className={style.inputsinMed} type="number" name="rise" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                            <span className={style.spansinMed} htmlFor="stock">Stock:</span>
+                                            <input className={style.inputsinStock} type="number" name="stock" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
                         </div>
-                            <div className={style.supplierContainer}>
-                                <label htmlFor="supplier" className={style.supplierTitle}>Proveedor</label>
-                                <div className={style.dataSupplierContainer}>
-                                    <label htmlFor="name" className={style.nameTitle}>Nombre</label>
-                                    <input type="text" name="name" className={style.inputName}/>
-                                </div>
-                                <div>
-                                    <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
-                                    <input type="text" name="phone" className={style.inputName}/>
-                                </div>
-                            </div> 
-                        </div>  
+                        <div className={style.supplierContainer}>
+                            <label htmlFor="supplier" className={style.supplierTitle}>Proveedor</label>
+                            <div className={style.dataSupplierContainer}>
+                                <label htmlFor="name" className={style.nameTitle}>Nombre</label>
+                                <input type="text" name="name" value={newProduct.supplier.name} onChange={handleSupplierChange} className={style.inputName}/>
+                            </div>
+                            <div>
+                                <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
+                                <input type="text" name="phone" value={newProduct.supplier.phone} onChange={handleSupplierChange} className={style.inputName}/>
+                            </div>
+                        </div>   
                     </div>
                     <div className={style.column2}>
                         <div className={style.imageContainer}>
