@@ -12,7 +12,7 @@ const FormProduct = () => {
 
     const initialProductState = {
         name: '',
-        color: [], 
+        color: [],
         price: 0,
         category: [],
         description: ''
@@ -29,10 +29,11 @@ const FormProduct = () => {
     const [sizes, setSizes] = useState([]);
     const [newSize, setNewSize] = useState('');
     const [selectedOptionImage, setSelectedOptionImage] = useState('unique');
+    const [imageGlobal, setImageGlobal] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
-console.log(newProduct); 
+// console.log(newProduct); 
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -226,17 +227,14 @@ console.log(newProduct);
         if (colorIndex === undefined && file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                // Actualiza la imagen de vista previa
                 setImagePreview(reader.result);
     
-                // Construir una copia del nuevo estado
                 const updatedProduct = { ...newProduct };
-                updatedProduct.color.forEach(color => {
-                    color.imageFile = file; 
-                    color.image = reader.result;
-                });
-    
+                updatedProduct.imageGlobal = file; 
+                updatedProduct.imageGlobalPreview = reader.result; 
+
                 setNewProduct(updatedProduct);
+                setImageGlobal(reader.result);
             };
             reader.readAsDataURL(file);
         }
@@ -299,8 +297,12 @@ console.log(newProduct);
     //-----------SUBMIT-----------//
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
         const formData = new FormData();
+
+        // Agregar la imagen global si existe
+        if (newProduct.imageGlobal) {
+            formData.append('imageGlobal', newProduct.imageGlobal);
+        };
         newProduct.color.forEach((color, index) => {
             if (color.imageFile) {
                 formData.append('images', color.imageFile);
@@ -320,6 +322,7 @@ console.log(newProduct);
                 console.log("Product successfully saved");
                 setColors([]);
                 setSizes([]);
+                setImageGlobal(null);
                 setNewProduct(initialProductState); // Reset form
             }
         } catch (error) {
@@ -454,7 +457,7 @@ console.log(newProduct);
                                                     />
                                                 </div>
                                             )}
-                                            <img className={style.imgProduct} src={color.image || imgProduct} alt="image-product" />
+                                            <img className={style.imgProduct} src={imageGlobal || color.image || imgProduct} alt="image-product" />
                                         </li>
                                     ))}
                                 </ol>                                                
