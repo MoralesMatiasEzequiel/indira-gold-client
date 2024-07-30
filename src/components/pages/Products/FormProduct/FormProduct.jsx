@@ -37,7 +37,7 @@ const FormProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
-console.log(newProduct); 
+// console.log(newProduct); 
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -88,18 +88,6 @@ console.log(newProduct);
             setNewColor('');
         };
     };
-
-    // const addColor = () => {
-    //     if (newColor !== '') {
-    //         const updatedColors = [...colors, newColor];
-    //         setColors(updatedColors);
-            
-    //         const updatedProduct = { ...newProduct, color: [...newProduct.color, { colorName: newColor, size: [], image: '' }] };
-    //         setNewProduct(updatedProduct);
-            
-    //         setNewColor('');
-    //     }
-    // };
 
     const deleteColor = (index) => {
         const updatedColors = [...colors];
@@ -217,7 +205,6 @@ console.log(newProduct);
         setNewProduct(updatedProduct);
     };
     
-
     //-----------IMAGEN-----------//
     const handleCheckboxChange = (option) => {
         setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
@@ -225,76 +212,59 @@ console.log(newProduct);
 
     const handleImageChange = (event, colorIndex) => {
         const file = event.target.files[0];
-    
-        if (colorIndex !== undefined && file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // Actualiza la imagen de vista previa
-                setImagePreview(reader.result);
-    
-                // Construir una copia del nuevo estado
-                const updatedProduct = { ...newProduct };
-                updatedProduct.color[colorIndex].imageFile = file; // Guardar el archivo de la imagen
-                updatedProduct.color[colorIndex].image = reader.result; // Guardar la vista previa
-    
-                // Actualizar el estado
-                setNewProduct(updatedProduct);
-            };
-            reader.readAsDataURL(file);
-        }
-    
-        if (colorIndex === undefined && file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-    
-                const updatedProduct = { ...newProduct };
-                updatedProduct.imageGlobal = file; 
-                updatedProduct.imageGlobalPreview = reader.result; 
 
-                setNewProduct(updatedProduct);
-                setImageGlobal(reader.result);
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const updatedProduct = { ...newProduct };
+
+                if (colorIndex !== undefined) {
+                    // Subir imagen específica por color
+                    updatedProduct.color[colorIndex].imageFile = file;
+                    updatedProduct.color[colorIndex].image = reader.result;
+
+                    // Eliminar imagen global si hay una
+                    if (updatedProduct.imageGlobal) {
+                        updatedProduct.imageGlobal = null;
+                        updatedProduct.imageGlobalPreview = null;
+                        setImageGlobal(null);
+                    }
+
+                    setNewProduct(updatedProduct);
+                    setImagePreview(reader.result);
+                } else {
+                    // Subir imagen global
+                    updatedProduct.imageGlobal = file;
+                    updatedProduct.imageGlobalPreview = reader.result;
+
+                    // Eliminar imágenes específicas de cada color
+                    updatedProduct.color = updatedProduct.color.map(color => ({
+                        ...color,
+                        imageFile: null,
+                        image: null
+                    }));
+
+                    setNewProduct(updatedProduct);
+                    setImageGlobal(reader.result);
+                    setImagePreview(reader.result);
+                }
             };
             reader.readAsDataURL(file);
         }
     };
-
-    // const handleImageChange = (event, colorIndex) => {
-    //     const file = event.target.files[0];
-
-    //     if (colorIndex !== undefined && file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             // Actualiza la imagen de vista previa
-    //             setImagePreview(reader.result);
     
-    //             // Construir una copia del nuevo estado
-    //             const updatedProduct = { ...newProduct };
-    //             // updatedProduct.color[colorIndex].image = reader.result; // Guardar la ruta de la imagen
-    //             updatedProduct.color[colorIndex].image = file;
+    const deleteImage = (index) => {
+        const updatedProduct = { ...newProduct };
 
-    //             // Actualizar el estado
-    //             setNewProduct(updatedProduct);
-    //         };
-    //         reader.readAsDataURL(file);
-    //     };
+            updatedProduct.imageGlobal = null;
+            updatedProduct.imageGlobalPreview = null;
+            updatedProduct.color[index].imageFile = null;
+            updatedProduct.color[index].image = null;
+            setImageGlobal(imgProduct);
 
-    //     // if (colorIndex === undefined && file) {
-    //     //     const reader = new FileReader();
-    //     //     reader.onloadend = () => {
-    //     //         // Actualiza la imagen de vista previa
-    //     //         setImagePreview(reader.result);
-    
-    //     //         // Construir una copia del nuevo estado
-    //     //         const updatedProduct = { ...newProduct };
-    //     //         updatedProduct.color.map(color => {color.image = reader.result})
-
-    //     //         // Actualizar el estado
-    //     //         setNewProduct(updatedProduct);
-    //     //     };
-    //     //     reader.readAsDataURL(file);
-    //     // };
-    // };
+        setNewProduct(updatedProduct);
+        setImagePreview(imgProduct);
+    };
 
     //-----------CATEGORY-----------//
     const handleShowCategoryForm = () => {
@@ -453,7 +423,7 @@ console.log(newProduct);
                                         </div>
                                     )}
                                 </div>
-                                <div >
+                                <div>
                                     <input className={style.inputCheckbox} type="checkbox" name="unique" id="unique" checked={selectedOptionImage === 'unique'} onChange={() => handleCheckboxChange('unique')} />
                                     <span className={style.spanImage}>Único</span>
                                     <input className={style.inputCheckbox} type="checkbox" name="byColor" id="byColor" checked={selectedOptionImage === 'byColor'} onChange={() => handleCheckboxChange('byColor')} />
@@ -477,10 +447,13 @@ console.log(newProduct);
                                                     />
                                                 </div>
                                             )}
-                                            <img className={style.imgProduct} src={imageGlobal || color.image || imgProduct} alt="image-product" />
+                                            <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
+                                            <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
+                                                <img src={x} alt="x" />
+                                            </button>
                                         </li>
                                     ))}
-                                </ol>                                                
+                                </ol>                                              
                             </div>
                         </div>
                         <div className={style.categoryContainer}>
@@ -517,3 +490,40 @@ console.log(newProduct);
 };
 
 export default FormProduct;
+
+    // const handleImageChange = (event, colorIndex) => {
+    //     const file = event.target.files[0];
+
+    //     if (colorIndex !== undefined && file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             // Actualiza la imagen de vista previa
+    //             setImagePreview(reader.result);
+    
+    //             // Construir una copia del nuevo estado
+    //             const updatedProduct = { ...newProduct };
+    //             // updatedProduct.color[colorIndex].image = reader.result; // Guardar la ruta de la imagen
+    //             updatedProduct.color[colorIndex].image = file;
+
+    //             // Actualizar el estado
+    //             setNewProduct(updatedProduct);
+    //         };
+    //         reader.readAsDataURL(file);
+    //     };
+
+    //     // if (colorIndex === undefined && file) {
+    //     //     const reader = new FileReader();
+    //     //     reader.onloadend = () => {
+    //     //         // Actualiza la imagen de vista previa
+    //     //         setImagePreview(reader.result);
+    
+    //     //         // Construir una copia del nuevo estado
+    //     //         const updatedProduct = { ...newProduct };
+    //     //         updatedProduct.color.map(color => {color.image = reader.result})
+
+    //     //         // Actualizar el estado
+    //     //         setNewProduct(updatedProduct);
+    //     //     };
+    //     //     reader.readAsDataURL(file);
+    //     // };
+    // };
