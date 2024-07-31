@@ -1,6 +1,6 @@
 import style from './FormProduct.module.css';
 import x from '../../Sales/FormSales/img/x.png';
-import imgProduct from './img/imgProduct.jpeg';
+import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
@@ -319,170 +319,163 @@ const FormProduct = () => {
             console.error("Error saving product:", error);
         }
     };
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-
-    //     dispatch(postProduct(newProduct));
-
-    //     setColors([]);
-    //     setSizes([]);
-    //     setNewProduct(initialProductState);
-    // };
 
     return (
-        <div className="component">
-            <div className="title">
-                <h2>NUEVO PRODUCTO</h2>
-            </div>
-            <div className="container">
-                <form onSubmit={handleSubmit} className={style.productForm}>
-                    <div className={style.column1}>
-                        <div>
-                            <label htmlFor="name" className={style.nameTitle}>Nombre</label>
-                            <input type="text" name="name" value={newProduct.name} onChange={handleInputChange} className={style.inputName}/>
-                        </div>
-                        <div className={style.detailProduct}>
-                            <div className={style.colorContainer}>
-                                <label htmlFor="color">Colores</label>
-                                <div className={style.colorCard}>
-                                    <ol>
-                                        {colors.map((color, colorIndex) => (
-                                            <li key={colorIndex} className={style.list}>
-                                                <span className={style.spanList}>{color}</span>
-                                                <button type="button" className={style.buttonDelete} onClick={() => deleteColor(colorIndex)}>
-                                                    <img src={x} alt="x" />
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ol>
-                                    <input className={style.inputAddColor} type="text" name="color" value={newColor} onChange={handleInputColorChange} placeholder='Agregar' />
-                                    <button type="button" className={style.buttonAdd} onClick={addColor}>+</button>
-                                </div>
-                            </div>
-                            <div className={style.sizeContainer}>
-                                <label htmlFor="size">Talle</label>
-                                <div className={style.sizeCard}>
-                                    <ol>
-                                        {sizes.map((size, index) => (
-                                            <li key={index} className={style.list}>
-                                                <span className={style.spanList}>{size}</span>
-                                                <button type="button" className={style.buttonDelete} onClick={() => deleteSize(index)}>
-                                                    <img src={x} alt="x" />
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ol>
-                                    <input className={style.inputAddSize} type="text" name="size" value={newSize} onChange={handleInputSizeChange} placeholder='Agregar' />
-                                    <button type="button" className={style.buttonAdd} onClick={addSize}>+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={style.stockContainer}>
-                            <label htmlFor="color">Medidas y stock</label>
-                            <div className={style.stockCard}>
-                                <ol>
-                                    {combinations.map((combination, index) => (
-                                        <li key={index} className={style.list}>
-                                            <span className={style.spanList}>
-                                                Color {combination.color} - Talle {combination.size}
-                                            </span>
-                                            <span className={style.spansinMed} htmlFor="width">Ancho:</span>
-                                            <input className={style.inputsinMed} type="number" name="width" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                            <span className={style.spansinMed} htmlFor="long">Largo:</span>
-                                            <input className={style.inputsinMed} type="number" name="long" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                            <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
-                                            <input className={style.inputsinMed} type="number" name="rise" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                            <span className={style.spansinMed} htmlFor="stock">Stock:</span>
-                                            <input className={style.inputsinStock} type="number" name="stock" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                        </li>
-                                    ))}
-                                </ol>
-                            </div>
-                        </div>
-                        <div className={style.supplierContainer}>
-                            <label htmlFor="supplier" className={style.supplierTitle}>Proveedor</label>
-                            <div className={style.dataSupplierContainer}>
-                                <label htmlFor="name" className={style.nameTitle}>Nombre</label>
-                                <input type="text" name="name" value={newProduct.supplier.name} onChange={handleSupplierChange} className={style.inputName}/>
-                            </div>
+        <div className="page">
+            <div className="component">
+                <div className="title">
+                    <h2>NUEVO PRODUCTO</h2>
+                </div>
+                <div className="container">
+                    <form onSubmit={handleSubmit} className={style.productForm}>
+                        <div className={style.column1}>
                             <div>
-                                <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
-                                <input type="text" name="phone" value={newProduct.supplier.phone} onChange={handleSupplierChange} className={style.inputName}/>
+                                <label htmlFor="name" className={style.nameTitle}>Nombre</label>
+                                <input type="text" name="name" value={newProduct.name} onChange={handleInputChange} className={style.inputName}/>
                             </div>
-                        </div>   
-                    </div>
-                    <div className={style.column2}>
-                        <div className={style.imageContainer}>
-                            <div className={style.imageTitleContainer}>
-                                <div className={style.title}>
-                                    <label htmlFor="image">Imágenes</label>
-                                    {selectedOptionImage === 'unique' && (
-                                        <div>
-                                            <label htmlFor={'imageUniqueProduct'} className={style.labelImage}>+</label>
-                                            <input type="file" accept="image/*" id={'imageUniqueProduct'} onChange={(event) => handleImageChange(event)} className={style.inputImage} />
-                                        </div>
-                                    )}
+                            <div className={style.detailProduct}>
+                                <div className={style.colorContainer}>
+                                    <label htmlFor="color">Colores</label>
+                                    <div className={style.colorCard}>
+                                        <ol>
+                                            {colors.map((color, colorIndex) => (
+                                                <li key={colorIndex} className={style.list}>
+                                                    <span className={style.spanList}>{color}</span>
+                                                    <button type="button" className={style.buttonDelete} onClick={() => deleteColor(colorIndex)}>
+                                                        <img src={x} alt="x" />
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ol>
+                                        <input className={style.inputAddColor} type="text" name="color" value={newColor} onChange={handleInputColorChange} placeholder='Agregar' />
+                                        <button type="button" className={style.buttonAdd} onClick={addColor}>+</button>
+                                    </div>
+                                </div>
+                                <div className={style.sizeContainer}>
+                                    <label htmlFor="size">Talle</label>
+                                    <div className={style.sizeCard}>
+                                        <ol>
+                                            {sizes.map((size, index) => (
+                                                <li key={index} className={style.list}>
+                                                    <span className={style.spanList}>{size}</span>
+                                                    <button type="button" className={style.buttonDelete} onClick={() => deleteSize(index)}>
+                                                        <img src={x} alt="x" />
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ol>
+                                        <input className={style.inputAddSize} type="text" name="size" value={newSize} onChange={handleInputSizeChange} placeholder='Agregar' />
+                                        <button type="button" className={style.buttonAdd} onClick={addSize}>+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={style.stockContainer}>
+                                <label htmlFor="color">Medidas y stock</label>
+                                <div className={style.stockCard}>
+                                    <ol>
+                                        {combinations.map((combination, index) => (
+                                            <li key={index} className={style.list}>
+                                                <span className={style.spanList}>
+                                                    Color {combination.color} - Talle {combination.size}
+                                                </span>
+                                                <span className={style.spansinMed} htmlFor="width">Ancho:</span>
+                                                <input className={style.inputsinMed} type="number" name="width" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                                <span className={style.spansinMed} htmlFor="long">Largo:</span>
+                                                <input className={style.inputsinMed} type="number" name="long" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                                <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
+                                                <input className={style.inputsinMed} type="number" name="rise" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                                <span className={style.spansinMed} htmlFor="stock">Stock:</span>
+                                                <input className={style.inputsinStock} type="number" name="stock" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                            </li>
+                                        ))}
+                                    </ol>
+                                </div>
+                            </div>
+                            <div className={style.supplierContainer}>
+                                <label htmlFor="supplier" className={style.supplierTitle}>Proveedor</label>
+                                <div className={style.dataSupplierContainer}>
+                                    <label htmlFor="name" className={style.nameTitle}>Nombre</label>
+                                    <input type="text" name="name" value={newProduct.supplier.name} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
                                 <div>
-                                    <input className={style.inputCheckbox} type="checkbox" name="unique" id="unique" checked={selectedOptionImage === 'unique'} onChange={() => handleCheckboxChange('unique')} />
-                                    <span className={style.spanImage}>Único</span>
-                                    <input className={style.inputCheckbox} type="checkbox" name="byColor" id="byColor" checked={selectedOptionImage === 'byColor'} onChange={() => handleCheckboxChange('byColor')} />
-                                    <span className={style.spanImage}>Por color</span>
+                                    <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
+                                    <input type="text" name="phone" value={newProduct.supplier.phone} onChange={handleSupplierChange} className={style.inputName}/>
+                                </div>
+                            </div>   
+                        </div>
+                        <div className={style.column2}>
+                            <div className={style.imageContainer}>
+                                <div className={style.imageTitleContainer}>
+                                    <div className={style.title}>
+                                        <label htmlFor="image">Imágenes</label>
+                                        {selectedOptionImage === 'unique' && (
+                                            <div>
+                                                <label htmlFor={'imageUniqueProduct'} className={style.labelImage}>+</label>
+                                                <input type="file" accept="image/*" id={'imageUniqueProduct'} onChange={(event) => handleImageChange(event)} className={style.inputImage} />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <input className={style.inputCheckbox} type="checkbox" name="unique" id="unique" checked={selectedOptionImage === 'unique'} onChange={() => handleCheckboxChange('unique')} />
+                                        <span className={style.spanImage}>Único</span>
+                                        <input className={style.inputCheckbox} type="checkbox" name="byColor" id="byColor" checked={selectedOptionImage === 'byColor'} onChange={() => handleCheckboxChange('byColor')} />
+                                        <span className={style.spanImage}>Por color</span>
+                                    </div>
+                                </div>
+                                <div className={style.imageComponent}>  
+                                    <ol>
+                                        {newProduct.color.map((color, index) => (
+                                            <li key={index} className={style.list}>
+                                                <span className={style.spanList}>{color.colorName}</span>
+                                                {selectedOptionImage === 'byColor' && (
+                                                    <div>
+                                                        <label className={style.labelImage} htmlFor={`imageProduct-${index}`}>Cargar imagen</label>
+                                                        <input 
+                                                            className={style.inputImage} 
+                                                            type="file" 
+                                                            accept="image/*" 
+                                                            onChange={(event) => handleImageChange(event, index)} 
+                                                            id={`imageProduct-${index}`}
+                                                        />
+                                                    </div>
+                                                )}
+                                                <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
+                                                <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
+                                                    <img src={x} alt="x" />
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ol>                                              
                                 </div>
                             </div>
-                            <div className={style.imageComponent}>  
-                                <ol>
-                                    {newProduct.color.map((color, index) => (
-                                        <li key={index} className={style.list}>
-                                            <span className={style.spanList}>{color.colorName}</span>
-                                            {selectedOptionImage === 'byColor' && (
-                                                <div>
-                                                    <label className={style.labelImage} htmlFor={`imageProduct-${index}`}>Cargar imagen</label>
-                                                    <input 
-                                                        className={style.inputImage} 
-                                                        type="file" 
-                                                        accept="image/*" 
-                                                        onChange={(event) => handleImageChange(event, index)} 
-                                                        id={`imageProduct-${index}`}
-                                                    />
-                                                </div>
-                                            )}
-                                            <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
-                                            <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
-                                                <img src={x} alt="x" />
-                                            </button>
-                                        </li>
+                            <div className={style.categoryContainer}>
+                                <label htmlFor="category" className={style.nameTitle}>Categoría</label>
+                                <select name="category" className={style.selectCategory} value={newProduct.category} onChange={handleInputChange}>
+                                    <option value="" disabled>Seleccionar</option>
+                                    {categories.map((category) => (
+                                        <option key={category._id} value={category._id}>{category.name}</option>
                                     ))}
-                                </ol>                                              
+                                </select>
+                                <div className={style.containerAddCategory}>
+                                    <button className={style.buttonAddCategory} type='button' onClick={handleShowCategoryForm}>+</button>
+                                </div>
+                            </div>
+                            <div className={style.priceContainer}>
+                                <label htmlFor="price" className={style.nameTitle}>Precio $</label>
+                                <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
+                            </div>    
+                            <div className={style.descriptionContainer}>
+                                <label htmlFor="description" className={style.nameTitle}>Descripción</label>
+                                <textarea type="text" name="description" value={newProduct.description} onChange={handleInputChange}/>
+                            </div> 
+                            <div>
+                                <button type="submit">Agregar</button>
                             </div>
                         </div>
-                        <div className={style.categoryContainer}>
-                            <label htmlFor="category" className={style.nameTitle}>Categoría</label>
-                            <select name="category" className={style.selectCategory} value={newProduct.category} onChange={handleInputChange}>
-                                <option value="" disabled>Seleccionar</option>
-                                {categories.map((category) => (
-                                    <option key={category._id} value={category._id}>{category.name}</option>
-                                ))}
-                            </select>
-                            <div className={style.containerAddCategory}>
-                                <button className={style.buttonAddCategory} type='button' onClick={handleShowCategoryForm}>+</button>
-                            </div>
-                        </div>
-                        <div className={style.priceContainer}>
-                            <label htmlFor="price" className={style.nameTitle}>Precio $</label>
-                            <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
-                        </div>    
-                        <div className={style.descriptionContainer}>
-                            <label htmlFor="description" className={style.nameTitle}>Descripción</label>
-                            <textarea type="text" name="description" value={newProduct.description} onChange={handleInputChange}/>
-                        </div> 
-                        <div>
-                            <button type="submit">Agregar</button>
-                        </div>
+                    </form>
+                    <div className={`${style.addCategoryComponent} ${showCategoryForm ? style.addCategoryComponentBorder : ''}`}>
+                        {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded}/>}
                     </div>
-                </form>
-                <div className={`${style.addCategoryComponent} ${showCategoryForm ? style.addCategoryComponentBorder : ''}`}>
-                    {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded}/>}
                 </div>
             </div>
         </div>
