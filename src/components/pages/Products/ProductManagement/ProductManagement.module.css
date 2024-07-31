@@ -1,9 +1,34 @@
 .tdMax{
     width: 100%;
     border: none;
-    border-top: 1px solid #e5e5e5;
 }
 
 .tdMin{
     border: none;
+}
+
+.tdImageContainer{
+    border-left: none;
+    border-right: none;
+    padding: 4px;
+    width: 90px; 
+    height: 80px;
+    overflow: hidden; /* Oculta cualquier parte de la imagen que sobresalga del contenedor */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tdImage{
+    padding: 2px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imageProduct{
+    width: 100%;
+    height: auto; /* Mantiene la proporción de la imagen */
+    object-fit: cover; /* Ajusta la imagen para llenar el contenedor sin deformar */
 }
