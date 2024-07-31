@@ -29,7 +29,7 @@ const FormSales = () => {
         { value: 'Débito', label: 'Débito' },
         { value: 'Transferencia', label: 'Transferencia' }
     ];
-    const [selectedProducts, setSelectedProducts] = useState([null]);
+    const [selectedProducts, setSelectedProducts] = useState([{ productId: null, colorId: null, sizeId: null }]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
     const [clientOptions, setClientOptions] = useState([]);
@@ -56,7 +56,9 @@ const FormSales = () => {
                 color.size.forEach(size => {
                     if (size.stock > 0) {
                         productOptions.push({
-                            value: product._id,
+                            productId: product._id,
+                            colorId: color._id,
+                            sizeId: size._id,
                             label: `${product.name} - ${color.colorName} - Talle ${size.sizeName}`,
                             price: product.price
                         });
@@ -93,11 +95,11 @@ const FormSales = () => {
 
     const calculateSubtotal = (selectedProducts) => {
         let subtotal = 0;
-        selectedProducts.forEach(productId => {
-            if (productId) {
-                const product = products.find(p => p._id === productId);
-                if (product) {
-                    subtotal += product.price;
+        selectedProducts.forEach(product => {
+            if (product.productId) {
+                const productDetail = products.find(p => p._id === product.productId);
+                if (productDetail) {
+                    subtotal += productDetail.price;
                 }
             }
         });
@@ -178,10 +180,10 @@ const FormSales = () => {
     const handleProductChange = (selectedOption, index) => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
-            newSelectedProducts[index] = selectedOption ? selectedOption.value : null;
+            newSelectedProducts[index] = selectedOption ? { ...selectedOption } : { productId: null, colorId: null, sizeId: null };
 
             if (index === newSelectedProducts.length - 1 && selectedOption) {
-                newSelectedProducts.push(null);
+                newSelectedProducts.push({ productId: null, colorId: null, sizeId: null });
                 setTimeout(() => {
                     productRefs.current[index + 1].focus();
                 }, 0);
@@ -263,7 +265,7 @@ const FormSales = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const productsToSend = selectedProducts.filter(product => product !== null);
+        const productsToSend = selectedProducts.filter(product => product.productId !== null);
         const saleData = {
             ...newSale,
             discount: newSale.discount === '' ? 0 : newSale.discount,
@@ -277,7 +279,7 @@ const FormSales = () => {
             dispatch(getSales());
             // Resetear el formulario
             setNewSale(initialSaleState);
-            setSelectedProducts([null]);
+            setSelectedProducts([{ productId: null, colorId: null, sizeId: null }]);
             setSubtotal(0);
             setSelectedClient(null);
             setIsSubmitDisabled(true);
@@ -413,13 +415,13 @@ const FormSales = () => {
                     </div>
                     <div className={style.column2}>
                         <label htmlFor="products">Productos</label>
-                        {selectedProducts.map((product, index) => (
+                        {selectedProducts.map((selectedProduct, index) => (
                             <div key={index} className={style.product}>
                                 
                                 <div className={style.productSelect}>
                                     <AsyncSelect
                                         name="products"
-                                        value={product ? { value: product, label: transformProductOptions(products).find(p => p.value === product)?.label } : null}
+                                        value={selectedProduct.productId ? selectedProduct : null}
                                         loadOptions={loadProductOptions}
                                         onChange={(selectedOption) => handleProductChange(selectedOption, index)}
                                         placeholder="Buscar Producto"
