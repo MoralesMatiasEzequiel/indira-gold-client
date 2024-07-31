@@ -58,8 +58,8 @@ const SideBar = () => {
                                     </li>
                                     <li>
                                         <NavLink
-                                            className={`${style.NavLink} ${location.pathname === '/main_window/products' ? style.selected : ''}`}
-                                            to="/main_window/products"
+                                            className={`${style.NavLink} ${location.pathname === '/main_window/products/management' ? style.selected : ''}`}
+                                            to="/main_window/products/management"
                                         >
                                             <div>
                                                 <p>Gestión de Productos</p>
