@@ -23,7 +23,7 @@ const ProductManagement = () => {
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
             setCurrentPage(newPage);
-        }
+        };
     };
 
     const getPageButtons = () => {
@@ -110,16 +110,14 @@ const ProductManagement = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {paginatedProducts.map((product, index) => (
+                                {paginatedProducts.map((product) => (
                                     <tr key={product._id}>
                                         <td>{product.name}</td>
-                                        {/* <td>{product.color[index]?.colorName}</td> */}
-                                        <td>{product.color.map(color => (
+                                        <td>{product.color.map((color, colorIndex) => (
                                             <tr>
-                                                <td>{color.colorName}</td>
+                                                <td className={colorIndex > 0 ? style.tdMax : style.tdMin}>{color.colorName}</td>
                                             </tr>))}
                                         </td>
-                                        {/* <td><img src={product.color[0]?.image} alt="Product Image"/></td> */}
                                         <td>{product.imageGlobal 
                                             ? <img src={product.imageGlobal} alt="Product Image"/> 
                                             : <tr>{product.color.map(color => (
@@ -128,13 +126,11 @@ const ProductManagement = () => {
                                                 </td>))}
                                               </tr>}
                                         </td>
-                                        {/* <td>{product.color[0]?.size[0].sizeName}</td> */}
-                                        <td>{product.color.map(color => (
-                                            <tr>{color.size.map(size => (
-                                                <td>{size.sizeName}</td>))}
+                                        <td>{product.color.map((color) => (
+                                            <tr>{color.size.map((size, sizeIndex) => (
+                                                <td className={sizeIndex > 0 ? style.tdMax : style.tdMin}>{size.sizeName}</td>))}
                                             </tr>))}
                                         </td>
-                                        {/* <td className={style.dataNumber}>{product.color[0]?.size[0].stock}</td> */}
                                         <td>{product.color.map(color => (
                                             <tr>{color.size.map(size => (
                                                 <td>{size.stock}</td>))}
