@@ -118,13 +118,13 @@ const ProductManagement = () => {
                                                 <td className={colorIndex > 0 ? style.tdMax : style.tdMin}>{color.colorName}</td>
                                             </tr>))}
                                         </td>
-                                        <td>{product.imageGlobal 
-                                            ? <img src={product.imageGlobal} alt="Product Image"/> 
+                                        <td className={style.tdImageContainer}>{product.imageGlobal 
+                                            ? <img src={product.imageGlobal} alt="Product Image" className={style.imageProduct}/> 
                                             : <tr>{product.color.map(color => (
-                                                <td>
-                                                    <img src={color.image} alt="Product Image"/>
+                                                <td className={style.tdImage}>
+                                                    <img src={color.image} alt="Product Image" className={style.imageProduct}/>
                                                 </td>))}
-                                              </tr>}
+                                              </tr>}    
                                         </td>
                                         <td>{product.color.map((color) => (
                                             <tr>{color.size.map((size, sizeIndex) => (
