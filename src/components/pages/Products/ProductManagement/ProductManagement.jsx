@@ -106,7 +106,6 @@ const ProductManagement = () => {
                                     <th>Stock</th>
                                     <th>Precio</th>
                                     <th>Categoría</th>
-                                    <th>Estado</th>
                                     <th>Detalle</th>
                                 </tr>
                             </thead>
@@ -114,13 +113,35 @@ const ProductManagement = () => {
                                 {paginatedProducts.map((product, index) => (
                                     <tr key={product._id}>
                                         <td>{product.name}</td>
-                                        <td>{product.color[index]?.colorName}</td>
-                                        <td><img src={product.color[0]?.image} alt="Product Image"/></td>
-                                        <td>{product.color[0]?.size[0].sizeName}</td>
-                                        <td className={style.dataNumber}>{product.color[0]?.size[0].stock}</td>
-                                        <td className={style.dataNumber}>$ {product.price}</td>
-                                        <td>{product.category.length > 0 ? product.category[0].name : 'No tiene categoría'}</td>
-                                        <td>Estado del stock?</td>
+                                        {/* <td>{product.color[index]?.colorName}</td> */}
+                                        <td>{product.color.map(color => (
+                                            <tr>
+                                                <td>{color.colorName}</td>
+                                            </tr>))}
+                                        </td>
+                                        {/* <td><img src={product.color[0]?.image} alt="Product Image"/></td> */}
+                                        <td>{product.imageGlobal 
+                                            ? <img src={product.imageGlobal} alt="Product Image"/> 
+                                            : <tr>{product.color.map(color => (
+                                                <td>
+                                                    <img src={color.image} alt="Product Image"/>
+                                                </td>))}
+                                              </tr>}
+                                        </td>
+                                        {/* <td>{product.color[0]?.size[0].sizeName}</td> */}
+                                        <td>{product.color.map(color => (
+                                            <tr>{color.size.map(size => (
+                                                <td>{size.sizeName}</td>))}
+                                            </tr>))}
+                                        </td>
+                                        {/* <td className={style.dataNumber}>{product.color[0]?.size[0].stock}</td> */}
+                                        <td>{product.color.map(color => (
+                                            <tr>{color.size.map(size => (
+                                                <td>{size.stock}</td>))}
+                                            </tr>))}
+                                        </td>
+                                        <td>$ {product.price}</td>
+                                        <td>{product.category.length > 0 ? product.category[0].name : 'Sin categoría'}</td>
                                         <td>
                                             <Link to={`/main_window/products/${product._id}`}>
                                                 <img src={detail} alt="" className="detailImg" />
