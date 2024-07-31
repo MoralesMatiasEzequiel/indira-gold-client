@@ -1,0 +1,16 @@
+.nameProduct{
+    width: 100%;
+    text-align: center;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--gold);
+}
+
+.column {
+    height: 90%;
+    width: 50%;
+    padding: 0 2rem;
+    box-sizing: border-box;
+}
