@@ -52,7 +52,13 @@ export const postProduct = (productData) => {
         });
         return response;
     };
-}
+};
+
+export const deleteProductById = (productId) => {
+    return async (dispatch) =>{
+        const { data } = await axios.delete(`/products/${productId}`);
+    };
+};
 
 // export const postProduct = (productData) => {
 //     return async (dispatch) => {     
