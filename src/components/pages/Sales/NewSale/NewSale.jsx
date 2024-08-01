@@ -5,7 +5,7 @@ import style from './NewSale.module.css';
 
 const NewSale = ({ saleResponse }) => {
 
-    const { client, paymentMethod, discount, products, orderNumber, subTotal, totalPrice } = saleResponse.data;
+    const { client, paymentMethod, installments, discount, products, orderNumber, subTotal, totalPrice } = saleResponse.data;
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -23,6 +23,7 @@ const NewSale = ({ saleResponse }) => {
             <div className={style.column}>
                 <p><span className={style.key}>Cliente:</span> {client ? `${clientById.dni} - ${clientById.name} ${clientById.lastname}` : "Anónimo"}</p>
                 <p><span className={style.key}>Método de Pago:</span> {paymentMethod}</p>
+                <p><span className={style.key}>Cuotas:</span> {installments}</p>
                 <p><span className={style.key}>Productos comprados:</span> {products.length}</p>
             </div>
             <div className={style.column}>
