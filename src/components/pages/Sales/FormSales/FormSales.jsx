@@ -40,6 +40,7 @@ const FormSales = () => {
     const initialSaleState = {
         client: '',
         paymentMethod: '',
+        installments: '',
         soldAt: '',
         discount: '',
         paymentFee: '',
@@ -218,7 +219,7 @@ const FormSales = () => {
         const { name, value } = e.target;
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
-            [name]: name === 'discount' || name === 'paymentFee' ? Number(value) : value
+            [name]: name === 'discount' || name === 'paymentFee' || name === 'installments' ? Number(value) : value
         }));
         validateForm();
     };
@@ -268,6 +269,7 @@ const FormSales = () => {
         const productsToSend = selectedProducts.filter(product => product.productId !== null);
         const saleData = {
             ...newSale,
+            installments: newSale.installments === '' ? 1 : newSale.installments,
             discount: newSale.discount === '' ? 0 : newSale.discount,
             paymentFee: newSale.paymentFee === '' ? 0 : newSale.paymentFee,
             products: productsToSend
@@ -349,6 +351,21 @@ const FormSales = () => {
                                     options={paymentMethods}
                                     styles={clientInputStyles}
                                     placeholder="Seleccionar"
+                                />
+                            </div>
+                        </div>                        
+                        <div className={style.labelInput}>
+                            <div className={style.left}>
+                                <label htmlFor="installments">Cuotas</label>
+                            </div>
+                            <div className={style.right}>
+                                <input 
+                                    name="installments"
+                                    placeholder='1'
+                                    value={newSale.installments}
+                                    onChange={handleInputChange}
+                                    className={style.discount}
+                                    type='number'
                                 />
                             </div>
                         </div>
