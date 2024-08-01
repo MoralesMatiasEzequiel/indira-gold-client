@@ -30,6 +30,7 @@ const FormSales = () => {
         { value: 'Transferencia', label: 'Transferencia' }
     ];
     const [selectedProducts, setSelectedProducts] = useState([{ productId: null, colorId: null, sizeId: null }]);
+    const [selectedProductQuantities, setSelectedProductQuantities] = useState({});
     const [selectedClient, setSelectedClient] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
     const [clientOptions, setClientOptions] = useState([]);
@@ -61,7 +62,8 @@ const FormSales = () => {
                             colorId: color._id,
                             sizeId: size._id,
                             label: `${product.name} - ${color.colorName} - Talle ${size.sizeName}`,
-                            price: product.price
+                            price: product.price,
+                            stock: size.stock
                         });
                     }
                 });
@@ -81,9 +83,13 @@ const FormSales = () => {
 
     const loadProductOptions = (inputValue, callback) => {
         const productOptions = transformProductOptions(products);
-        const filteredOptions = productOptions.filter(product =>
-            product.label.toLowerCase().includes(inputValue.toLowerCase())
-        );
+        const filteredOptions = productOptions.filter(product => {
+            const key = `${product.productId}_${product.colorId}_${product.sizeId}`;
+            const selectedQuantity = selectedProductQuantities[key] || 0;
+            const availableStock = product.stock - selectedQuantity;
+
+            return availableStock > 0 && product.label.toLowerCase().includes(inputValue.toLowerCase());
+        });
         callback(filteredOptions);
     };
 
@@ -189,6 +195,27 @@ const FormSales = () => {
                     productRefs.current[index + 1].focus();
                 }, 0);
             }
+
+            // Update selectedProductQuantities
+            setSelectedProductQuantities((prevQuantities) => {
+                const newQuantities = { ...prevQuantities };
+                const key = `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}`;
+                
+                if (selectedOption) {
+                    if (newQuantities[key]) {
+                        newQuantities[key]++;
+                    } else {
+                        newQuantities[key] = 1;
+                    }
+                } else {
+                    // Si se eliminó un producto, restar la cantidad seleccionada
+                    if (newQuantities[key]) {
+                        newQuantities[key]--;
+                        if (newQuantities[key] <= 0) delete newQuantities[key];
+                    }
+                }
+                return newQuantities;
+            });
 
             setSubtotal(calculateSubtotal(newSelectedProducts));
             validateForm();
