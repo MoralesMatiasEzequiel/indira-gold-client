@@ -47,7 +47,7 @@ const DetailSale = () => {
                     <div className={style.column}>
                         {saleDetail.client
                         ?  <p>
-                                <span>Cliente:&nbsp;</span>{saleDetail.client.name} {saleDetail.client.lastname}
+                                <span>Cliente:&nbsp;</span>{saleDetail.client.dni} - {saleDetail.client.name} {saleDetail.client.lastname}
                                 <Link to={`/main_window/clients/${saleDetail.client._id}`}>
                                     <img src={detail} alt=""/>
                                 </Link>

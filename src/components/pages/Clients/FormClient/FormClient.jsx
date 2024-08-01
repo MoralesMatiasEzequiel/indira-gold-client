@@ -7,6 +7,7 @@ const FormClient = ({ onClientAdded }) => {
     const dispatch = useDispatch();
 
     const initialClientState = {
+        dni: '',
         name: '',
         lastname: '',
         email: '',
@@ -45,6 +46,17 @@ const FormClient = ({ onClientAdded }) => {
             <div className="container">
                 <form onSubmit={handleSubmit} className={style.clientForm}>
                     <div className={style.column}>
+                        <div className={style.labelInput}>
+                            <label htmlFor="dni">DNI</label>
+                            <input 
+                                type="number" 
+                                id="dni" 
+                                name="dni" 
+                                value={newClient.dni} 
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
                         <div className={style.labelInput}>
                             <label htmlFor="name">Nombre(s)</label>
                             <input 

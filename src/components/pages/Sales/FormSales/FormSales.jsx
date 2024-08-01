@@ -72,7 +72,7 @@ const FormSales = () => {
     const transformClientOptions = (clients) => {
         const clientOptions = clients.map(client => ({
             value: client._id,
-            label: `${client.name} ${client.lastname}`
+            label: `${client.dni} - ${client.name} ${client.lastname}`
         }));
         clientOptions.unshift({ value: '', label: 'Anónimo' });
         return clientOptions;
@@ -292,7 +292,7 @@ const FormSales = () => {
         setShowClientForm(false);
 
         if(newClient !== undefined){
-            setSelectedClient({ value: newClient._id, label: `${newClient.name} ${newClient.lastname}` });
+            setSelectedClient({ value: newClient._id, label: `${newClient.dni} - ${newClient.name} ${newClient.lastname}` });
         }
 
         if(newClient !== undefined){

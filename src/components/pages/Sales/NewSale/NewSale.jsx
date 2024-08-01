@@ -21,7 +21,7 @@ const NewSale = ({ saleResponse }) => {
             <p className={style.orderNumber}>N° de orden: {orderNumber}</p>
 
             <div className={style.column}>
-                <p><span className={style.key}>Cliente:</span> {client ? `${clientById.name} ${clientById.lastname}` : "Anónimo"}</p>
+                <p><span className={style.key}>Cliente:</span> {client ? `${clientById.dni} - ${clientById.name} ${clientById.lastname}` : "Anónimo"}</p>
                 <p><span className={style.key}>Método de Pago:</span> {paymentMethod}</p>
                 <p><span className={style.key}>Productos comprados:</span> {products.length}</p>
             </div>
