@@ -120,20 +120,20 @@ const ProductManagement = () => {
                                         </td>
                                         <td className={style.tdImageContainer}>{product.imageGlobal 
                                             ? <img className={style.imageProduct} src={product.imageGlobal} alt="Product Image"/> 
-                                            : <div>{product.color.map((color, colorIndex) => (
-                                                <div key={colorIndex}>
+                                            : <div>{product.color.map((color, colorImageIndex) => (
+                                                <div key={colorImageIndex}>
                                                     <img src={color.image} alt="Product Image" className={style.imageProduct}/>
                                                 </div>))}
                                               </div>}    
                                         </td>
-                                        <td className={style.tdInside}>{product.color.map((color, colorIndex) => (
-                                            <div key={colorIndex} className={colorIndex > 0 ? style.sizeContainer : ''}>{color.size.map(size => (
-                                                <td key={colorIndex} className={colorIndex > 0 ? style.tdSizeMax : style.tdSizeMin}>{size.sizeName}</td>))}
+                                        <td className={style.tdInside}>{product.color.map((color, colorSizeIndex) => (
+                                            <div key={colorSizeIndex} className={colorSizeIndex > 0 ? style.sizeContainer : ''}>{color.size.map((size, sizeIndex) => (
+                                                <td key={sizeIndex} className={sizeIndex > 0 ? style.tdSizeMax : style.tdSizeMin}>{size.sizeName}</td>))}
                                             </div>))}
                                         </td>
-                                        <td className={style.tdInside}>{product.color.map((color, colorIndex) => (
-                                            <div key={colorIndex} className={colorIndex > 0 ? style.sizeContainer : ''}>{color.size.map(size => (
-                                                <td key={colorIndex} className={colorIndex > 0 ? style.tdSizeMax : style.tdSizeMin}>{size.stock}</td>))}
+                                        <td className={style.tdInside}>{product.color.map((color, colorStockIndex) => (
+                                            <div key={colorStockIndex} className={colorStockIndex > 0 ? style.sizeContainer : ''}>{color.size.map((size, sizeStockIndex) => (
+                                                <td key={sizeStockIndex} className={sizeStockIndex > 0 ? style.tdSizeMax : style.tdSizeMin}>{size.stock}</td>))}
                                             </div>))}
                                         </td>
                                         <td className={style.tdMin}>$ {product.price}</td>
