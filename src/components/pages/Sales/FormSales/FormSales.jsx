@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts } from '../../../../redux/productActions.js';
+import { getProducts, reduceStock } from '../../../../redux/productActions.js';
 import { getClients } from '../../../../redux/clientActions.js';
 import { getSales, postSale } from '../../../../redux/saleActions.js';
 import FormClient from '../../Clients/FormClient/FormClient.jsx';
@@ -274,6 +274,28 @@ const FormSales = () => {
             paymentFee: newSale.paymentFee === '' ? 0 : newSale.paymentFee,
             products: productsToSend
         };
+
+        const productQuantities = {};
+
+        productsToSend.forEach(product => {
+            const key = `${product.productId}_${product.colorId}_${product.sizeId}`;
+            if (productQuantities[key]) {
+            productQuantities[key].stockToReduce += 1;
+            } else {
+            productQuantities[key] = {
+                _id: product.productId,
+                idColor: product.colorId,
+                idSize: product.sizeId,
+                stockToReduce: 1,
+            };
+            }
+        });
+
+        // Dispatch reduceStock por cada producto diferente
+        for (const key in productQuantities) {
+            const productData = productQuantities[key];
+            dispatch(reduceStock(productData));
+        }
 
         console.log(saleData);
         dispatch(postSale(saleData)).then((response) => {

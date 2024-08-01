@@ -54,6 +54,13 @@ export const postProduct = (productData) => {
     };
 }
 
+export const reduceStock = (productData) => {
+    return async (dispatch) => {     
+        const { data } = await axios.put('/products/reduce', productData);
+        return data;
+    };
+}
+
 // export const postProduct = (productData) => {
 //     return async (dispatch) => {     
 //         const response = await axios.post('/products', productData);
