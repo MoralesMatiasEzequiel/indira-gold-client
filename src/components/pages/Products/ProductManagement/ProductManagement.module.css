@@ -1,34 +1,59 @@
+.tdInside{
+    padding: 0;
+}
+
 .tdMax{
-    width: 100%;
+    width: auto;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
+    border-top: solid 1px #f1f1f1;
 }
 
 .tdMin{
+    width: auto;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
 }
 
 .tdImageContainer{
-    border-left: none;
-    border-right: none;
-    padding: 4px;
-    width: 90px; 
-    height: 80px;
-    overflow: hidden; /* Oculta cualquier parte de la imagen que sobresalga del contenedor */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.tdImage{
-    padding: 2px;
     border: none;
+    padding: 4px;
+    width: 100px; 
+    height: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden; /* Oculta cualquier parte de la imagen que sobresalga del contenedor */
 }
 
 .imageProduct{
     width: 100%;
     height: auto; /* Mantiene la proporción de la imagen */
     object-fit: cover; /* Ajusta la imagen para llenar el contenedor sin deformar */
+}
+
+.tdSizeMax{
+    width: auto;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+.tdSizeMin{
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sizeContainer {
+    border-top: solid 1px #f1f1f1;
 }

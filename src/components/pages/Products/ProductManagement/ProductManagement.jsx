@@ -110,33 +110,33 @@ const ProductManagement = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {paginatedProducts.map((product) => (
+                                {paginatedProducts?.map((product) => (
                                     <tr key={product._id}>
                                         <td>{product.name}</td>
-                                        <td>{product.color.map((color, colorIndex) => (
-                                            <tr>
+                                        <td className={style.tdInside}>{product.color?.map((color, colorIndex) => (
+                                            <div key={colorIndex}>
                                                 <td className={colorIndex > 0 ? style.tdMax : style.tdMin}>{color.colorName}</td>
-                                            </tr>))}
+                                            </div>))}
                                         </td>
                                         <td className={style.tdImageContainer}>{product.imageGlobal 
-                                            ? <img src={product.imageGlobal} alt="Product Image" className={style.imageProduct}/> 
-                                            : <tr>{product.color.map(color => (
-                                                <td className={style.tdImage}>
+                                            ? <img className={style.imageProduct} src={product.imageGlobal} alt="Product Image"/> 
+                                            : <div>{product.color.map((color, colorIndex) => (
+                                                <div key={colorIndex}>
                                                     <img src={color.image} alt="Product Image" className={style.imageProduct}/>
-                                                </td>))}
-                                              </tr>}    
+                                                </div>))}
+                                              </div>}    
                                         </td>
-                                        <td>{product.color.map((color) => (
-                                            <tr>{color.size.map((size, sizeIndex) => (
-                                                <td className={sizeIndex > 0 ? style.tdMax : style.tdMin}>{size.sizeName}</td>))}
-                                            </tr>))}
+                                        <td className={style.tdInside}>{product.color.map((color, colorIndex) => (
+                                            <div key={colorIndex} className={colorIndex > 0 ? style.sizeContainer : ''}>{color.size.map(size => (
+                                                <td key={colorIndex} className={colorIndex > 0 ? style.tdSizeMax : style.tdSizeMin}>{size.sizeName}</td>))}
+                                            </div>))}
                                         </td>
-                                        <td>{product.color.map(color => (
-                                            <tr>{color.size.map(size => (
-                                                <td>{size.stock}</td>))}
-                                            </tr>))}
+                                        <td className={style.tdInside}>{product.color.map((color, colorIndex) => (
+                                            <div key={colorIndex} className={colorIndex > 0 ? style.sizeContainer : ''}>{color.size.map(size => (
+                                                <td key={colorIndex} className={colorIndex > 0 ? style.tdSizeMax : style.tdSizeMin}>{size.stock}</td>))}
+                                            </div>))}
                                         </td>
-                                        <td>$ {product.price}</td>
+                                        <td className={style.tdMin}>$ {product.price}</td>
                                         <td>{product.category.length > 0 ? product.category[0].name : 'Sin categoría'}</td>
                                         <td>
                                             <Link to={`/main_window/products/${product._id}`}>
