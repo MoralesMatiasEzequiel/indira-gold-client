@@ -15,6 +15,13 @@ export const getClientById = (clientId) => {
     };
 };
 
+export const getClientByDni = (dni) => {
+    return async (dispatch) => {
+        const { data } = await axios.get(`/clients?dni=${dni}&`);
+        dispatch(getClientsReducer(data));
+    };
+};
+
 export const getClientByName = (name) => {
     return async (dispatch) => {
         const { data } = await axios.get(`/clients?name=${name}&`);

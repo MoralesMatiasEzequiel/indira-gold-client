@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
-import { getClientByName, getClientByLastname, getClients } from "../../../../redux/clientActions.js";
+import { getClientByName, getClientByLastname, getClientByDni, getClients } from "../../../../redux/clientActions.js";
 import detail from '../../../../assets/img/detail.png';
 import style from "./ClientRegistration.module.css";
 
@@ -10,6 +10,7 @@ const ClientRegistration = () => {
     const clients = useSelector(state => state.clients.clients);
     const dispatch = useDispatch();
 
+    const [dni, setDni] = useState('');
     const [name, setName] = useState('');
     const [lastname, setLastname] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -65,6 +66,10 @@ const ClientRegistration = () => {
         return buttons;
     };
 
+    const handleChangeDni = (event) => {
+        setDni(event.target.value);
+    };
+
     const handleChangeName = (event) => {
         setName(event.target.value);
     };
@@ -72,6 +77,14 @@ const ClientRegistration = () => {
     const handleChangeLastname = (event) => {
         setLastname(event.target.value);
     };
+
+    useEffect(() => {
+        if (dni) {
+            dispatch(getClientByDni(dni));
+        } else {
+            dispatch(getClientByName('')); 
+        }
+    }, [dni, dispatch]);
 
     useEffect(() => {
         if (name) {
@@ -110,6 +123,13 @@ const ClientRegistration = () => {
                             <tr>
                                 <th>
                                     <div className="withFilter">
+                                        <span>DNI</span>
+                                        <input type="search" name="searchDni" onChange={handleChangeDni} value={dni} placeholder="Buscar" autoComplete="off" className="filterSearch"  
+                                        />
+                                    </div>
+                                </th>
+                                <th>
+                                    <div className="withFilter">
                                         <span>Nombre(s)</span>
                                         <input type="search" name="searchName" onChange={handleChangeName} value={name} placeholder="Buscar" autoComplete="off" className="filterSearch"  
                                         />
@@ -132,11 +152,12 @@ const ClientRegistration = () => {
                         <tbody>
                             {paginatedClients.map(client => (
                                     <tr key={client._id} className={!client.active ? style.inactive : ''}>
+                                        <td>{client.dni && client.dni}</td>
                                         <td>{client.name}</td>
                                         <td>{client.lastname}</td>
                                         <td>{client.email}</td>
                                         <td>{client.phone}</td>
-                                        <td>{client.shopping[0] ? client.shopping : '0'}</td>                                        
+                                        <td>{client.purchases && client.purchases[0] ? client.purchases : '0'}</td>    
                                         <td>{client.active ? "Activo" : "Inactivo"}</td>
                                         <td>
                                             <Link to={`/main_window/clients/${client._id}`}>
