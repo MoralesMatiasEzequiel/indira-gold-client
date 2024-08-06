@@ -43,6 +43,13 @@ export const postClient = (clientData) => {
     };
 };
 
+export const putAddProducts = (clientData) => {
+    return async () => {
+        const response = await axios.put('/clients', clientData);
+        return response.data;
+    }
+}
+
 export const deleteClient = (clientId) => {
     return async (dispatch) => {
         const { data } = await axios.put(`/clients/${clientId}`);

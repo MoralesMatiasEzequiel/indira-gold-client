@@ -3,7 +3,7 @@ import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts, reduceStock } from '../../../../redux/productActions.js';
-import { getClients } from '../../../../redux/clientActions.js';
+import { getClients, putAddProducts } from '../../../../redux/clientActions.js';
 import { getSales, postSale } from '../../../../redux/saleActions.js';
 import FormClient from '../../Clients/FormClient/FormClient.jsx';
 import NewSale from '../NewSale/NewSale.jsx';
@@ -322,6 +322,18 @@ const FormSales = () => {
         for (const key in productQuantities) {
             const productData = productQuantities[key];
             dispatch(reduceStock(productData));
+        }
+
+        if (selectedClient && selectedClient.value) {
+            const clientData = {
+                _id: selectedClient.value,
+                purchases: productsToSend.map(product => ({
+                    productId: product.productId,
+                    colorId: product.colorId,
+                    sizeId: product.sizeId
+                }))
+            };
+            dispatch(putAddProducts(clientData));
         }
 
         console.log(saleData);
