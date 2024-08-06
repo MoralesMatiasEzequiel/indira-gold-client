@@ -3,7 +3,7 @@ import { postClient, getClients } from '../../../../redux/clientActions';
 import { useDispatch } from 'react-redux';
 import style from './FormClient.module.css';
 
-const FormClient = ({ onClientAdded }) => {
+const FormClient = ({ onClientAdded = () => {} }) => {
     const dispatch = useDispatch();
 
     const initialClientState = {
@@ -29,10 +29,10 @@ const FormClient = ({ onClientAdded }) => {
         e.preventDefault();
         dispatch(postClient(newClient)).then((response) => {
             onClientAdded(response);
-            
+            dispatch(getClients());   
+            setNewClient(initialClientState); // Reset form
         });
-        dispatch(getClients());
-        setNewClient(initialClientState); // Reset form
+        
         if (onClientAdded) {
             onClientAdded();
         }

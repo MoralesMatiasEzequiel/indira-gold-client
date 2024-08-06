@@ -17,7 +17,7 @@ const ClientRegistration = () => {
 
     const itemsPerPage = 20;
 
-    const paginatedClients = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const paginatedClients = clients.slice().reverse().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const totalPages = Math.ceil(clients.length / itemsPerPage);
 
 
@@ -157,7 +157,7 @@ const ClientRegistration = () => {
                                         <td>{client.lastname}</td>
                                         <td>{client.email}</td>
                                         <td>{client.phone}</td>
-                                        <td>{client.purchases && client.purchases[0] ? client.purchases : '0'}</td>    
+                                        <td>{client.purchases ? client.purchases.length : '0'}</td>    
                                         <td>{client.active ? "Activo" : "Inactivo"}</td>
                                         <td>
                                             <Link to={`/main_window/clients/${client._id}`}>
