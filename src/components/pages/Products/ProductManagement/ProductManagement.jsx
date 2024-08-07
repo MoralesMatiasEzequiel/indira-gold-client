@@ -65,6 +65,13 @@ const ProductManagement = () => {
         setName(event.target.value);
     };
 
+    const getImageUrl = (imagePath) => {
+        if (!imagePath) return '';
+        // URL base para los archivos estáticos
+        const baseUrl = 'http://localhost:3001/';
+        return `${baseUrl}${imagePath}`;
+    };
+
     useEffect(() => {
         if (name) {
             dispatch(getProductByName(name));
@@ -119,10 +126,10 @@ const ProductManagement = () => {
                                             </div>))}
                                         </td>
                                         <td className={style.tdImageContainer}>{product.imageGlobal 
-                                            ? <img className={style.imageProduct} src={product.imageGlobal} alt="Product Image"/> 
+                                            ? <img className={style.imageProduct} src={getImageUrl(product.imageGlobal)} alt="Product Image"/> 
                                             : <div>{product.color.map((color, colorImageIndex) => (
                                                 <div key={colorImageIndex}>
-                                                    <img src={color.image} alt="Product Image" className={style.imageProduct}/>
+                                                    <img src={getImageUrl(color.image)} alt="Product Image" className={style.imageProduct}/>
                                                 </div>))}
                                               </div>}    
                                         </td>

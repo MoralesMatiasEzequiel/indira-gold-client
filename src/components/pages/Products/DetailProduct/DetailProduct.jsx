@@ -23,10 +23,17 @@ const DetailProduct = () => {
         navigate('/main_window/products/management');
     };
 
+    const getImageUrl = (imagePath) => {
+        if (!imagePath) return '';
+        // URL base para los archivos estáticos
+        const baseUrl = 'http://localhost:3001/';
+        return `${baseUrl}${imagePath}`;
+    };
+
     useEffect(() => {
         dispatch(getProductById(id));
     }, [dispatch, id]);
-    
+
     return(
         <div className="page">
             <div className="component">
@@ -41,35 +48,38 @@ const DetailProduct = () => {
                 <div className="container">
                     {productDetail.name && <div className={style.nameProduct}><span>{productDetail.name}</span></div>}
                     <div className={style.column}>
-                        {productDetail.imageGlobal && <img src={productDetail.imageGlobal} alt="Product Image"/>}
-                        <p>Precio: ${productDetail.price}</p>
-                        <p>Categoría: {(productDetail.category && productDetail.category.length > 0) ? productDetail.category[0].name : 'No tiene categoría'}</p>
-                        <p>Código QR: </p>
-                        {productDetail.supplier 
-                        ? <div>
-                            <p>Proveedor</p>
-                            <p>Nombre: {productDetail.supplier.name}</p>
-                            <p>Teléfono: {productDetail.supplier.phone}</p>
-                            </div> 
-                        : ''}
-                        <p>Proveedor</p>
                         {productDetail.color?.map(color => (
-                            <div>
-                                <img src={color.image} alt="Product Image"/>
-                                <p>Color: {color.colorName}</p>
+                            <div className={style.containerImgProduct}>
+                                {color.image && <img className={style.imgProduct} src={getImageUrl(color.image)} alt="Product Image"/>}
+                            </div>
+                        ))}
+                        {productDetail.imageGlobal && <img className={style.imgProduct} src={getImageUrl(productDetail.imageGlobal)} alt="Product Image"/>}
+                        <p><span>Precio:&nbsp;</span>${productDetail.price}</p>
+                        <p><span>Categoría:&nbsp;</span>{(productDetail.category && productDetail.category.length > 0) ? productDetail.category[0].name : 'No tiene categoría'}</p>
+                        <p><span>Código QR:</span></p>
+                        {productDetail.color?.map(color => (
+                            <div className={style.containerColor}>                  
+                                <p><span>Color:&nbsp;</span>{color.colorName}</p>
                                 {color.size.map(size => (
                                     <div>
-                                        <p>Talle: {size.sizeName}</p>   
-                                        <p>Stock: {size.stock}</p>                                           
-                                        <p>Medidas:</p>
-                                        <li>Ancho: {size.measurements[0].width ? size.measurements[0].width : 'No hay ancho establecido.'}</li>
-                                        <li>Largo: {size.measurements[0].long ? size.measurements[0].long : 'No hay largo establecido.'}</li>
-                                        <li>Tiro: {size.measurements[0].rise ? size.measurements[0].rise : 'No hay tiro establecido.'}</li>
+                                        <p><span>Talle:&nbsp;</span>{size.sizeName}</p>   
+                                        <p><span>Stock:&nbsp;</span>{size.stock}</p>                                           
+                                        <p><span>Medidas:</span></p>
+                                        <li><span>Ancho:&nbsp;</span>{size.measurements[0].width ? size.measurements[0].width : 'No hay ancho establecido.'}</li>
+                                        <li><span>Largo:&nbsp;</span>{size.measurements[0].long ? size.measurements[0].long : 'No hay largo establecido.'}</li>
+                                        <li><span>Tiro:&nbsp;</span>{size.measurements[0].rise ? size.measurements[0].rise : 'No hay tiro establecido.'}</li>
                                     </div>
                                 ))}
                             </div>
                         ))}
-                        {productDetail.description ? <p>Descripción: {productDetail.description}</p> : ''}
+                        {productDetail.description ? <p><span>Descripción:&nbsp;</span>{productDetail.description}</p> : ''}
+                        {productDetail.supplier 
+                        ? <div>
+                            <p><span>Proveedor:</span></p>
+                            <li><span>Nombre:&nbsp;</span>{productDetail.supplier.name}</li>
+                            <li><span>Teléfono:&nbsp;</span>{productDetail.supplier.phone}</li>
+                            </div> 
+                        : ''}
                     </div>
                 </div>
             </div>
