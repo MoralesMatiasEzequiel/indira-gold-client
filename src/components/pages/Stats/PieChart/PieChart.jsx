@@ -8,21 +8,10 @@ ChartJS.register(Tooltip, Legend, ArcElement);
 const PieChart = () => {
     const soldProducts = useSelector(state => state.products.soldProducts);
 
-    // Memoize the processing of sold products to optimize performance
     const { labels, data } = useMemo(() => {
-        // Count the number of products sold per category
-        const categoryCounts = soldProducts.reduce((acc, category) => {
-            const count = category.soldProducts.length;
-            acc.push({ category: category.categoryName, count });
-            return acc;
-        }, []);
-
-        // Sort categories by count in descending order and take the top 5
-        const topCategories = categoryCounts.sort((a, b) => b.count - a.count).slice(0, 5);
-
         // Extract labels and data for the pie chart
-        const labels = topCategories.map(item => item.category);
-        const data = topCategories.map(item => item.count);
+        const labels = soldProducts.map(item => item.categoryName);
+        const data = soldProducts.map(item => item.count);
 
         return { labels, data };
     }, [soldProducts]);
