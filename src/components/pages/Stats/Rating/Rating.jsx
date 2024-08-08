@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 const Rating = () => {
 
     const topFiveProducts = useSelector(state => state.products.topFiveProducts.topFiveProducts);
-    console.log(topFiveProducts);
     
     return(
         <div className="component">
@@ -14,11 +13,11 @@ const Rating = () => {
                 <h2>MÁS VENDIDOS</h2>
             </div>
             {topFiveProducts?.map((product, index) => (
-                <div key={product._id} className={style.containerTopFive}>
+                <div key={index} className={style.containerTopFive}>
                     <div className={style.ratingNumber}>{index + 1}</div>
                     <div className={style.productDetails}>
-                        <p className={style.productName}>{product.name}</p>
-                        {/* <p>{product.color[0].colorName} - Talle {product.color[0].size[0].sizeName}</p> */}
+                        <p className={style.productName}>{product.productName}</p>
+                        <p>{product.colorName} - Talle {product.sizeName}</p>
                     </div>
                 </div>
             ))}
