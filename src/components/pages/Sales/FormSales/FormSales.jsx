@@ -64,7 +64,6 @@ const FormSales = () => {
                             label: `${product.name} - ${color.colorName} - Talle ${size.sizeName}`,
                             price: product.price,
                             stock: size.stock,
-                            category: product.category[0].name
                         });
                     }
                 });
