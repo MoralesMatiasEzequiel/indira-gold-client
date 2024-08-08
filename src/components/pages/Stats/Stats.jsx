@@ -29,8 +29,8 @@ const Stats = () => {
             </div>
             <div className={style.stats}>
                 <div className={style.component}><Rating/></div>
-                <div className={style.middleComponent}><Piechart  /></div>
-                <div className={style.component}><BarChart /></div>
+                {/* <div className={style.middleComponent}><Piechart  /></div> */}
+                {/* <div className={style.component}><BarChart /></div> */}
             </div>
         </div>
     );

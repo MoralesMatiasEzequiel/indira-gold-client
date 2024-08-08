@@ -15,12 +15,11 @@ const DailyMetric = () => {
     let suffix = '';
     if (totalRevenue >= 1000 && totalRevenue < 1000000) {
         displayRevenue = Math.floor(totalRevenue / 1000);
-        console.log(displayRevenue);
         suffix = 'k';
     } else if (totalRevenue >= 1000000) {
         displayRevenue = Math.floor(totalRevenue / 1000000);
         suffix = 'M';
-    }
+    };
 
     return(
         <div>

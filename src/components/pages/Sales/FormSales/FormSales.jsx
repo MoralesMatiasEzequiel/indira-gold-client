@@ -63,12 +63,14 @@ const FormSales = () => {
                             sizeId: size._id,
                             label: `${product.name} - ${color.colorName} - Talle ${size.sizeName}`,
                             price: product.price,
-                            stock: size.stock
+                            stock: size.stock,
+                            category: product.category[0].name
                         });
                     }
                 });
             });
         });
+        
         return productOptions;
     };
 
@@ -83,6 +85,8 @@ const FormSales = () => {
 
     const loadProductOptions = (inputValue, callback) => {
         const productOptions = transformProductOptions(products);
+        // console.log(productOptions);
+
         const filteredOptions = productOptions.filter(product => {
             const key = `${product.productId}_${product.colorId}_${product.sizeId}`;
             const selectedQuantity = selectedProductQuantities[key] || 0;
@@ -336,7 +340,7 @@ const FormSales = () => {
             dispatch(putAddProducts(clientData));
         }
 
-        console.log(saleData);
+        // console.log(saleData);
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
             dispatch(getSales());
