@@ -37,7 +37,25 @@ const FormProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
 // console.log(newProduct); 
+
+    const validateForm = () => {
+        const isProductNameValid = newProduct.name.trim() !== '';
+        const isColorValid = colors.length > 0;
+        const isSizeValid = sizes.length > 0;
+        const isCategoryValid = newProduct.category.length > 0;
+        const isPriceValid = newProduct.price > 0;
+
+        // Validar que al menos una combinación de color y talla tenga stock mayor a 0
+        const hasAtLeastOneValidStock = combinations.some(combination => {
+            const color = newProduct.color.find(c => c.colorName === combination.color);
+            const size = color ? color.size.find(s => s.sizeName === combination.size) : null;
+            return size ? size.stock > 0 : false;
+        });
+
+        setIsSubmitDisabled(!(isProductNameValid && isColorValid && isSizeValid && isCategoryValid && isPriceValid && hasAtLeastOneValidStock));
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -69,12 +87,7 @@ const FormProduct = () => {
                 description: value
             });
         };
-        // else{
-        //     setNewProduct({
-        //         ...newProduct,
-        //         [name]: value
-        //     });
-        // }
+        validateForm();
     };
 
     //-----------COLOR-----------//
@@ -87,8 +100,9 @@ const FormProduct = () => {
             setColors([...colors, newColor]);
             setNewColor('');
         };
+        validateForm();
     };
-
+    
     const deleteColor = (index) => {
         const updatedColors = [...colors];
         updatedColors.splice(index, 1);
@@ -105,6 +119,7 @@ const FormProduct = () => {
             ...newProduct,
             color: filteredProductsColor
         });
+        validateForm();
     };
 
     //-----------SIZE-----------//
@@ -116,13 +131,15 @@ const FormProduct = () => {
         if (newSize !== '') {
             setSizes([...sizes, newSize]);
             setNewSize('');
-        }
+        };
+        validateForm();
     };
 
     const deleteSize = (index) => {
         const updatedSizes = [...sizes];
         updatedSizes.splice(index, 1);
         setSizes(updatedSizes);
+        validateForm();
     };
 
     //-----------COMBINACION(COLOR/SIZE)-----------//
@@ -189,6 +206,7 @@ const FormProduct = () => {
         };
     
         setNewProduct(updatedProduct);
+        validateForm();
     };
 
     //-----------SUPPLIER-----------//
@@ -281,6 +299,7 @@ const FormProduct = () => {
                 category: [newCategory._id]
             }));
         };
+        validateForm();
     };
 
     //-----------SUBMIT-----------//
@@ -329,13 +348,16 @@ const FormProduct = () => {
                 <div className="container">
                     <form onSubmit={handleSubmit} className={style.productForm}>
                         <div className={style.column1}>
+                            <div className={style.containerMessage}>
+                                <label className={style.mensagge}>Los campos con (*) son obligatorios</label>
+                            </div>
                             <div>
-                                <label htmlFor="name" className={style.nameTitle}>Nombre</label>
+                                <label htmlFor="name" className={style.nameTitle}>*Nombre</label>
                                 <input type="text" name="name" value={newProduct.name} onChange={handleInputChange} className={style.inputName}/>
                             </div>
                             <div className={style.detailProduct}>
                                 <div className={style.colorContainer}>
-                                    <label htmlFor="color">Colores</label>
+                                    <label htmlFor="color">*Colores</label>
                                     <div className={style.colorCard}>
                                         <ol>
                                             {colors.map((color, colorIndex) => (
@@ -352,7 +374,7 @@ const FormProduct = () => {
                                     </div>
                                 </div>
                                 <div className={style.sizeContainer}>
-                                    <label htmlFor="size">Talle</label>
+                                    <label htmlFor="size">*Talle</label>
                                     <div className={style.sizeCard}>
                                         <ol>
                                             {sizes.map((size, index) => (
@@ -384,7 +406,7 @@ const FormProduct = () => {
                                                 <input className={style.inputsinMed} type="number" name="long" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
                                                 <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
                                                 <input className={style.inputsinMed} type="number" name="rise" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                                <span className={style.spansinMed} htmlFor="stock">Stock:</span>
+                                                <span className={style.spansinMed} htmlFor="stock">*Stock:</span>
                                                 <input className={style.inputsinStock} type="number" name="stock" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
                                             </li>
                                         ))}
@@ -449,7 +471,7 @@ const FormProduct = () => {
                                 </div>
                             </div>
                             <div className={style.categoryContainer}>
-                                <label htmlFor="category" className={style.nameTitle}>Categoría</label>
+                                <label htmlFor="category" className={style.nameTitle}>*Categoría</label>
                                 <select name="category" className={style.selectCategory} value={newProduct.category} onChange={handleInputChange}>
                                     <option value="" disabled>Seleccionar</option>
                                     {categories.map((category) => (
@@ -461,7 +483,7 @@ const FormProduct = () => {
                                 </div>
                             </div>
                             <div className={style.priceContainer}>
-                                <label htmlFor="price" className={style.nameTitle}>Precio $</label>
+                                <label htmlFor="price" className={style.nameTitle}>*Precio $</label>
                                 <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
                             </div>    
                             <div className={style.descriptionContainer}>
@@ -469,7 +491,7 @@ const FormProduct = () => {
                                 <textarea type="text" name="description" value={newProduct.description} onChange={handleInputChange}/>
                             </div> 
                             <div>
-                                <button type="submit">Agregar</button>
+                                <button type="submit" disabled={isSubmitDisabled}>Agregar</button>
                             </div>
                         </div>
                     </form>
@@ -483,40 +505,3 @@ const FormProduct = () => {
 };
 
 export default FormProduct;
-
-    // const handleImageChange = (event, colorIndex) => {
-    //     const file = event.target.files[0];
-
-    //     if (colorIndex !== undefined && file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             // Actualiza la imagen de vista previa
-    //             setImagePreview(reader.result);
-    
-    //             // Construir una copia del nuevo estado
-    //             const updatedProduct = { ...newProduct };
-    //             // updatedProduct.color[colorIndex].image = reader.result; // Guardar la ruta de la imagen
-    //             updatedProduct.color[colorIndex].image = file;
-
-    //             // Actualizar el estado
-    //             setNewProduct(updatedProduct);
-    //         };
-    //         reader.readAsDataURL(file);
-    //     };
-
-    //     // if (colorIndex === undefined && file) {
-    //     //     const reader = new FileReader();
-    //     //     reader.onloadend = () => {
-    //     //         // Actualiza la imagen de vista previa
-    //     //         setImagePreview(reader.result);
-    
-    //     //         // Construir una copia del nuevo estado
-    //     //         const updatedProduct = { ...newProduct };
-    //     //         updatedProduct.color.map(color => {color.image = reader.result})
-
-    //     //         // Actualizar el estado
-    //     //         setNewProduct(updatedProduct);
-    //     //     };
-    //     //     reader.readAsDataURL(file);
-    //     // };
-    // };
