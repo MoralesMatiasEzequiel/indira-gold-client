@@ -24,6 +24,7 @@ const FormProduct = () => {
 
     useEffect(() => {
         dispatch(getCategories());
+        validateForm();
     }, [dispatch]);
 
     const categories = useSelector(state => state.categories.categories);
@@ -72,6 +73,7 @@ const FormProduct = () => {
                 ...newProduct,
                 price: priceNumber
             });
+            validateForm();
         };
         if(name === 'category'){
             let array = [];
@@ -87,6 +89,12 @@ const FormProduct = () => {
                 description: value
             });
         };
+        // else{
+        //     setNewProduct({
+        //         ...newProduct,
+        //         [name]: value
+        //     });
+        // }
         validateForm();
     };
 
@@ -302,6 +310,10 @@ const FormProduct = () => {
         validateForm();
     };
 
+    const handleCloseCategoryForm = () => {
+        setShowCategoryForm(false);
+    };
+
     //-----------SUBMIT-----------//
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -338,6 +350,9 @@ const FormProduct = () => {
             console.error("Error saving product:", error);
         }
     };
+
+    //-----------FORMCATEGORY-----------//
+    
 
     return (
         <div className="page">
@@ -496,7 +511,7 @@ const FormProduct = () => {
                         </div>
                     </form>
                     <div className={`${style.addCategoryComponent} ${showCategoryForm ? style.addCategoryComponentBorder : ''}`}>
-                        {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded}/>}
+                        {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded} onClose={handleCloseCategoryForm}/>}
                     </div>
                 </div>
             </div>
