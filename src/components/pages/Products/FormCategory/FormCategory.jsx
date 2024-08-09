@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { postCategory } from '../../../../redux/categoryActions.js';
 import { useDispatch, useSelector } from 'react-redux';
 
-const FormCategory = ({ onCategoryAdded }) => {
+const FormCategory = ({ onCategoryAdded, onClose }) => {
     const dispatch = useDispatch();
     const categories = useSelector(state => state.categories.categories);
 
@@ -51,6 +51,7 @@ const FormCategory = ({ onCategoryAdded }) => {
         <div className="component">
             <div className="title">
                 <h2>NUEVA CATEGORÍA</h2>
+                <button onClick={onClose}>X</button>
             </div>
             <div className="container">
                 <form onSubmit={handleSubmit}>
