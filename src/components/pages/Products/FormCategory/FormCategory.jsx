@@ -4,6 +4,7 @@ import { postCategory } from '../../../../redux/categoryActions.js';
 import { useDispatch, useSelector } from 'react-redux';
 
 const FormCategory = ({ onCategoryAdded, onClose }) => {
+    
     const dispatch = useDispatch();
     const categories = useSelector(state => state.categories.categories);
 
@@ -49,9 +50,9 @@ const FormCategory = ({ onCategoryAdded, onClose }) => {
 
     return (
         <div className="component">
-            <div className="title">
+            <div className={style.titleForm}>
                 <h2>NUEVA CATEGORÍA</h2>
-                <button onClick={onClose}>X</button>
+                <button className={style.buttonOnClose} type='button' onClick={onClose}>X</button>
             </div>
             <div className="container">
                 <form onSubmit={handleSubmit}>
