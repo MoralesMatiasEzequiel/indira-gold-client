@@ -12,6 +12,7 @@ import add from "./img/add.png";
 import x from "./img/x.png";
 
 const FormSales = () => {
+    
     const products = useSelector(state => state.products.products);
     const clients = useSelector(state => state.clients.clients);
     const dispatch = useDispatch();
@@ -289,6 +290,10 @@ const FormSales = () => {
         setShowClientForm(!showClientForm);
     };
 
+    const handleCloseClientForm = () => {
+        setShowClientForm(false);
+    };
+
     const toggleSaleMade = () => {
         setSaleMade(prevSaleMade => !prevSaleMade);
     };
@@ -373,7 +378,6 @@ const FormSales = () => {
     };
 
     return (
- 
         <div className="component">
             <div className="title" style={{ display: saleMade ? 'none' : 'block' }}>
                 <h2>NUEVA VENTA</h2>
@@ -542,7 +546,7 @@ const FormSales = () => {
                     </div> 
                 </form>
                 <div className={`${style.addClientComponent} ${showClientForm ? style.addClientComponentBorder : ''}`}>
-                    {showClientForm && <FormClient onClientAdded={handleClientAdded} />}
+                    {showClientForm && <FormClient onClientAdded={handleClientAdded} onClose={handleCloseClientForm}/>}
                 </div>
             </div>
             
