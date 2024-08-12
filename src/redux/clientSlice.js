@@ -20,6 +20,10 @@ export const clientSlice = createSlice({
             state.clientDetail = action.payload;
         },
 
+        clearClientDetailReducer: (state, action) => {
+            state.clientDetail = {};
+        }
+
         // getClientByNameReducer: (state, action) => {
         //     state.clientsName = action.payload;
         // },
@@ -30,6 +34,6 @@ export const clientSlice = createSlice({
     }
 });
 
-export const { getClientsReducer, getClientByIdReducer, getClientByNameReducer, getClientByLastnameReducer } = clientSlice.actions;
+export const { getClientsReducer, getClientByIdReducer, clearClientDetailReducer, getClientByNameReducer, getClientByLastnameReducer } = clientSlice.actions;
 
 export default clientSlice.reducer;

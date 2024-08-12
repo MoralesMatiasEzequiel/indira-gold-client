@@ -1,34 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getClientById, deleteClient, getClients } from '../../../../redux/clientActions.js';
+import { getClientById, deleteClient, clearClientDetail } from '../../../../redux/clientActions.js';
+import { getProductById } from '../../../../redux/productActions.js';
 import style from "./DetailClient.module.css";
 
-
 const DetailClient = () => {
-
     let { id } = useParams();
     const dispatch = useDispatch();
     const clientDetail = useSelector(state => state.clients.clientDetail);
+    const [purchasedProducts, setPurchasedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const navigate = useNavigate();
 
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-
     useEffect(() => {
-        dispatch(getClientById(id));
+        dispatch(clearClientDetail());
+        setPurchasedProducts([]);
+        setLoading(true); // Establece la bandera de carga a true antes de obtener los nuevos datos
+
+        // Luego carga el nuevo cliente
+        dispatch(getClientById(id)).then(() => {
+            setLoading(false); // Desactiva la bandera de carga cuando los datos estén listos
+        });
     }, [dispatch, id]);
 
-    
+    useEffect(() => {
+        if (!loading && clientDetail && clientDetail.purchases) {
+            const updatedProducts = [];
+            clientDetail.purchases.forEach((purchase) => {
+                dispatch(getProductById(purchase.productId)).then((response) => {
+                    const product = response;
+                    const selectedColor = getColorById(product, purchase.colorId);
+                    const selectedSize = getSizeById(product, purchase.colorId, purchase.sizeId);
+
+                    updatedProducts.push({ ...product, selectedColor, selectedSize });
+
+                    // Solo actualiza purchasedProducts después de que todos los productos hayan sido cargados
+                    if (updatedProducts.length === clientDetail.purchases.length) {
+                        setPurchasedProducts(updatedProducts);
+                    }
+                });
+            });
+        } else {
+            setPurchasedProducts([]);
+        }
+    }, [clientDetail, dispatch, loading]);
+
+    const getColorById = (product, colorId) => {
+        return product?.color?.find(c => c._id === colorId);
+    };
+
+    const getSizeById = (product, colorId, sizeId) => {
+        const color = getColorById(product, colorId);
+        return color?.size?.find(s => s._id === sizeId);
+    };
+
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);
-    }
-    
+    };
+
     const handleDelete = () => {
         dispatch(deleteClient(id));
         navigate('/main_window/clients');
+    };
+
+    if (loading) {
+        return <div>Loading...</div>; // Puedes personalizar este mensaje o mostrar un spinner de carga
     }
-    
-    return(
+
+    return (
         <div className="page">
             <div className="component">
                 <div className="title">
@@ -51,7 +92,14 @@ const DetailClient = () => {
                     </div>
                     <div className={style.column}>
                         <p><span>Historial de compras:&nbsp;</span></p>
-                        {clientDetail.shopping && <p>{clientDetail.shopping}</p>}
+                        {purchasedProducts.map((product, index) => (
+                            <div key={index}>
+                                <p><span>Producto:&nbsp;</span>{product.name}</p>
+                                <p><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</p>
+                                <p><span>Tamaño:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</p>
+                                <p><span>Precio:&nbsp;</span>{product.price}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -69,8 +117,3 @@ const DetailClient = () => {
 };
 
 export default DetailClient;
-
-//Si 'clientDetail.color[0].image' tira error porque todavia no se carga el clientDetail en el estado global, probr con este código:
-// {clientDetail.color && clientDetail.color.length > 0 && (
-//     <img src={clientDetail.color[0].image} alt="Product Image" />
-// )}
