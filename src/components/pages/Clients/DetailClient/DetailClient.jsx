@@ -92,14 +92,22 @@ const DetailClient = () => {
                     </div>
                     <div className={style.column}>
                         <p><span>Historial de compras:&nbsp;</span></p>
-                        {purchasedProducts.map((product, index) => (
-                            <div key={index}>
-                                <p><span>Producto:&nbsp;</span>{product.name}</p>
-                                <p><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</p>
-                                <p><span>Tamaño:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</p>
-                                <p><span>Precio:&nbsp;</span>{product.price}</p>
-                            </div>
-                        ))}
+                        <ul>
+                            {purchasedProducts.length > 0 ? (
+                                purchasedProducts.map((product, index) => (
+                                    <li key={index}>
+                                        <p><span>{product.name}</span></p>
+                                        <ul className={style.productList}>
+                                            <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>
+                                            <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>
+                                            <li><span>Precio:&nbsp;</span>{product.price}</li>
+                                        </ul>
+                                    </li>
+                                ))
+                            ) : (
+                                <div>No hay compras registradas</div>
+                            )}
+                        </ul>
                     </div>
                 </div>
             </div>

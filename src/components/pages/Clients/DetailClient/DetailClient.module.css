@@ -34,6 +34,24 @@
     font-weight: 600;
 }
 
+.column ul p{
+    margin: 1rem 0;
+}
+
+.column ul{
+    list-style: disc;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+
+.column .productList{
+    list-style: '- ';
+}
+
+.column .productList li{
+    margin: 1rem 0;
+}
+
 .deleteModal{
     display: none;
     position: absolute;
