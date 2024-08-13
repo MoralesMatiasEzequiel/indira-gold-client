@@ -40,7 +40,7 @@ const DetailProduct = () => {
                 <div className="title">
                     <h2>Detalle del producto</h2>
                     <div className="titleButtons">
-                        <button>Editar</button>
+                        <button><Link to={`/main_window/products/edit`}>Editar</Link></button>
                         <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>
                         <button><Link to={`/main_window/products/management`}>Atrás</Link></button>
                     </div>

@@ -1,4 +1,4 @@
-import style from './FormProduct.module.css';
+import style from './PutProduct.module.css';
 import x from '../../Sales/FormSales/img/x.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
@@ -7,9 +7,40 @@ import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
 import { postProduct } from '../../../../redux/productActions.js';
 
-const FormProduct = () => {
-    
+const PutProduct = () => {
+
     const dispatch = useDispatch();
+    const productDetail = useSelector(state => state.products.productDetail);    
+
+    // const initialEditProductState = {
+    //     name: productDetail.name,
+    //     color: productDetail.color,
+    //     supplier: productDetail.supplier,
+    //     price: productDetail.price,
+    //     category: productDetail.category,
+    //     description: productDetail.description
+    // };
+    const initialEditProductState = {
+        name: productDetail.name,
+        color: productDetail.color.map(color => ({
+            colorName: color?.colorName,
+            size: color.size?.map(size => ({
+                sizeName: size.sizeName,
+                measurements: {
+                    width: size.measurements[0]?.width || '',
+                    long: size.measurements[0]?.long || '',
+                    rise: size.measurements[0]?.rise || ''
+                },
+                stock: size.stock || 0
+            })),
+            image: color.image || ''
+        })),
+        supplier: productDetail.supplier,
+        price: productDetail.price,
+        category: productDetail.category,
+        description: productDetail.description
+    };
+    
 
     const initialProductState = {
         name: '',
@@ -24,9 +55,33 @@ const FormProduct = () => {
     };
 
     useEffect(() => {
-        dispatch(getCategories());
-        validateForm();
-    }, [dispatch]);
+        if (productDetail) {
+            setColors(productDetail.color.map(color => color.colorName));
+            
+            const allSizes = productDetail.color.flatMap(color => color.size.map(size => size.sizeName));
+            const uniqueSizes = [...new Set(allSizes)]; // Para asegurarse de que los talles no se repitan
+            setSizes(uniqueSizes);
+        }
+    }, [productDetail]);
+
+    const [editProduct, setEditProduct] = useState(initialEditProductState);  
+    // console.log(editProduct);
+    
+// console.log(
+//     productDetail.color.map(color => ({
+//         colorName: color?.colorName,
+//         size: color.size?.map(size => ({
+//             sizeName: size.sizeName,
+//             measurements: {
+//                 width: size.measurements[0]?.width || '',
+//                 long: size.measurements[0]?.long || '',
+//                 rise: size.measurements[0]?.rise || ''
+//             },
+//             stock: size.stock || 0
+//         }))
+//     }))
+// );
+
 
     const categories = useSelector(state => state.categories.categories);
     const [newProduct, setNewProduct] = useState(initialProductState);
@@ -63,8 +118,8 @@ const FormProduct = () => {
         const { name, value } = event.target;
 
         if(name === 'name'){
-            setNewProduct({
-                ...newProduct,
+            setEditProduct({
+                ...editProduct,
                 name: value
             });
         };
@@ -90,12 +145,19 @@ const FormProduct = () => {
                 description: value
             });
         };
+        // else{
+        //     setNewProduct({
+        //         ...newProduct,
+        //         [name]: value
+        //     });
+        // }
         validateForm();
     };
 
     //-----------COLOR-----------//
     const handleInputColorChange = (event) => {
         setNewColor(event.target.value);
+        // setEditProduct();
     };
 
     const addColor = () => {
@@ -111,15 +173,15 @@ const FormProduct = () => {
         updatedColors.splice(index, 1);
         setColors(updatedColors);
     
-        const updatedProductsColor = [...newProduct.color];
+        const updatedProductsColor = [...editProduct.color];
     
         // Se busca el color a eliminar basado en el índice de colors
         const colorToDelete = colors[index]; 
         // Y aca filtramos el array color de newProduct para eliminar el objeto correspondiente
         const filteredProductsColor = updatedProductsColor.filter(item => item.colorName !== colorToDelete);
-    
-        setNewProduct({
-            ...newProduct,
+
+        setEditProduct({
+            ...editProduct,
             color: filteredProductsColor
         });
         validateForm();
@@ -140,8 +202,23 @@ const FormProduct = () => {
 
     const deleteSize = (index) => {
         const updatedSizes = [...sizes];
-        updatedSizes.splice(index, 1);
+        const sizeToDelete = updatedSizes.splice(index, 1)[0];
+    
         setSizes(updatedSizes);
+    
+        // Actualiza el estado editProduct para reflejar la eliminación del talle
+        const updatedProductColors = editProduct.color.map(color => {
+            return {
+                ...color,
+                size: color.size.filter(size => size.sizeName !== sizeToDelete)
+            };
+        });
+    
+        setEditProduct(prevState => ({
+            ...prevState,
+            color: updatedProductColors
+        }));
+    
         validateForm();
     };
 
@@ -151,64 +228,107 @@ const FormProduct = () => {
             sizes.map(size => ({ color, size }))
         );
     };
+
     const combinations = generateCombinations();
 
     //-----------STOCK-----------//
+    // const handleStockChange = (combination, event) => {
+    //     const { name, value } = event.target;
+    
+    //     const updatedProduct = { ...newProduct };
+    
+    //     //Se encuentra el índice de color existente o se añade uno nuevo si no existe
+    //     let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
+    
+    //     if (colorIndex === -1) {
+    //         updatedProduct.color.push({
+    //             colorName: combination.color,
+    //             size: [],
+    //             image: ''
+    //         });
+    
+    //         //Se reasigna el índice para el color recién añadido
+    //         colorIndex = updatedProduct.color.length - 1;
+    //     };
+    
+    //     //idem
+    //     let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
+    
+    //     if (sizeIndex === -1) {
+    //         updatedProduct.color[colorIndex].size.push({
+    //             sizeName: combination.size,
+    //             measurements: {
+    //                 width: '',
+    //                 long: '',
+    //                 rise: ''
+    //             },
+    //             code: 'CÓDIGO QR',
+    //             stock: 0
+    //         });    
+    //         //idem
+    //         sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
+    //     };
+    
+    //     //Se actualiza las medidas (width, long, rise) y el stock
+    //     if (name === 'width' || name === 'long' || name === 'rise') {
+    //         updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
+    //     } else if (name === 'stock') {
+    //         if (value > 0) {
+    //             updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
+    //         } else {
+    //             //Si el stock es 0, eliminamos el objeto del array size
+    //             updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
+    //         }
+    //     };
+    
+    //     // i el array size está vacío después de eliminar el objeto, eliminamos el objeto color
+    //     if (updatedProduct.color[colorIndex].size.length === 0) {
+    //         updatedProduct.color.splice(colorIndex, 1);
+    //     };
+    
+    //     // setNewProduct(updatedProduct);
+    //     setEditProduct(updatedProduct);
+    //     validateForm();
+    // };
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
+        const updatedProduct = { ...editProduct };
     
-        const updatedProduct = { ...newProduct };
-    
-        //Se encuentra el índice de color existente o se añade uno nuevo si no existe
-        let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
-    
+        const colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
         if (colorIndex === -1) {
             updatedProduct.color.push({
                 colorName: combination.color,
                 size: [],
                 image: ''
             });
+        }
     
-            //Se reasigna el índice para el color recién añadido
-            colorIndex = updatedProduct.color.length - 1;
-        };
-    
-        //idem
-        let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
-    
+        const sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
         if (sizeIndex === -1) {
             updatedProduct.color[colorIndex].size.push({
                 sizeName: combination.size,
-                measurements: {
-                    width: '',
-                    long: '',
-                    rise: ''
-                },
+                measurements: { width: '', long: '', rise: '' },
                 code: 'CÓDIGO QR',
                 stock: 0
-            });    
-            //idem
-            sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
-        };
+            });
+        }
     
-        //Se actualiza las medidas (width, long, rise) y el stock
-        if (name === 'width' || name === 'long' || name === 'rise') {
+        // Actualización de medidas y stock
+        if (['width', 'long', 'rise'].includes(name)) {
             updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
         } else if (name === 'stock') {
             if (value > 0) {
                 updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
             } else {
-                //Si el stock es 0, eliminamos el objeto del array size
                 updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
             }
-        };
+        }
     
-        // i el array size está vacío después de eliminar el objeto, eliminamos el objeto color
         if (updatedProduct.color[colorIndex].size.length === 0) {
             updatedProduct.color.splice(colorIndex, 1);
-        };
+        }
     
-        setNewProduct(updatedProduct);
+        setEditProduct(updatedProduct);
         validateForm();
     };
 
@@ -350,21 +470,18 @@ const FormProduct = () => {
         <div className="page">
             <div className="component">
                 <div className="title">
-                    <h2>NUEVO PRODUCTO</h2>
+                    <h2>EDITAR PRODUCTO</h2>
                 </div>
                 <div className="container">
                     <form onSubmit={handleSubmit} className={style.productForm}>
                         <div className={style.column1}>
-                            <div className={style.containerMessage}>
-                                <label className={style.mensagge}>Los campos con (*) son obligatorios</label>
-                            </div>
                             <div>
-                                <label htmlFor="name" className={style.nameTitle}>*Nombre</label>
-                                <input type="text" name="name" value={newProduct.name} onChange={handleInputChange} className={style.inputName}/>
+                                <label htmlFor="name" className={style.nameTitle}>Nombre</label>
+                                <input type="text" name="name" value={editProduct.name} onChange={handleInputChange} className={style.inputName}/>
                             </div>
                             <div className={style.detailProduct}>
                                 <div className={style.colorContainer}>
-                                    <label htmlFor="color">*Colores</label>
+                                    <label htmlFor="color">Colores</label>
                                     <div className={style.colorCard}>
                                         <ol>
                                             {colors.map((color, colorIndex) => (
@@ -381,7 +498,7 @@ const FormProduct = () => {
                                     </div>
                                 </div>
                                 <div className={style.sizeContainer}>
-                                    <label htmlFor="size">*Talle</label>
+                                    <label htmlFor="size">Talle</label>
                                     <div className={style.sizeCard}>
                                         <ol>
                                             {sizes.map((size, index) => (
@@ -402,21 +519,56 @@ const FormProduct = () => {
                                 <label htmlFor="color">Medidas y stock</label>
                                 <div className={style.stockCard}>
                                     <ol>
-                                        {combinations.map((combination, index) => (
+                                    {combinations.map((combination, index) => {
+                                        // Encontrar el color y el talle correspondientes en el estado editProduct
+                                        const colorState = editProduct.color.find(c => c.colorName === combination.color);
+                                        const sizeState = colorState?.size.find(s => s.sizeName === combination.size);
+                                        // console.log(sizeState)                                        
+                                        return (
                                             <li key={index} className={style.list}>
                                                 <span className={style.spanList}>
                                                     Color {combination.color} - Talle {combination.size}
                                                 </span>
                                                 <span className={style.spansinMed} htmlFor="width">Ancho:</span>
-                                                <input className={style.inputsinMed} type="number" name="width" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                                <input 
+                                                    className={style.inputsinMed} 
+                                                    type="number" 
+                                                    name="width" 
+                                                    placeholder='0' 
+                                                    value={sizeState?.measurements.width || ''}
+                                                    onChange={(event) => handleStockChange(combination, event)} 
+                                                />
                                                 <span className={style.spansinMed} htmlFor="long">Largo:</span>
-                                                <input className={style.inputsinMed} type="number" name="long" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                                <input 
+                                                    className={style.inputsinMed} 
+                                                    type="number" 
+                                                    name="long" 
+                                                    placeholder='0' 
+                                                    value={sizeState?.measurements.long || ''}
+                                                    onChange={(event) => handleStockChange(combination, event)} 
+                                                />
                                                 <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
-                                                <input className={style.inputsinMed} type="number" name="rise" placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                                <span className={style.spansinMed} htmlFor="stock">*Stock:</span>
-                                                <input className={style.inputsinStock} type="number" name="stock" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
+                                                <input 
+                                                    className={style.inputsinMed} 
+                                                    type="number" 
+                                                    name="rise" 
+                                                    placeholder='0' 
+                                                    value={sizeState?.measurements.rise || ''}
+                                                    onChange={(event) => handleStockChange(combination, event)} 
+                                                />
+                                                <span className={style.spansinMed} htmlFor="stock">Stock:</span>
+                                                <input 
+                                                    className={style.inputsinStock} 
+                                                    type="number" 
+                                                    name="stock" 
+                                                    min='0' 
+                                                    placeholder='0' 
+                                                    value={sizeState?.stock || ''}
+                                                    onChange={(event) => handleStockChange(combination, event)} 
+                                                />
                                             </li>
-                                        ))}
+                                        );
+                                    })}
                                     </ol>
                                 </div>
                             </div>
@@ -511,4 +663,4 @@ const FormProduct = () => {
     );
 };
 
-export default FormProduct;
+export default PutProduct;
