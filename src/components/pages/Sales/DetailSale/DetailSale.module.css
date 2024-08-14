@@ -45,15 +45,22 @@
     font-weight: 600;
 }
 
-.column div .itemUl{
-    list-style: disc;
-    
-    padding-left: 1rem;
+.column ul p{
+    margin: 1rem 0;
 }
 
-.column div .detailUl{
-    list-style: "- ";
+.column ul{
+    list-style: disc;
     padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+
+.column .productList{
+    list-style: '- ';
+}
+
+.column .productList li{
+    margin: 1rem 0;
 }
 
 .deleteModal{

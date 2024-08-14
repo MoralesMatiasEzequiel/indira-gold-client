@@ -16,13 +16,19 @@ export const getAllProducts = () => {
 };
 
 export const getProductById = (productId) => {
-    return async (dispatch) =>{
-        const { data } = await axios.get(`/products/${productId}`);
-        dispatch(getProductByIdReducer(data));
-        return data;
+    return async (dispatch) => {
+        try {
+            const { data } = await axios.get(`/products/${productId}`);
+            dispatch(getProductByIdReducer(data));
+            return data;
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                return { error: { status: 404, message: 'Producto no encontrado' } };
+            }
+            throw error; // Si es otro tipo de error, lo lanza de nuevo
+        }
     };
 };
-
 export const getProductByName = (productName) => {
     return async (dispatch) => {
         const { data } = await axios.get(`/products?name=${productName}&`);
