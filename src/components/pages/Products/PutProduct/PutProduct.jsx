@@ -5,22 +5,16 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
-import { postProduct } from '../../../../redux/productActions.js';
+import { putProduct } from '../../../../redux/productActions.js';
 
 const PutProduct = () => {
 
     const dispatch = useDispatch();
     const productDetail = useSelector(state => state.products.productDetail);    
+    const categories = useSelector(state => state.categories.categories);
 
-    // const initialEditProductState = {
-    //     name: productDetail.name,
-    //     color: productDetail.color,
-    //     supplier: productDetail.supplier,
-    //     price: productDetail.price,
-    //     category: productDetail.category,
-    //     description: productDetail.description
-    // };
     const initialEditProductState = {
+        _id: productDetail._id,
         name: productDetail.name,
         color: productDetail.color.map(color => ({
             colorName: color?.colorName,
@@ -36,25 +30,14 @@ const PutProduct = () => {
             image: color.image || ''
         })),
         supplier: productDetail.supplier,
+        imageGlobal: productDetail.imageGlobal,
         price: productDetail.price,
         category: productDetail.category,
         description: productDetail.description
     };
-    
-
-    const initialProductState = {
-        name: '',
-        color: [],
-        supplier: {
-            name: '',
-            phone: ''
-        },
-        price: 0,
-        category: [],
-        description: ''
-    };
 
     useEffect(() => {
+        dispatch(getCategories());
         if (productDetail) {
             setColors(productDetail.color.map(color => color.colorName));
             
@@ -66,25 +49,7 @@ const PutProduct = () => {
 
     const [editProduct, setEditProduct] = useState(initialEditProductState);  
     // console.log(editProduct);
-    
-// console.log(
-//     productDetail.color.map(color => ({
-//         colorName: color?.colorName,
-//         size: color.size?.map(size => ({
-//             sizeName: size.sizeName,
-//             measurements: {
-//                 width: size.measurements[0]?.width || '',
-//                 long: size.measurements[0]?.long || '',
-//                 rise: size.measurements[0]?.rise || ''
-//             },
-//             stock: size.stock || 0
-//         }))
-//     }))
-// );
 
-
-    const categories = useSelector(state => state.categories.categories);
-    const [newProduct, setNewProduct] = useState(initialProductState);
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
     const [sizes, setSizes] = useState([]);
@@ -93,20 +58,20 @@ const PutProduct = () => {
     const [imageGlobal, setImageGlobal] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     
 
     const validateForm = () => {
-        const isProductNameValid = newProduct.name.trim() !== '';
+        const isProductNameValid = editProduct.name.trim() !== '';
         const isColorValid = colors.length > 0;
         const isSizeValid = sizes.length > 0;
-        const isCategoryValid = newProduct.category.length > 0;
-        const isPriceValid = newProduct.price > 0;
+        const isCategoryValid = editProduct.category.length > 0;
+        const isPriceValid = editProduct.price > 0;
 
         // Validar que al menos una combinación de color y talla tenga stock mayor a 0
         const hasAtLeastOneValidStock = combinations.some(combination => {
-            const color = newProduct.color.find(c => c.colorName === combination.color);
+            const color = editProduct.color.find(c => c.colorName === combination.color);
             const size = color ? color.size.find(s => s.sizeName === combination.size) : null;
             return size ? size.stock > 0 : false;
         });
@@ -116,7 +81,7 @@ const PutProduct = () => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-
+    
         if(name === 'name'){
             setEditProduct({
                 ...editProduct,
@@ -125,34 +90,30 @@ const PutProduct = () => {
         };
         if(name === 'price'){
             let priceNumber = Number(value);
-            setNewProduct({
-                ...newProduct,
+            setEditProduct({
+                ...editProduct,
                 price: priceNumber
             });
             validateForm();
         };
         if(name === 'category'){
-            let array = [];
-            array.push(value);
-            setNewProduct({
-                ...newProduct,
-                category: array
+            const selectedCategory = categories.find(category => category._id === value);
+            setEditProduct({
+                ...editProduct,
+                category: [{ _id: selectedCategory._id, name: selectedCategory.name }]
             });
+            setSelectedCategory(value); // Aquí, `value` es el `_id` de la categoría seleccionada
+            validateForm();
         };
         if(name === 'description'){
-            setNewProduct({
-                ...newProduct,
+            setEditProduct({
+                ...editProduct,
                 description: value
             });
         };
-        // else{
-        //     setNewProduct({
-        //         ...newProduct,
-        //         [name]: value
-        //     });
-        // }
+    
         validateForm();
-    };
+    };  
 
     //-----------COLOR-----------//
     const handleInputColorChange = (event) => {
@@ -232,85 +193,31 @@ const PutProduct = () => {
     const combinations = generateCombinations();
 
     //-----------STOCK-----------//
-    // const handleStockChange = (combination, event) => {
-    //     const { name, value } = event.target;
-    
-    //     const updatedProduct = { ...newProduct };
-    
-    //     //Se encuentra el índice de color existente o se añade uno nuevo si no existe
-    //     let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
-    
-    //     if (colorIndex === -1) {
-    //         updatedProduct.color.push({
-    //             colorName: combination.color,
-    //             size: [],
-    //             image: ''
-    //         });
-    
-    //         //Se reasigna el índice para el color recién añadido
-    //         colorIndex = updatedProduct.color.length - 1;
-    //     };
-    
-    //     //idem
-    //     let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
-    
-    //     if (sizeIndex === -1) {
-    //         updatedProduct.color[colorIndex].size.push({
-    //             sizeName: combination.size,
-    //             measurements: {
-    //                 width: '',
-    //                 long: '',
-    //                 rise: ''
-    //             },
-    //             code: 'CÓDIGO QR',
-    //             stock: 0
-    //         });    
-    //         //idem
-    //         sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
-    //     };
-    
-    //     //Se actualiza las medidas (width, long, rise) y el stock
-    //     if (name === 'width' || name === 'long' || name === 'rise') {
-    //         updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
-    //     } else if (name === 'stock') {
-    //         if (value > 0) {
-    //             updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
-    //         } else {
-    //             //Si el stock es 0, eliminamos el objeto del array size
-    //             updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
-    //         }
-    //     };
-    
-    //     // i el array size está vacío después de eliminar el objeto, eliminamos el objeto color
-    //     if (updatedProduct.color[colorIndex].size.length === 0) {
-    //         updatedProduct.color.splice(colorIndex, 1);
-    //     };
-    
-    //     // setNewProduct(updatedProduct);
-    //     setEditProduct(updatedProduct);
-    //     validateForm();
-    // };
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
         const updatedProduct = { ...editProduct };
     
-        const colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
+        let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
         if (colorIndex === -1) {
+            // Agregar un nuevo color si no existe
             updatedProduct.color.push({
                 colorName: combination.color,
                 size: [],
                 image: ''
             });
+            colorIndex = updatedProduct.color.length - 1; // Actualizar colorIndex al nuevo color
         }
     
-        const sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
+        let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
         if (sizeIndex === -1) {
+            // Agregar un nuevo talle si no existe
             updatedProduct.color[colorIndex].size.push({
                 sizeName: combination.size,
                 measurements: { width: '', long: '', rise: '' },
                 code: 'CÓDIGO QR',
                 stock: 0
             });
+            sizeIndex = updatedProduct.color[colorIndex].size.length - 1; // Actualizar sizeIndex al nuevo tamaño
         }
     
         // Actualización de medidas y stock
@@ -324,68 +231,76 @@ const PutProduct = () => {
             }
         }
     
+        // Verificar si se debe eliminar el objeto `color` si todos los `size` tienen stock 0
         if (updatedProduct.color[colorIndex].size.length === 0) {
             updatedProduct.color.splice(colorIndex, 1);
         }
     
         setEditProduct(updatedProduct);
         validateForm();
-    };
+    };     
 
     //-----------SUPPLIER-----------//
     const handleSupplierChange = (event) => {
         const { name, value } = event.target;
     
         const updatedProduct = {
-            ...newProduct,
+            ...editProduct,
             supplier: {
-                ...newProduct.supplier, 
+                ...editProduct.supplier, 
                 [name]: value
             }
         };
-        setNewProduct(updatedProduct);
+        setEditProduct(updatedProduct);
     };
     
     //-----------IMAGEN-----------//
+    const getImageUrl = (imagePath) => {
+        if (!imagePath) return '';
+        // URL base para los archivos estáticos
+        const baseUrl = 'http://localhost:3001/';
+        return `${baseUrl}${imagePath}`;
+    };
+
     const handleCheckboxChange = (option) => {
         setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
     };
 
     const handleImageChange = (event, colorIndex) => {
         const file = event.target.files[0];
-
+    
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                const updatedProduct = { ...newProduct };
-
+                const updatedProduct = { ...editProduct };
+    
                 if (colorIndex !== undefined) {
                     // Subir imagen específica por color
                     updatedProduct.color[colorIndex].imageFile = file;
                     updatedProduct.color[colorIndex].image = reader.result;
-
+    
                     // Eliminar imagen global si hay una
                     if (updatedProduct.imageGlobal) {
                         updatedProduct.imageGlobal = null;
                         updatedProduct.imageGlobalPreview = null;
                         setImageGlobal(null);
                     }
-
-                    setNewProduct(updatedProduct);
+    
+                    setEditProduct(updatedProduct);
                     setImagePreview(reader.result);
                 } else {
                     // Subir imagen global
                     updatedProduct.imageGlobal = file;
                     updatedProduct.imageGlobalPreview = reader.result;
-
+    
                     // Eliminar imágenes específicas de cada color
                     updatedProduct.color = updatedProduct.color.map(color => ({
                         ...color,
                         imageFile: null,
                         image: null
                     }));
-
-                    setNewProduct(updatedProduct);
+    
+                    setEditProduct(updatedProduct);
                     setImageGlobal(reader.result);
                     setImagePreview(reader.result);
                 }
@@ -395,7 +310,7 @@ const PutProduct = () => {
     };
     
     const deleteImage = (index) => {
-        const updatedProduct = { ...newProduct };
+        const updatedProduct = { ...editProduct };
 
             updatedProduct.imageGlobal = null;
             updatedProduct.imageGlobalPreview = null;
@@ -403,7 +318,7 @@ const PutProduct = () => {
             updatedProduct.color[index].image = null;
             setImageGlobal(imgProduct);
 
-        setNewProduct(updatedProduct);
+        setEditProduct(updatedProduct);
         setImagePreview(imgProduct);
     };
 
@@ -412,21 +327,21 @@ const PutProduct = () => {
         setShowCategoryForm(!showCategoryForm);
     };
 
+    const handleCloseCategoryForm = () => {
+        setShowCategoryForm(false);
+    };
+
     const handleCategoryAdded = (newCategory) => {
         setShowCategoryForm(false);
         
         if(newCategory !== undefined){
-            setSelectedCategory({ value: newCategory._id, label: newCategory.name });
-            setNewProduct((prevNewProduct) => ({
-                ...prevNewProduct,
-                category: [newCategory._id]
+            setSelectedCategory(newCategory._id); 
+            setEditProduct((prevEditProduct) => ({
+                ...prevEditProduct,
+                category: [{ _id: newCategory._id, name: newCategory.name }]
             }));
         };
         validateForm();
-    };
-
-    const handleCloseCategoryForm = () => {
-        setShowCategoryForm(false);
     };
 
     //-----------SUBMIT-----------//
@@ -435,34 +350,35 @@ const PutProduct = () => {
         const formData = new FormData();
 
         // Agregar la imagen global si existe
-        if (newProduct.imageGlobal) {
-            formData.append('imageGlobal', newProduct.imageGlobal);
+        if (editProduct.imageGlobal) {
+            formData.append('imageGlobal', editProduct.imageGlobal);
         };
-        newProduct.color.forEach((color, index) => {
+        editProduct.color.forEach((color, index) => {
             if (color.imageFile) {
                 formData.append('images', color.imageFile);
             }
         });
-    
-        formData.append("name", newProduct.name);
-        formData.append("color", JSON.stringify(newProduct.color));
-        formData.append("supplier", JSON.stringify(newProduct.supplier));
-        formData.append("price", newProduct.price);
-        formData.append("category", JSON.stringify(newProduct.category));
-        formData.append("description", newProduct.description);
+
+        formData.append("_id", editProduct._id);
+        formData.append("name", editProduct.name);
+        formData.append("color", JSON.stringify(editProduct.color));
+        formData.append("supplier", JSON.stringify(editProduct.supplier));
+        formData.append("price", editProduct.price);
+        formData.append("category", JSON.stringify(editProduct.category));
+        formData.append("description", editProduct.description);
 
         try {
-            const response = await dispatch(postProduct(formData));
+            const response = await dispatch(putProduct(formData));
     
             if (response.data) {
-                console.log("Product successfully saved");
+                console.log("Successfully edited product");
                 setColors([]);
                 setSizes([]);
                 setImageGlobal(null);
-                setNewProduct(initialProductState); // Reset form
+                setEditProduct(initialEditProductState); // Reset form
             }
         } catch (error) {
-            console.error("Error saving product:", error);
+            console.error("Error editing product:", error);
         }
     };    
 
@@ -523,7 +439,6 @@ const PutProduct = () => {
                                         // Encontrar el color y el talle correspondientes en el estado editProduct
                                         const colorState = editProduct.color.find(c => c.colorName === combination.color);
                                         const sizeState = colorState?.size.find(s => s.sizeName === combination.size);
-                                        // console.log(sizeState)                                        
                                         return (
                                             <li key={index} className={style.list}>
                                                 <span className={style.spanList}>
@@ -576,11 +491,11 @@ const PutProduct = () => {
                                 <label htmlFor="supplier" className={style.supplierTitle}>Proveedor</label>
                                 <div className={style.dataSupplierContainer}>
                                     <label htmlFor="name" className={style.nameTitle}>Nombre</label>
-                                    <input type="text" name="name" value={newProduct.supplier.name} onChange={handleSupplierChange} className={style.inputName}/>
+                                    <input type="text" name="name" value={editProduct.supplier.name} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
                                 <div>
                                     <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
-                                    <input type="text" name="phone" value={newProduct.supplier.phone} onChange={handleSupplierChange} className={style.inputName}/>
+                                    <input type="text" name="phone" value={editProduct.supplier.phone} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
                             </div>   
                         </div>
@@ -605,7 +520,7 @@ const PutProduct = () => {
                                 </div>
                                 <div className={style.imageComponent}>  
                                     <ol>
-                                        {newProduct.color.map((color, index) => (
+                                        {editProduct.color.map((color, index) => (
                                             <li key={index} className={style.list}>
                                                 <span className={style.spanList}>{color.colorName}</span>
                                                 {selectedOptionImage === 'byColor' && (
@@ -620,7 +535,17 @@ const PutProduct = () => {
                                                         />
                                                     </div>
                                                 )}
-                                                <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
+                                                {color.image && !color.imageFile ? (
+                                                    <img className={style.imgProduct} src={getImageUrl(color.image)} alt="Product Image" />
+                                                ) : color.image ? (
+                                                    <img className={style.imgProduct} src={color.image} alt="Product Image" />
+                                                ) : editProduct.imageGlobal && !editProduct.imageGlobalPreview ? (
+                                                    <img className={style.imgProduct} src={getImageUrl(editProduct.imageGlobal)} alt="Product Image" />
+                                                ) : editProduct.imageGlobalPreview ? (
+                                                    <img className={style.imgProduct} src={editProduct.imageGlobalPreview} alt="Product Image" />
+                                                ) : (
+                                                    <img src={imgProduct} alt="Product Image" className={style.imgProduct} />
+                                                )}
                                                 <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
                                                     <img src={x} alt="x" />
                                                 </button>
@@ -630,27 +555,38 @@ const PutProduct = () => {
                                 </div>
                             </div>
                             <div className={style.categoryContainer}>
-                                <label htmlFor="category" className={style.nameTitle}>*Categoría</label>
-                                <select name="category" className={style.selectCategory} value={newProduct.category} onChange={handleInputChange}>
+                                <label htmlFor="category" className={style.nameTitle}>Categoría</label>
+                                <select 
+                                    name="category" 
+                                    className={style.selectCategory} 
+                                    value={selectedCategory}
+                                    onChange={handleInputChange}
+                                >
                                     <option value="" disabled>Seleccionar</option>
                                     {categories.map((category) => (
                                         <option key={category._id} value={category._id}>{category.name}</option>
                                     ))}
                                 </select>
                                 <div className={style.containerAddCategory}>
-                                    <button className={style.buttonAddCategory} type='button' onClick={handleShowCategoryForm}>+</button>
+                                    <button 
+                                        className={style.buttonAddCategory} 
+                                        type='button' 
+                                        onClick={handleShowCategoryForm}
+                                    >
+                                        +
+                                    </button>
                                 </div>
                             </div>
                             <div className={style.priceContainer}>
                                 <label htmlFor="price" className={style.nameTitle}>*Precio $</label>
-                                <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
+                                <input type="number" name="price" onChange={handleInputChange} value={editProduct.price} min='0'/>
                             </div>    
                             <div className={style.descriptionContainer}>
                                 <label htmlFor="description" className={style.nameTitle}>Descripción</label>
-                                <textarea type="text" name="description" value={newProduct.description} onChange={handleInputChange}/>
+                                <textarea type="text" name="description" value={editProduct.description} onChange={handleInputChange}/>
                             </div> 
                             <div>
-                                <button type="submit" disabled={isSubmitDisabled}>Agregar</button>
+                                <button type="submit" disabled={isSubmitDisabled}>Editar</button>
                             </div>
                         </div>
                     </form>

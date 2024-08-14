@@ -43,9 +43,18 @@ const FormCategory = ({ onCategoryAdded, onClose }) => {
             return;
         }
 
-        const createdCategory = dispatch(postCategory(newCategory));
-        onCategoryAdded(createdCategory); // Llamar a la función pasada como prop
-        setNewCategory(initialCategoryState);
+        try {
+            // Espera a que la nueva categoría sea creada
+            const createdCategory = await dispatch(postCategory(newCategory));
+            
+            // Pasa la nueva categoría al componente padre
+            onCategoryAdded(createdCategory);
+
+            // Limpia el estado después de agregar la categoría
+            setNewCategory(initialCategoryState);
+        } catch (error) {
+            console.error('Error creating category:', error);
+        }
     };
 
     return (
