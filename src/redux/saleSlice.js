@@ -18,6 +18,9 @@ export const saleSlice = createSlice({
         getSaleByIdReducer: (state, action) => {
             state.saleDetail = action.payload;
         },
+        clearSaleDetailReducer: (state, action) => {
+            state.saleDetail = {};
+        },
         getSalesOnlineReducer: (state, action) => {
             state.salesOnline = action.payload;
         },
@@ -30,6 +33,6 @@ export const saleSlice = createSlice({
     }
 });
 
-export const { getSalesReducer, getSaleByIdReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer } = saleSlice.actions;
+export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer } = saleSlice.actions;
 
 export default saleSlice.reducer;

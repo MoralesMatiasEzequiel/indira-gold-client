@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getSaleById, deleteSale } from '../../../../redux/saleActions.js';
+import { getSaleById, clearSaleDetail, deleteSale } from '../../../../redux/saleActions.js';
+import { getProductById } from '../../../../redux/productActions.js';
 import print from "../../../../assets/img/print.png";
 import detail from "../../../../assets/img/detail.png";
 import style from "./DetailSale.module.css";
@@ -13,12 +14,50 @@ const DetailSale = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const saleDetail = useSelector(state => state.sales.saleDetail);
+    const [purchasedProducts, setPurchasedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
-        dispatch(getSaleById(id));
+        dispatch(clearSaleDetail());
+        setPurchasedProducts([]);
+        setLoading(true);
+        dispatch(getSaleById(id)).then(() => {
+            setLoading(false); // Desactiva la bandera de carga cuando los datos estén listos
+        });
     }, [dispatch, id]);
+
+    useEffect(() => {
+        if (!loading && saleDetail && saleDetail.products) {
+            const updatedProducts = [];
+            saleDetail.products.forEach((product) => {
+                dispatch(getProductById(product.productId)).then((response) => {
+                    const productInfo = response;
+                    const selectedColor = getColorById(productInfo, product.colorId);
+                    const selectedSize = getSizeById(productInfo, product.colorId, product.sizeId);
+
+                    updatedProducts.push({ ...productInfo, selectedColor, selectedSize });
+
+                    // Solo actualiza purchasedProducts después de que todos los productos hayan sido cargados
+                    if (updatedProducts.length === saleDetail.products.length) {
+                        setPurchasedProducts(updatedProducts);
+                    }
+                });
+            });
+        } else {
+            setPurchasedProducts([]);
+        }
+    }, [saleDetail, dispatch, loading]);
+
+    const getColorById = (product, colorId) => {
+        return product?.color?.find(c => c._id === colorId);
+    };
+
+    const getSizeById = (product, colorId, sizeId) => {
+        const color = getColorById(product, colorId);
+        return color?.size?.find(s => s._id === sizeId);
+    };
 
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);
@@ -61,20 +100,23 @@ const DetailSale = () => {
                         {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${saleDetail.totalPrice}.</p>}
                     </div>
                     <div className={style.column}>
-                        {saleDetail.products?.length && <div><span>Productos:</span> 
-                            <ul className={style.itemUl}>
-                                {saleDetail.products.map(product => (
-                                    <li key={product._id}>
-                                        {product.name}
-                                        <ul className={style.detailUl}>
-                                            <li>Color: {product.color[0]?.colorName}</li>
-                                            <li>Talle: {product.color[0]?.size[0]?.sizeName}</li>
-                                            <li>Precio: ${product.price}</li>
+                        <p><span>Productos:&nbsp;</span></p>
+                        <ul>
+                            {purchasedProducts.length > 0 ? (
+                                purchasedProducts.map((product, index) => (
+                                    <li key={index}>
+                                        <p><span>{product.name}</span></p>
+                                        <ul className={style.productList}>
+                                            <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>
+                                            <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>
+                                            <li><span>Precio:&nbsp;</span>{product.price}</li>
                                         </ul>
                                     </li>
-                        ))}
-                            </ul>
-                        </div>}
+                                ))
+                            ) : (
+                                <div>No hay compras registradas</div>
+                            )}
+                        </ul>
                     </div>
                 </div>          
             </div>

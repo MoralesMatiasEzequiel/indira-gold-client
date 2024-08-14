@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getSalesReducer, getSaleByIdReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer } from "./saleSlice.js";
 
 
 export const getSales = () => {
@@ -15,6 +15,12 @@ export const getSaleById = (saleId) => {
         dispatch(getSaleByIdReducer(data));
     };
 };
+
+export const clearSaleDetail = () => {
+    return async (dispatch) => {
+        dispatch(clearSaleDetailReducer());
+    }
+}
 
 export const getSalesOnline = () => {
     return async (dispatch) => {
