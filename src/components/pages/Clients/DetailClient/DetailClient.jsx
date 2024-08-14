@@ -30,13 +30,23 @@ const DetailClient = () => {
             const updatedProducts = [];
             clientDetail.purchases.forEach((purchase) => {
                 dispatch(getProductById(purchase.productId)).then((response) => {
-                    const product = response;
-                    const selectedColor = getColorById(product, purchase.colorId);
-                    const selectedSize = getSizeById(product, purchase.colorId, purchase.sizeId);
-
-                    updatedProducts.push({ ...product, selectedColor, selectedSize });
-
-                    // Solo actualiza purchasedProducts después de que todos los productos hayan sido cargados
+                    if (response.error && response.error.status === 404) {
+                        // Producto no encontrado, agregar producto como no disponible
+                        updatedProducts.push({
+                            name: 'Producto no disponible',
+                            selectedColor: null,
+                            selectedSize: null,
+                            price: null,
+                        });
+                    } else {
+                        const product = response;
+                        const selectedColor = getColorById(product, purchase.colorId);
+                        const selectedSize = getSizeById(product, purchase.colorId, purchase.sizeId);
+    
+                        updatedProducts.push({ ...product, selectedColor, selectedSize });
+                    }
+    
+                    // Actualiza purchasedProducts después de cargar todos los productos
                     if (updatedProducts.length === clientDetail.purchases.length) {
                         setPurchasedProducts(updatedProducts);
                     }
@@ -98,9 +108,9 @@ const DetailClient = () => {
                                     <li key={index}>
                                         <p><span>{product.name}</span></p>
                                         <ul className={style.productList}>
-                                            <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>
-                                            <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>
-                                            <li><span>Precio:&nbsp;</span>{product.price}</li>
+                                            {product.selectedColor && <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>}
+                                            {product.selectedSize && <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>}
+                                            {product.price &&<li><span>Precio:&nbsp;</span>{product.price}</li>}
                                         </ul>
                                     </li>
                                 ))
