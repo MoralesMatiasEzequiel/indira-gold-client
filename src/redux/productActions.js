@@ -61,6 +61,15 @@ export const postProduct = (productData) => {
     };
 };
 
+export const putProduct = (productData) => {
+    console.log(productData);
+    
+    return async (dispatch) => {     
+        const response = await axios.put('/products', productData);
+        return response;
+    };
+};
+
 export const deleteProductById = (productId) => {
     return async (dispatch) =>{
         const { data } = await axios.delete(`/products/${productId}`);
