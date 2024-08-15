@@ -33,7 +33,8 @@ const PutProduct = () => {
         imageGlobal: productDetail.imageGlobal,
         price: productDetail.price,
         category: productDetail.category,
-        description: productDetail.description
+        description: productDetail.description,
+        active: productDetail.active
     };
 
     useEffect(() => {
@@ -48,7 +49,7 @@ const PutProduct = () => {
     }, [productDetail]);
 
     const [editProduct, setEditProduct] = useState(initialEditProductState);  
-    // console.log(editProduct);
+    console.log(editProduct);
 
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
@@ -348,17 +349,18 @@ const PutProduct = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData();
-
+    
         // Agregar la imagen global si existe
         if (editProduct.imageGlobal) {
             formData.append('imageGlobal', editProduct.imageGlobal);
         };
+        
         editProduct.color.forEach((color, index) => {
             if (color.imageFile) {
                 formData.append('images', color.imageFile);
             }
         });
-
+    
         formData.append("_id", editProduct._id);
         formData.append("name", editProduct.name);
         formData.append("color", JSON.stringify(editProduct.color));
@@ -366,7 +368,8 @@ const PutProduct = () => {
         formData.append("price", editProduct.price);
         formData.append("category", JSON.stringify(editProduct.category));
         formData.append("description", editProduct.description);
-
+        formData.append("active", editProduct.active);
+    
         try {
             const response = await dispatch(putProduct(formData));
     
@@ -380,7 +383,8 @@ const PutProduct = () => {
         } catch (error) {
             console.error("Error editing product:", error);
         }
-    };    
+    };
+    
 
     return (
         <div className="page">
