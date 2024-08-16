@@ -2,54 +2,68 @@ import style from './PutProduct.module.css';
 import x from '../../Sales/FormSales/img/x.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
-import { putProduct } from '../../../../redux/productActions.js';
+import { getProductById, putProduct } from '../../../../redux/productActions.js';
 
 const PutProduct = () => {
 
+    const { id } = useParams();
     const dispatch = useDispatch();
     const productDetail = useSelector(state => state.products.productDetail);    
     const categories = useSelector(state => state.categories.categories);
-
-    const initialEditProductState = {
-        _id: productDetail._id,
-        name: productDetail.name,
-        color: productDetail.color.map(color => ({
-            colorName: color?.colorName,
-            size: color.size?.map(size => ({
-                sizeName: size.sizeName,
-                measurements: {
-                    width: size.measurements[0]?.width || '',
-                    long: size.measurements[0]?.long || '',
-                    rise: size.measurements[0]?.rise || ''
-                },
-                stock: size.stock || 0
-            })),
-            image: color.image || ''
-        })),
-        supplier: productDetail.supplier,
-        imageGlobal: productDetail.imageGlobal,
-        price: productDetail.price,
-        category: productDetail.category,
-        description: productDetail.description,
-        active: productDetail.active
-    };
-
+    
+    useEffect(() => {
+        dispatch(getProductById(id));
+    }, [dispatch, id]);
+    
     useEffect(() => {
         dispatch(getCategories());
-        if (productDetail) {
+    
+        if (productDetail && productDetail._id === id) {
             setColors(productDetail.color.map(color => color.colorName));
-            
-            const allSizes = productDetail.color.flatMap(color => color.size.map(size => size.sizeName));
-            const uniqueSizes = [...new Set(allSizes)]; // Para asegurarse de que los talles no se repitan
+    
+            const allSizes = productDetail.color.flatMap(color => 
+                color.size.map(size => size.sizeName)
+            );
+            const uniqueSizes = [...new Set(allSizes)];
             setSizes(uniqueSizes);
+    
+            const updatedEditProduct = {
+                _id: productDetail._id,
+                name: productDetail.name,
+                color: productDetail.color?.map(color => ({
+                    colorName: color.colorName,
+                    size: color.size?.map(size => ({
+                        sizeName: size.sizeName,
+                        measurements: {
+                            width: size.measurements[0]?.width || '',
+                            long: size.measurements[0]?.long || '',
+                            rise: size.measurements[0]?.rise || ''
+                        },
+                        stock: size.stock || 0
+                    })),
+                    image: color.image || ''
+                })),
+                supplier: productDetail.supplier,
+                imageGlobal: productDetail.imageGlobal,
+                price: productDetail.price,
+                category: productDetail.category,
+                description: productDetail.description,
+                active: productDetail.active
+            };
+            setEditProduct(updatedEditProduct);
+    
+            // Inicializa selectedCategory con la categoría del producto
+            const categoryId = productDetail.category?.[0]?._id || '';
+            setSelectedCategory(categoryId);
         }
-    }, [productDetail]);
+    }, [dispatch, id, productDetail]);
 
-    const [editProduct, setEditProduct] = useState(initialEditProductState);  
-    console.log(editProduct);
+    const [editProduct, setEditProduct] = useState({});  
+    // console.log(editProduct);
 
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
@@ -102,14 +116,14 @@ const PutProduct = () => {
             });
             // validateForm();
         };
-        if(name === 'category'){
+        if (name === 'category') {
+            setSelectedCategory(value);
+    
             const selectedCategory = categories.find(category => category._id === value);
-            setEditProduct({
-                ...editProduct,
+            setEditProduct(prevEditProduct => ({
+                ...prevEditProduct,
                 category: [{ _id: selectedCategory._id, name: selectedCategory.name }]
-            });
-            setSelectedCategory(value); // Aquí, `value` es el `_id` de la categoría seleccionada
-            // validateForm();
+            }));
         };
         if(name === 'description'){
             setEditProduct({
@@ -190,7 +204,7 @@ const PutProduct = () => {
 
     //-----------COMBINACION(COLOR/SIZE)-----------//
     const generateCombinations = () => {
-        return colors.flatMap(color =>
+        return colors?.flatMap(color =>
             sizes.map(size => ({ color, size }))
         );
     };
@@ -198,52 +212,73 @@ const PutProduct = () => {
     const combinations = generateCombinations();
 
     //-----------STOCK-----------//
+    // const handleStockChange = (combination, event) => {
+    //     const { name, value } = event.target;
+    //     const updatedProduct = { ...editProduct };
+    
+    //     let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
+    //     if (colorIndex === -1) {
+    //         // Agregar un nuevo color si no existe
+    //         updatedProduct.color.push({
+    //             colorName: combination.color,
+    //             size: [],
+    //             image: ''
+    //         });
+    //         colorIndex = updatedProduct.color.length - 1; // Actualizar colorIndex al nuevo color
+    //     }
+    
+    //     let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
+    //     if (sizeIndex === -1) {
+    //         // Agregar un nuevo talle si no existe
+    //         updatedProduct.color[colorIndex].size.push({
+    //             sizeName: combination.size,
+    //             measurements: { width: '', long: '', rise: '' },
+    //             code: 'CÓDIGO QR',
+    //             stock: 0
+    //         });
+    //         sizeIndex = updatedProduct.color[colorIndex].size.length - 1; // Actualizar sizeIndex al nuevo tamaño
+    //     }
+    
+    //     // Actualización de medidas y stock
+    //     if (['width', 'long', 'rise'].includes(name)) {
+    //         updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
+    //     } else if (name === 'stock') {
+    //         if (value > 0) {
+    //             updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
+    //         } else {
+    //             updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
+    //         }
+    //     }
+    
+    //     // Verificar si se debe eliminar el objeto `color` si todos los `size` tienen stock 0
+    //     if (updatedProduct.color[colorIndex].size.length === 0) {
+    //         updatedProduct.color.splice(colorIndex, 1);
+    //     }
+    
+    //     setEditProduct(updatedProduct);
+    //     // validateForm();
+    // };     
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
-        const updatedProduct = { ...editProduct };
+        const updatedEditProduct = { ...editProduct };
     
-        let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
-        if (colorIndex === -1) {
-            // Agregar un nuevo color si no existe
-            updatedProduct.color.push({
-                colorName: combination.color,
-                size: [],
-                image: ''
-            });
-            colorIndex = updatedProduct.color.length - 1; // Actualizar colorIndex al nuevo color
-        }
+        const colorIndex = updatedEditProduct.color.findIndex(c => c.colorName === combination.color);
+        const sizeIndex = updatedEditProduct.color[colorIndex].size.findIndex(s => s.sizeName === combination.size);
     
-        let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
-        if (sizeIndex === -1) {
-            // Agregar un nuevo talle si no existe
-            updatedProduct.color[colorIndex].size.push({
-                sizeName: combination.size,
-                measurements: { width: '', long: '', rise: '' },
-                code: 'CÓDIGO QR',
-                stock: 0
-            });
-            sizeIndex = updatedProduct.color[colorIndex].size.length - 1; // Actualizar sizeIndex al nuevo tamaño
-        }
+        if (colorIndex >= 0 && sizeIndex >= 0) {
+            updatedEditProduct.color[colorIndex].size[sizeIndex].measurements = {
+                ...updatedEditProduct.color[colorIndex].size[sizeIndex].measurements,
+                [name]: value
+            };
     
-        // Actualización de medidas y stock
-        if (['width', 'long', 'rise'].includes(name)) {
-            updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
-        } else if (name === 'stock') {
-            if (value > 0) {
-                updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
-            } else {
-                updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
+            if (name === 'stock') {
+                updatedEditProduct.color[colorIndex].size[sizeIndex].stock = value;
             }
         }
     
-        // Verificar si se debe eliminar el objeto `color` si todos los `size` tienen stock 0
-        if (updatedProduct.color[colorIndex].size.length === 0) {
-            updatedProduct.color.splice(colorIndex, 1);
-        }
+        setEditProduct(updatedEditProduct);
+    };
     
-        setEditProduct(updatedProduct);
-        // validateForm();
-    };     
 
     //-----------SUPPLIER-----------//
     const handleSupplierChange = (event) => {
@@ -390,7 +425,8 @@ const PutProduct = () => {
                 setColors([]);
                 setSizes([]);
                 setImageGlobal(null);
-                setEditProduct(initialEditProductState); // Reset form
+                // setEditProduct(initialEditProductState); // Reset form
+                setEditProduct({}); 
             };
         } catch (error) {
             console.error("Error editing product:", error);
@@ -415,7 +451,7 @@ const PutProduct = () => {
                                     <label htmlFor="color">Colores</label>
                                     <div className={style.colorCard}>
                                         <ol>
-                                            {colors.map((color, colorIndex) => (
+                                            {colors?.map((color, colorIndex) => (
                                                 <li key={colorIndex} className={style.list}>
                                                     <span className={style.spanList}>{color}</span>
                                                     <button type="button" className={style.buttonDelete} onClick={() => deleteColor(colorIndex)}>
@@ -450,10 +486,10 @@ const PutProduct = () => {
                                 <label htmlFor="color">Medidas y stock</label>
                                 <div className={style.stockCard}>
                                     <ol>
-                                    {combinations.map((combination, index) => {
+                                    {combinations?.map((combination, index) => {
                                         // Encontrar el color y el talle correspondientes en el estado editProduct
-                                        const colorState = editProduct.color.find(c => c.colorName === combination.color);
-                                        const sizeState = colorState?.size.find(s => s.sizeName === combination.size);
+                                        const colorState = editProduct.color?.find(c => c.colorName === combination.color);
+                                        const sizeState = colorState?.size?.find(s => s.sizeName === combination.size);
                                         return (
                                             <li key={index} className={style.list}>
                                                 <span className={style.spanList}>
@@ -506,11 +542,11 @@ const PutProduct = () => {
                                 <label htmlFor="supplier" className={style.supplierTitle}>Proveedor</label>
                                 <div className={style.dataSupplierContainer}>
                                     <label htmlFor="name" className={style.nameTitle}>Nombre</label>
-                                    <input type="text" name="name" value={editProduct.supplier.name} onChange={handleSupplierChange} className={style.inputName}/>
+                                    <input type="text" name="name" value={editProduct.supplier?.name} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
                                 <div>
                                     <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
-                                    <input type="text" name="phone" value={editProduct.supplier.phone} onChange={handleSupplierChange} className={style.inputName}/>
+                                    <input type="text" name="phone" value={editProduct.supplier?.phone} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
                             </div>   
                         </div>
@@ -535,7 +571,7 @@ const PutProduct = () => {
                                 </div>
                                 <div className={style.imageComponent}>  
                                     <ol>
-                                        {editProduct.color.map((color, index) => (
+                                        {editProduct.color?.map((color, index) => (
                                             <li key={index} className={style.list}>
                                                 <span className={style.spanList}>{color.colorName}</span>
                                                 {selectedOptionImage === 'byColor' && (
@@ -603,6 +639,7 @@ const PutProduct = () => {
                             <div>
                                 {/* <button type="submit" disabled={isSubmitDisabled}>Editar</button> */}
                                 <button type="submit">Editar</button>
+                                {/* <button type="submit"><Link to={`/main_window/products/${id}`}>Editar</Link></button> */}
                             </div>
                         </div>
                     </form>
