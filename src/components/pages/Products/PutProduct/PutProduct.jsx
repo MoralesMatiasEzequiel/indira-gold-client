@@ -60,7 +60,7 @@ const PutProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
-    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    // const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     
 
     // const validateForm = () => {
@@ -601,7 +601,8 @@ const PutProduct = () => {
                                 <textarea type="text" name="description" value={editProduct.description} onChange={handleInputChange}/>
                             </div> 
                             <div>
-                                <button type="submit" disabled={isSubmitDisabled}>Editar</button>
+                                {/* <button type="submit" disabled={isSubmitDisabled}>Editar</button> */}
+                                <button type="submit">Editar</button>
                             </div>
                         </div>
                     </form>
