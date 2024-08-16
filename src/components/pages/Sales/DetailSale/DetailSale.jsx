@@ -85,7 +85,7 @@ const DetailSale = () => {
                     <h2>Detalle de la venta</h2>
                     <div className="titleButtons">
                         <button><img src={print} alt=""/></button>
-                        <button>Cambio</button>
+                        <button><Link to={`/main_window/sales/edit/${id}`}>Cambio</Link></button>
                         <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>
                         <button><Link to={`/main_window/`}>Atrás</Link></button>
                     </div>

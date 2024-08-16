@@ -4,6 +4,7 @@ import SideBar from "./components/common/SideBar.jsx";
 import Stats from "./components/pages/Stats/Stats.jsx";
 import Sales from "./components/pages/Sales/Sales.jsx";
 import DetailSale from "./components/pages/Sales/DetailSale/DetailSale.jsx";
+import PutSale from "./components/pages/Sales/PutSale/PutSale.jsx";
 import Products from "./components/pages/Products/Products.jsx";
 import DetailProduct from "./components/pages/Products/DetailProduct/DetailProduct.jsx";
 import FormProduct from "./components/pages/Products/FormProduct/FormProduct.jsx";
@@ -24,6 +25,7 @@ const App = () => {
           <Route path='/main_window/stats' element={<Stats />}/>
           <Route path='/main_window/' element={<Sales />}/>
           <Route path='/main_window/sales/:id' element={<DetailSale />}/>
+          <Route path='/main_window/sales/edit/:id' element={<PutSale/>}/>
           <Route path='/main_window/products' element={<Products />}/>
           <Route path='/main_window/products/:id' element={<DetailProduct />}/>
           <Route path='/main_window/products/form' element={<FormProduct />}/>
