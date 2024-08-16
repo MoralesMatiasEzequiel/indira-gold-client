@@ -1,0 +1,44 @@
+/* DetailSale.module.css */
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Asegúrate de que los elementos hijos se alineen al principio */
+}
+
+.orderNumber {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--gold);
+}
+
+.row{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 2rem;
+    box-sizing: border-box;
+}
+
+.row p span, .row div span{
+    font-weight: 600;
+}
+
+.row form{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 2rem;
+    box-sizing: border-box;
+}
+
+.column {
+    width: 48%;
+}
+
+.column p span, .column div span{
+    font-weight: 600;
+}

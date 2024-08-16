@@ -58,12 +58,19 @@ export const searchSales = (orderNumber, client) => {
 };
 
 export const postSale = (saleData) => {
-    return async (dispatch) => {
+    return async () => {
        
         const response = await axios.post('/sale', saleData);
         return response;
     };
 };
+
+export const putSale = (saleData) => {
+    return async () => {
+        const response = await axios.put('/sale', saleData);
+        return response;
+    }
+}
 
 export const deleteSale = (saleId) => {
     return async (dispatch) => {
