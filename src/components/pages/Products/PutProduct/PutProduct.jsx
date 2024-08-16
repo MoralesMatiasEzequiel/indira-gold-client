@@ -63,22 +63,27 @@ const PutProduct = () => {
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     
 
-    const validateForm = () => {
-        const isProductNameValid = editProduct.name.trim() !== '';
-        const isColorValid = colors.length > 0;
-        const isSizeValid = sizes.length > 0;
-        const isCategoryValid = editProduct.category.length > 0;
-        const isPriceValid = editProduct.price > 0;
+    // const validateForm = () => {
+    //     const isProductNameValid = editProduct.name.trim() !== '';
+    //     const isColorValid = colors.length > 0;
+    //     const isSizeValid = sizes.length > 0;
+    //     const isSupplierValid = Object.keys(editProduct.supplier).length > 0;
+    //     // Verificar que exista una imagen global o que cada color tenga su imagen específica
+    //     const isImageGlobalValid = !!editProduct.imageGlobal || !!editProduct.imageGlobalPreview;
+    //     const isColorImagesValid = editProduct.color.every(color => color.image || color.imageFile);
+    //     const isImagesValid = isImageGlobalValid || isColorImagesValid;
+    //     const isCategoryValid = editProduct.category.length > 0;
+    //     const isPriceValid = editProduct.price > 0;
 
-        // Validar que al menos una combinación de color y talla tenga stock mayor a 0
-        const hasAtLeastOneValidStock = combinations.some(combination => {
-            const color = editProduct.color.find(c => c.colorName === combination.color);
-            const size = color ? color.size.find(s => s.sizeName === combination.size) : null;
-            return size ? size.stock > 0 : false;
-        });
+    //     // Validar que al menos una combinación de color y talla tenga stock mayor a 0
+    //     const hasAtLeastOneValidStock = combinations.some(combination => {
+    //         const color = editProduct.color.find(c => c.colorName === combination.color);
+    //         const size = color ? color.size.find(s => s.sizeName === combination.size) : null;
+    //         return size ? size.stock > 0 : false;
+    //     });
 
-        setIsSubmitDisabled(!(isProductNameValid && isColorValid && isSizeValid && isCategoryValid && isPriceValid && hasAtLeastOneValidStock));
-    };
+    //     setIsSubmitDisabled(!(isProductNameValid && isColorValid && isSizeValid && isSupplierValid && isImagesValid && isCategoryValid && isPriceValid && hasAtLeastOneValidStock));
+    // };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -95,7 +100,7 @@ const PutProduct = () => {
                 ...editProduct,
                 price: priceNumber
             });
-            validateForm();
+            // validateForm();
         };
         if(name === 'category'){
             const selectedCategory = categories.find(category => category._id === value);
@@ -104,7 +109,7 @@ const PutProduct = () => {
                 category: [{ _id: selectedCategory._id, name: selectedCategory.name }]
             });
             setSelectedCategory(value); // Aquí, `value` es el `_id` de la categoría seleccionada
-            validateForm();
+            // validateForm();
         };
         if(name === 'description'){
             setEditProduct({
@@ -113,13 +118,12 @@ const PutProduct = () => {
             });
         };
     
-        validateForm();
+        // validateForm();
     };  
 
     //-----------COLOR-----------//
     const handleInputColorChange = (event) => {
         setNewColor(event.target.value);
-        // setEditProduct();
     };
 
     const addColor = () => {
@@ -127,7 +131,7 @@ const PutProduct = () => {
             setColors([...colors, newColor]);
             setNewColor('');
         };
-        validateForm();
+        // validateForm();
     };
     
     const deleteColor = (index) => {
@@ -146,7 +150,7 @@ const PutProduct = () => {
             ...editProduct,
             color: filteredProductsColor
         });
-        validateForm();
+        // validateForm();
     };
 
     //-----------SIZE-----------//
@@ -159,7 +163,7 @@ const PutProduct = () => {
             setSizes([...sizes, newSize]);
             setNewSize('');
         };
-        validateForm();
+        // validateForm();
     };
 
     const deleteSize = (index) => {
@@ -181,7 +185,7 @@ const PutProduct = () => {
             color: updatedProductColors
         }));
     
-        validateForm();
+        // validateForm();
     };
 
     //-----------COMBINACION(COLOR/SIZE)-----------//
@@ -238,7 +242,7 @@ const PutProduct = () => {
         }
     
         setEditProduct(updatedProduct);
-        validateForm();
+        // validateForm();
     };     
 
     //-----------SUPPLIER-----------//
@@ -253,6 +257,7 @@ const PutProduct = () => {
             }
         };
         setEditProduct(updatedProduct);
+        // validateForm();
     };
     
     //-----------IMAGEN-----------//
@@ -285,10 +290,11 @@ const PutProduct = () => {
                         updatedProduct.imageGlobal = null;
                         updatedProduct.imageGlobalPreview = null;
                         setImageGlobal(null);
-                    }
+                    };
     
                     setEditProduct(updatedProduct);
                     setImagePreview(reader.result);
+
                 } else {
                     // Subir imagen global
                     updatedProduct.imageGlobal = file;
@@ -304,10 +310,14 @@ const PutProduct = () => {
                     setEditProduct(updatedProduct);
                     setImageGlobal(reader.result);
                     setImagePreview(reader.result);
-                }
+                };
+                // validateForm();
             };
             reader.readAsDataURL(file);
-        }
+        } 
+        // else {
+        //     validateForm();
+        // };
     };
     
     const deleteImage = (index) => {
@@ -321,7 +331,9 @@ const PutProduct = () => {
 
         setEditProduct(updatedProduct);
         setImagePreview(imgProduct);
-    };
+
+        // validateForm();
+    };   
 
     //-----------CATEGORY-----------//
     const handleShowCategoryForm = () => {
@@ -342,7 +354,7 @@ const PutProduct = () => {
                 category: [{ _id: newCategory._id, name: newCategory.name }]
             }));
         };
-        validateForm();
+        // validateForm();
     };
 
     //-----------SUBMIT-----------//
@@ -358,7 +370,7 @@ const PutProduct = () => {
         editProduct.color.forEach((color, index) => {
             if (color.imageFile) {
                 formData.append('images', color.imageFile);
-            }
+            };
         });
     
         formData.append("_id", editProduct._id);
@@ -379,13 +391,12 @@ const PutProduct = () => {
                 setSizes([]);
                 setImageGlobal(null);
                 setEditProduct(initialEditProductState); // Reset form
-            }
+            };
         } catch (error) {
             console.error("Error editing product:", error);
-        }
+        };
     };
     
-
     return (
         <div className="page">
             <div className="component">
