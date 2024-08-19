@@ -12,7 +12,6 @@ const DetailProduct = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const productDetail = useSelector(state => state.products.productDetail);
-console.log(productDetail);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -80,7 +79,7 @@ console.log(productDetail);
                             </div>
                         ))}
                         {productDetail.description ? <p><span>Descripción:&nbsp;</span>{productDetail.description}</p> : ''}
-                        {(productDetail.supplier.name && productDetail.supplier.name.length > 0)  
+                        {productDetail.supplier && productDetail.supplier.name.trim() !== ''  
                         ? (
                             <div className={style.containerSupplier}>
                                 <p><span>Proveedor:</span></p>
@@ -101,7 +100,6 @@ console.log(productDetail);
                 </div>
             </div>
         </div>
-
     );
 };
 
