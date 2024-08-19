@@ -41,6 +41,7 @@ const FormProduct = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     
+// console.log(newProduct); 
 
     const validateForm = () => {
         const isProductNameValid = newProduct.name.trim() !== '';
@@ -90,6 +91,12 @@ const FormProduct = () => {
                 description: value
             });
         };
+        // else{
+        //     setNewProduct({
+        //         ...newProduct,
+        //         [name]: value
+        //     });
+        // }
         validateForm();
     };
 
@@ -310,6 +317,22 @@ const FormProduct = () => {
     };
 
     //-----------SUBMIT-----------//
+    // const validateForm = () => {
+    // const isProductNameValid = newProduct.name.trim() !== '';
+    // const isColorValid = colors.length > 0;
+    // const isSizeValid = sizes.length > 0;
+    // const isCategoryValid = newProduct.category.length > 0;
+    // const isPriceValid = newProduct.price > 0;
+
+    // // Validar que todas las combinaciones de color y talla tengan stock mayor a 0
+    // const areAllStocksValid = combinations.every(combination => {
+    //     const color = newProduct.color.find(c => c.colorName === combination.color);
+    //     const size = color ? color.size.find(s => s.sizeName === combination.size) : null;
+    //     return size ? size.stock > 0 : false;
+    // });
+
+    //     setIsSubmitDisabled(!(isProductNameValid && isColorValid && isSizeValid && isCategoryValid && isPriceValid && areAllStocksValid));
+    // };
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData();
@@ -426,7 +449,7 @@ const FormProduct = () => {
                                     <label htmlFor="name" className={style.nameTitle}>Nombre</label>
                                     <input type="text" name="name" value={newProduct.supplier.name} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
-                                <div>
+                                <div className={style.dataSupplierContainer}>
                                     <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
                                     <input type="text" name="phone" value={newProduct.supplier.phone} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
@@ -477,26 +500,28 @@ const FormProduct = () => {
                                     </ol>                                              
                                 </div>
                             </div>
-                            <div className={style.categoryContainer}>
-                                <label htmlFor="category" className={style.nameTitle}>*Categoría</label>
-                                <select name="category" className={style.selectCategory} value={newProduct.category} onChange={handleInputChange}>
-                                    <option value="" disabled>Seleccionar</option>
-                                    {categories.map((category) => (
-                                        <option key={category._id} value={category._id}>{category.name}</option>
-                                    ))}
-                                </select>
-                                <div className={style.containerAddCategory}>
-                                    <button className={style.buttonAddCategory} type='button' onClick={handleShowCategoryForm}>+</button>
+                            <div className={style.rigthContainer}>      
+                                <div className={style.categoryContainer}>
+                                    <label htmlFor="category" className={style.nameTitle}>*Categoría</label>
+                                    <select name="category" className={style.selectCategory} value={newProduct.category} onChange={handleInputChange}>
+                                        <option value="" disabled>Seleccionar</option>
+                                        {categories.map((category) => (
+                                            <option key={category._id} value={category._id}>{category.name}</option>
+                                        ))}
+                                    </select>
+                                    <div className={style.containerAddCategory}>
+                                        <button className={style.buttonAddCategory} type='button' onClick={handleShowCategoryForm}>+</button>
+                                    </div>
                                 </div>
+                                <div className={style.priceContainer}>
+                                    <label htmlFor="price" className={style.nameTitle}>*Precio $</label>
+                                    <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
+                                </div>    
+                                <div className={style.descriptionContainer}>
+                                    <label htmlFor="description" className={style.nameTitle}>Descripción</label>
+                                    <textarea type="text" name="description" value={newProduct.description} onChange={handleInputChange}/>
+                                </div> 
                             </div>
-                            <div className={style.priceContainer}>
-                                <label htmlFor="price" className={style.nameTitle}>*Precio $</label>
-                                <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
-                            </div>    
-                            <div className={style.descriptionContainer}>
-                                <label htmlFor="description" className={style.nameTitle}>Descripción</label>
-                                <textarea type="text" name="description" value={newProduct.description} onChange={handleInputChange}/>
-                            </div> 
                             <div>
                                 <button type="submit" disabled={isSubmitDisabled}>Agregar</button>
                             </div>

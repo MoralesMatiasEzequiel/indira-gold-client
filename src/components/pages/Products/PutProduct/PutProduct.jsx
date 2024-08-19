@@ -438,6 +438,9 @@ const PutProduct = () => {
             <div className="component">
                 <div className="title">
                     <h2>EDITAR PRODUCTO</h2>
+                    <div className="titleButtons">
+                        <button><Link to={`/main_window/products/${id}`}>Atrás</Link></button>
+                    </div>
                 </div>
                 <div className="container">
                     <form onSubmit={handleSubmit} className={style.productForm}>
@@ -544,7 +547,7 @@ const PutProduct = () => {
                                     <label htmlFor="name" className={style.nameTitle}>Nombre</label>
                                     <input type="text" name="name" value={editProduct.supplier?.name} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
-                                <div>
+                                <div className={style.dataSupplierContainer}>
                                     <label htmlFor="phone" className={style.nameTitle}>Teléfono</label>
                                     <input type="text" name="phone" value={editProduct.supplier?.phone} onChange={handleSupplierChange} className={style.inputName}/>
                                 </div>
@@ -605,37 +608,39 @@ const PutProduct = () => {
                                     </ol>                                              
                                 </div>
                             </div>
-                            <div className={style.categoryContainer}>
-                                <label htmlFor="category" className={style.nameTitle}>Categoría</label>
-                                <select 
-                                    name="category" 
-                                    className={style.selectCategory} 
-                                    value={selectedCategory}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value="" disabled>Seleccionar</option>
-                                    {categories.map((category) => (
-                                        <option key={category._id} value={category._id}>{category.name}</option>
-                                    ))}
-                                </select>
-                                <div className={style.containerAddCategory}>
-                                    <button 
-                                        className={style.buttonAddCategory} 
-                                        type='button' 
-                                        onClick={handleShowCategoryForm}
+                            <div className={style.rigthContainer}> 
+                                <div className={style.categoryContainer}>
+                                    <label htmlFor="category" className={style.nameTitle}>Categoría</label>
+                                    <select 
+                                        name="category" 
+                                        className={style.selectCategory} 
+                                        value={selectedCategory}
+                                        onChange={handleInputChange}
                                     >
-                                        +
-                                    </button>
+                                        <option value="" disabled>Seleccionar</option>
+                                        {categories.map((category) => (
+                                            <option key={category._id} value={category._id}>{category.name}</option>
+                                        ))}
+                                    </select>
+                                    <div className={style.containerAddCategory}>
+                                        <button 
+                                            className={style.buttonAddCategory} 
+                                            type='button' 
+                                            onClick={handleShowCategoryForm}
+                                        >
+                                            +
+                                        </button>
+                                    </div>
                                 </div>
+                                <div className={style.priceContainer}>
+                                    <label htmlFor="price" className={style.nameTitle}>Precio $</label>
+                                    <input type="number" name="price" onChange={handleInputChange} value={editProduct.price} min='0'/>
+                                </div>    
+                                <div className={style.descriptionContainer}>
+                                    <label htmlFor="description" className={style.nameTitle}>Descripción</label>
+                                    <textarea type="text" name="description" value={editProduct.description} onChange={handleInputChange}/>
+                                </div>  
                             </div>
-                            <div className={style.priceContainer}>
-                                <label htmlFor="price" className={style.nameTitle}>*Precio $</label>
-                                <input type="number" name="price" onChange={handleInputChange} value={editProduct.price} min='0'/>
-                            </div>    
-                            <div className={style.descriptionContainer}>
-                                <label htmlFor="description" className={style.nameTitle}>Descripción</label>
-                                <textarea type="text" name="description" value={editProduct.description} onChange={handleInputChange}/>
-                            </div> 
                             <div>
                                 {/* <button type="submit" disabled={isSubmitDisabled}>Editar</button> */}
                                 <button type="submit">Editar</button>
