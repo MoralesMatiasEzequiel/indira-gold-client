@@ -1,3 +1,23 @@
+.productInactive{
+    width: 100%;
+    text-align: center;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.nameProductInactive{
+    opacity: 0.3;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--gold);
+}
+
 .nameProduct{
     width: 100%;
     text-align: center;
@@ -6,6 +26,16 @@
     font-size: 1.5rem;
     font-weight: 600;
     border-bottom: 1px solid var(--gold);
+}
+
+.columnInactive {
+    opacity: 0.4;
+    height: 90%;
+    /* width: 50%; */
+    padding: 0 2rem;
+    box-sizing: border-box;
+    display: flex; /* Asegura que los hijos se alineen correctamente si es necesario */
+    flex-direction: column; /* Alinea los elementos en una columna si necesitas que la columna sea vertical */
 }
 
 .column {
@@ -31,6 +61,21 @@
     height: auto;        
     /* display: block;*/
     object-fit: cover;     
+}
+
+.columnInactive p, .columnInactive div ul{
+    margin: 0.5rem 0;
+}
+
+.columnInactive div li{
+    /* background-color: red; */
+    margin: 5px;
+    /* display: flex; */
+    /* align-items: center; */
+}
+
+.columnInactive p span, .columnInactive div span{
+    font-weight: 600;
 }
 
 .column p, .column div ul{

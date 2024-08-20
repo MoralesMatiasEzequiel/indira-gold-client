@@ -18,7 +18,7 @@ time, mark, audio, video {
     border: 0;
     font-size: 100%;
     font: inherit;
-    vertical-align: baseline;
+    /* vertical-align: baseline; */
     text-decoration: none;
 }
 /* HTML5 display-role reset for older browsers */
@@ -97,6 +97,7 @@ table {
     --black: #000000;
     --gold: #e4b61a;
     --red: #ad0000;
+    --green: #00ad3a;
     --border-light: solid 1px #f1f1f1;
     --border-medium: solid 1px #e5e5e5;
     --border-dark: solid 1px #b2b2b2;
@@ -199,6 +200,10 @@ button:disabled {
 
 button.delete{
     background-color: var(--red);
+}
+
+button.add{
+    background-color: var(--green);
 }
 
 .titleButtons button:hover{

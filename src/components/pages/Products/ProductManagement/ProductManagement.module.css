@@ -1,35 +1,37 @@
+.inactive{
+    opacity: 0.3;
+}
+
 .tdInside{
     padding: 0;
 }
 
-.tdMax{
-    width: auto;
-    margin: 0;
+.containerInfoGral{
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
-    border-top: solid 1px #f1f1f1;
 }
 
-.tdMin{
+.nameProduct{
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.containerColor{
     width: auto;
-    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
-.tdImageContainer{
-    border: none;
-    padding: 4px;
+.tdContainerImage{
     width: 100px; 
-    height: 80px;
-    display: flex;
-    justify-content: center;
+    height: auto;
     align-items: center;
-    overflow: hidden; /* Oculta cualquier parte de la imagen que sobresalga del contenedor */
+    justify-content: center;
+    /* overflow: hidden;  */ /* Oculta cualquier parte de la imagen que sobresalga del contenedor */
 }
 
 .imageProduct{
@@ -38,22 +40,16 @@
     object-fit: cover; /* Ajusta la imagen para llenar el contenedor sin deformar */
 }
 
-.tdSizeMax{
-    width: auto;
-    margin: 0;
+.containerSize{
+    align-items: center;
+    justify-content: center;
+    /* border-bottom: solid 1px #f1f1f1; */
+}
+
+.containerSizeName{
+    margin: 10px;
+    padding-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
-}
-
-.tdSizeMin{
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sizeContainer {
-    border-top: solid 1px #f1f1f1;
 }

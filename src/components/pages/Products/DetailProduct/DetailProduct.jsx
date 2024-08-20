@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
-import { getProductById, deleteProductById } from '../../../../redux/productActions.js';
+import { getProductById, putProductStatus } from '../../../../redux/productActions.js';
 
 
 const DetailProduct = () => {
@@ -19,8 +19,8 @@ const DetailProduct = () => {
         setShowDeleteModal(!showDeleteModal);
     };
 
-    const handleDelete = () => {
-        dispatch(deleteProductById(id));
+    const handleModifyStatus = () => {
+        dispatch(putProductStatus(id));
         navigate('/main_window/products/management');
     };
 
@@ -41,14 +41,15 @@ const DetailProduct = () => {
                 <div className="title">
                     <h2>Detalle del producto</h2>
                     <div className="titleButtons">
-                        <button><Link to={`/main_window/products/edit/${id}`}>Editar</Link></button>
-                        <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>
+                        {productDetail.active ? <button><Link to={`/main_window/products/edit/${id}`}>Editar</Link></button> : ''}
+                        {!productDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Añadir</button> : <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>}
                         <button><Link to={`/main_window/products/management`}>Atrás</Link></button>
                     </div>
                 </div>
                 <div className="container">
-                    {productDetail.name && <div className={style.nameProduct}><span>{productDetail.name}</span></div>}
-                    <div className={style.column}>
+                    {!productDetail.active && <div className={style.productInactive}><span>Este producto ha sido eliminado</span></div>}
+                    {productDetail.name && <div className={!productDetail.active ? style.nameProductInactive : style.nameProduct}><span>{productDetail.name}</span></div>}
+                    <div className={!productDetail.active ? style.columnInactive : style.column}>
                         <div className={style.containerImgProduct}>
                             {productDetail.imageGlobal 
                             ? <img className={style.imgProduct} src={getImageUrl(productDetail.imageGlobal)} alt="Product Image"/> 
@@ -79,7 +80,7 @@ const DetailProduct = () => {
                             </div>
                         ))}
                         {productDetail.description ? <p><span>Descripción:&nbsp;</span>{productDetail.description}</p> : ''}
-                        {productDetail.supplier && productDetail.supplier.name.trim() !== ''  
+                        {productDetail.supplier && productDetail.supplier.name.trim() !== '' || productDetail.supplier && productDetail.supplier.phone.trim() !== ''  
                         ? (
                             <div className={style.containerSupplier}>
                                 <p><span>Proveedor:</span></p>
@@ -90,15 +91,27 @@ const DetailProduct = () => {
                     </div>
                 </div>
             </div>
+            {!productDetail.active 
+            ? (
+            <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
+                <div className={style.deleteContent}>
+                    <p>¿Está seguro que desea añadir este producto?</p>
+                    <div className={style.deleteButtons}>
+                        <button onClick={toggleShowDeleteModal}>Cancelar</button>
+                        <button onClick={handleModifyStatus} className="add">Añadir</button>
+                    </div>
+                </div>
+            </div>
+            ) : (
             <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
                 <div className={style.deleteContent}>
                     <p>¿Está seguro que desea eliminar este producto?</p>
                     <div className={style.deleteButtons}>
                         <button onClick={toggleShowDeleteModal}>Cancelar</button>
-                        <button onClick={handleDelete} className="delete">Eliminar</button>
+                        <button onClick={handleModifyStatus} className="delete">Eliminar</button>
                     </div>
                 </div>
-            </div>
+            </div>)}            
         </div>
     );
 };
