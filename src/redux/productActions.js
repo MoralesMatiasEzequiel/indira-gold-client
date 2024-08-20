@@ -10,7 +10,7 @@ export const getProducts = () => {
 
 export const getAllProducts = () => {
     return async (dispatch) => {
-        const { data } = await axios.get("/products/all");
+        const { data } = await axios.get("/products/all");        
         dispatch(getAllProductsReducer(data));
     };
 };
@@ -29,10 +29,12 @@ export const getProductById = (productId) => {
         }
     };
 };
+
 export const getProductByName = (productName) => {
     return async (dispatch) => {
-        const { data } = await axios.get(`/products?name=${productName}&`);
-        dispatch(getProductsReducer(data));
+        const { data } = await axios.get(`/products/all?name=${productName}&`);
+        dispatch(getAllProductsReducer(data));
+        // dispatch(getProductsReducer(data));
     };
 };
 
@@ -61,18 +63,17 @@ export const postProduct = (productData) => {
     };
 };
 
-export const putProduct = (productData) => {
-    console.log(productData);
-    
+export const putProduct = (productData) => {    
     return async (dispatch) => {     
         const response = await axios.put('/products', productData);
         return response;
     };
 };
 
-export const deleteProductById = (productId) => {
-    return async (dispatch) =>{
-        const { data } = await axios.delete(`/products/${productId}`);
+export const putProductStatus = (productId) => {    
+    return async (dispatch) => {     
+        const response = await axios.put(`/products/${productId}`);
+        return response;
     };
 };
 
@@ -81,11 +82,10 @@ export const reduceStock = (productData) => {
         const { data } = await axios.put('/products/reduce', productData);
         return data;
     };
-}
+};
 
-// export const postProduct = (productData) => {
-//     return async (dispatch) => {     
-//         const response = await axios.post('/products', productData);
-//         return response;
-//     };
-// };
+export const deleteProductById = (productId) => {
+    return async (dispatch) =>{
+        const { data } = await axios.delete(`/products/${productId}`);
+    };
+};

@@ -9,7 +9,7 @@ export const productSlice = createSlice({
         productDetail: {},
         selectedProduct: [],
         soldProducts: [],
-        topFiveProducts: []
+        topFiveProducts: [],
     },
     reducers: {
         getProductsReducer: (state, action) => {
@@ -21,7 +21,7 @@ export const productSlice = createSlice({
             // state.productsCopy = action.payload; // esto va? cual es el criterio de cuando va y cuando no?
         },
         getProductByIdReducer: (state, action) => {
-            state.productDetail = action.payload;
+            state.productDetail = action.payload;            
         },
         getSoldProductsReducer: (state, action) => {
             state.soldProducts = action.payload;

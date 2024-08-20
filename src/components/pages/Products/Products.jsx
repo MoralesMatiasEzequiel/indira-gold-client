@@ -1,7 +1,7 @@
 import React, { useEffect} from 'react';
 import { useDispatch } from "react-redux";
 import FormProduct from './FormProduct/FormProduct.jsx';
-import { getProducts } from '../../../redux/productActions.js';
+import { getProducts, getAllProducts } from '../../../redux/productActions.js';
 import { getCategories } from '../../../redux/categoryActions.js';
 
 
@@ -11,6 +11,7 @@ const Products = () => {
     
     useEffect(() => {
         dispatch(getProducts());
+        dispatch(getAllProducts());
         dispatch(getCategories());
     }, [dispatch]);
     

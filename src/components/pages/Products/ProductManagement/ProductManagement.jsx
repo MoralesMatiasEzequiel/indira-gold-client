@@ -4,21 +4,24 @@ import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
-import { getProductByName } from "../../../../redux/productActions.js";
+import { getAllProducts, getProductByName } from "../../../../redux/productActions.js";
 
 
 const ProductManagement = () => {
     
     const dispatch = useDispatch();
-    const products = useSelector(state => state.products.products);
+    // const products = useSelector(state => state.products.products);
+    const allProducts = useSelector(state => state.products.allProducts);
 
     const [name, setName] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 20;
 
-    const paginatedProducts = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    const totalPages = Math.ceil(products.length / itemsPerPage);
+    const paginatedProducts = allProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+    // const paginatedProducts = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    // const totalPages = Math.ceil(products.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -73,6 +76,7 @@ const ProductManagement = () => {
     };
 
     useEffect(() => {
+        // dispatch(getAllProducts());
         if (name) {
             dispatch(getProductByName(name));
         } else {
@@ -80,6 +84,11 @@ const ProductManagement = () => {
         }
     }, [name, dispatch]);
     
+    useEffect(() => {
+        dispatch(getAllProducts());
+    }, [dispatch]);
+    
+
     return (
         <div className="page">
             <div className="component">
@@ -118,39 +127,64 @@ const ProductManagement = () => {
                             </thead>
                             <tbody>
                                 {paginatedProducts?.map((product) => (
-                                    <tr key={product._id}>
-                                        <td>{product.name}</td>
-                                        <td className={style.tdInside}>{product.color?.map((color, colorIndex) => (
-                                            <div key={colorIndex}>
-                                                <td className={colorIndex > 0 ? style.tdMax : style.tdMin}>{color.colorName}</td>
-                                            </div>))}
-                                        </td>
-                                        <td className={style.tdImageContainer}>{product.imageGlobal 
-                                            ? <img className={style.imageProduct} src={getImageUrl(product.imageGlobal)} alt="Product Image"/> 
-                                            : <div>{product.color.map((color, colorImageIndex) => (
-                                                <div key={colorImageIndex}>
-                                                    <img src={getImageUrl(color.image)} alt="Product Image" className={style.imageProduct}/>
-                                                </div>))}
-                                              </div>}    
-                                        </td>
-                                        <td className={style.tdInside}>{product.color.map((color, colorSizeIndex) => (
-                                            <div key={colorSizeIndex} className={colorSizeIndex > 0 ? style.sizeContainer : ''}>{color.size.map((size, sizeIndex) => (
-                                                <td key={sizeIndex} className={sizeIndex > 0 ? style.tdSizeMax : style.tdSizeMin}>{size.sizeName}</td>))}
-                                            </div>))}
-                                        </td>
-                                        <td className={style.tdInside}>{product.color.map((color, colorStockIndex) => (
-                                            <div key={colorStockIndex} className={colorStockIndex > 0 ? style.sizeContainer : ''}>{color.size.map((size, sizeStockIndex) => (
-                                                <td key={sizeStockIndex} className={sizeStockIndex > 0 ? style.tdSizeMax : style.tdSizeMin}>{size.stock}</td>))}
-                                            </div>))}
-                                        </td>
-                                        <td className={style.tdMin}>$ {product.price}</td>
-                                        <td>{product.category.length > 0 ? product.category[0].name : 'Sin categoría'}</td>
-                                        <td>
-                                            <Link to={`/main_window/products/${product._id}`}>
-                                                <img src={detail} alt="" className="detailImg" />
-                                            </Link>
-                                        </td>
-                                    </tr>
+                                    product.color.map((color, colorIndex) => (
+                                        <React.Fragment key={`${product._id}-${colorIndex}`}>
+                                            <tr className={!product.active ? style.inactive : ''}>
+                                                {/* <td>{colorIndex === 0 ? product.name : ''}</td> */}
+                                                <td className={style.tdInside}>
+                                                    <div className={style.containerInfoGral}>
+                                                        <span className={style.nameProduct}>{colorIndex === 0 ? product.name : ''}</span>
+                                                    </div>
+                                                </td>
+                                                <td className={style.tdInside}>
+                                                    <div className={style.containerColor}>
+                                                        <span>{color.colorName}</span>
+                                                    </div>
+                                                </td>
+                                                <td className={style.tdContainerImage}>
+                                                    {product.imageGlobal ? (
+                                                        <div>
+                                                            <img className={style.imageProduct} src={getImageUrl(product.imageGlobal)} alt="Product Image" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className={style.containerSize}>
+                                                            <img src={getImageUrl(color.image) || imgProduct} alt="Product Image" className={style.imageProduct} />
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td className={style.tdInside}>
+                                                    {color.size.map((size, sizeIndex) => (
+                                                        <div key={sizeIndex} className={style.containerSizeName}>
+                                                            <span>{size.sizeName}</span>
+                                                        </div>
+                                                    ))}
+                                                </td>
+                                                <td className={style.tdInside}>
+                                                    {color.size.map((size, sizeIndex) => (
+                                                        <div key={sizeIndex} className={style.containerSizeName}>
+                                                            <span>{size.stock}</span>
+                                                        </div>
+                                                    ))}
+                                                </td>
+                                                <td className={style.tdInside}>
+                                                    <div className={style.containerInfoGral}>
+                                                        <span>{colorIndex === 0 ? `$ ${product.price}` : ''}</span>
+                                                    </div>
+                                                </td>
+                                                <td className={style.tdInside}>
+                                                    {product.category.length > 0 
+                                                        ? <div className={style.containerInfoGral}><span>{colorIndex === 0 && product.category[0].name}</span></div>
+                                                        : <div className={style.containerInfoGral}><span>Sin categoría</span></div>
+                                                    }
+                                                </td>
+                                                <td className={style.tdInside}>
+                                                    <Link to={`/main_window/products/${product._id}`}>
+                                                        <img src={detail} alt="" className='detailImg' />
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    ))
                                 ))}
                             </tbody>
                         </table>
