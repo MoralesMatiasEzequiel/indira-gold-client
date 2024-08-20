@@ -21,8 +21,8 @@ const DetailSale = () => {
     const [subtotal, setSubtotal] = useState(0);
     const [discount, setDiscount] = useState(0);
     const [paymentFee, setPaymentFee] = useState(0);
-    const [retention, setRetention] = useState(0);
-    const [totalWithRetention, setTotalWithRetention] = useState(0);
+    const [total, setTotal] = useState(0);
+    const [previousTotal, setPreviousTotal] = useState(0);  // Nuevo estado para almacenar el total previo
     const productRefs = useRef([]);
 
     const transformProductOptions = (products) => {
@@ -58,17 +58,10 @@ const DetailSale = () => {
         callback(filteredOptions);
     };
 
-    const calculateSubtotal = (selectedProducts) => {
-        let subtotal = 0;
-        selectedProducts.forEach(product => {
-            if (product.productId) {
-                const productDetail = products.find(p => p._id === product.productId);
-                if (productDetail) {
-                    subtotal += productDetail.price;
-                }
-            }
-        });
-        return subtotal;
+    const calculateSubtotal = (products) => {
+        return products.reduce((subtotal, product) => {
+            return subtotal + (product.price || 0);
+        }, 0);
     };
 
     const formatNumber = (number) => {
@@ -79,27 +72,21 @@ const DetailSale = () => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
             newSelectedProducts[index] = selectedOption ? { ...selectedOption } : { productId: null, colorId: null, sizeId: null };
-
+    
             if (index === newSelectedProducts.length - 1 && selectedOption) {
                 newSelectedProducts.push({ productId: null, colorId: null, sizeId: null });
                 setTimeout(() => {
                     productRefs.current[index + 1].focus();
                 }, 0);
             }
-
-            // Update selectedProductQuantities
+    
             setSelectedProductQuantities((prevQuantities) => {
                 const newQuantities = { ...prevQuantities };
-                const key = `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}`;
+                const key = selectedOption ? `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}` : null;
                 
                 if (selectedOption) {
-                    if (newQuantities[key]) {
-                        newQuantities[key]++;
-                    } else {
-                        newQuantities[key] = 1;
-                    }
+                    newQuantities[key] = (newQuantities[key] || 0) + 1;
                 } else {
-                    // Si se eliminó un producto, restar la cantidad seleccionada
                     if (newQuantities[key]) {
                         newQuantities[key]--;
                         if (newQuantities[key] <= 0) delete newQuantities[key];
@@ -107,8 +94,11 @@ const DetailSale = () => {
                 }
                 return newQuantities;
             });
-
-            setSubtotal(calculateSubtotal(newSelectedProducts));
+    
+            const updatedSubtotal = calculateSubtotal([...newSelectedProducts, ...purchasedProducts]);
+            setSubtotal(updatedSubtotal);
+            setTotal(updatedSubtotal - ((updatedSubtotal * discount) / 100));  // Update total without retention
+    
             return newSelectedProducts;
         });
     };
@@ -118,14 +108,18 @@ const DetailSale = () => {
             setPurchasedProducts((prevPurchasedProducts) => {
                 const newPurchasedProducts = [...prevPurchasedProducts];
                 newPurchasedProducts.splice(index, 1);
-                setSubtotal(calculateSubtotal([...newPurchasedProducts, ...selectedProducts]));
+                const newSubtotal = calculateSubtotal([...newPurchasedProducts, ...selectedProducts]);
+                setSubtotal(newSubtotal);
+                setTotal(newSubtotal - ((newSubtotal * discount) / 100));  // Update total without retention
                 return newPurchasedProducts;
             });
         } else {
             setSelectedProducts((prevSelectedProducts) => {
                 const newSelectedProducts = [...prevSelectedProducts];
                 newSelectedProducts.splice(index, 1);
-                setSubtotal(calculateSubtotal([...purchasedProducts, ...newSelectedProducts]));
+                const newSubtotal = calculateSubtotal([...purchasedProducts, ...newSelectedProducts]);
+                setSubtotal(newSubtotal);
+                setTotal(newSubtotal - ((newSubtotal * discount) / 100));  // Update total without retention
                 return newSelectedProducts;
             });
         }
@@ -155,31 +149,35 @@ const DetailSale = () => {
             saleDetail.products.forEach((product) => {
                 dispatch(getProductById(product.productId)).then((response) => {
                     if (response.error && response.error.status === 404) {
-                        // Producto no encontrado, agregar producto como no disponible
                         updatedProducts.push({
                             name: 'Producto no disponible',
                             selectedColor: null,
                             selectedSize: null,
-                            price: null,
+                            price: 0,
                         });
                     } else {
                         const productInfo = response;
                         const selectedColor = getColorById(productInfo, product.colorId);
                         const selectedSize = getSizeById(productInfo, product.colorId, product.sizeId);
-
+        
                         updatedProducts.push({ ...productInfo, selectedColor, selectedSize });
-                    
+                        
                     }
-                    // Solo actualiza purchasedProducts después de que todos los productos hayan sido cargados
+        
                     if (updatedProducts.length === saleDetail.products.length) {
                         setPurchasedProducts(updatedProducts);
+                        const initialSubtotal = calculateSubtotal(updatedProducts);
+                        setSubtotal(initialSubtotal);
+                        setPreviousTotal(initialSubtotal - ((initialSubtotal * saleDetail.discount) / 100)); // Almacenar el total previo
+                        setTotal(initialSubtotal - ((initialSubtotal * discount) / 100));  // Initialize total without retention
                     }
                 });
             });
         } else {
             setPurchasedProducts([]);
         }
-    }, [saleDetail, dispatch, loading]);
+        
+    }, [saleDetail, dispatch, loading, discount]);
 
     const getColorById = (product, colorId) => {
         return product?.color?.find(c => c._id === colorId);
@@ -193,20 +191,12 @@ const DetailSale = () => {
     const handleDiscountChange = (e) => {
         const newDiscount = parseFloat(e.target.value) || 0;
         setDiscount(newDiscount);
-        updateTotals(subtotal, newDiscount, paymentFee);
+        setTotal(subtotal - ((subtotal * newDiscount) / 100));  // Update total without retention
     };
 
     const handlePaymentFeeChange = (e) => {
         const newPaymentFee = parseFloat(e.target.value) || 0;
         setPaymentFee(newPaymentFee);
-        updateTotals(subtotal, discount, newPaymentFee);
-    };
-
-    const updateTotals = (subtotal, discount, paymentFee) => {
-        const newRetention = subtotal * (paymentFee / 100);
-        const newTotalWithRetention = subtotal - discount - newRetention;
-        setRetention(newRetention);
-        setTotalWithRetention(newTotalWithRetention);
     };
 
     const handleSubmit = (e) => {
@@ -237,7 +227,6 @@ const DetailSale = () => {
         dispatch(putSale(saleData)).then(() => {
             navigate(`/main_window/sales/${id}`);
         });
-        
     };
 
     return (
@@ -271,7 +260,7 @@ const DetailSale = () => {
                                     <ul>
                                         {purchasedProducts.map((product, index) => (
                                             <li key={index}>
-                                                <span>{product.name}</span>
+                                                <span>{`${product.name} - ${product.selectedColor?.colorName} - Talle ${product.selectedSize?.sizeName}`}</span>
                                                 <button type="button" onClick={() => handleRemoveProduct(index, true)}>
                                                     <img src={x} alt="Eliminar" />
                                                 </button>
@@ -289,10 +278,7 @@ const DetailSale = () => {
                                                 defaultOptions
                                                 loadOptions={loadProductOptions}
                                                 onChange={(option) => handleProductChange(option, index)}
-                                                value={product.productId ? {
-                                                    label: `${product.productId} - ${product.colorId} - ${product.sizeId}`,
-                                                    value: product.productId
-                                                } : null}
+                                                value={product.productId ? product : null}
                                                 components={{ DropdownIndicator }}
                                                 noOptionsMessage={customNoOptionsMessage}
                                             />
@@ -307,7 +293,10 @@ const DetailSale = () => {
                             </div>
                             <div className={style.column}>
                                 <div className={style.section}>
-                                    <label>Descuento:</label>
+                                    <p>Subtotal: ${subtotal}</p>
+                                </div>
+                                <div className={style.section}>
+                                    <label>Descuento (porcentaje):</label>
                                     <input
                                         type="number"
                                         value={discount}
@@ -315,7 +304,10 @@ const DetailSale = () => {
                                     />
                                 </div>
                                 <div className={style.section}>
-                                    <label>Costo de Pago:</label>
+                                    <p>Descuento (en pesos): - ${formatNumber((subtotal * discount) / 100)}</p>
+                                </div>
+                                <div className={style.section}>
+                                    <label>Retención (porcentaje):</label>
                                     <input
                                         type="number"
                                         value={paymentFee}
@@ -323,15 +315,21 @@ const DetailSale = () => {
                                     />
                                 </div>
                                 <div className={style.section}>
-                                    <label>Retención:</label>
-                                    <input type="text" value={formatNumber(retention)} disabled />
+                                    <p>Retención (en pesos): - ${formatNumber((total * paymentFee) / 100)}</p>
                                 </div>
                                 <div className={style.section}>
-                                    <label>Total con Retención:</label>
-                                    <input type="text" value={formatNumber(totalWithRetention)} disabled />
+                                    <p>Total con Retención: {formatNumber(total - ((total * paymentFee) / 100))}</p>
                                 </div>
                                 <div className={style.section}>
-                                    <button type="submit">Guardar Cambios</button>
+                                    <p>Total:{formatNumber(total)}</p>
+                                </div>
+                                <div className={style.section}>
+                                    <p>{previousTotal > total ?
+                                    `Saldo a favor del cliente $${formatNumber(previousTotal - total)}` :
+                                    `El cliente debe abonar una diferencia de $${formatNumber(total - previousTotal)}`}</p>
+                                </div>
+                                <div className={style.section}>
+                                    <button type="submit">Guardar</button>
                                 </div>
                             </div>
                         </form>
