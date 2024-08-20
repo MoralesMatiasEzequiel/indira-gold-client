@@ -256,11 +256,11 @@ const DetailSale = () => {
                         <form onSubmit={handleSubmit}>
                             <div className={style.column}>
                                 <div className={style.section}>
-                                    <label>Productos Comprados:</label>
+                                    <p className={style.products}><span>Productos Comprados:</span></p>
                                     <ul>
                                         {purchasedProducts.map((product, index) => (
                                             <li key={index}>
-                                                <span>{`${product.name} - ${product.selectedColor?.colorName} - Talle ${product.selectedSize?.sizeName}`}</span>
+                                                {`${product.name} - ${product.selectedColor?.colorName} - Talle ${product.selectedSize?.sizeName}`}
                                                 <button type="button" onClick={() => handleRemoveProduct(index, true)}>
                                                     <img src={x} alt="Eliminar" />
                                                 </button>
@@ -269,7 +269,7 @@ const DetailSale = () => {
                                     </ul>
                                 </div>
                                 <div className={style.section}>
-                                    <label>Seleccionar Productos:</label>
+                                    <p className={style.products}><span>Seleccionar Productos:</span></p>
                                     {selectedProducts.map((product, index) => (
                                         <div key={index} className={style.productSelector}>
                                             <AsyncSelect
@@ -293,35 +293,39 @@ const DetailSale = () => {
                             </div>
                             <div className={style.column}>
                                 <div className={style.section}>
-                                    <p>Subtotal: ${subtotal}</p>
+                                    <p><span>Subtotal: </span>${subtotal}</p>
                                 </div>
                                 <div className={style.section}>
-                                    <label>Descuento (porcentaje):</label>
-                                    <input
-                                        type="number"
-                                        value={discount}
-                                        onChange={handleDiscountChange}
-                                    />
+                                    <p>
+                                        <label>Descuento (porcentaje):&nbsp;</label>
+                                        <input
+                                            type="number"
+                                            value={discount}
+                                            onChange={handleDiscountChange}
+                                        />
+                                    </p>
                                 </div>
                                 <div className={style.section}>
-                                    <p>Descuento (en pesos): - ${formatNumber((subtotal * discount) / 100)}</p>
+                                    <p><span>Descuento (en pesos): </span>- ${formatNumber((subtotal * discount) / 100)}</p>
                                 </div>
                                 <div className={style.section}>
-                                    <label>Retención (porcentaje):</label>
-                                    <input
-                                        type="number"
-                                        value={paymentFee}
-                                        onChange={handlePaymentFeeChange}
-                                    />
+                                    <p>
+                                        <label>Retención (porcentaje):&nbsp;</label>
+                                        <input
+                                            type="number"
+                                            value={paymentFee}
+                                            onChange={handlePaymentFeeChange}
+                                        />
+                                    </p>
                                 </div>
                                 <div className={style.section}>
-                                    <p>Retención (en pesos): - ${formatNumber((total * paymentFee) / 100)}</p>
+                                    <p><span>Retención (en pesos): </span>- ${formatNumber((total * paymentFee) / 100)}</p>
                                 </div>
                                 <div className={style.section}>
-                                    <p>Total con Retención: {formatNumber(total - ((total * paymentFee) / 100))}</p>
+                                    <p><span>Total con Retención: </span>{formatNumber(total - ((total * paymentFee) / 100))}</p>
                                 </div>
                                 <div className={style.section}>
-                                    <p>Total:{formatNumber(total)}</p>
+                                    <p><span>Total: </span>{formatNumber(total)}</p>
                                 </div>
                                 <div className={style.section}>
                                     <p>{previousTotal > total ?
