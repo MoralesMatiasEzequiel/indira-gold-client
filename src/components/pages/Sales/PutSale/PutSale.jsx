@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getSaleById, clearSaleDetail, putSale } from '../../../../redux/saleActions.js';
-import { getProducts, getProductById } from '../../../../redux/productActions.js';
+import { getProducts, getProductById, reduceStock, increaseStock } from '../../../../redux/productActions.js';
 import AsyncSelect from 'react-select/async';
 import style from "./PutSale.module.css";
 import detail from "../../../../assets/img/detail.png";
@@ -15,6 +15,7 @@ const DetailSale = () => {
     const saleDetail = useSelector(state => state.sales.saleDetail);
     const products = useSelector(state => state.products.products);
     const [purchasedProducts, setPurchasedProducts] = useState([]);
+    const [deletedPurchasedProducts, setDeletedPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedProducts, setSelectedProducts] = useState([{ productId: null, colorId: null, sizeId: null }]);
     const [selectedProductQuantities, setSelectedProductQuantities] = useState({});
@@ -57,6 +58,8 @@ const DetailSale = () => {
         });
         callback(filteredOptions);
     };
+
+   
 
     const calculateSubtotal = (products) => {
         return products.reduce((subtotal, product) => {
@@ -107,7 +110,12 @@ const DetailSale = () => {
         if (fromPurchased) {
             setPurchasedProducts((prevPurchasedProducts) => {
                 const newPurchasedProducts = [...prevPurchasedProducts];
-                newPurchasedProducts.splice(index, 1);
+                const removedProduct = newPurchasedProducts.splice(index, 1)[0];
+    
+                // Agregar el producto eliminado al estado deletedPurchasedProducts
+                setDeletedPurchasedProducts((prevDeleted) => [...prevDeleted, removedProduct]);
+                console.log(deletedPurchasedProducts);
+    
                 const newSubtotal = calculateSubtotal([...newPurchasedProducts, ...selectedProducts]);
                 setSubtotal(newSubtotal);
                 setTotal(newSubtotal - ((newSubtotal * discount) / 100));  // Update total without retention
@@ -201,7 +209,8 @@ const DetailSale = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+    
+        // Calcular los productos a enviar con la información necesaria
         const productsData = [
             ...purchasedProducts.map(product => ({
                 productId: product._id,
@@ -216,7 +225,8 @@ const DetailSale = () => {
                     sizeId: product.sizeId
                 }))
         ];
-
+    
+        // Construir objeto de venta
         const saleData = {
             _id: id,
             products: productsData,
@@ -224,11 +234,53 @@ const DetailSale = () => {
             paymentFee,
         };
 
+        // Comparar los productos existentes con los nuevos para ajustar el stock
+        deletedPurchasedProducts.forEach(product => {
+            const key = `${product._id}_${product.selectedColor._id}_${product.selectedSize._id}`;
+
+            dispatch(increaseStock({
+                _id: product._id,
+                idColor: product.selectedColor._id,
+                idSize: product.selectedSize._id,
+                stockToIncrease: 1
+            }))
+            .catch(error => {
+                console.error("Error incrementando el stock:", error);
+            });
+            
+        });
+
+        selectedProducts.forEach(product => {
+            if (product.productId) {
+                const key = `${product.productId}_${product.colorId}_${product.sizeId}`;
+                const prevProduct = purchasedProducts.find(p => p._id === product.productId && p.selectedColor._id === product.colorId && p.selectedSize._id === product.sizeId);
+
+                if (!prevProduct) {
+                    // El producto es nuevo, así que debe reducirse el stock
+                    dispatch(reduceStock({
+                        _id: product.productId,
+                        idColor: product.colorId,
+                        idSize: product.sizeId,
+                        stockToReduce: 1
+                    }))
+                    .catch(error => {
+                        console.error("Error reduciendo el stock:", error);
+                    });
+                }
+            }
+        });
+    
+        // Realizar la actualización de la venta
         dispatch(putSale(saleData)).then(() => {
+            
+    
+            // Navegar después de guardar
             navigate(`/main_window/sales/${id}`);
+        }).catch(error => {
+            console.error("Error actualizando la venta:", error);
         });
     };
-
+    
     return (
         <div className="page">
             <div className="component">
@@ -271,17 +323,21 @@ const DetailSale = () => {
                                 <div className={style.section}>
                                     <p className={style.products}><span>Seleccionar Productos:</span></p>
                                     {selectedProducts.map((product, index) => (
-                                        <div key={index} className={style.productSelector}>
-                                            <AsyncSelect
-                                                ref={(el) => (productRefs.current[index] = el)}
-                                                cacheOptions
-                                                defaultOptions
-                                                loadOptions={loadProductOptions}
-                                                onChange={(option) => handleProductChange(option, index)}
-                                                value={product.productId ? product : null}
-                                                components={{ DropdownIndicator }}
-                                                noOptionsMessage={customNoOptionsMessage}
-                                            />
+                                        <div key={index} className={style.productSelectorDiv}>
+                                            <div className={style.productSelector}>
+                                                <AsyncSelect
+                                                    ref={(el) => (productRefs.current[index] = el)}
+                                                    cacheOptions
+                                                    defaultOptions
+                                                    loadOptions={loadProductOptions}
+                                                    onChange={(option) => handleProductChange(option, index)}
+                                                    value={product.productId ? product : null}
+                                                    components={{ DropdownIndicator }}
+                                                    noOptionsMessage={customNoOptionsMessage}
+                                                    
+                                                />
+                                            </div>
+                                            
                                             {selectedProducts.length > 1 && (
                                                 <button type="button" onClick={() => handleRemoveProduct(index, false)}>
                                                     <img src={x} alt="Eliminar" />
