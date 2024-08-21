@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getSaleById, clearSaleDetail, putSale } from '../../../../redux/saleActions.js';
 import { getProducts, getProductById, reduceStock, increaseStock } from '../../../../redux/productActions.js';
+import { putRemovePurchases, putAddProducts } from '../../../../redux/clientActions.js';
 import AsyncSelect from 'react-select/async';
 import style from "./PutSale.module.css";
 import detail from "../../../../assets/img/detail.png";
@@ -114,7 +115,6 @@ const DetailSale = () => {
     
                 // Agregar el producto eliminado al estado deletedPurchasedProducts
                 setDeletedPurchasedProducts((prevDeleted) => [...prevDeleted, removedProduct]);
-                console.log(deletedPurchasedProducts);
     
                 const newSubtotal = calculateSubtotal([...newPurchasedProducts, ...selectedProducts]);
                 setSubtotal(newSubtotal);
@@ -233,8 +233,10 @@ const DetailSale = () => {
             discount,
             paymentFee,
         };
+        
+        
+        
 
-        // Comparar los productos existentes con los nuevos para ajustar el stock
         deletedPurchasedProducts.forEach(product => {
             const key = `${product._id}_${product.selectedColor._id}_${product.selectedSize._id}`;
 
@@ -247,6 +249,21 @@ const DetailSale = () => {
             .catch(error => {
                 console.error("Error incrementando el stock:", error);
             });
+
+            if(saleDetail.client){
+
+                let clientData = {
+                    _id: saleDetail.client._id,
+                    purchasesToRemove: [
+                        {
+                            productId: product._id,
+                            colorId: product.selectedColor._id,
+                            sizeId: product.selectedSize._id
+                        }
+                    ]
+                }
+                dispatch(putRemovePurchases(clientData));
+            };
             
         });
 
@@ -266,6 +283,21 @@ const DetailSale = () => {
                     .catch(error => {
                         console.error("Error reduciendo el stock:", error);
                     });
+
+                    if(saleDetail.client){
+
+                        let clientData = {
+                            _id: saleDetail.client._id,
+                            purchases: [
+                                {
+                                    productId: product.productId,
+                                    colorId: product.colorId,
+                                    sizeId: product.sizeId
+                                }
+                            ]
+                        }
+                        dispatch(putAddProducts(clientData));
+                    };
                 }
             }
         });

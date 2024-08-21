@@ -56,6 +56,17 @@ export const putAddProducts = (clientData) => {
     }
 }
 
+export const putRemovePurchases = (clientData) => {
+    return async () => {
+        try {
+            const response = await axios.put('/clients/removePurchases', clientData);
+            return response.data;
+        } catch (error) {
+            return error.message;
+        }
+    }
+}
+
 export const deleteClient = (clientId) => {
     return async (dispatch) => {
         const { data } = await axios.put(`/clients/${clientId}`);
