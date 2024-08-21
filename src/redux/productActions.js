@@ -78,9 +78,26 @@ export const putProductStatus = (productId) => {
 };
 
 export const reduceStock = (productData) => {
-    return async (dispatch) => {     
-        const { data } = await axios.put('/products/reduce', productData);
-        return data;
+    return async () => {
+        try {
+            const { data } = await axios.put('/products/reduce', productData);
+            return data;
+        } catch (error) {
+            return error.message;
+        }
+        
+    };
+};
+
+export const increaseStock = (productData) => {
+    return async () => {
+        try {
+            const { data } = await axios.put('/products/increase', productData);
+            return data;
+        } catch (error) {
+            return error.message;
+        }
+        
     };
 };
 

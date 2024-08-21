@@ -33,7 +33,7 @@
     box-sizing: border-box;
 }
 
-.row p a img, .section ul img{
+.row p a img, .section ul img, .section .productSelectorDiv button img{
     width: 1rem;
     margin-left: 0.5rem;
 }
@@ -70,11 +70,22 @@
     margin: 0.5rem 0;
 }
 
-.section ul button{
+.section ul button, .section .productSelectorDiv button {
     background: none;
     padding: 0;
 }
 
 .section button{
     font-size: 0.75rem;
+}
+
+.section .productSelector{
+    width: 92%;
+}
+
+.section .productSelectorDiv{
+    margin-top: 0.75rem;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
