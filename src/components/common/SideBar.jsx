@@ -10,7 +10,13 @@ const SideBar = () => {
     const location = useLocation();
     const [subMenuVisible, setSubMenuVisible] = useState(false);
 
-    const toggleSubMenu = () => {
+    const handleClick = (name) => {
+        if (name !== 'products') {
+            setSubMenuVisible(false);
+        }
+    };
+
+    const toggleSubMenu = (event) => {
         setSubMenuVisible(!subMenuVisible);
     };
 
@@ -21,7 +27,7 @@ const SideBar = () => {
                 <h1><img src={logo} alt="Indira Gold"/></h1>
                 <div className={style.nav}>
                     <ul>                                
-                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window' ? style.selected : ''}`} to="/main_window">
+                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window' ? style.selected : ''}`} to="/main_window" onClick={() => handleClick('sales')}>
                             <li>
                                 <div className={style.icon}></div>
                                 <div className={style.text}>
@@ -35,7 +41,7 @@ const SideBar = () => {
                             <div className={style.icon}><img src={`${subMenuVisible ? itemSelected : item}`} alt=""/></div>
                             <div className={style.text}>
                                 <NavLink
-                                    className={`${style.NavLink} ${location.pathname.includes('/main_window/products') ? style.selected : ''}` } to="/main_window/products"
+                                    className={`${style.NavLink} ${location.pathname.includes('/main_window/products/form') ? style.selected : ''}` } to="/main_window/products/form"
                                 >
                                     <div>
                                         <p>Productos</p>
@@ -69,7 +75,7 @@ const SideBar = () => {
                                 </ul>
                             </div>
                         )}
-                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window/clients' ? style.selected : ''}`} to="/main_window/clients">
+                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window/clients' ? style.selected : ''}`} to="/main_window/clients" onClick={() => handleClick('clients')}>
                             <li>
                                 <div className={style.icon}></div>
                                 <div className={style.text}>
@@ -79,7 +85,7 @@ const SideBar = () => {
                                 </div>
                             </li>
                         </NavLink>
-                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window/stats' ? style.selected : ''}`} to="/main_window/stats">
+                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window/stats' ? style.selected : ''}`} to="/main_window/stats" onClick={() => handleClick('stats')}>
                             <li>
                                 <div className={style.icon}></div>
                                 <div className={style.text}>
