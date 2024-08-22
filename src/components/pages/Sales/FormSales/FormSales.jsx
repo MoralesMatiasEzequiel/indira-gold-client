@@ -401,7 +401,11 @@ const FormSales = () => {
                                         onChange={handleClientChange}
                                         placeholder="Buscar Cliente"
                                         defaultOptions={clientOptions}
-                                        styles={clientInputStyles}
+                                        menuPortalTarget={document.body}
+                                        styles={{
+                                            menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                            ...clientInputStyles
+                                        }}
                                     />
                                     <button type="button" onClick={handleShowClientForm} className={style.addClient}><img src={add} alt=""/></button>
                                 </div>
@@ -418,7 +422,11 @@ const FormSales = () => {
                                     value={paymentMethods.find(method => method.value === newSale.paymentMethod)}
                                     onChange={handlePaymentMethodChange}
                                     options={paymentMethods}
-                                    styles={clientInputStyles}
+                                    menuPortalTarget={document.body}
+                                        styles={{
+                                            menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                            ...clientInputStyles
+                                        }}
                                     placeholder="Seleccionar"
                                 />
                             </div>
@@ -517,7 +525,11 @@ const FormSales = () => {
                                         ref={(element) => productRefs.current[index] = element}
                                         components={{DropdownIndicator}}
                                         noOptionsMessage={customNoOptionsMessage}
-                                        styles={productInputStyles}
+                                        menuPortalTarget={document.body}
+                                        styles={{
+                                            menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                            ...productInputStyles
+                                        }}
                                     />
                                 </div>
                                 {index ? <button type="button" onClick={() => handleRemoveProduct(index)} className={style.removeProduct}><img src={x} alt=""/></button> : ''}
