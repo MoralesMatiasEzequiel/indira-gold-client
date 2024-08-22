@@ -6,6 +6,10 @@
     justify-content: space-between;
 }
 
+.titleDeleteForm{
+    color:#ad0000;
+}
+
 .buttonOnClose{
     background: none;
     border: none;
@@ -29,4 +33,8 @@
     margin-top: 5px;
     font-size: 0.8em;
     color: #ad0000;
+}
+
+.selectCategory{
+    width: 60%;
 }

@@ -74,6 +74,7 @@ const PutProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
+    const [actionType, setActionType] = useState(null);
     // const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     
 
@@ -371,8 +372,9 @@ const PutProduct = () => {
     };   
 
     //-----------CATEGORY-----------//
-    const handleShowCategoryForm = () => {
+    const handleShowCategoryForm = (type) => {
         setShowCategoryForm(!showCategoryForm);
+        setActionType(type);
     };
 
     const handleCloseCategoryForm = () => {
@@ -383,12 +385,13 @@ const PutProduct = () => {
         setShowCategoryForm(false);
         
         if(newCategory !== undefined){
-            setSelectedCategory(newCategory._id); 
+            setSelectedCategory({ value: newCategory._id, label: newCategory.name });
             setEditProduct((prevEditProduct) => ({
                 ...prevEditProduct,
-                category: [{ _id: newCategory._id, name: newCategory.name }]
+                category: [newCategory._id]
             }));
         };
+        dispatch(getCategories());
         // validateForm();
     };
 
@@ -626,13 +629,8 @@ const PutProduct = () => {
                                         ))}
                                     </select>
                                     <div className={style.containerAddCategory}>
-                                        <button 
-                                            className={style.buttonAddCategory} 
-                                            type='button' 
-                                            onClick={handleShowCategoryForm}
-                                        >
-                                            +
-                                        </button>
+                                        <button className={style.buttonAddCategory} type='button' onClick={() => handleShowCategoryForm('create')}>+</button>
+                                        <button className={style.buttonDeleteCategory} type='button' onClick={() => handleShowCategoryForm('delete')}>-</button>
                                     </div>
                                 </div>
                                 <div className={style.priceContainer}>
@@ -652,7 +650,7 @@ const PutProduct = () => {
                         </div>
                     </form>
                     <div className={`${style.addCategoryComponent} ${showCategoryForm ? style.addCategoryComponentBorder : ''}`}>
-                        {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded} onClose={handleCloseCategoryForm}/>}
+                        {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded} onClose={handleCloseCategoryForm} actionType={actionType}/>}
                     </div>
                 </div>
             </div>

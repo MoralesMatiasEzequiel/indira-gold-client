@@ -39,8 +39,8 @@ const FormProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [actionType, setActionType] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-    
 // console.log(newProduct); 
 
     const validateForm = () => {
@@ -295,8 +295,13 @@ const FormProduct = () => {
     };
 
     //-----------CATEGORY-----------//
-    const handleShowCategoryForm = () => {
+    const handleShowCategoryForm = (type) => {
         setShowCategoryForm(!showCategoryForm);
+        setActionType(type);
+    };
+
+    const handleCloseCategoryForm = () => {
+        setShowCategoryForm(false);
     };
 
     const handleCategoryAdded = (newCategory) => {
@@ -309,11 +314,8 @@ const FormProduct = () => {
                 category: [newCategory._id]
             }));
         };
+        dispatch(getCategories());
         validateForm();
-    };
-
-    const handleCloseCategoryForm = () => {
-        setShowCategoryForm(false);
     };
 
     //-----------SUBMIT-----------//
@@ -510,7 +512,8 @@ const FormProduct = () => {
                                         ))}
                                     </select>
                                     <div className={style.containerAddCategory}>
-                                        <button className={style.buttonAddCategory} type='button' onClick={handleShowCategoryForm}>+</button>
+                                        <button className={style.buttonAddCategory} type='button' onClick={() => handleShowCategoryForm('create')}>+</button>
+                                        <button className={style.buttonDeleteCategory} type='button' onClick={() => handleShowCategoryForm('delete')}>-</button>
                                     </div>
                                 </div>
                                 <div className={style.priceContainer}>
@@ -528,7 +531,7 @@ const FormProduct = () => {
                         </div>
                     </form>
                     <div className={`${style.addCategoryComponent} ${showCategoryForm ? style.addCategoryComponentBorder : ''}`}>
-                        {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded} onClose={handleCloseCategoryForm}/>}
+                        {showCategoryForm && <FormCategory onCategoryAdded={handleCategoryAdded} onClose={handleCloseCategoryForm} actionType={actionType}/>}
                     </div>
                 </div>
             </div>
