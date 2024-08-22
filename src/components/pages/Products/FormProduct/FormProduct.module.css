@@ -413,6 +413,15 @@
     font-size: 35px;
 }
 
+.buttonDeleteCategory{
+    background: none;
+    padding: 0;
+    margin-left: 5px;   
+    height: 0px;
+    color: #b60808e0;
+    font-size: 35px;
+}
+
 .addCategoryComponent{
     position: absolute;
     /* width: 25%; */

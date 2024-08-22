@@ -238,6 +238,7 @@
     border: 1px solid #aaaaaa;
     border-radius: 3px;
 }
+
 .stockCard ol{
     max-height: 130px; 
     overflow-y: auto;
@@ -409,6 +410,15 @@
     height: 0px;
     color: #e4b61a;
     /* font-weight: bold; */
+    font-size: 35px;
+}
+
+.buttonDeleteCategory{
+    background: none;
+    padding: 0;
+    margin-left: 5px;   
+    height: 0px;
+    color: #b60808e0;
     font-size: 35px;
 }
 
