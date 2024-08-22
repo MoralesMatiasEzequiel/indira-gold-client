@@ -8,7 +8,7 @@ import style from "./DetailClient.module.css";
 const DetailClient = () => {
     let { id } = useParams();
     const dispatch = useDispatch();
-    const clientDetail = useSelector(state => state.clients.clientDetail);
+    const clientDetail = useSelector(state => state.clients.clientDetail);    
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -70,6 +70,15 @@ const DetailClient = () => {
         setShowDeleteModal(!showDeleteModal);
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        }).replace(/\//g, '-');
+    };
+
     const handleDelete = () => {
         dispatch(deleteClient(id));
         navigate('/main_window/clients');
@@ -92,12 +101,12 @@ const DetailClient = () => {
                 </div>
                 <div className={`container ${style.content}`}>
                     <div className={style.column}>
-                        <p><span>ID de cliente:&nbsp;</span>{id}</p>
+                        {/* <p><span>ID de cliente:&nbsp;</span>{id}</p> */}
                         {clientDetail.name && <p><span>Nombre:&nbsp;</span>{clientDetail.name}</p>}
                         {clientDetail.lastname && <p><span>Apellido:&nbsp;</span>{clientDetail.lastname}</p>}
                         {clientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{clientDetail.email}</p>}
                         {clientDetail.phone && <p><span>Teléfono:&nbsp;</span>{clientDetail.phone}</p>}
-                        {clientDetail.date && <p><span>Fecha de suscripción:&nbsp;</span>{clientDetail.date}</p>}
+                        {clientDetail.date && <p><span>Fecha de suscripción:&nbsp;</span>{formatDate(clientDetail.date)}</p>}
                         <p><span>Estado:&nbsp;</span>{clientDetail.active ? 'Activo' : 'Inactivo'}</p>
                     </div>
                     <div className={style.column}>
