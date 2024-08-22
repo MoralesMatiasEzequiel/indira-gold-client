@@ -85,8 +85,8 @@ const DetailClient = () => {
                 <div className="title">
                     <h2>Detalle del Cliente</h2>
                     <div className="titleButtons">
-                        <button>Editar</button>
-                        <button className="delete" onClick={toggleShowDeleteModal}>{clientDetail.active ? 'Desactivar' : 'Activar'}</button>
+                        {clientDetail.active ? <button><Link to={`/main_window/clients/edit/${id}`}>Editar</Link></button> : ''}
+                        {!clientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
                         <button><Link to={`/main_window/clients`}>Atrás</Link></button>
                     </div>
                 </div>

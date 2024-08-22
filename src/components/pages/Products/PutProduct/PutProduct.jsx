@@ -6,7 +6,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
-import { getProductById, putProduct } from '../../../../redux/productActions.js';
+import { getProducts, getProductById, putProduct } from '../../../../redux/productActions.js';
 
 const PutProduct = () => {
 
@@ -425,6 +425,9 @@ const PutProduct = () => {
                 setColors([]);
                 setSizes([]);
                 setImageGlobal(null);
+                dispatch(getProducts());
+                dispatch(getProductById(id));
+                dispatch(getCategories());
                 // setEditProduct(initialEditProductState); // Reset form
                 setEditProduct({}); 
             };
