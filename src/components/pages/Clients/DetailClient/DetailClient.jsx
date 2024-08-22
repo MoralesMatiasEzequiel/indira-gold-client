@@ -135,7 +135,7 @@ const DetailClient = () => {
                     <p>¿Está seguro que desea {clientDetail.active ? 'desactivar' : 'activar'} este cliente?</p>
                     <div className={style.deleteButtons}>
                         <button onClick={toggleShowDeleteModal}>Cancelar</button>
-                        <button onClick={handleDelete} className="delete">{clientDetail.active ? 'Desactivar' : 'Activar'}</button>
+                        <button onClick={handleDelete} className={clientDetail.active ? 'delete' : 'add'}>{clientDetail.active ? 'Desactivar' : 'Activar'}</button>
                     </div>
                 </div>
             </div>
