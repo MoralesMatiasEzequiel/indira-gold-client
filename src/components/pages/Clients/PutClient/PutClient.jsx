@@ -29,18 +29,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
         }
     }, [dispatch, id, clientDetail]);
 
-
-    const initialClientState = {
-        dni: '',
-        name: '',
-        lastname: '',
-        email: '',
-        phone: ''
-    };
-
     const [editClient, setEditClient] = useState({});  
-    const [newClient, setNewClient] = useState(initialClientState);
-    console.log(editClient);
 
     //-----------CHANGE-----------//
     const handleChange = (event) => {
