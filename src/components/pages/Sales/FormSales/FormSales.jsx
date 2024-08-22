@@ -431,6 +431,7 @@ const FormSales = () => {
                                 <input 
                                     name="installments"
                                     placeholder='1'
+                                    min='1'
                                     value={newSale.installments}
                                     onChange={handleInputChange}
                                     className={style.discount}
@@ -446,6 +447,7 @@ const FormSales = () => {
                                 <input 
                                     name="discount"
                                     placeholder='%'
+                                    min='0'
                                     value={newSale.discount}
                                     onChange={handleInputChange}
                                     className={style.discount}
@@ -461,6 +463,7 @@ const FormSales = () => {
                                 <input 
                                     name="paymentFee"
                                     placeholder='%'
+                                    min='0'
                                     value={newSale.paymentFee}
                                     onChange={handleInputChange}
                                     className={style.discount}
