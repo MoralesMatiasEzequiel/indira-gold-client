@@ -77,6 +77,13 @@ export const putProductStatus = (productId) => {
     };
 };
 
+export const putIncreasePrice = (productData) => {    
+    return async (dispatch) => {     
+        const response = await axios.put('/products/increasePrice', productData);
+        return response;
+    };
+};
+
 export const reduceStock = (productData) => {
     return async () => {
         try {

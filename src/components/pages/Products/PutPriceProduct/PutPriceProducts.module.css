@@ -1,0 +1,20 @@
+.inputCheckbox {
+    cursor: pointer;
+}
+
+.spanCheckbox{
+    font-size: 0.75rem;
+}
+
+.labelInput {
+    display: flex;
+    align-items: center;
+}
+
+.labelInput .left{
+    width: 10%;
+}
+
+.labelInput .right{
+    width: 20%;
+}

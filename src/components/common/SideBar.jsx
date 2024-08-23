@@ -72,6 +72,16 @@ const SideBar = () => {
                                             </div>
                                         </NavLink>
                                     </li>
+                                    <li>
+                                        <NavLink
+                                            className={`${style.NavLink} ${location.pathname === '/main_window/products/edit/price' ? style.selected : ''}`}
+                                            to="/main_window/products/edit/price"
+                                        >
+                                            <div>
+                                                <p>Gestión de precio de productos</p>
+                                            </div>
+                                        </NavLink>
+                                    </li>
                                 </ul>
                             </div>
                         )}
