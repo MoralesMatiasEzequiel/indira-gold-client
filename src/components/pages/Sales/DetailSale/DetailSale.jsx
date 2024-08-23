@@ -69,6 +69,13 @@ const DetailSale = () => {
         return color?.size?.find(s => s._id === sizeId);
     };
 
+    const formatNumber = (number) => {
+        return number.toLocaleString('es-ES', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    };
+
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);
     }
@@ -105,9 +112,9 @@ const DetailSale = () => {
                         {saleDetail.paymentMethod && <p><span>Modo de pago:&nbsp;</span> {saleDetail.paymentMethod}</p>}
                         {/* {saleDetail.paymentMethod && <p>Modo de pago: {saleDetail.paymentMethod.join(', ')}</p>} */}
                         {saleDetail.soldAt && <p><span>Tipo de venta:&nbsp;</span> {saleDetail.soldAt}</p>}
-                        {saleDetail.subTotal && <p><span>Subtotal:&nbsp;</span> ${saleDetail.subTotal}.</p>}
+                        {saleDetail.subTotal && <p><span>Subtotal:&nbsp;</span> ${formatNumber(saleDetail.subTotal)}.</p>}
                         {<p><span>Descuento:&nbsp;</span> {saleDetail.discount}% {`(- $${saleDetail.discountApplied})`}</p>}
-                        {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${saleDetail.totalPrice}.</p>}
+                        {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${formatNumber(saleDetail.totalPrice)}.</p>}
                     </div>
                     <div className={style.column}>
                         <p><span>Productos:&nbsp;</span></p>
@@ -119,7 +126,7 @@ const DetailSale = () => {
                                         <ul className={style.productList}>
                                             {product.selectedColor && <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>}
                                             {product.selectedSize && <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>}
-                                            {product.price &&<li><span>Precio:&nbsp;</span>{product.price}</li>}
+                                            {product.price &&<li><span>Precio:&nbsp;</span>${formatNumber(product.price)}</li>}
                                         </ul>
                                     </li>
                                 ))

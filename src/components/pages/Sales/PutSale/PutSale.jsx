@@ -69,7 +69,10 @@ const DetailSale = () => {
     };
 
     const formatNumber = (number) => {
-        return number.toLocaleString('es-ES');
+        return number.toLocaleString('es-ES', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
     };
 
     const handleProductChange = (selectedOption, index) => {
