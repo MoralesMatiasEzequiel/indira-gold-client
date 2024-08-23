@@ -119,7 +119,10 @@ const FormSales = () => {
     };
 
     const formatNumber = (number) => {
-        return number.toLocaleString('es-ES');
+        return number.toLocaleString('es-ES', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
     };
 
     const clientInputStyles = {
@@ -342,6 +345,7 @@ const FormSales = () => {
                     sizeId: product.sizeId
                 }))
             };
+            console.log(clientData);
             dispatch(putAddProducts(clientData));
         }
 

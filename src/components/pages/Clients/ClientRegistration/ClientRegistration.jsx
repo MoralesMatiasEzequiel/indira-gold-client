@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
+import { getMonthlySalesByClient } from '../../../../redux/saleActions.js';
 import { getClientByName, getClientByLastname, getClientByDni, getClients } from "../../../../redux/clientActions.js";
 import detail from '../../../../assets/img/detail.png';
 import style from "./ClientRegistration.module.css";
@@ -14,6 +15,9 @@ const ClientRegistration = () => {
     const [name, setName] = useState('');
     const [lastname, setLastname] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [monthlySales, setMonthlySales] = useState({});
+    const [loadedClientIds, setLoadedClientIds] = useState(new Set()); // Estado para rastrear IDs ya cargados
+
 
     const itemsPerPage = 20;
 
@@ -24,6 +28,21 @@ const ClientRegistration = () => {
     useEffect(() => {
         dispatch(getClients());
     }, [dispatch])
+
+    useEffect(() => {
+        paginatedClients.forEach(client => {
+            if (!loadedClientIds.has(client._id)) { // Verifica si el ID ya fue cargado
+                dispatch(getMonthlySalesByClient(client._id))
+                    .then(response => {
+                        setMonthlySales(prevState => ({
+                            ...prevState,
+                            [client._id]: response.totalProducts || 0
+                        }));
+                        setLoadedClientIds(prevIds => new Set(prevIds).add(client._id)); // Agrega el ID al conjunto de IDs cargados
+                    });
+            }
+        });
+    }, [dispatch, paginatedClients, loadedClientIds]);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -157,7 +176,7 @@ const ClientRegistration = () => {
                                         <td>{client.lastname}</td>
                                         <td>{client.email}</td>
                                         <td>{client.phone}</td>
-                                        <td>{client.purchases ? client.purchases.length : '0'}</td>    
+                                        <td>{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Cargando...'}</td>    
                                         <td>{client.active ? "Activo" : "Inactivo"}</td>
                                         <td>
                                             <Link to={`/main_window/clients/${client._id}`}>

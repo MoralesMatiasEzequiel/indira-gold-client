@@ -28,6 +28,7 @@ const DetailClient = () => {
     useEffect(() => {
         if (!loading && clientDetail && clientDetail.purchases) {
             const updatedProducts = [];
+            console.log(clientDetail.purchases);
             clientDetail.purchases.forEach((purchase) => {
                 dispatch(getProductById(purchase.productId)).then((response) => {
                     if (response.error && response.error.status === 404) {
@@ -88,6 +89,13 @@ const DetailClient = () => {
         return <div>Loading...</div>; // Puedes personalizar este mensaje o mostrar un spinner de carga
     }
 
+    const formatNumber = (number) => {
+        return number.toLocaleString('es-ES', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    };
+
     return (
         <div className="page">
             <div className="component">
@@ -119,7 +127,7 @@ const DetailClient = () => {
                                         <ul className={style.productList}>
                                             {product.selectedColor && <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>}
                                             {product.selectedSize && <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>}
-                                            {product.price &&<li><span>Precio:&nbsp;</span>{product.price}</li>}
+                                            {product.price &&<li><span>Precio:&nbsp;</span>${formatNumber(product.price)}</li>}
                                         </ul>
                                     </li>
                                 ))

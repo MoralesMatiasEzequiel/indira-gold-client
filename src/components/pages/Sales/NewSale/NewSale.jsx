@@ -16,6 +16,13 @@ const NewSale = ({ saleResponse }) => {
 
     const clientById = useSelector(state => state.clients.clientDetail);
 
+    const formatNumber = (number) => {
+        return number.toLocaleString('es-ES', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    };
+
     return (
         <div className={style.content}>
             <p className={style.orderNumber}>N° de orden: {orderNumber}</p>
@@ -27,9 +34,9 @@ const NewSale = ({ saleResponse }) => {
                 <p><span className={style.key}>Productos comprados:</span> {products.length}</p>
             </div>
             <div className={style.column}>
-                <p><span className={style.key}>Subtotal:</span> ${subTotal}</p>
+                <p><span className={style.key}>Subtotal:</span> ${formatNumber(subTotal)}</p>
                 <p><span className={style.key}>Descuento:</span> {discount}%</p>
-                <p><span className={style.key}>Total:</span> ${totalPrice}</p>
+                <p><span className={style.key}>Total:</span> ${formatNumber(totalPrice)}</p>
             </div>
         </div>
     );

@@ -89,6 +89,13 @@ const SalesHistory = () => {
         return buttons;
     };
 
+    const formatNumber = (number) => {
+        return number.toLocaleString('es-ES', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    };
+
     return (
         <div className="component">
             <div className="title">
@@ -158,7 +165,7 @@ const SalesHistory = () => {
                                     <td className="center">{sale.products.length}</td>
                                     <td>{sale.paymentMethod}</td>
                                     <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
-                                    <td className="center">$ {sale.totalPrice}</td>
+                                    <td className="center">$ {formatNumber(sale.totalPrice)}</td>
                                     <td>
                                         <Link to={`/main_window/sales/${sale._id}`}>
                                             <img src={detail} alt="" className="detailImg" />

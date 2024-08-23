@@ -43,6 +43,17 @@ export const getSalesBalance = () => {
     };
 };
 
+export const getMonthlySalesByClient = (id) => {
+    return async () => {
+        try {
+            const { data } = await axios.get(`/sale/monthlyByClient/${id}`);
+            return data;
+        } catch (error) {
+            return error.message;
+        }
+    }
+};
+
 export const searchSales = (orderNumber, client) => {
     return async (dispatch) => {
         let query = '/sale?';
