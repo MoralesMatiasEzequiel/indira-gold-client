@@ -10,6 +10,7 @@ import DetailProduct from "./components/pages/Products/DetailProduct/DetailProdu
 import FormProduct from "./components/pages/Products/FormProduct/FormProduct.jsx";
 import ProductManagement from "./components/pages/Products/ProductManagement/ProductManagement.jsx";
 import PutProduct from "./components/pages/Products/PutProduct/PutProduct.jsx";
+import PutPriceProducts from "./components/pages/Products/PutPriceProduct/PutPriceProducts.jsx";
 import Clients from "./components/pages/Clients/Clients.jsx";
 import DetailClient from "./components/pages/Clients/DetailClient/DetailClient.jsx";
 import PutClient from "./components/pages/Clients/PutClient/PutClient.jsx";
@@ -32,6 +33,7 @@ const App = () => {
           <Route path='/main_window/products/form' element={<FormProduct />}/>
           <Route path='/main_window/products/management' element={<ProductManagement/>}/>
           <Route path='/main_window/products/edit/:id' element={<PutProduct />}/>
+          <Route path='/main_window/products/edit/price' element={<PutPriceProducts />}/>
           <Route path='/main_window/clients' element={<Clients />}/>
           <Route path='/main_window/clients/:id' element={<DetailClient />}/>
           <Route path='/main_window/clients/edit/:id' element={<PutClient />}/>
