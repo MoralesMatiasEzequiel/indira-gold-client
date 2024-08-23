@@ -17,12 +17,19 @@ const ClientRegistration = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [monthlySales, setMonthlySales] = useState({});
     const [loadedClientIds, setLoadedClientIds] = useState(new Set()); // Estado para rastrear IDs ya cargados
+    const [sortByProducts, setSortByProducts] = useState('asc');
 
 
     const itemsPerPage = 20;
 
-    const paginatedClients = clients.slice().reverse().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    const totalPages = Math.ceil(clients.length / itemsPerPage);
+    const sortedClients = [...clients].reverse().sort((a, b) => {
+        const salesA = monthlySales[a._id] || 0;
+        const salesB = monthlySales[b._id] || 0;
+        return sortByProducts === 'asc' ? salesA - salesB : salesB - salesA;
+    });
+
+    const paginatedClients = sortedClients.slice().reverse().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.ceil(sortedClients.length / itemsPerPage);
 
 
     useEffect(() => {
@@ -121,6 +128,10 @@ const ClientRegistration = () => {
         }
     }, [lastname, dispatch]);
 
+    const toggleSortOrder = () => {
+        setSortByProducts(sortByProducts === 'asc' ? 'desc' : 'asc');
+    };
+
     return(
         <div className="component">
             <div className="title">
@@ -163,7 +174,12 @@ const ClientRegistration = () => {
                                 </th>
                                 <th>Email</th>
                                 <th>Teléfono</th>
-                                <th>Productos</th>
+                                <th>
+                                    <div className="withFilter">
+                                        <span>Productos</span>
+                                        <button className="sort" onClick={toggleSortOrder}>{sortByProducts === 'asc' ? '▴' : '▾'}</button>
+                                    </div>
+                                </th>
                                 <th>Estado</th>
                                 <th>Detalle</th>
                             </tr>
