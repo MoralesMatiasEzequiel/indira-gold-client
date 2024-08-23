@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getSaleById, clearSaleDetail, deleteSale } from '../../../../redux/saleActions.js';
-import { getProductById } from '../../../../redux/productActions.js';
+import { putRemovePurchases } from '../../../../redux/clientActions.js';
+import { getSales, getSaleById, clearSaleDetail, deleteSale } from '../../../../redux/saleActions.js';
+import { getProductById, increaseStock } from '../../../../redux/productActions.js';
 import print from "../../../../assets/img/print.png";
 import detail from "../../../../assets/img/detail.png";
 import style from "./DetailSale.module.css";
@@ -81,8 +82,41 @@ const DetailSale = () => {
     }
     
     const handleDelete = () => {
-        dispatch(deleteSale(id));
-        navigate('/main_window/');
+
+        purchasedProducts.forEach((product) => {
+            const key = `${product._id}_${product.selectedColor._id}_${product.selectedSize._id}`;
+
+            dispatch(increaseStock({
+                _id: product._id,
+                idColor: product.selectedColor._id,
+                idSize: product.selectedSize._id,
+                stockToIncrease: 1
+            }))
+            .catch(error => {
+                console.error("Error incrementando el stock:", error);
+            });
+
+            if(saleDetail.client){
+
+                let clientData = {
+                    _id: saleDetail.client._id,
+                    purchasesToRemove: [
+                        {
+                            productId: product._id,
+                            colorId: product.selectedColor._id,
+                            sizeId: product.selectedSize._id
+                        }
+                    ]
+                }
+                dispatch(putRemovePurchases(clientData));
+            };
+        })
+
+        dispatch(deleteSale(id)).then(
+            dispatch(getSales()).then(
+                navigate('/main_window/')
+            )
+        );
     }
 
     return(
