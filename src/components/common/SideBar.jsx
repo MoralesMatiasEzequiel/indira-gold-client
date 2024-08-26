@@ -78,7 +78,7 @@ const SideBar = () => {
                                             to="/main_window/products/edit/price"
                                         >
                                             <div>
-                                                <p>Gestión de precio de productos</p>
+                                                <p>Gestión de Precios</p>
                                             </div>
                                         </NavLink>
                                     </li>

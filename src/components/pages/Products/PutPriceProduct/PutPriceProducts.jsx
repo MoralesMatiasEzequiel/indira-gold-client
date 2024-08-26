@@ -1,4 +1,5 @@
 import style from './PutPriceProducts.module.css';
+import x from '../../Sales/FormSales/img/x.png';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
@@ -7,7 +8,10 @@ import { getCategories } from '../../../../redux/categoryActions.js';
 
 const PutPriceProducts = () => {
     const dispatch = useDispatch();
+    const products = useSelector(state => state.products.products);
     const categories = useSelector(state => state.categories.categories);
+    // console.log(products);
+    
 
     useEffect(() => {
         dispatch(getProducts());
@@ -16,23 +20,29 @@ const PutPriceProducts = () => {
 
     const initialPriceState = {
         porcentage: '',
+        products: [],
         category: []
     };
 
     const [newPrice, setNewPrice] = useState(initialPriceState)
-    const [selectedOption, setSelectedOption] = useState('allProducts');
+    const [selectedOption, setSelectedOption] = useState('byProducts');
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+console.log(newPrice);
 
     const validateForm = () => {
-        const isPorcentageValid = newPrice.porcentage !== '';
+        const isPorcentageValid = (newPrice.porcentage !== '') && (newPrice.porcentage !== 0);
         const isCategoryValid = selectedOption === 'allProducts' || (selectedOption === 'byCategory' && newPrice.category.length > 0);
+        const isProductValid = selectedOption === 'allProducts' || (selectedOption === 'byProducts' && newPrice.products.length > 0);
 
-        setIsSubmitDisabled(!(isPorcentageValid && isCategoryValid));
+        const shouldEnableSubmit = 
+            (isProductValid || isCategoryValid || selectedOption === 'allProducts') && isPorcentageValid;
+
+        setIsSubmitDisabled(!shouldEnableSubmit);
     };
 
     useEffect(() => {
         validateForm();
-    }, [newPrice.porcentage, newPrice.category, selectedOption]);
+    }, [newPrice.porcentage, newPrice.products, newPrice.category, selectedOption]);
 
     // Convert categories to the format needed for react-select
     const categoryOptions = categories.map(category => ({
@@ -40,14 +50,39 @@ const PutPriceProducts = () => {
         label: category.name
     }));
 
+    const productOptions = products.map(product => ({
+        value: product._id,
+        label: product.name
+    }));
+
     const handleInputChange = (event) => {
-        let porcentageNumber = Number(event.target.value);
+        const { value } = event.target;
+    
+        // Si el campo está vacío, establece el porcentaje como una cadena vacía
+        const porcentageValue = value === '' ? '' : Number(value);
+    
         setNewPrice({
             ...newPrice,
-            porcentage: porcentageNumber
+            porcentage: porcentageValue
+        });
+    
+        validateForm();
+    };
+
+    const handleProductsChange = (selectedProducts) => {
+        setNewPrice({
+            ...newPrice,
+            products: selectedProducts || []
         });
         validateForm();
     };
+
+    // const deleteProduct = (index) => {
+    //     setNewPrice(prevState => {
+    //         const updatedProducts = prevState.products.filter((_, i) => i !== index);
+    //         return { ...prevState, products: updatedProducts };
+    //     });
+    // };
 
     const handleCategoryChange = (selectedCategory) => {
         const array = selectedCategory ? [selectedCategory] : [];
@@ -62,6 +97,7 @@ const PutPriceProducts = () => {
         setSelectedOption(option);
         setNewPrice({
             ...newPrice,
+            products: [],
             category: []
         });
         validateForm();
@@ -110,19 +146,42 @@ const PutPriceProducts = () => {
         <div className="page">
             <div className="component">
                 <div className="title">
-                    <h2>GESTIÓN DE PRECIO DE PRODUCTOS</h2>
+                    <h2>GESTIÓN DE PRECIOS</h2>
                 </div>
                 <div className="container">
                     <form onSubmit={handleSubmit}>
                         <div>
-                            <input className={style.inputCheckbox} type="checkbox" name="allProducts" id="allProducts" checked={selectedOption === 'allProducts'} onChange={() => handleCheckboxChange('allProducts')} />
-                            <span className={style.spanCheckbox}>Todos los productos</span>
+                            <input className={style.inputCheckbox} type="checkbox" name="byProducts" id="byProducts" checked={selectedOption === 'byProducts'} onChange={() => handleCheckboxChange('byProducts')} />
+                            <span className={style.spanCheckbox}>Por producto</span>
                             <input className={style.inputCheckbox} type="checkbox" name="byCategory" id="byCategory" checked={selectedOption === 'byCategory'} onChange={() => handleCheckboxChange('byCategory')} />
                             <span className={style.spanCheckbox}>Por categoría</span>
+                            <input className={style.inputCheckbox} type="checkbox" name="allProducts" id="allProducts" checked={selectedOption === 'allProducts'} onChange={() => handleCheckboxChange('allProducts')} />
+                            <span className={style.spanCheckbox}>Todos los productos</span>                    
                         </div>
                         <div className={style.labelInput}>
                             <div className={style.left}>
-                                <label htmlFor="paymentMethod">Categorías</label>
+                                <label htmlFor="products">Listado de productos</label>
+                            </div>
+                            <div className={style.right}>
+                                <Select
+                                    name="products"
+                                    value={newPrice.products}
+                                    onChange={handleProductsChange}
+                                    options={productOptions}
+                                    isMulti
+                                    placeholder="Seleccionar"
+                                    menuPortalTarget={document.body}
+                                    styles={{
+                                        menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                        ...categoryInputStyles
+                                    }}
+                                    isDisabled={selectedOption === 'allProducts' || selectedOption === 'byCategory'}
+                                />
+                            </div>
+                        </div>
+                        <div className={style.labelInput}>
+                            <div className={style.left}>
+                                <label htmlFor="category">Categorías</label>
                             </div>
                             <div className={style.right}>
                                 <Select
@@ -136,7 +195,7 @@ const PutPriceProducts = () => {
                                         menuPortal: base => ({ ...base, zIndex: 9999 }),
                                         ...categoryInputStyles
                                     }}
-                                    isDisabled={selectedOption === 'allProducts'}
+                                    isDisabled={selectedOption === 'allProducts' || selectedOption === 'byProducts'}
                                 />
                             </div>
                         </div>
