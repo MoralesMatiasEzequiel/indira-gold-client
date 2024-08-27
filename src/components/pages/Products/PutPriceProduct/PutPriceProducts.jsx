@@ -1,5 +1,4 @@
 import style from './PutPriceProducts.module.css';
-import x from '../../Sales/FormSales/img/x.png';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
@@ -27,7 +26,7 @@ const PutPriceProducts = () => {
     const [newPrice, setNewPrice] = useState(initialPriceState)
     const [selectedOption, setSelectedOption] = useState('byProducts');
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-console.log(newPrice);
+// console.log(newPrice);
 
     const validateForm = () => {
         const isPorcentageValid = (newPrice.porcentage !== '') && (newPrice.porcentage !== 0);
@@ -150,13 +149,19 @@ console.log(newPrice);
                 </div>
                 <div className="container">
                     <form onSubmit={handleSubmit}>
-                        <div>
-                            <input className={style.inputCheckbox} type="checkbox" name="byProducts" id="byProducts" checked={selectedOption === 'byProducts'} onChange={() => handleCheckboxChange('byProducts')} />
-                            <span className={style.spanCheckbox}>Por producto</span>
-                            <input className={style.inputCheckbox} type="checkbox" name="byCategory" id="byCategory" checked={selectedOption === 'byCategory'} onChange={() => handleCheckboxChange('byCategory')} />
-                            <span className={style.spanCheckbox}>Por categoría</span>
-                            <input className={style.inputCheckbox} type="checkbox" name="allProducts" id="allProducts" checked={selectedOption === 'allProducts'} onChange={() => handleCheckboxChange('allProducts')} />
-                            <span className={style.spanCheckbox}>Todos los productos</span>                    
+                        <div className={style.containerCheckbox}>
+                            <div className={style.containerInputCheckbox}>
+                                <input className={style.inputCheckbox} type="checkbox" name="byProducts" id="byProducts" checked={selectedOption === 'byProducts'} onChange={() => handleCheckboxChange('byProducts')} />
+                                <span className={style.spanCheckbox}>Por producto</span>
+                            </div>
+                            <div className={style.containerInputCheckbox}>
+                                <input className={style.inputCheckbox} type="checkbox" name="byCategory" id="byCategory" checked={selectedOption === 'byCategory'} onChange={() => handleCheckboxChange('byCategory')} />
+                                <span className={style.spanCheckbox}>Por categoría</span>   
+                            </div>
+                            <div className={style.containerInputCheckbox}>
+                                <input className={style.inputCheckbox} type="checkbox" name="allProducts" id="allProducts" checked={selectedOption === 'allProducts'} onChange={() => handleCheckboxChange('allProducts')} />
+                                <span className={style.spanCheckbox}>Todos los productos</span>
+                            </div>                                                
                         </div>
                         <div className={style.labelInput}>
                             <div className={style.left}>
@@ -210,12 +215,12 @@ console.log(newPrice);
                                     min='0'
                                     value={newPrice.porcentage}
                                     onChange={handleInputChange}
-                                    className={style.discount}
+                                    className={style.inputPorcentage}
                                     type='number'
                                 />
                             </div>
                         </div>
-                        <div>
+                        <div className={style.containerButtonSubmit}>
                             <button type='submit' disabled={isSubmitDisabled}>Actualizar</button>
                         </div>
                     </form>
