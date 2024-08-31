@@ -1,4 +1,6 @@
-import React from "react";
+import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SideBar from "./components/common/SideBar.jsx"; 
 import Stats from "./components/pages/Stats/Stats.jsx";
@@ -14,10 +16,42 @@ import PutPriceProducts from "./components/pages/Products/PutPriceProduct/PutPri
 import Clients from "./components/pages/Clients/Clients.jsx";
 import DetailClient from "./components/pages/Clients/DetailClient/DetailClient.jsx";
 import PutClient from "./components/pages/Clients/PutClient/PutClient.jsx";
-import './App.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { initializeAppData , syncData } from './services/syncService.js';
+import initDB, { processPendingRequests } from './services/indexedDB.js';
 
 
 const App = () => {
+  const [isOnline, setIsOnline] = useState(window.navigator.onLine);
+
+  useEffect(() => {
+    const initializeDB = async () => {
+      await initDB();
+    };
+    initializeDB();
+    
+    initializeAppData();
+
+    const handleOnline = () => {
+        setIsOnline(true);
+        syncData(); // Sincroniza cuando la conexión se restaura
+        processPendingRequests();
+        toast.success('Conexión restablecida');
+    };
+
+    const handleOffline = () => {
+        setIsOnline(false);
+        toast.error('Estás sin conexión');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   return (
     <div className="App">
@@ -39,8 +73,44 @@ const App = () => {
           <Route path='/main_window/clients/edit/:id' element={<PutClient />}/>
         </Routes>
       </div>
+      <ToastContainer />
+      {/* {!isOnline && <div className="offline-banner">Estás sin conexión</div>} */}
     </div>
   );
 };
 
 export default App;
+
+
+//     useEffect(() => {
+//       const handleOnline = () => {
+//           setIsOnline(true);
+//           syncData(); // Sincroniza cuando la conexión se restaura
+//       };
+
+//     const handleOffline = () => {
+//         setIsOnline(false);
+//         console.log('La aplicación está sin conexión');
+//     };
+
+//     window.addEventListener('online', handleOnline);
+//     window.addEventListener('offline', handleOffline);
+
+//     return () => {
+//         window.removeEventListener('online', handleOnline);
+//         window.removeEventListener('offline', handleOffline);
+//     };
+// }, []);
+
+//   useEffect(() => {
+//     const handleOnline = () => {
+//         console.log('Conexión a Internet restaurada');
+//         syncData(); // Llamar a la función de sincronización
+//     };
+
+//     window.addEventListener('online', handleOnline);
+
+//     return () => {
+//         window.removeEventListener('online', handleOnline);
+//     };
+// }, []);
