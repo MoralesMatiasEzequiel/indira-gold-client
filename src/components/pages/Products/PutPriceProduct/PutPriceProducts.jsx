@@ -206,12 +206,12 @@ const PutPriceProducts = () => {
                         </div>
                         <div className={style.labelInput}>
                             <div className={style.left}>
-                                <label htmlFor="porcentage">Aumento</label>
+                                <label htmlFor="porcentage">Aumento %</label>
                             </div>
                             <div className={style.right}>
                                 <input 
                                     name="porcentage"
-                                    placeholder='%'
+                                    placeholder='0'
                                     min='0'
                                     value={newPrice.porcentage}
                                     onChange={handleInputChange}

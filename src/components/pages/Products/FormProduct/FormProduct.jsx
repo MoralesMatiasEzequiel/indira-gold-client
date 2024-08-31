@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
 import { postProduct } from '../../../../redux/productActions.js';
+import { detectConnectionType } from '../../../../services/network.js';
 
 const FormProduct = () => {
     

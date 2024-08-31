@@ -28,7 +28,6 @@ const DetailClient = () => {
     useEffect(() => {
         if (!loading && clientDetail && clientDetail.purchases) {
             const updatedProducts = [];
-            console.log(clientDetail.purchases);
             clientDetail.purchases.forEach((purchase) => {
                 dispatch(getProductById(purchase.productId)).then((response) => {
                     if (response.error && response.error.status === 404) {
