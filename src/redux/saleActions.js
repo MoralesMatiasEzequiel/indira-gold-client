@@ -141,7 +141,6 @@ export const searchSales = (orderNumber, client) => {
 
 export const getSalesByOrderNumber = (orderNumber) => {
     return async (dispatch) => {
-        console.log(orderNumber);
         dispatch(getSalesByOrderNumberReducer(orderNumber));
     }
 }

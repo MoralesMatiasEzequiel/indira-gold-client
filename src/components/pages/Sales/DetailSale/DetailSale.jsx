@@ -20,7 +20,6 @@ const DetailSale = () => {
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [productsLoading, setProductsLoading] = useState(false);
-
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
