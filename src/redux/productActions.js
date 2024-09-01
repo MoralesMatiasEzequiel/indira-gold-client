@@ -1,10 +1,39 @@
 import axios from "axios";
+import { saveToIndexedDB, saveProductsToIndexedDB, getFromIndexedDB, getProductsFromIndexedDB } from '../services/indexedDB.js';
 import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getSoldProductsReducer, getTopFiveProductsReducer } from "./productSlice.js";
+
+// export const getProducts = () => {
+//     return async (dispatch) => {
+//         const { data } = await axios.get("/products");
+//         dispatch(getProductsReducer(data));
+//     };
+// };
 
 export const getProducts = () => {
     return async (dispatch) => {
-        const { data } = await axios.get("/products");
-        dispatch(getProductsReducer(data));
+        try {
+            const { data } = await axios.get("/products", { timeout: 3000 });
+            
+            if (data) {
+                dispatch(getProductsReducer(data));
+                const key = 0;
+                await saveProductsToIndexedDB('products', data, key);
+            } else {
+                console.log("No llegó data de GetProducts");
+            }
+        } catch (error) {
+            console.error("Error retrieving sales from server:", error.message);
+
+            // Intentar obtener los datos locales de IndexedDB como un respaldo
+            const { success, data: products } = await getProductsFromIndexedDB('products');
+            if (success && Array.isArray(products) && products.length > 0) {
+                // Obtener la última posición del array
+                const lastProducts = products[products.length - 1];
+                dispatch(getProductsReducer(lastProducts)); // Despachar solo el último elemento
+            } else {
+                console.error("Error retrieving products from IndexedDB.");
+            }
+        }
     };
 };
 

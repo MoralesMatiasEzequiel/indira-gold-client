@@ -24,7 +24,6 @@ export const getSales = () => {
             const { data } = await axios.get("/sale/active", { timeout: 3000 });
             
             if (data) {
-                console.log("Llegó data de GetSales");
                 dispatch(getSalesReducer(data));
                 const key = 0;
                 await saveSalesToIndexedDB('sales', data, key);

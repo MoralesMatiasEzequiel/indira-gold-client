@@ -105,6 +105,26 @@ export const saveToIndexedDB = async (storeName, data) => {
     }
 };
 
+export const saveProductsToIndexedDB = async (storeName, data) => {
+    try {
+        const db = await initDB();
+        if (!db.objectStoreNames.contains(storeName)) {
+            console.error(`La tienda ${storeName} no existe en IndexedDB.`);
+            return false;
+        }
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        await store.put(data);
+
+        await tx.done;
+        console.log(`Datos guardados de productos en IndexedDB en la store ${storeName}`);
+        return true;
+    } catch (error) {
+        console.error(`Error guardando datos de productos en la store ${storeName}:`, error);
+        return false;
+    }
+};
+
 export const saveSalesToIndexedDB = async (storeName, data) => {
     try {
         const db = await initDB();
@@ -121,6 +141,26 @@ export const saveSalesToIndexedDB = async (storeName, data) => {
         return true;
     } catch (error) {
         console.error(`Error guardando datos de ventas en la store ${storeName}:`, error);
+        return false;
+    }
+};
+
+export const saveClientsToIndexedDB = async (storeName, data) => {
+    try {
+        const db = await initDB();
+        if (!db.objectStoreNames.contains(storeName)) {
+            console.error(`La tienda ${storeName} no existe en IndexedDB.`);
+            return false;
+        }
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        await store.put(data);
+
+        await tx.done;
+        console.log(`Datos guardados de clientes en IndexedDB en la store ${storeName}`);
+        return true;
+    } catch (error) {
+        console.error(`Error guardando datos de clientes en la store ${storeName}:`, error);
         return false;
     }
 };
@@ -195,10 +235,54 @@ export const getFromIndexedDBById = async (storeName, id) => {
     }
 };
 
-export const getSaleByIdFromIndexedDB = async (saleId) => {    
-    const sales = await getFromIndexedDB('salesID');    
-    const sale = sales.data.find(sale => sale._id === saleId);    
-    return sale ? { success: true, data: sale } : { success: false };
+export const getProductsFromIndexedDB = async (storeName) => {
+    try {
+        const db = await initDB();
+        if (!db.objectStoreNames.contains(storeName)) {
+            console.error(`La tienda ${storeName} no existe en IndexedDB.`);
+            return { success: false, data: [] };
+        }
+        const tx = db.transaction(storeName, 'readonly');
+        const store = tx.objectStore(storeName);
+        const data = await store.getAll();
+
+        if (data.length === 0) {
+            console.warn(`No se encontraron datos de productos en IndexedDB para la store ${storeName}.`);
+        }
+
+        // Aseguramos que los datos recuperados estén en el formato adecuado
+        const formattedData = data.map(item => formatData(item));
+
+        return { success: true, data: formattedData };
+    } catch (error) {
+        console.error(`Error al recuperar datos de productos de la store ${storeName}:`, error);
+        return { success: false, data: [] };
+    }
+};
+
+export const getClientsFromIndexedDB = async (storeName) => {
+    try {
+        const db = await initDB();
+        if (!db.objectStoreNames.contains(storeName)) {
+            console.error(`La tienda ${storeName} no existe en IndexedDB.`);
+            return { success: false, data: [] };
+        }
+        const tx = db.transaction(storeName, 'readonly');
+        const store = tx.objectStore(storeName);
+        const data = await store.getAll();
+
+        if (data.length === 0) {
+            console.warn(`No se encontraron datos de clientes en IndexedDB para la store ${storeName}.`);
+        }
+
+        // Aseguramos que los datos recuperados estén en el formato adecuado
+        const formattedData = data.map(item => formatData(item));
+
+        return { success: true, data: formattedData };
+    } catch (error) {
+        console.error(`Error al recuperar datos de clientes de la store ${storeName}:`, error);
+        return { success: false, data: [] };
+    }
 };
 
 export const getSalesFromIndexedDB = async (storeName) => {
@@ -225,6 +309,13 @@ export const getSalesFromIndexedDB = async (storeName) => {
         return { success: false, data: [] };
     }
 };
+
+export const getSaleByIdFromIndexedDB = async (saleId) => {    
+    const sales = await getFromIndexedDB('salesID');    
+    const sale = sales.data.find(sale => sale._id === saleId);    
+    return sale ? { success: true, data: sale } : { success: false };
+};
+
 // Ejemplo de una función para formatear datos
 const formatData = (item) => {
     // Realiza aquí el formateo necesario para tus datos
