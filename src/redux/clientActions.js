@@ -1,12 +1,41 @@
 import axios from "axios";
+import { saveToIndexedDB, saveClientsToIndexedDB, getFromIndexedDB, getClientsFromIndexedDB } from '../services/indexedDB.js';
 import { getClientsReducer, getClientByIdReducer, clearClientDetailReducer } from "./clientSlice.js";
 
 export const getClients = () => {
     return async (dispatch) => {
-        const { data } = await axios.get("/clients");
-        dispatch(getClientsReducer(data));
+        try {
+            const { data } = await axios.get("/clients", { timeout: 3000 });
+            
+            if (data) {
+                dispatch(getClientsReducer(data));
+                const key = 0;
+                await saveClientsToIndexedDB('clients', data, key);
+            } else {
+                console.log("No llegó data de GetClients");
+            }
+        } catch (error) {
+            console.error("Error retrieving clients from server:", error.message);
+
+            // Intentar obtener los datos locales de IndexedDB como un respaldo
+            const { success, data: products } = await getClientsFromIndexedDB('clients');
+            if (success && Array.isArray(clients) && clients.length > 0) {
+                // Obtener la última posición del array
+                const lastClients = clients[clients.length - 1];
+                dispatch(getClientsReducer(lastClients)); // Despachar solo el último elemento
+            } else {
+                console.error("Error retrieving clients from IndexedDB.");
+            }
+        }
     };
 };
+
+// export const getClients = () => {
+//     return async (dispatch) => {
+//         const { data } = await axios.get("/clients");
+//         dispatch(getClientsReducer(data));
+//     };
+// };
 
 export const getClientById = (clientId) => {
     return async (dispatch) =>{
