@@ -1,5 +1,5 @@
 import axios from "axios";
-import { saveToIndexedDB, saveProductsToIndexedDB, getFromIndexedDB, getProductsFromIndexedDB } from '../services/indexedDB.js';
+import { saveToIndexedDB, saveProductsToIndexedDB, saveAllProductsToIndexedDB, getFromIndexedDB, getAllProductsFromIndexedDB, getProductsFromIndexedDB } from '../services/indexedDB.js';
 import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getSoldProductsReducer, getTopFiveProductsReducer } from "./productSlice.js";
 
 // export const getProducts = () => {
@@ -31,10 +31,9 @@ export const getProducts = () => {
                 dispatch(getProductsReducer(lastProducts)); // Despachar solo el último elemento
                 return true;
             } else {
-                return false;
+                console.error("Error retrieving sales from server:", error.message);
             };
             
-            return false;
             // console.error("Error retrieving sales from server:", error.message);
         }
     };
@@ -42,10 +41,40 @@ export const getProducts = () => {
 
 export const getAllProducts = () => {
     return async (dispatch) => {
-        const { data } = await axios.get("/products/all");        
-        dispatch(getAllProductsReducer(data));
+        try {
+            const { data } = await axios.get("/products/all", { timeout: 3000 });
+            
+            if (data) {
+                dispatch(getAllProductsReducer(data));
+                const key = 0;
+                await saveAllProductsToIndexedDB('allProducts', data, key);
+            } else {
+                console.log("No llegó data de GetAllProducts");
+            };
+
+        } catch (error) {
+            // Intentar obtener los datos locales de IndexedDB como un respaldo
+            const { success, data: allProducts } = await getAllProductsFromIndexedDB('allProducts');
+            if (success && Array.isArray(allProducts) && allProducts.length > 0) {
+                // Obtener la última posición del array
+                const lastAllProducts = allProducts[allProducts.length - 1];
+                dispatch(getAllProductsReducer(lastAllProducts)); // Despachar solo el último elemento
+                return true;
+            } else {
+                console.error("Error retrieving sales from server:", error.message);
+            };
+            
+            // console.error("Error retrieving sales from server:", error.message);
+        }
     };
 };
+
+// export const getAllProducts = () => {
+//     return async (dispatch) => {
+//         const { data } = await axios.get("/products/all");        
+//         dispatch(getAllProductsReducer(data));
+//     };
+// };
 
 export const getProductById = (productId) => {
     return async (dispatch) => {

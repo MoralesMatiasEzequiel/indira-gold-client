@@ -43,8 +43,7 @@ export const getSales = () => {
                 console.error("Error retrieving sales from IndexedDB.");
             };
 
-            return false;
-            // console.error("Error retrieving sales from server:", error.message);
+            console.error("Error retrieving sales from server:", error.message);
         }
     };
 };

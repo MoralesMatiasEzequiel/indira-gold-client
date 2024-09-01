@@ -125,6 +125,26 @@ export const saveProductsToIndexedDB = async (storeName, data) => {
     }
 };
 
+export const saveAllProductsToIndexedDB = async (storeName, data) => {
+    try {
+        const db = await initDB();
+        if (!db.objectStoreNames.contains(storeName)) {
+            console.error(`La tienda ${storeName} no existe en IndexedDB.`);
+            return false;
+        }
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        await store.put(data);
+
+        await tx.done;
+        console.log(`Datos guardados de todos los productos en IndexedDB en la store ${storeName}`);
+        return true;
+    } catch (error) {
+        console.error(`Error guardando datos de todos los productos en la store ${storeName}:`, error);
+        return false;
+    }
+};
+
 export const saveSalesToIndexedDB = async (storeName, data) => {
     try {
         const db = await initDB();
@@ -277,6 +297,31 @@ export const getProductsFromIndexedDB = async (storeName) => {
         return { success: true, data: formattedData };
     } catch (error) {
         console.error(`Error al recuperar datos de productos de la store ${storeName}:`, error);
+        return { success: false, data: [] };
+    }
+};
+
+export const getAllProductsFromIndexedDB = async (storeName) => {
+    try {
+        const db = await initDB();
+        if (!db.objectStoreNames.contains(storeName)) {
+            console.error(`La tienda ${storeName} no existe en IndexedDB.`);
+            return { success: false, data: [] };
+        }
+        const tx = db.transaction(storeName, 'readonly');
+        const store = tx.objectStore(storeName);
+        const data = await store.getAll();
+
+        if (data.length === 0) {
+            console.warn(`No se encontraron datos de todos los productos en IndexedDB para la store ${storeName}.`);
+        }
+
+        // Aseguramos que los datos recuperados estén en el formato adecuado
+        const formattedData = data.map(item => formatData(item));
+
+        return { success: true, data: formattedData };
+    } catch (error) {
+        console.error(`Error al recuperar datos de todos los productos de la store ${storeName}:`, error);
         return { success: false, data: [] };
     }
 };
