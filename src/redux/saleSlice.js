@@ -16,7 +16,28 @@ export const saleSlice = createSlice({
             state.salesCopy = action.payload;
         },
         getSaleByIdReducer: (state, action) => {
-            state.saleDetail = action.payload;
+            if(typeof action.payload === "string" || typeof action.payload === "number"){
+                const saleFound = state.salesCopy.find((sale) => sale._id === action.payload);
+                state.saleDetail = saleFound;
+            }else{
+                state.saleDetail = action.payload;
+            }
+        },
+        getSalesByOrderNumberReducer: (state, action) => {
+            const query = action.payload.trim();
+            state.sales = state.salesCopy.filter(sale => sale.orderNumber.includes(query));
+        },
+        getSalesByClientReducer: (state, action) => {
+            const query = action.payload.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const regex = new RegExp(query, 'i');
+            state.sales = state.salesCopy.filter(sale => {
+                if (sale.client) {
+                    const name = sale.client.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    const lastname = sale.client.lastname.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    return regex.test(name) || regex.test(lastname);
+                }
+                return false;
+            });
         },
         clearSaleDetailReducer: (state, action) => {
             state.saleDetail = {};
@@ -33,6 +54,6 @@ export const saleSlice = createSlice({
     }
 });
 
-export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer } = saleSlice.actions;
+export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer } = saleSlice.actions;
 
 export default saleSlice.reducer;
