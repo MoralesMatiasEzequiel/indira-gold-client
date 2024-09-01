@@ -27,8 +27,7 @@ export const getClients = () => {
                 console.error("Error retrieving clients from IndexedDB.");
             };
 
-            return false;
-            // console.error("Error retrieving clients from server:", error.message);
+            console.error("Error retrieving clients from server:", error.message);
         }
     };
 };

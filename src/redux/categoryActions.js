@@ -28,8 +28,7 @@ export const getCategories = () => {
                 console.error("Error retrieving category from IndexedDB.");
             };
 
-            return false;
-            // console.error("Error retrieving sales from server:", error.message);
+            console.error("Error retrieving sales from server:", error.message);
         }
     };
 };
