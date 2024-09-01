@@ -13,19 +13,22 @@ export const getClients = () => {
                 await saveClientsToIndexedDB('clients', data, key);
             } else {
                 console.log("No llegó data de GetClients");
-            }
-        } catch (error) {
-            console.error("Error retrieving clients from server:", error.message);
+            };
 
+        } catch (error) {
             // Intentar obtener los datos locales de IndexedDB como un respaldo
-            const { success, data: products } = await getClientsFromIndexedDB('clients');
+            const { success, data: clients } = await getClientsFromIndexedDB('clients');
             if (success && Array.isArray(clients) && clients.length > 0) {
                 // Obtener la última posición del array
                 const lastClients = clients[clients.length - 1];
                 dispatch(getClientsReducer(lastClients)); // Despachar solo el último elemento
+                return true;
             } else {
                 console.error("Error retrieving clients from IndexedDB.");
-            }
+            };
+
+            return false;
+            // console.error("Error retrieving clients from server:", error.message);
         }
     };
 };
