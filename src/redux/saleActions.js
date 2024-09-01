@@ -29,19 +29,22 @@ export const getSales = () => {
                 await saveSalesToIndexedDB('sales', data, key);
             } else {
                 console.log("No llegó data de GetSales");
-            }
-        } catch (error) {
-            console.error("Error retrieving sales from server:", error.message);
+            };
 
+        } catch (error) {
             // Intentar obtener los datos locales de IndexedDB como un respaldo
             const { success, data: sales } = await getSalesFromIndexedDB('sales');
             if (success && Array.isArray(sales) && sales.length > 0) {
                 // Obtener la última posición del array
                 const lastSale = sales[sales.length - 1];
                 dispatch(getSalesReducer(lastSale)); // Despachar solo el último elemento
+                return true;
             } else {
                 console.error("Error retrieving sales from IndexedDB.");
-            }
+            };
+
+            return false;
+            // console.error("Error retrieving sales from server:", error.message);
         }
     };
 };
@@ -131,7 +134,7 @@ export const searchSales = (orderNumber, client) => {
             }
             
         } catch (error) {
-            console.log(error.message);
+        console.log(error.message);
             return Promise.reject(error);
         }
     };

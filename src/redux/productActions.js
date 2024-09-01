@@ -20,19 +20,22 @@ export const getProducts = () => {
                 await saveProductsToIndexedDB('products', data, key);
             } else {
                 console.log("No llegó data de GetProducts");
-            }
-        } catch (error) {
-            console.error("Error retrieving sales from server:", error.message);
+            };
 
+        } catch (error) {
             // Intentar obtener los datos locales de IndexedDB como un respaldo
             const { success, data: products } = await getProductsFromIndexedDB('products');
             if (success && Array.isArray(products) && products.length > 0) {
                 // Obtener la última posición del array
                 const lastProducts = products[products.length - 1];
                 dispatch(getProductsReducer(lastProducts)); // Despachar solo el último elemento
+                return true;
             } else {
-                console.error("Error retrieving products from IndexedDB.");
-            }
+                return false;
+            };
+            
+            return false;
+            // console.error("Error retrieving sales from server:", error.message);
         }
     };
 };
