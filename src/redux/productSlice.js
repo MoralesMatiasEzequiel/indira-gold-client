@@ -21,7 +21,12 @@ export const productSlice = createSlice({
             // state.productsCopy = action.payload; // esto va? cual es el criterio de cuando va y cuando no?
         },
         getProductByIdReducer: (state, action) => {
-            state.productDetail = action.payload;            
+            if(typeof action.payload === "string" || typeof action.payload === "number"){
+                const productFound = state.allProducts.find((product) => product._id === action.payload);
+                state.productDetail = productFound;
+            } else {
+                state.productDetail = action.payload; 
+            }           
         },
         getSoldProductsReducer: (state, action) => {
             state.soldProducts = action.payload;

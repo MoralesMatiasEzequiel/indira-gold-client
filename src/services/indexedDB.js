@@ -114,12 +114,7 @@ export const saveSalesToIndexedDB = async (storeName, data) => {
         }
         const tx = db.transaction(storeName, 'readwrite');
         const store = tx.objectStore(storeName);
-
-        if (Array.isArray(data)) {
-            data.forEach(item => store.put(item));  // Guarda cada elemento individualmente
-        } else {
-            await store.put(data);
-        }
+        await store.put(data);
 
         await tx.done;
         console.log(`Datos guardados de ventas en IndexedDB en la store ${storeName}`);

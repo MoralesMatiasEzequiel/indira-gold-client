@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
-import { searchSales } from '../../../../redux/saleActions.js';
+import { getSales, searchSales, getSalesByOrderNumber, getSalesByClient } from '../../../../redux/saleActions.js';
 import detail from '../../../../assets/img/detail.png';
 
 const SalesHistory = () => {
@@ -16,7 +16,16 @@ const SalesHistory = () => {
     const itemsPerPage = 20;
 
     useEffect(() => {
-        dispatch(searchSales(orderNumber, client));
+        dispatch(searchSales(orderNumber, client))
+        .catch(() => {
+            if(orderNumber){
+                dispatch(getSalesByOrderNumber(orderNumber));
+            }
+            else if(client){
+                dispatch(getSalesByClient(client));
+            }
+            else { dispatch(getSales()); }
+        });
     }, [orderNumber, client, dispatch]);
 
     const handleChangeOrderNumber = (event) => {

@@ -18,14 +18,19 @@ export const getAllProducts = () => {
 export const getProductById = (productId) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get(`/products/${productId}`);
-            dispatch(getProductByIdReducer(data));
-            return data;
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                return { error: { status: 404, message: 'Producto no encontrado' } };
+            const { data } = await axios.get(`/products/${productId}`, { timeout: 3000 });
+            if(data){
+                console.log("hay data");
+                dispatch(getProductByIdReducer(data));
+                return data;
+            } else {
+                console.log("no hay");
+                return Promise.reject("No data received");
             }
-            throw error; // Si es otro tipo de error, lo lanza de nuevo
+            
+        } catch (error) {
+            console.log(error.message);
+            return Promise.reject(error);
         }
     };
 };
