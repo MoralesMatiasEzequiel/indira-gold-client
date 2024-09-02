@@ -6,8 +6,8 @@ import Metrics from './Metrics/Metrics.jsx'
 import Rating from './Rating/Rating.jsx';
 import Piechart from './PieChart/PieChart.jsx'
 import { getCategories } from '../../../redux/categoryActions.js';
-import { getSalesOnline, getSalesLocal } from '../../../redux/saleActions.js';
-import { getSoldProducts, getTopFiveProducts } from '../../../redux/productActions.js';
+import { getSalesBalance, getSalesBalanceLocal, getSalesOnline, getSalesLocal, getSalesOnlineLocal, getSalesLocalLocal } from '../../../redux/saleActions.js';
+import { getSoldProducts, getSoldProductsLocal, getTopFiveProducts, getTopFiveProductsLocal } from '../../../redux/productActions.js';
 
 
 const Stats = () => {
@@ -15,11 +15,12 @@ const Stats = () => {
     const dispatch = useDispatch();
     
     useEffect(() => {
+        dispatch(getSalesBalance()).catch(() => {dispatch(getSalesBalanceLocal())});
         dispatch(getCategories());
-        dispatch(getSalesOnline());
-        dispatch(getSalesLocal());
-        dispatch(getSoldProducts());
-        dispatch(getTopFiveProducts());
+        dispatch(getSalesOnline()).catch(() => {dispatch(getSalesOnlineLocal())});
+        dispatch(getSalesLocal()).catch(() => {dispatch(getSalesLocalLocal())});
+        dispatch(getSoldProducts()).catch(() => {dispatch(getSoldProductsLocal())});
+        dispatch(getTopFiveProducts()).catch(() => {dispatch(getTopFiveProductsLocal())});
     }, [dispatch]);
 
     return(

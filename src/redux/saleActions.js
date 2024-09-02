@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { saveToIndexedDB, saveSalesToIndexedDB, getFromIndexedDB, getSalesFromIndexedDB, getFromIndexedDBById, savePendingRequest, saveSaleByIdToIndexedDB, getSaleByIdFromIndexedDB, processPendingRequests } from '../services/indexedDB.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesLocalLocalReducer, getSalesBalanceReducer, getSalesBalanceLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer } from "./saleSlice.js";
 
 // const executeRequest = async (method, url, data = {}, headers = {}) => {
 //     if (navigator.onLine) {
@@ -71,13 +71,13 @@ export const getSaleByIdLocal = (saleId) => {
     return async (dispatch) => {
         dispatch(getSaleByIdReducer(saleId));
     }
-}
+};
 
 export const clearSaleDetail = () => {
     return async (dispatch) => {
         dispatch(clearSaleDetailReducer());
     }
-}
+};
 
 export const getSalesOnline = () => {
     return async (dispatch) => {
@@ -93,10 +93,28 @@ export const getSalesLocal = () => {
     };
 };
 
+export const getSalesOnlineLocal = () => {
+    return async (dispatch) => {
+        dispatch(getSalesOnlineLocalReducer());
+    };
+};
+
+export const getSalesLocalLocal = () => {
+    return async (dispatch) => {
+        dispatch(getSalesLocalLocalReducer());
+    };
+};
+
 export const getSalesBalance = () => {
     return async (dispatch) => {
         const { data } = await axios.get("/sale/balance");
         dispatch(getSalesBalanceReducer(data));
+    };
+};
+
+export const getSalesBalanceLocal = () => {
+    return async (dispatch) => {
+        dispatch(getSalesBalanceLocalReducer());
     };
 };
 
@@ -143,13 +161,13 @@ export const getSalesByOrderNumber = (orderNumber) => {
     return async (dispatch) => {
         dispatch(getSalesByOrderNumberReducer(orderNumber));
     }
-}
+};
 
 export const getSalesByClient = (client) => {
     return async (dispatch) => {
         dispatch(getSalesByClientReducer(client));
     }
-}
+};
 
 export const postSale = (saleData) => {
     return async () => {
@@ -164,10 +182,10 @@ export const putSale = (saleData) => {
         const response = await axios.put('/sale', saleData);
         return response;
     }
-}
+};
 
 export const deleteSale = (saleId) => {
     return async (dispatch) => {
         const { data } = await axios.put(`/sale/deactive/${saleId}`);
     }
-}
+};

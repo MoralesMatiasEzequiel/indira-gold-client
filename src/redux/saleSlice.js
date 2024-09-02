@@ -45,15 +45,24 @@ export const saleSlice = createSlice({
         getSalesOnlineReducer: (state, action) => {
             state.salesOnline = action.payload;
         },
+        getSalesOnlineLocalReducer: (state, action) => {
+            state.salesOnline = state.salesCopy.filter(sale => sale.soldAt.includes('Online'));
+        },
         getSalesLocalReducer: (state, action) => {
             state.salesLocal = action.payload;
+        },
+        getSalesLocalLocalReducer: (state, action) => {
+            state.salesLocal = state.salesCopy.filter(sale => sale.soldAt.includes('Local'));
         },
         getSalesBalanceReducer: (state, action) => {
             state.salesBalance = action.payload;
         },
+        getSalesBalanceLocalReducer: (state, action) => {
+            state.salesBalance = state.salesBalance;
+        },
     }
 });
 
-export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer } = saleSlice.actions;
+export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesLocalLocalReducer, getSalesBalanceReducer, getSalesBalanceLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer } = saleSlice.actions;
 
 export default saleSlice.reducer;
