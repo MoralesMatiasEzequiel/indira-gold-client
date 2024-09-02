@@ -1,27 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getClientById, deleteClient, clearClientDetail } from '../../../../redux/clientActions.js';
+import { getClientById, getClientByIdLocal, deleteClient, clearClientDetail } from '../../../../redux/clientActions.js';
 import { getProductById } from '../../../../redux/productActions.js';
 import style from "./DetailClient.module.css";
 
 const DetailClient = () => {
     let { id } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const clientDetail = useSelector(state => state.clients.clientDetail);    
+    const products = useSelector(state => state.products.products);
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [productsLoading, setProductsLoading] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const navigate = useNavigate();
+    
 
     useEffect(() => {
         dispatch(clearClientDetail());
         setPurchasedProducts([]);
         setLoading(true); // Establece la bandera de carga a true antes de obtener los nuevos datos
-
+        setProductsLoading(true);
         // Luego carga el nuevo cliente
-        dispatch(getClientById(id)).then(() => {
+        dispatch(getClientById(id))
+        .then(() => {
             setLoading(false); // Desactiva la bandera de carga cuando los datos estén listos
+        })
+        .catch(() => {
+            dispatch(getClientByIdLocal(id));
+            setLoading(false);
         });
     }, [dispatch, id]);
 
@@ -49,6 +57,20 @@ const DetailClient = () => {
                     // Actualiza purchasedProducts después de cargar todos los productos
                     if (updatedProducts.length === clientDetail.purchases.length) {
                         setPurchasedProducts(updatedProducts);
+                        setProductsLoading(false);
+                    }
+                })
+                .catch(() => {
+                    const filteredProduct = products.find(p => p._id === purchase.productId);
+                    if (filteredProduct) {
+                        const selectedColor = getColorById(filteredProduct, purchase.colorId);
+                        const selectedSize = getSizeById(filteredProduct, purchase.colorId, purchase.sizeId);
+
+                        updatedProducts.push({ ...filteredProduct, selectedColor, selectedSize });
+                    } 
+                    if (updatedProducts.length === clientDetail.purchases.length) {
+                        setPurchasedProducts(updatedProducts);
+                        setProductsLoading(false);
                     }
                 });
             });
@@ -84,10 +106,6 @@ const DetailClient = () => {
         navigate('/main_window/clients');
     };
 
-    if (loading) {
-        return <div>Loading...</div>; // Puedes personalizar este mensaje o mostrar un spinner de carga
-    }
-
     const formatNumber = (number) => {
         return number.toLocaleString('es-ES', {
             minimumFractionDigits: 0,
@@ -97,55 +115,70 @@ const DetailClient = () => {
 
     return (
         <div className="page">
-            <div className="component">
-                <div className="title">
-                    <h2>Detalle del Cliente</h2>
-                    <div className="titleButtons">
-                        {clientDetail.active ? <button><Link to={`/main_window/clients/edit/${id}`}>Editar</Link></button> : ''}
-                        {!clientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
-                        <button><Link to={`/main_window/clients`}>Atrás</Link></button>
-                    </div>
-                </div>
-                <div className={`container ${style.content}`}>
-                    <div className={style.column}>
-                        {/* <p><span>ID de cliente:&nbsp;</span>{id}</p> */}
-                        {clientDetail.name && <p><span>Nombre:&nbsp;</span>{clientDetail.name}</p>}
-                        {clientDetail.lastname && <p><span>Apellido:&nbsp;</span>{clientDetail.lastname}</p>}
-                        {clientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{clientDetail.email}</p>}
-                        {clientDetail.phone && <p><span>Teléfono:&nbsp;</span>{clientDetail.phone}</p>}
-                        {clientDetail.date && <p><span>Fecha de suscripción:&nbsp;</span>{formatDate(clientDetail.date)}</p>}
-                        <p><span>Estado:&nbsp;</span>{clientDetail.active ? 'Activo' : 'Inactivo'}</p>
-                    </div>
-                    <div className={style.column}>
-                        <p><span>Historial de compras:&nbsp;</span></p>
-                        <ul>
-                            {purchasedProducts.length > 0 ? (
-                                purchasedProducts.map((product, index) => (
-                                    <li key={index}>
-                                        <p><span>{product.name}</span></p>
-                                        <ul className={style.productList}>
-                                            {product.selectedColor && <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>}
-                                            {product.selectedSize && <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>}
-                                            {product.price &&<li><span>Precio:&nbsp;</span>${formatNumber(product.price)}</li>}
+            {
+                loading ? (
+                    <div>Cargando</div>
+                ) : (
+                    <div>
+                        <div className="component">
+                            <div className="title">
+                                <h2>Detalle del Cliente</h2>
+                                <div className="titleButtons">
+                                    {clientDetail.active ? <button><Link to={`/main_window/clients/edit/${id}`}>Editar</Link></button> : ''}
+                                    {!clientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
+                                    <button><Link to={`/main_window/clients`}>Atrás</Link></button>
+                                </div>
+                            </div>
+                            <div className={`container ${style.content}`}>
+                                <div className={style.column}>
+                                    {/* <p><span>ID de cliente:&nbsp;</span>{id}</p> */}
+                                    {clientDetail.name && <p><span>Nombre:&nbsp;</span>{clientDetail.name}</p>}
+                                    {clientDetail.lastname && <p><span>Apellido:&nbsp;</span>{clientDetail.lastname}</p>}
+                                    {clientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{clientDetail.email}</p>}
+                                    {clientDetail.phone && <p><span>Teléfono:&nbsp;</span>{clientDetail.phone}</p>}
+                                    {clientDetail.date && <p><span>Fecha de suscripción:&nbsp;</span>{formatDate(clientDetail.date)}</p>}
+                                    <p><span>Estado:&nbsp;</span>{clientDetail.active ? 'Activo' : 'Inactivo'}</p>
+                                </div>
+                                <div className={style.column}>
+                                    <p><span>Historial de compras:&nbsp;</span></p>
+                                    {productsLoading ? (
+                                        <div>Cargando productos...</div>
+                                    ) : purchasedProducts?.length ? (
+                                        <ul>
+                                            {purchasedProducts.length > 0 ? (
+                                                purchasedProducts.map((product, index) => (
+                                                    <li key={index}>
+                                                        <p><span>{product.name}</span></p>
+                                                        <ul className={style.productList}>
+                                                            {product.selectedColor && <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>}
+                                                            {product.selectedSize && <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>}
+                                                            {product.price &&<li><span>Precio:&nbsp;</span>${formatNumber(product.price)}</li>}
+                                                        </ul>
+                                                    </li>
+                                                ))
+                                            ) : (
+                                                <div>No hay compras registradas</div>
+                                            )}
                                         </ul>
-                                    </li>
-                                ))
-                            ) : (
-                                <div>No hay compras registradas</div>
-                            )}
-                        </ul>
+                                    ) : (
+                                        <p>No hay productos vendidos disponibles.</p>
+                                    )}
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
+                            <div className={style.deleteContent}>
+                                <p>¿Está seguro que desea {clientDetail.active ? 'desactivar' : 'activar'} este cliente?</p>
+                                <div className={style.deleteButtons}>
+                                    <button onClick={toggleShowDeleteModal}>Cancelar</button>
+                                    <button onClick={handleDelete} className={clientDetail.active ? 'delete' : 'add'}>{clientDetail.active ? 'Desactivar' : 'Activar'}</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
-                <div className={style.deleteContent}>
-                    <p>¿Está seguro que desea {clientDetail.active ? 'desactivar' : 'activar'} este cliente?</p>
-                    <div className={style.deleteButtons}>
-                        <button onClick={toggleShowDeleteModal}>Cancelar</button>
-                        <button onClick={handleDelete} className={clientDetail.active ? 'delete' : 'add'}>{clientDetail.active ? 'Desactivar' : 'Activar'}</button>
-                    </div>
-                </div>
-            </div>
+                )
+            }
         </div>
     );
 };

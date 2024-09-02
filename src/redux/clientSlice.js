@@ -17,7 +17,12 @@ export const clientSlice = createSlice({
         },
 
         getClientByIdReducer: (state, action) => {
-            state.clientDetail = action.payload;
+            if(typeof action.payload === "string" || typeof action.payload === "number"){
+                const clientFound = state.clientsCopy.find((client) => client._id === action.payload);
+                state.clientDetail = clientFound;
+            }else{
+                state.clientDetail = action.payload;
+            }
         },
 
         clearClientDetailReducer: (state, action) => {

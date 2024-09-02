@@ -41,10 +41,29 @@ export const getClients = () => {
 
 export const getClientById = (clientId) => {
     return async (dispatch) =>{
-        const { data } = await axios.get(`/clients/${clientId}`);
-        dispatch(getClientByIdReducer(data));
+        try {
+            const { data } = await axios.get(`/clients/${clientId}`, { timeout: 1000 });
+            if (data) {
+                console.log("hay data");
+                dispatch(getClientByIdReducer(data));
+                return Promise.resolve(); // Promesa resuelta si se obtiene la data
+            } else {
+                console.log("no hay");
+                return Promise.reject("No data received"); // Promesa rechazada si no hay datos
+            }
+        
+        } catch (error) {
+            console.log(error.message);
+            return Promise.reject(error); // Promesa rechazada si hay un error
+        }
     };
 };
+
+export const getClientByIdLocal = (saleId) => {
+    return async (dispatch) => {
+        dispatch(getClientByIdReducer(saleId));
+    }
+}
 
 export const clearClientDetail = () => {
     return async (dispatch) => {
