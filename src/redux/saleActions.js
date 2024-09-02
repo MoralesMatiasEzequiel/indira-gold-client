@@ -103,7 +103,7 @@ export const getSalesBalance = () => {
 export const getMonthlySalesByClient = (id) => {
     return async () => {
         try {
-            const { data } = await axios.get(`/sale/monthlyByClient/${id}`);
+            const { data } = await axios.get(`/sale/monthlyByClient/${id}`, {timeout: 1000});
             return data;
         } catch (error) {
             return error.message;

@@ -43,10 +43,17 @@ const ClientRegistration = () => {
                     .then(response => {
                         setMonthlySales(prevState => ({
                             ...prevState,
-                            [client._id]: response.totalProducts || 0
+                            [client._id]: response.totalProducts
                         }));
                         setLoadedClientIds(prevIds => new Set(prevIds).add(client._id)); // Agrega el ID al conjunto de IDs cargados
-                    });
+                    })
+                    .catch(() => {
+                        setMonthlySales(prevState => ({
+                            ...prevState,
+                            [client._id]: "Datos no disponibles offline"
+                        }));
+                        setLoadedClientIds(prevIds => new Set(prevIds).add(client._id)); // Agrega el ID al conjunto de IDs cargados
+                    });;
             }
         });
     }, [dispatch, paginatedClients, loadedClientIds]);
