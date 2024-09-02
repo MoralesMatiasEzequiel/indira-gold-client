@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from 'react-toastify';
-import { saveToIndexedDB, saveSalesToIndexedDB, getFromIndexedDB, getSalesFromIndexedDB, getFromIndexedDBById, savePendingRequest, saveSaleByIdToIndexedDB, getSaleByIdFromIndexedDB, processPendingRequests } from '../services/indexedDB.js';
+import { saveToIndexedDB, saveSalesToIndexedDB, getFromIndexedDB, getSalesFromIndexedDB, getFromIndexedDBById, savePendingRequest, saveSaleByIdToIndexedDB, getSaleByIdFromIndexedDB, processPendingRequests, getPendingRequestsCount } from '../services/indexedDB.js';
 import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer } from "./saleSlice.js";
 
 // const executeRequest = async (method, url, data = {}, headers = {}) => {
@@ -153,21 +153,82 @@ export const getSalesByClient = (client) => {
 
 export const postSale = (saleData) => {
     return async () => {
-       
-        const response = await axios.post('/sale', saleData);
-        return response;
+        try {
+            const response = await axios.post('/sale', saleData, { timeout: 1000 });
+            return response;
+        } catch (error) {
+            console.error('Error en la solicitud de venta:', error);
+
+            // Guarda la solicitud como pendiente en indexedDB
+            const pendingRequest = {
+                method: 'POST',
+                url: '/sale',
+                data: saleData,
+                headers: { 'Content-Type': 'application/json' }
+            };
+
+            try {
+                const saved = await savePendingRequest(pendingRequest);
+                if (saved) {
+                    console.log('Solicitud guardada como pendiente.');
+                }
+            } catch (saveError) {
+                console.error('Error guardando solicitud como pendiente:', saveError);
+            }
+        }
     };
 };
 
 export const putSale = (saleData) => {
     return async () => {
-        const response = await axios.put('/sale', saleData);
-        return response;
+        try {
+            const response = await axios.put('/sale', saleData, { timeout: 1000 });
+            return response;            
+        } catch (error) {
+            console.error('Error en la solicitud de venta:', error);
+
+            const pendingRequest = {
+                method: 'PUT',
+                url: '/sale',
+                data: saleData,
+                headers: { 'Content-Type': 'application/json' }
+            };
+
+            try {
+                const saved = await savePendingRequest(pendingRequest);
+                if (saved) {
+                    console.log('Solicitud guardada como pendiente.');
+                }
+            } catch (error) {
+                console.error('Error guardando solicitud como pendiente:', saveError);
+            }
+        }
     }
 }
 
 export const deleteSale = (saleId) => {
-    return async (dispatch) => {
-        const { data } = await axios.put(`/sale/deactive/${saleId}`);
+    return async () => {
+        try {
+            const { data } = await axios.put(`/sale/deactive/${saleId}`, { timeout: 1000 });
+        } catch (error) {
+            console.error('Error en la solicitud de venta:', error);
+
+            const pendingRequest = {
+                method: 'PUT',
+                url: `/sale/deactive/${saleId}`,
+                data: saleData,
+                headers: { 'Content-Type': 'application/json' }
+            };
+
+            try {
+                const saved = await savePendingRequest(pendingRequest);
+                if (saved) {
+                    console.log('Solicitud guardada como pendiente.');
+                }
+            } catch (error) {
+                console.error('Error guardando solicitud como pendiente:', saveError);
+            }
+        }
+        
     }
 }

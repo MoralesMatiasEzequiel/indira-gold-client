@@ -466,3 +466,18 @@ export const processPendingRequests = async () => {
         }
     }
 };
+
+export const getPendingRequestsCount = async () => {
+    try {
+        const db = await initDB();
+        const tx = db.transaction('pendingRequests', 'readonly');
+        const store = tx.objectStore('pendingRequests');
+        const requests = await store.getAll();
+        const count = requests.length;
+        console.log(`Cantidad de solicitudes pendientes: ${count}`);
+        return count;
+    } catch (error) {
+        console.error('Error al obtener la cantidad de solicitudes pendientes:', error);
+        return 0; // O el valor que prefieras en caso de error
+    }
+};
