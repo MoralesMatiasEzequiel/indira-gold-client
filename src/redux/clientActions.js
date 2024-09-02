@@ -1,6 +1,6 @@
 import axios from "axios";
 import { saveToIndexedDB, saveClientsToIndexedDB, getFromIndexedDB, getClientsFromIndexedDB } from '../services/indexedDB.js';
-import { getClientsReducer, getClientByIdReducer, clearClientDetailReducer } from "./clientSlice.js";
+import { getClientsReducer, getClientByIdReducer, clearClientDetailReducer, getClientsByDniReducer, getClientsByNameReducer, getClientsByLastnameReducer } from "./clientSlice.js";
 
 export const getClients = () => {
     return async (dispatch) => {
@@ -73,22 +73,36 @@ export const clearClientDetail = () => {
 
 export const getClientByDni = (dni) => {
     return async (dispatch) => {
-        const { data } = await axios.get(`/clients?dni=${dni}&`);
-        dispatch(getClientsReducer(data));
+        try {
+            const { data } = await axios.get(`/clients?dni=${dni}&`, { timeout: 1000 });
+            dispatch(getClientsReducer(data));
+        } catch (error) {
+            dispatch(getClientsByDniReducer(dni));
+        }
+        
     };
 };
 
 export const getClientByName = (name) => {
     return async (dispatch) => {
-        const { data } = await axios.get(`/clients?name=${name}&`);
-        dispatch(getClientsReducer(data));
+        try {
+            const { data } = await axios.get(`/clients?name=${name}&`, { timeout: 1000 });
+            dispatch(getClientsReducer(data));
+        } catch (error) {
+            dispatch(getClientsByNameReducer(name));
+        }
+        
     };
 };
 
 export const getClientByLastname = (lastname) => {
     return async (dispatch) => {
-        const { data } = await axios.get(`/clients?lastname=${lastname}&`);
-        dispatch(getClientsReducer(data));
+        try {
+            const { data } = await axios.get(`/clients?lastname=${lastname}&`, { timeout: 1000 });
+            dispatch(getClientsReducer(data));
+        } catch (error) {
+            dispatch(getClientsByLastnameReducer(lastname));
+        }
     };
 };
 
