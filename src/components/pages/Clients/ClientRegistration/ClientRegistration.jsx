@@ -199,7 +199,7 @@ const ClientRegistration = () => {
                                         <td>{client.lastname}</td>
                                         <td>{client.email}</td>
                                         <td>{client.phone}</td>
-                                        <td>{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Cargando...'}</td>    
+                                        <td>{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Información no disponible offline'}</td>    
                                         <td>{client.active ? "Activo" : "Inactivo"}</td>
                                         <td>
                                             <Link to={`/main_window/clients/${client._id}`}>
