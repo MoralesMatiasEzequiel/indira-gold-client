@@ -80,7 +80,7 @@ const ProductManagement = () => {
         if (name) {
             dispatch(getProductByName(name));
         } else {
-            dispatch(getProductByName('')); 
+            dispatch(getAllProducts());
         }
     }, [name, dispatch]);
     
@@ -88,6 +88,12 @@ const ProductManagement = () => {
         dispatch(getAllProducts());
     }, [dispatch]);
     
+    const formatNumber = (number) => {
+        return number.toLocaleString('es-ES', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    };
 
     return (
         <div className="page">
@@ -168,7 +174,7 @@ const ProductManagement = () => {
                                                 </td>
                                                 <td className={style.tdInside}>
                                                     <div className={style.containerInfoGral}>
-                                                        <span>{colorIndex === 0 ? `$ ${product.price}` : ''}</span>
+                                                        <span>{colorIndex === 0 ? `$ ${formatNumber(product.price)}` : ''}</span>
                                                     </div>
                                                 </td>
                                                 <td className={style.tdInside}>

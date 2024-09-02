@@ -347,7 +347,7 @@ const DetailSale = () => {
                                     <ul>
                                         {purchasedProducts.map((product, index) => (
                                             <li key={index}>
-                                                {`${product.name} - ${product.selectedColor?.colorName} - Talle ${product.selectedSize?.sizeName}`}
+                                                {`${product.name} - ${product.selectedColor?.colorName} - Talle ${product.selectedSize?.sizeName} - Precio $${formatNumber(product.price)}`}
                                                 <button type="button" onClick={() => handleRemoveProduct(index, true)}>
                                                     <img src={x} alt="Eliminar" />
                                                 </button>
@@ -384,7 +384,7 @@ const DetailSale = () => {
                             </div>
                             <div className={style.column}>
                                 <div className={style.section}>
-                                    <p><span>Subtotal: </span>${subtotal}</p>
+                                    <p><span>Subtotal: </span>${formatNumber(subtotal)}</p>
                                 </div>
                                 <div className={style.section}>
                                     <p>

@@ -6,6 +6,7 @@ export const productSlice = createSlice({
         products: [],
         productsCopy: [],
         allProducts: [],
+        allProductsCopy: [],
         productDetail: {},
         selectedProduct: [],
         soldProducts: [],
@@ -18,7 +19,7 @@ export const productSlice = createSlice({
         },
         getAllProductsReducer: (state, action) => {
             state.allProducts = action.payload;
-            // state.productsCopy = action.payload; // esto va? cual es el criterio de cuando va y cuando no?
+            state.allProductsCopy = action.payload;
         },
         getProductByIdReducer: (state, action) => {
             if(typeof action.payload === "string" || typeof action.payload === "number"){
@@ -27,6 +28,14 @@ export const productSlice = createSlice({
             } else {
                 state.productDetail = action.payload; 
             }           
+        },
+        getProductsByNameReducer: (state, action) => {
+            const query = action.payload.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const regex = new RegExp(query, 'i');
+            state.allProducts = state.allProductsCopy.filter(product => {
+                    const name = product.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    return regex.test(name);
+            });
         },
         getSoldProductsReducer: (state, action) => {
             state.soldProducts = action.payload;
@@ -37,6 +46,6 @@ export const productSlice = createSlice({
     }
 });
 
-export const { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getSoldProductsReducer, getTopFiveProductsReducer } = productSlice.actions;
+export const { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getProductsByNameReducer, getSoldProductsReducer, getTopFiveProductsReducer } = productSlice.actions;
 
 export default productSlice.reducer;

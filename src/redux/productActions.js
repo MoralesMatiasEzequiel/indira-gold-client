@@ -1,6 +1,6 @@
 import axios from "axios";
 import { saveToIndexedDB, saveProductsToIndexedDB, saveAllProductsToIndexedDB, getFromIndexedDB, getAllProductsFromIndexedDB, getProductsFromIndexedDB } from '../services/indexedDB.js';
-import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getSoldProductsReducer, getTopFiveProductsReducer } from "./productSlice.js";
+import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getProductsByNameReducer, getSoldProductsReducer, getTopFiveProductsReducer } from "./productSlice.js";
 
 // export const getProducts = () => {
 //     return async (dispatch) => {
@@ -42,7 +42,7 @@ export const getProducts = () => {
 export const getAllProducts = () => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get("/products/all", { timeout: 3000 });
+            const { data } = await axios.get("/products/all", { timeout: 1000 });
             
             if (data) {
                 dispatch(getAllProductsReducer(data));
@@ -98,9 +98,13 @@ export const getProductById = (productId) => {
 
 export const getProductByName = (productName) => {
     return async (dispatch) => {
-        const { data } = await axios.get(`/products/all?name=${productName}&`);
-        dispatch(getAllProductsReducer(data));
-        // dispatch(getProductsReducer(data));
+        try {
+            const { data } = await axios.get(`/products/all?name=${productName}&`, { timeout: 1000 });
+            dispatch(getAllProductsReducer(data));
+        } catch (error) {
+            dispatch(getProductsByNameReducer(productName));
+        }
+        
     };
 };
 
