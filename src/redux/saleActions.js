@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { saveToIndexedDB, saveSalesToIndexedDB, getFromIndexedDB, getSalesFromIndexedDB, getFromIndexedDBById, savePendingRequest, saveSaleByIdToIndexedDB, getSaleByIdFromIndexedDB, processPendingRequests, getPendingRequestsCount } from '../services/indexedDB.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer } from "./saleSlice.js";
 
 // const executeRequest = async (method, url, data = {}, headers = {}) => {
 //     if (navigator.onLine) {
@@ -207,16 +207,17 @@ export const putSale = (saleData) => {
 }
 
 export const deleteSale = (saleId) => {
-    return async () => {
+    return async (dispatch) => {
         try {
             const { data } = await axios.put(`/sale/deactive/${saleId}`, { timeout: 1000 });
+            dispatch(deleteSaleReducer(saleId));
         } catch (error) {
             console.error('Error en la solicitud de venta:', error);
 
             const pendingRequest = {
                 method: 'PUT',
                 url: `/sale/deactive/${saleId}`,
-                data: saleData,
+                data: {},
                 headers: { 'Content-Type': 'application/json' }
             };
 
@@ -225,10 +226,13 @@ export const deleteSale = (saleId) => {
                 if (saved) {
                     console.log('Solicitud guardada como pendiente.');
                 }
-            } catch (error) {
+            } catch (saveError) {
                 console.error('Error guardando solicitud como pendiente:', saveError);
             }
+
+            // Actualizar el estado local
+            dispatch(deleteSaleReducer(saleId));
+            return Promise.reject(error);
         }
-        
     }
-}
+};
