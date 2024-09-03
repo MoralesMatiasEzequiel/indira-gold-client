@@ -192,6 +192,6 @@ export const increaseStock = (productData) => {
 
 export const deleteProductById = (productId) => {
     return async (dispatch) =>{
-        const { data } = await axios.delete(`/products/${productId}`);
+        const { data } = await axios.put(`/products/deactive/${productId}`);
     };
 };

@@ -15,6 +15,7 @@ const DetailSale = () => {
     let { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const sales = useSelector(state => state.sales.sales);
     const saleDetail = useSelector(state => state.sales.saleDetail);
     const products = useSelector(state => state.products.products);
     const [purchasedProducts, setPurchasedProducts] = useState([]);
@@ -181,7 +182,11 @@ const DetailSale = () => {
             dispatch(getSales()).then(
                 navigate('/main_window/')
             )
-        );
+        )
+        .catch(
+            dispatch(getSales()).then(
+                navigate('/main_window/')
+        ));
     }
 
     return(
@@ -189,7 +194,6 @@ const DetailSale = () => {
             {loading ? (
                 <div>Cargando</div>
             ) : (
-                <div>
                     <div className="component">
                         <div className="title">
                             <h2>Detalle de la venta</h2>
@@ -246,18 +250,16 @@ const DetailSale = () => {
                             </div>
                         </div>          
                     </div>
-                    <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
-                        <div className={style.deleteContent}>
-                            <p>¿Está seguro que desea eliminar esta venta?</p>
-                            <div className={style.deleteButtons}>
-                                <button onClick={toggleShowDeleteModal}>Cancelar</button>
-                                <button onClick={handleDelete} className="delete">Eliminar</button>
-                            </div>
-                        </div>
+            )}
+            <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
+                <div className={style.deleteContent}>
+                    <p>¿Está seguro que desea eliminar esta venta?</p>
+                    <div className={style.deleteButtons}>
+                        <button onClick={toggleShowDeleteModal}>Cancelar</button>
+                        <button onClick={handleDelete} className="delete">Eliminar</button>
                     </div>
                 </div>
-            )}
-
+            </div>
         </div>
         
     );

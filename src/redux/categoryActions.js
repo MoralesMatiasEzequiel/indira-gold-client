@@ -50,6 +50,6 @@ export const postCategory = (categoryData) => {
 
 export const deleteCategoryById = (categoryId) => {
     return async (dispatch) =>{
-        const { data } = await axios.delete(`/category/${categoryId}`);
+        const { data } = await axios.put(`/category/deactive/${categoryId}`);
     };
 };
