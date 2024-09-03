@@ -1,6 +1,6 @@
 import axios from "axios";
 import { saveToIndexedDB, saveProductsToIndexedDB, saveAllProductsToIndexedDB, getFromIndexedDB, getAllProductsFromIndexedDB, getProductsFromIndexedDB } from '../services/indexedDB.js';
-import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getProductsByNameReducer, getSoldProductsReducer, getTopFiveProductsReducer } from "./productSlice.js";
+import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getProductsByNameReducer, getSoldProductsReducer, getSoldProductsLocalReducer, getTopFiveProductsReducer, getTopFiveProductsLocalReducer } from "./productSlice.js";
 
 // export const getProducts = () => {
 //     return async (dispatch) => {
@@ -115,10 +115,22 @@ export const getSoldProducts = () => {
     };
 };
 
+export const getSoldProductsLocal = () => {
+    return async (dispatch) => {
+        dispatch(getSoldProductsLocalReducer());
+    };
+};
+
 export const getTopFiveProducts = () => {
     return async (dispatch) => {
         const { data } = await axios.get("/products/rating");
         dispatch(getTopFiveProductsReducer(data));
+    };
+};
+
+export const getTopFiveProductsLocal = () => {
+    return async (dispatch) => {
+        dispatch(getTopFiveProductsLocalReducer());
     };
 };
 

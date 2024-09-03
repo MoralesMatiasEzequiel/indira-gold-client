@@ -40,12 +40,18 @@ export const productSlice = createSlice({
         getSoldProductsReducer: (state, action) => {
             state.soldProducts = action.payload;
         },
+        getSoldProductsLocalReducer: (state, action) => {
+            state.soldProducts = state.soldProducts;
+        },
         getTopFiveProductsReducer: (state, action) => {
             state.topFiveProducts = action.payload;
+        },
+        getTopFiveProductsLocalReducer: (state, action) => {
+            state.topFiveProducts = state.topFiveProducts;
         },
     }
 });
 
-export const { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getProductsByNameReducer, getSoldProductsReducer, getTopFiveProductsReducer } = productSlice.actions;
+export const { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getProductsByNameReducer, getSoldProductsReducer, getSoldProductsLocalReducer, getTopFiveProductsReducer, getTopFiveProductsLocalReducer } = productSlice.actions;
 
 export default productSlice.reducer;

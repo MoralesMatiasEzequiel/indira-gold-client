@@ -5,16 +5,9 @@ import DailyMetric from './DailyMetric/DailyMetric.jsx';
 import WeeklyMetric from './WeeklyMetric/WeeklyMetric.jsx';
 import MonthMetric from './MonthlyMetric/MonthlyMetric.jsx';
 import AnnualMetric from './AnnualMetric/AnnualMetric.jsx';
-import { getSalesBalance } from '../../../../redux/saleActions.js';
 
 
 const Metrics = () => {
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(getSalesBalance());
-    }, [dispatch]);
 
     return(
         <div className="component">
