@@ -1,7 +1,8 @@
 import axios from "axios";
 import { toast } from 'react-toastify';
-import { saveToIndexedDB, saveSalesToIndexedDB, getFromIndexedDB, getSalesFromIndexedDB, getFromIndexedDBById, savePendingRequest, saveSaleByIdToIndexedDB, getSaleByIdFromIndexedDB, processPendingRequests, getPendingRequestsCount } from '../services/indexedDB.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, postSaleReducer, deleteSaleReducer } from "./saleSlice.js";
+import { saveToIndexedDB, saveSalesToIndexedDB, getFromIndexedDB, getSalesFromIndexedDB, getFromIndexedDBById, savePendingRequest, saveSaleByIdToIndexedDB, getSaleByIdFromIndexedDB, processPendingRequests } from '../services/indexedDB.js';
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesLocalLocalReducer, getSalesBalanceReducer, getSalesBalanceLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer } from "./saleSlice.js";
+
 
 // const executeRequest = async (method, url, data = {}, headers = {}) => {
 //     if (navigator.onLine) {
@@ -71,13 +72,13 @@ export const getSaleByIdLocal = (saleId) => {
     return async (dispatch) => {
         dispatch(getSaleByIdReducer(saleId));
     }
-}
+};
 
 export const clearSaleDetail = () => {
     return async (dispatch) => {
         dispatch(clearSaleDetailReducer());
     }
-}
+};
 
 export const getSalesOnline = () => {
     return async (dispatch) => {
@@ -93,10 +94,28 @@ export const getSalesLocal = () => {
     };
 };
 
+export const getSalesOnlineLocal = () => {
+    return async (dispatch) => {
+        dispatch(getSalesOnlineLocalReducer());
+    };
+};
+
+export const getSalesLocalLocal = () => {
+    return async (dispatch) => {
+        dispatch(getSalesLocalLocalReducer());
+    };
+};
+
 export const getSalesBalance = () => {
     return async (dispatch) => {
         const { data } = await axios.get("/sale/balance");
         dispatch(getSalesBalanceReducer(data));
+    };
+};
+
+export const getSalesBalanceLocal = () => {
+    return async (dispatch) => {
+        dispatch(getSalesBalanceLocalReducer());
     };
 };
 
@@ -143,21 +162,18 @@ export const getSalesByOrderNumber = (orderNumber) => {
     return async (dispatch) => {
         dispatch(getSalesByOrderNumberReducer(orderNumber));
     }
-}
+};
 
 export const getSalesByClient = (client) => {
     return async (dispatch) => {
         dispatch(getSalesByClientReducer(client));
     }
-}
+};
 
 export const postSale = (saleData) => {
-    return async (dispatch) => {
+    return async () => {
         try {
-            
             const response = await axios.post('/sale', saleData, { timeout: 1000 });
-            dispatch(postSaleReducer(saleData));
-            console.log(response);
             return response;
         } catch (error) {
             console.error('Error en la solicitud de venta:', error);
@@ -174,7 +190,6 @@ export const postSale = (saleData) => {
                 const saved = await savePendingRequest(pendingRequest);
                 if (saved) {
                     console.log('Solicitud guardada como pendiente.');
-                    dispatch(postSaleReducer(saleData));
                 }
             } catch (saveError) {
                 console.error('Error guardando solicitud como pendiente:', saveError);
@@ -208,7 +223,7 @@ export const putSale = (saleData) => {
             }
         }
     }
-}
+};
 
 export const deleteSale = (saleId) => {
     return async (dispatch) => {
@@ -232,11 +247,11 @@ export const deleteSale = (saleId) => {
                 }
             } catch (saveError) {
                 console.error('Error guardando solicitud como pendiente:', saveError);
-            }
+            };
 
             // Actualizar el estado local
             dispatch(deleteSaleReducer(saleId));
             return Promise.reject(error);
-        }
-    }
+        };
+    };
 };
