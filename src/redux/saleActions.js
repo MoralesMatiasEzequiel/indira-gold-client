@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { saveToIndexedDB, saveSalesToIndexedDB, getFromIndexedDB, getSalesFromIndexedDB, getFromIndexedDBById, savePendingRequest, saveSaleByIdToIndexedDB, getSaleByIdFromIndexedDB, processPendingRequests, getPendingRequestsCount } from '../services/indexedDB.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, postSaleReducer, deleteSaleReducer } from "./saleSlice.js";
 
 // const executeRequest = async (method, url, data = {}, headers = {}) => {
 //     if (navigator.onLine) {
@@ -152,9 +152,12 @@ export const getSalesByClient = (client) => {
 }
 
 export const postSale = (saleData) => {
-    return async () => {
+    return async (dispatch) => {
         try {
+            
             const response = await axios.post('/sale', saleData, { timeout: 1000 });
+            dispatch(postSaleReducer(saleData));
+            console.log(response);
             return response;
         } catch (error) {
             console.error('Error en la solicitud de venta:', error);
@@ -171,6 +174,7 @@ export const postSale = (saleData) => {
                 const saved = await savePendingRequest(pendingRequest);
                 if (saved) {
                     console.log('Solicitud guardada como pendiente.');
+                    dispatch(postSaleReducer(saleData));
                 }
             } catch (saveError) {
                 console.error('Error guardando solicitud como pendiente:', saveError);

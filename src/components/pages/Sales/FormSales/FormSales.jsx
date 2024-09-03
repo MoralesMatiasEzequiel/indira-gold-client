@@ -345,11 +345,9 @@ const FormSales = () => {
                     sizeId: product.sizeId
                 }))
             };
-            console.log(clientData);
             dispatch(putAddProducts(clientData));
         }
-
-        // console.log(saleData);
+        
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
             dispatch(getSales());

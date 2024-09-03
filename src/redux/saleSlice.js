@@ -51,6 +51,9 @@ export const saleSlice = createSlice({
         getSalesBalanceReducer: (state, action) => {
             state.salesBalance = action.payload;
         },
+        postSaleReducer: (state, action) => {
+            
+        },
         deleteSaleReducer: (state, action) => {
             const saleIdToDelete = action.payload;
             state.sales = state.sales.filter(sale => sale._id !== saleIdToDelete);
@@ -59,6 +62,6 @@ export const saleSlice = createSlice({
     }
 });
 
-export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer } = saleSlice.actions;
+export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, postSaleReducer, deleteSaleReducer } = saleSlice.actions;
 
 export default saleSlice.reducer;
