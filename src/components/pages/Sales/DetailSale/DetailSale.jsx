@@ -109,7 +109,7 @@ const DetailSale = () => {
         // Variables para el ancho del papel de ticket (58 mm) y la altura mínima
         const pageWidth = 58;
         const minPageHeight = 100; // Altura mínima en mm (ajústala según sea necesario)
-        const lineHeight = 5; // Altura de cada línea de texto en mm
+        const lineHeight = 6; // Altura de cada línea de texto en mm
         const maxLineWidth = pageWidth - 8; // Deja un margen de 4 mm en cada lado
     
         // Crear el PDF inicialmente sin la altura dinámica
@@ -128,7 +128,7 @@ const DetailSale = () => {
         // Función para calcular la altura del contenido
         const calculateContentHeight = () => {
             let totalHeight = 20; // Margen superior inicial
-            totalHeight += 10; // Título
+            totalHeight += 60; // Título
     
             // Información general de la venta
             totalHeight += calculateLines(`N° de orden: ${saleDetail.orderNumber || 'N/A'}`) * lineHeight;
@@ -137,7 +137,7 @@ const DetailSale = () => {
             totalHeight += calculateLines(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`) * lineHeight;
             totalHeight += calculateLines(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`) * lineHeight;
             totalHeight += calculateLines(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`) * lineHeight;
-            totalHeight += 5; // Espacio adicional entre secciones
+            totalHeight += 6; // Espacio adicional entre secciones
     
             // Calcular espacio para los productos de la venta
             if (purchasedProducts?.length) {
@@ -159,12 +159,28 @@ const DetailSale = () => {
         doc.setPage(1); // Asegura que estamos trabajando en la primera página
         doc.internal.pageSize.setHeight(pageHeight); // Ajusta la altura del documento
     
+        const charSpace = 0.5; // Ajusta el espaciado entre caracteres en mm
+        doc.setCharSpace(charSpace);
+
+        let yPos = 20;
+
+        // Definir el texto y su alineación
+        const text = 'INDIRA GOLD';
+        const x = (doc.internal.pageSize.getWidth() / 2) - 3; // Posición X centrada
+        const textWidth = doc.getTextWidth(text);
+
+        // Agregar el texto al PDF, centrado horizontalmente
+        doc.text(text, x - (textWidth / 2), yPos);
+
+        doc.setCharSpace(0);
+
+        yPos = 40;
         // Añade título
-        doc.setFontSize(18);
-        doc.text('Ticket de cambio', 4, 10);
+        doc.setFontSize(16);
+        doc.text('Ticket de cambio', 4, yPos);
     
         // Información general de la venta
-        let yPos = 20;
+        yPos = 50;
         doc.setFontSize(12);
     
         // Función para ajustar texto al ancho del ticket y añadirlo al documento
@@ -183,17 +199,19 @@ const DetailSale = () => {
         yPos = addWrappedText(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`, 4, yPos);
         yPos = addWrappedText(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`, 4, yPos);
         yPos = addWrappedText(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`, 4, yPos);
-        yPos += 5;
+        yPos += 6;
     
         // Productos de la venta
         if (purchasedProducts?.length) {
             yPos = addWrappedText('Productos:', 4, yPos);
-    
+            yPos += 6;
+
             purchasedProducts.forEach(product => {
                 yPos = addWrappedText(`${product.name || 'Producto desconocido'}`, 4, yPos);
                 yPos = addWrappedText(`Color: ${product.selectedColor?.colorName || 'N/A'}`, 4, yPos);
                 yPos = addWrappedText(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`, 4, yPos);
                 yPos = addWrappedText(`Precio: $${formatNumber(product.price) || '0.00'}`, 4, yPos);
+                yPos += 6;
             });
         }
     
