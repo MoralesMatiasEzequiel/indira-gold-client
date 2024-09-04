@@ -8,6 +8,7 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 780,
+    //icon: path.join(__dirname, 'assets', 'img', 'windowsIcon.ico'),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
@@ -19,8 +20,11 @@ const createWindow = () => {
   // Carga el index.html de la aplicación
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
+  // Oculta la barra de menú
+  mainWindow.setMenuBarVisibility(false);
+
   // Abre las herramientas de desarrollo
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 };
 
 // Este método se llamará cuando Electron haya terminado
