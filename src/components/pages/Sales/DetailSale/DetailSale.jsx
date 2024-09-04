@@ -106,46 +106,111 @@ const DetailSale = () => {
     }
 
     const generatePDF = () => {
-        const doc = new jsPDF();
-
+        // Variables para el ancho del papel de ticket (58 mm) y la altura mínima
+        const pageWidth = 58;
+        const minPageHeight = 100; // Altura mínima en mm (ajústala según sea necesario)
+        const lineHeight = 5; // Altura de cada línea de texto en mm
+        const maxLineWidth = pageWidth - 8; // Deja un margen de 4 mm en cada lado
+    
+        // Crear el PDF inicialmente sin la altura dinámica
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [pageWidth, minPageHeight] // Se ajustará más adelante
+        });
+    
+        // Función para ajustar texto al ancho del ticket
+        const calculateLines = (text) => {
+            const lines = doc.splitTextToSize(text, maxLineWidth);
+            return lines.length;
+        };
+    
+        // Función para calcular la altura del contenido
+        const calculateContentHeight = () => {
+            let totalHeight = 20; // Margen superior inicial
+            totalHeight += 10; // Título
+    
+            // Información general de la venta
+            totalHeight += calculateLines(`N° de orden: ${saleDetail.orderNumber || 'N/A'}`) * lineHeight;
+            totalHeight += calculateLines(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`) * lineHeight;
+            totalHeight += calculateLines(`Modo de pago: ${saleDetail.paymentMethod || 'N/A'}`) * lineHeight;
+            totalHeight += calculateLines(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`) * lineHeight;
+            totalHeight += calculateLines(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`) * lineHeight;
+            totalHeight += calculateLines(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`) * lineHeight;
+            totalHeight += 5; // Espacio adicional entre secciones
+    
+            // Calcular espacio para los productos de la venta
+            if (purchasedProducts?.length) {
+                totalHeight += lineHeight; // Título de productos
+                purchasedProducts.forEach(product => {
+                    totalHeight += calculateLines(`${product.name || 'Producto desconocido'}`) * lineHeight;
+                    totalHeight += calculateLines(`Color: ${product.selectedColor?.colorName || 'N/A'}`) * lineHeight;
+                    totalHeight += calculateLines(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`) * lineHeight;
+                    totalHeight += calculateLines(`Precio: $${formatNumber(product.price) || '0.00'}`) * lineHeight;
+                });
+            }
+    
+            // Ajusta la altura de la página al contenido o un mínimo
+            return Math.max(totalHeight, minPageHeight);
+        };
+    
+        // Recalcular la altura de la página en función del contenido
+        const pageHeight = calculateContentHeight();
+        doc.setPage(1); // Asegura que estamos trabajando en la primera página
+        doc.internal.pageSize.setHeight(pageHeight); // Ajusta la altura del documento
+    
         // Añade título
-        doc.setFontSize(48);
-        doc.text('Ticket de cambio', 14, 22);
-
+        doc.setFontSize(18);
+        doc.text('Ticket de cambio', 4, 10);
+    
         // Información general de la venta
-        doc.setFontSize(36);
-        doc.text(`N° de orden: ${saleDetail.orderNumber || 'N/A'}`, 14, 35);
-        doc.text(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`, 14, 45);
-        doc.text(`Modo de pago: ${saleDetail.paymentMethod || 'N/A'}`, 14, 55);
-        doc.text(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`, 14, 75);
-        doc.text(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`, 14, 85);
-        doc.text(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`, 14, 95);
-
+        let yPos = 20;
+        doc.setFontSize(12);
+    
+        // Función para ajustar texto al ancho del ticket y añadirlo al documento
+        const addWrappedText = (text, x, y) => {
+            const lines = doc.splitTextToSize(text, maxLineWidth);
+            lines.forEach(line => {
+                doc.text(line, x, y);
+                y += lineHeight;
+            });
+            return y;
+        };
+    
+        yPos = addWrappedText(`N° de orden: ${saleDetail.orderNumber || 'N/A'}`, 4, yPos);
+        yPos = addWrappedText(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`, 4, yPos);
+        yPos = addWrappedText(`Modo de pago: ${saleDetail.paymentMethod || 'N/A'}`, 4, yPos);
+        yPos = addWrappedText(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`, 4, yPos);
+        yPos = addWrappedText(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`, 4, yPos);
+        yPos = addWrappedText(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`, 4, yPos);
+        yPos += 5;
+    
         // Productos de la venta
-        let yPos = 105;
         if (purchasedProducts?.length) {
-            doc.setFontSize(36);
-            doc.text('Productos:', 14, yPos);
-            yPos += 10;
-
+            yPos = addWrappedText('Productos:', 4, yPos);
+    
             purchasedProducts.forEach(product => {
-                doc.setFontSize(36);
-                doc.text(`${product.name}`, 14, yPos);
-                doc.text(`Color: ${product.selectedColor?.colorName}`, 14, yPos);
-                doc.text(`Talle: ${product.selectedSize?.sizeName}`, 14, yPos);
-                doc.text(`Precio: $${formatNumber(product.price)}`), 14, yPos;
-                yPos += 10;
+                yPos = addWrappedText(`${product.name || 'Producto desconocido'}`, 4, yPos);
+                yPos = addWrappedText(`Color: ${product.selectedColor?.colorName || 'N/A'}`, 4, yPos);
+                yPos = addWrappedText(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`, 4, yPos);
+                yPos = addWrappedText(`Precio: $${formatNumber(product.price) || '0.00'}`, 4, yPos);
             });
         }
-
+    
         // Abre el PDF en una nueva pestaña/ventana y activa el diálogo de impresión
         const pdfBlob = doc.output('blob'); // Crea un Blob del PDF
         const pdfUrl = URL.createObjectURL(pdfBlob); // Crea una URL del Blob
         const printWindow = window.open(pdfUrl); // Abre una nueva ventana con el PDF
-        printWindow.onload = function () {
-            printWindow.print(); // Llama a la función de impresión de la nueva ventana
-        };
+    
+        if (printWindow) {
+            printWindow.onload = function () {
+                printWindow.print(); // Llama a la función de impresión de la nueva ventana
+            };
+        } else {
+            alert("Por favor, permite las ventanas emergentes para imprimir el ticket.");
+        }
     };
+    
     
     const handleDelete = () => {
 
