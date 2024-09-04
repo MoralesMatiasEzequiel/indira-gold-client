@@ -5,7 +5,7 @@ import { getClientsReducer, getClientByIdReducer, clearClientDetailReducer, getC
 export const getClients = () => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get("/clients", { timeout: 3000 });
+            const { data } = await axios.get("/clients");
             
             if (data) {
                 dispatch(getClientsReducer(data));
@@ -42,7 +42,7 @@ export const getClients = () => {
 export const getClientById = (clientId) => {
     return async (dispatch) =>{
         try {
-            const { data } = await axios.get(`/clients/${clientId}`, { timeout: 1000 });
+            const { data } = await axios.get(`/clients/${clientId}`);
             if (data) {
                 console.log("hay data");
                 dispatch(getClientByIdReducer(data));
@@ -74,7 +74,7 @@ export const clearClientDetail = () => {
 export const getClientByDni = (dni) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get(`/clients?dni=${dni}&`, { timeout: 1000 });
+            const { data } = await axios.get(`/clients?dni=${dni}&`);
             dispatch(getClientsReducer(data));
         } catch (error) {
             dispatch(getClientsByDniReducer(dni));
@@ -86,7 +86,7 @@ export const getClientByDni = (dni) => {
 export const getClientByName = (name) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get(`/clients?name=${name}&`, { timeout: 1000 });
+            const { data } = await axios.get(`/clients?name=${name}&`);
             dispatch(getClientsReducer(data));
         } catch (error) {
             dispatch(getClientsByNameReducer(name));
@@ -98,7 +98,7 @@ export const getClientByName = (name) => {
 export const getClientByLastname = (lastname) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get(`/clients?lastname=${lastname}&`, { timeout: 1000 });
+            const { data } = await axios.get(`/clients?lastname=${lastname}&`);
             dispatch(getClientsReducer(data));
         } catch (error) {
             dispatch(getClientsByLastnameReducer(lastname));

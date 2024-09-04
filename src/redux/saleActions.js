@@ -22,7 +22,7 @@ import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOn
 export const getSales = () => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get("/sale/active", { timeout: 3000 });
+            const { data } = await axios.get("/sale/active");
             
             if (data) {
                 dispatch(getSalesReducer(data));
@@ -52,7 +52,7 @@ export const getSales = () => {
 export const getSaleById = (saleId) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get(`/sale/${saleId}`, { timeout: 3000 });
+            const { data } = await axios.get(`/sale/${saleId}`);
             if (data) {
                 console.log("hay data");
                 dispatch(getSaleByIdReducer(data));
@@ -122,7 +122,7 @@ export const getSalesBalanceLocal = () => {
 export const getMonthlySalesByClient = (id) => {
     return async () => {
         try {
-            const { data } = await axios.get(`/sale/monthlyByClient/${id}`, {timeout: 1000});
+            const { data } = await axios.get(`/sale/monthlyByClient/${id}`);
             return data;
         } catch (error) {
             return error.message;
@@ -140,7 +140,7 @@ export const searchSales = (orderNumber, client) => {
             if (client) {
                 query += `clientName=${client}&`;
             }
-            const { data } = await axios.get(query, { timeout: 1000 });
+            const { data } = await axios.get(query);
 
             if (data) {
                 console.log("hay data");
@@ -173,7 +173,7 @@ export const getSalesByClient = (client) => {
 export const postSale = (saleData) => {
     return async () => {
         try {
-            const response = await axios.post('/sale', saleData, { timeout: 1000 });
+            const response = await axios.post('/sale', saleData);
             return response;
         } catch (error) {
             console.error('Error en la solicitud de venta:', error);
@@ -201,7 +201,7 @@ export const postSale = (saleData) => {
 export const putSale = (saleData) => {
     return async () => {
         try {
-            const response = await axios.put('/sale', saleData, { timeout: 1000 });
+            const response = await axios.put('/sale', saleData);
             return response;            
         } catch (error) {
             console.error('Error en la solicitud de venta:', error);
@@ -228,7 +228,7 @@ export const putSale = (saleData) => {
 export const deleteSale = (saleId) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.put(`/sale/deactive/${saleId}`, { timeout: 1000 });
+            const { data } = await axios.put(`/sale/deactive/${saleId}`);
             dispatch(deleteSaleReducer(saleId));
         } catch (error) {
             console.error('Error en la solicitud de venta:', error);

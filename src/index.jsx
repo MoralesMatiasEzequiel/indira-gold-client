@@ -8,7 +8,7 @@ import store from './redux/store.js';
 import './index.css';
 
 
-axios.defaults.baseURL = "http://localhost:3001/";
+axios.defaults.baseURL = "https://indira-gold-project.onrender.com/";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -12,7 +12,7 @@ import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getPr
 export const getProducts = () => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get("/products", { timeout: 3000 });
+            const { data } = await axios.get("/products");
             
             if (data) {
                 dispatch(getProductsReducer(data));
@@ -42,7 +42,7 @@ export const getProducts = () => {
 export const getAllProducts = () => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get("/products/all", { timeout: 1000 });
+            const { data } = await axios.get("/products/all");
             
             if (data) {
                 dispatch(getAllProductsReducer(data));
@@ -79,7 +79,7 @@ export const getAllProducts = () => {
 export const getProductById = (productId) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get(`/products/${productId}`, { timeout: 3000 });
+            const { data } = await axios.get(`/products/${productId}`);
             if(data){
                 console.log("hay data");
                 dispatch(getProductByIdReducer(data));
@@ -99,7 +99,7 @@ export const getProductById = (productId) => {
 export const getProductByName = (productName) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get(`/products/all?name=${productName}&`, { timeout: 1000 });
+            const { data } = await axios.get(`/products/all?name=${productName}&`);
             dispatch(getAllProductsReducer(data));
         } catch (error) {
             dispatch(getProductsByNameReducer(productName));
