@@ -3,7 +3,7 @@ import { postClient, getClients } from '../../../../redux/clientActions';
 import { useDispatch } from 'react-redux';
 import style from './FormClient.module.css';
 
-const FormClient = ({ onClientAdded = () => {}, onClose }) => {
+const FormClient = ({ onClientAdded = () => {}}) => {
 
     const dispatch = useDispatch();
 
@@ -43,7 +43,6 @@ const FormClient = ({ onClientAdded = () => {}, onClose }) => {
         <div className="component">
             <div className={style.titleForm}>
                 <h2>NUEVO CLIENTE</h2>
-                <button className={style.buttonOnClose} type='button' onClick={onClose}>X</button>
             </div>
             <div className="container">
                 <form onSubmit={handleSubmit} className={style.clientForm}>
