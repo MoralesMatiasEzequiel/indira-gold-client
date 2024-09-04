@@ -6,7 +6,7 @@ import { getCategoriesReducer, postCategoryReducer } from "./categorySlice";
 export const getCategories = () => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get("/category", { timeout: 3000 });
+            const { data } = await axios.get("/category");
             
             if (data) {
                 dispatch(getCategoriesReducer(data));
