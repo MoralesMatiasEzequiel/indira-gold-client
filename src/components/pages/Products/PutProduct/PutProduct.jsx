@@ -2,7 +2,7 @@ import style from './PutProduct.module.css';
 import x from '../../Sales/FormSales/img/x.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
@@ -12,6 +12,8 @@ const PutProduct = () => {
 
     const { id } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const productDetail = useSelector(state => state.products.productDetail);    
     const categories = useSelector(state => state.categories.categories);
     
@@ -63,7 +65,7 @@ const PutProduct = () => {
     }, [dispatch, id, productDetail]);
 
     const [editProduct, setEditProduct] = useState({});  
-    // console.log(editProduct);
+    console.log(editProduct);
 
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
@@ -76,6 +78,8 @@ const PutProduct = () => {
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
     const [actionType, setActionType] = useState(null);
     // const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    // console.log('Colors ' + colors);
+    // console.log('Sizes ' + sizes);    
     
 
     // const validateForm = () => {
@@ -115,6 +119,7 @@ const PutProduct = () => {
                 ...editProduct,
                 price: priceNumber
             });
+
             // validateForm();
         };
         if (name === 'category') {
@@ -141,45 +146,112 @@ const PutProduct = () => {
         setNewColor(event.target.value);
     };
 
+    // const addColor = () => {
+    //     if (newColor !== '') {
+    //         setColors([...colors, newColor]);
+    //         setNewColor('');
+    //     };
+    //     // validateForm();
+    // };
+
     const addColor = () => {
         if (newColor !== '') {
             setColors([...colors, newColor]);
+    
+            // Combina el nuevo color con los tamaños existentes
+            const updatedEditProduct = {
+                ...editProduct,
+                color: [
+                    ...editProduct.color,
+                    {
+                        colorName: newColor,
+                        size: sizes.map(size => ({
+                            sizeName: size,
+                            measurements: { width: '', long: '', rise: '' },
+                            stock: 0
+                        }))
+                    }
+                ]
+            };
+            setEditProduct(updatedEditProduct);
+    
             setNewColor('');
-        };
+        }
         // validateForm();
     };
     
+    // const deleteColor = (index) => {
+    //     const updatedColors = [...colors];
+    //     updatedColors.splice(index, 1);
+    //     setColors(updatedColors);
+    
+    //     const updatedProductsColor = [...editProduct.color];
+    
+    //     // Se busca el color a eliminar basado en el índice de colors
+    //     const colorToDelete = colors[index]; 
+    //     // Y aca filtramos el array color de newProduct para eliminar el objeto correspondiente
+    //     const filteredProductsColor = updatedProductsColor.filter(item => item.colorName !== colorToDelete);
+
+    //     setEditProduct({
+    //         ...editProduct,
+    //         color: filteredProductsColor
+    //     });
+    //     // validateForm();
+    // };
+
     const deleteColor = (index) => {
         const updatedColors = [...colors];
-        updatedColors.splice(index, 1);
+        const colorToDelete = updatedColors.splice(index, 1)[0];
+        
         setColors(updatedColors);
-    
-        const updatedProductsColor = [...editProduct.color];
-    
-        // Se busca el color a eliminar basado en el índice de colors
-        const colorToDelete = colors[index]; 
-        // Y aca filtramos el array color de newProduct para eliminar el objeto correspondiente
-        const filteredProductsColor = updatedProductsColor.filter(item => item.colorName !== colorToDelete);
-
-        setEditProduct({
-            ...editProduct,
-            color: filteredProductsColor
-        });
-        // validateForm();
+        
+        // Filtra los colores en el estado editProduct para eliminar el color correspondiente
+        const filteredProductColors = editProduct.color.filter(color => color.colorName !== colorToDelete);
+        
+        setEditProduct(prevState => ({
+            ...prevState,
+            color: filteredProductColors
+        }));
     };
-
     //-----------SIZE-----------//
     const handleInputSizeChange = (event) => {
         setNewSize(event.target.value);
     };
 
+    // const addSize = () => {
+    //     if (newSize !== '') {
+    //         setSizes([...sizes, newSize]);
+    //         setNewSize('');
+    //     };
+    //     // validateForm();
+    // };
+
     const addSize = () => {
         if (newSize !== '') {
             setSizes([...sizes, newSize]);
+    
+            // Combina el nuevo tamaño con los colores existentes
+            const updatedEditProduct = {
+                ...editProduct,
+                color: editProduct.color.map(color => ({
+                    ...color,
+                    size: [
+                        ...color.size,
+                        {
+                            sizeName: newSize,
+                            measurements: { width: '', long: '', rise: '' },
+                            stock: 0
+                        }
+                    ]
+                }))
+            };
+            setEditProduct(updatedEditProduct);
+    
             setNewSize('');
-        };
+        }
         // validateForm();
     };
+    
 
     const deleteSize = (index) => {
         const updatedSizes = [...sizes];
@@ -258,27 +330,56 @@ const PutProduct = () => {
     
     //     setEditProduct(updatedProduct);
     //     // validateForm();
-    // };     
+    // };   
+
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
         const updatedEditProduct = { ...editProduct };
     
         const colorIndex = updatedEditProduct.color.findIndex(c => c.colorName === combination.color);
+        if (colorIndex === -1) {
+            console.error(`Color ${combination.color} no encontrado`);
+            return;
+        }
+    
         const sizeIndex = updatedEditProduct.color[colorIndex].size.findIndex(s => s.sizeName === combination.size);
+        if (sizeIndex === -1) {
+            console.error(`Talle ${combination.size} no encontrado para el color ${combination.color}`);
+            return;
+        }
     
-        if (colorIndex >= 0 && sizeIndex >= 0) {
-            updatedEditProduct.color[colorIndex].size[sizeIndex].measurements = {
-                ...updatedEditProduct.color[colorIndex].size[sizeIndex].measurements,
-                [name]: value
-            };
+        updatedEditProduct.color[colorIndex].size[sizeIndex].measurements = {
+            ...updatedEditProduct.color[colorIndex].size[sizeIndex].measurements,
+            [name]: value
+        };
     
-            if (name === 'stock') {
-                updatedEditProduct.color[colorIndex].size[sizeIndex].stock = value;
-            }
+        if (name === 'stock') {
+            updatedEditProduct.color[colorIndex].size[sizeIndex].stock = value;
         }
     
         setEditProduct(updatedEditProduct);
     };
+
+    // const handleStockChange = (combination, event) => {
+    //     const { name, value } = event.target;
+    //     const updatedEditProduct = { ...editProduct };
+    
+    //     const colorIndex = updatedEditProduct.color.findIndex(c => c.colorName === combination.color);
+    //     const sizeIndex = updatedEditProduct.color[colorIndex].size.findIndex(s => s.sizeName === combination.size);
+    
+    //     if (colorIndex >= 0 && sizeIndex >= 0) {
+    //         updatedEditProduct.color[colorIndex].size[sizeIndex].measurements = {
+    //             ...updatedEditProduct.color[colorIndex].size[sizeIndex].measurements,
+    //             [name]: value
+    //         };
+    
+    //         if (name === 'stock') {
+    //             updatedEditProduct.color[colorIndex].size[sizeIndex].stock = value;
+    //         }
+    //     }
+    
+    //     setEditProduct(updatedEditProduct);
+    // };
     
 
     //-----------SUPPLIER-----------//
@@ -393,24 +494,86 @@ const PutProduct = () => {
         };
         dispatch(getCategories());
         // validateForm();
-    };
+    };    
 
     //-----------SUBMIT-----------//
+
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     const formData = new FormData();
+    
+    //     // Verificar y preservar la imagen global si no fue modificada
+    //     if (editProduct.imageGlobal) {
+    //         formData.append('imageGlobal', editProduct.imageGlobal);
+    //     } else if (productDetail.imageGlobal) {
+    //         formData.append('imageGlobal', productDetail.imageGlobal);
+    //     }
+    
+    //     // Verificar y preservar las imágenes de cada color si no fueron modificadas
+    //     editProduct.color.forEach((color) => {
+    //         // Busca el color original en productDetail
+    //         const originalColor = productDetail.color.find(c => c._id === color._id);
+            
+    //         if (color.imageFile) {
+    //             formData.append('images', color.imageFile);
+    //         } else if (originalColor && originalColor.image) {
+    //             formData.append('images', originalColor.image);
+    //         }
+    //     });
+    
+    //     // Agregar los demás campos al formData
+    //     formData.append("_id", editProduct._id);
+    //     formData.append("name", editProduct.name);
+    //     formData.append("color", JSON.stringify(editProduct.color));
+    //     formData.append("supplier", JSON.stringify(editProduct.supplier));
+    //     formData.append("price", editProduct.price);
+    //     formData.append("category", JSON.stringify(editProduct.category));
+    //     formData.append("description", editProduct.description);
+    //     formData.append("active", editProduct.active);
+    
+    //     // Revisión final para asegurarte de que todo esté en el formData
+    //     console.log([...formData.entries()]);
+    
+    //     try {
+    //         const response = await dispatch(putProduct(formData));
+    
+    //         if (response.data) {
+    //             console.log("Successfully edited product");
+    //             dispatch(getProducts());
+    //             // dispatch(getProductById(id));
+    //             dispatch(getCategories());
+    //             navigate('/main_window/products/succes/put');
+    //         };
+    //     } catch (error) {
+    //         console.error("Error editing product:", error);
+    //     };
+    // };
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData();
-    
-        // Agregar la imagen global si existe
+        
+        // Verificar y preservar la imagen global si no fue modificada
         if (editProduct.imageGlobal) {
             formData.append('imageGlobal', editProduct.imageGlobal);
-        };
-        
-        editProduct.color.forEach((color, index) => {
+        } else if (productDetail.imageGlobal) {
+            formData.append('imageGlobal', productDetail.imageGlobal);
+        }
+    
+        // Verificar y preservar las imágenes de cada color si no fueron modificadas
+        editProduct.color.forEach((color) => {
+            // Busca el color original en productDetail
+            const originalColor = productDetail.color.find(c => c._id === color._id);
+    
             if (color.imageFile) {
                 formData.append('images', color.imageFile);
-            };
+            } else if (originalColor && originalColor.image) {
+                // Preservar imagen existente si no se ha modificado
+                formData.append('images', originalColor.image);
+            }
         });
     
+        // Agregar los demás campos al formData
         formData.append("_id", editProduct._id);
         formData.append("name", editProduct.name);
         formData.append("color", JSON.stringify(editProduct.color));
@@ -420,24 +583,70 @@ const PutProduct = () => {
         formData.append("description", editProduct.description);
         formData.append("active", editProduct.active);
     
+        // Revisión final para asegurarte de que todo esté en el formData
+        console.log([...formData.entries()]);
+    
         try {
             const response = await dispatch(putProduct(formData));
     
             if (response.data) {
                 console.log("Successfully edited product");
-                setColors([]);
-                setSizes([]);
-                setImageGlobal(null);
                 dispatch(getProducts());
-                dispatch(getProductById(id));
+                // dispatch(getProductById(id));
                 dispatch(getCategories());
-                // setEditProduct(initialEditProductState); // Reset form
-                setEditProduct({}); 
+                navigate('/main_window/products/succes/put');
             };
         } catch (error) {
             console.error("Error editing product:", error);
         };
     };
+    
+    
+    
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     const formData = new FormData();
+    
+    //     // Agregar la imagen global si existe
+    //     if (editProduct.imageGlobal) {
+    //         formData.append('imageGlobal', editProduct.imageGlobal);
+    //     };
+        
+    //     editProduct.color.forEach((color, index) => {
+    //         if (color.imageFile) {
+    //             formData.append('images', color.imageFile);
+    //         };
+    //     });
+    
+    //     formData.append("_id", editProduct._id);
+    //     formData.append("name", editProduct.name);
+    //     formData.append("color", JSON.stringify(editProduct.color));
+    //     formData.append("supplier", JSON.stringify(editProduct.supplier));
+    //     formData.append("price", editProduct.price);
+    //     formData.append("category", JSON.stringify(editProduct.category));
+    //     formData.append("description", editProduct.description);
+    //     formData.append("active", editProduct.active);
+    // // console.log(formData);
+    
+    //     try {
+    //         const response = await dispatch(putProduct(formData));
+    
+    //         if (response.data) {
+    //             console.log("Successfully edited product");
+    //             // setColors([]);
+    //             // setSizes([]);
+    //             // setImageGlobal(null);
+    //             dispatch(getProducts());
+    //             dispatch(getProductById(id));
+    //             dispatch(getCategories());
+    //             // setEditProduct(initialEditProductState); // Reset form
+    //             // setEditProduct({}); 
+    //             navigate('/main_window/products/succes/put');
+    //         };
+    //     } catch (error) {
+    //         console.error("Error editing product:", error);
+    //     };
+    // };
     
     return (
         <div className="page">
@@ -504,43 +713,49 @@ const PutProduct = () => {
                                                 <span className={style.spanList}>
                                                     Color {combination.color} - Talle {combination.size}
                                                 </span>
-                                                <span className={style.spansinMed} htmlFor="width">Ancho:</span>
-                                                <input 
-                                                    className={style.inputsinMed} 
-                                                    type="number" 
-                                                    name="width" 
-                                                    placeholder='0' 
-                                                    value={sizeState?.measurements.width || ''}
-                                                    onChange={(event) => handleStockChange(combination, event)} 
-                                                />
-                                                <span className={style.spansinMed} htmlFor="long">Largo:</span>
-                                                <input 
-                                                    className={style.inputsinMed} 
-                                                    type="number" 
-                                                    name="long" 
-                                                    placeholder='0' 
-                                                    value={sizeState?.measurements.long || ''}
-                                                    onChange={(event) => handleStockChange(combination, event)} 
-                                                />
-                                                <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
-                                                <input 
-                                                    className={style.inputsinMed} 
-                                                    type="number" 
-                                                    name="rise" 
-                                                    placeholder='0' 
-                                                    value={sizeState?.measurements.rise || ''}
-                                                    onChange={(event) => handleStockChange(combination, event)} 
-                                                />
-                                                <span className={style.spansinMed} htmlFor="stock">Stock:</span>
-                                                <input 
-                                                    className={style.inputsinStock} 
-                                                    type="number" 
-                                                    name="stock" 
-                                                    min='0' 
-                                                    placeholder='0' 
-                                                    value={sizeState?.stock || ''}
-                                                    onChange={(event) => handleStockChange(combination, event)} 
-                                                />
+                                                {sizeState ? (
+                                                    <>
+                                                        <span className={style.spansinMed} htmlFor="width">Ancho:</span>
+                                                        <input 
+                                                            className={style.inputsinMed} 
+                                                            type="number" 
+                                                            name="width" 
+                                                            placeholder='0' 
+                                                            value={sizeState?.measurements.width || ''}
+                                                            onChange={(event) => handleStockChange(combination, event)} 
+                                                        />
+                                                        <span className={style.spansinMed} htmlFor="long">Largo:</span>
+                                                        <input 
+                                                            className={style.inputsinMed} 
+                                                            type="number" 
+                                                            name="long" 
+                                                            placeholder='0' 
+                                                            value={sizeState?.measurements.long || ''}
+                                                            onChange={(event) => handleStockChange(combination, event)} 
+                                                        />
+                                                        <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
+                                                        <input 
+                                                            className={style.inputsinMed} 
+                                                            type="number" 
+                                                            name="rise" 
+                                                            placeholder='0' 
+                                                            value={sizeState?.measurements.rise || ''}
+                                                            onChange={(event) => handleStockChange(combination, event)} 
+                                                        />
+                                                        <span className={style.spansinMed} htmlFor="stock">Stock:</span>
+                                                        <input 
+                                                            className={style.inputsinStock} 
+                                                            type="number" 
+                                                            name="stock" 
+                                                            min='0' 
+                                                            placeholder='0' 
+                                                            value={sizeState?.stock || ''}
+                                                            onChange={(event) => handleStockChange(combination, event)} 
+                                                        />
+                                                    </>
+                                                ) : (
+                                                    <span>Combinación de color y talle no encontrada.</span>
+                                                )}
                                             </li>
                                         );
                                     })}
@@ -645,7 +860,6 @@ const PutProduct = () => {
                             <div>
                                 {/* <button type="submit" disabled={isSubmitDisabled}>Editar</button> */}
                                 <button type="submit">Editar</button>
-                                {/* <button type="submit"><Link to={`/main_window/products/${id}`}>Editar</Link></button> */}
                             </div>
                         </div>
                     </form>

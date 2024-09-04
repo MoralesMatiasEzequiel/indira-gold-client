@@ -15,10 +15,12 @@ const ProductManagement = () => {
 
     const [name, setName] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true); // Indicador de carga
 
     const itemsPerPage = 20;
 
-    const paginatedProducts = allProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    // const paginatedProducts = allProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const paginatedProducts = Array.isArray(allProducts) ? allProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
     const totalPages = Math.ceil(allProducts.length / itemsPerPage);
     // const paginatedProducts = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     // const totalPages = Math.ceil(products.length / itemsPerPage);
@@ -76,11 +78,23 @@ const ProductManagement = () => {
     };
 
     useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                await dispatch(getAllProducts());
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, [dispatch]);
+
+    useEffect(() => {
         // dispatch(getAllProducts());
         if (name) {
             dispatch(getProductByName(name));
         } else {
-            dispatch(getAllProducts());
+            dispatch(getProductByName('')); 
         }
     }, [name, dispatch]);
     
@@ -88,12 +102,6 @@ const ProductManagement = () => {
         dispatch(getAllProducts());
     }, [dispatch]);
     
-    const formatNumber = (number) => {
-        return number.toLocaleString('es-ES', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
-    };
 
     return (
         <div className="page">
@@ -174,7 +182,7 @@ const ProductManagement = () => {
                                                 </td>
                                                 <td className={style.tdInside}>
                                                     <div className={style.containerInfoGral}>
-                                                        <span>{colorIndex === 0 ? `$ ${formatNumber(product.price)}` : ''}</span>
+                                                        <span>{colorIndex === 0 ? `$ ${product.price}` : ''}</span>
                                                     </div>
                                                 </td>
                                                 <td className={style.tdInside}>

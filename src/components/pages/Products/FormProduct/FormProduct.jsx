@@ -3,14 +3,15 @@ import x from '../../Sales/FormSales/img/x.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
 import { postProduct } from '../../../../redux/productActions.js';
-import { detectConnectionType } from '../../../../services/network.js';
 
 const FormProduct = () => {
     
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const initialProductState = {
         name: '',
@@ -30,6 +31,8 @@ const FormProduct = () => {
     }, [dispatch]);
 
     const categories = useSelector(state => state.categories.categories);
+    // console.log('CATTTT = ' + categories);
+    
     const [newProduct, setNewProduct] = useState(initialProductState);
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
@@ -366,6 +369,7 @@ const FormProduct = () => {
                 setSizes([]);
                 setImageGlobal(null);
                 setNewProduct(initialProductState); // Reset form
+                navigate('/main_window/products/succes/post');
             }
         } catch (error) {
             console.error("Error saving product:", error);
@@ -508,9 +512,13 @@ const FormProduct = () => {
                                     <label htmlFor="category" className={style.nameTitle}>*Categoría</label>
                                     <select name="category" className={style.selectCategory} value={newProduct.category} onChange={handleInputChange}>
                                         <option value="" disabled>Seleccionar</option>
-                                        {categories.map((category) => (
-                                            <option key={category._id} value={category._id}>{category.name}</option>
-                                        ))}
+                                        {categories && categories.length > 0 ? (
+                                            categories.map((category) => (
+                                                <option key={category._id} value={category._id}>{category.name}</option>
+                                            ))
+                                        ) : (
+                                            <option value="" disabled>No hay categorías disponibles</option>
+                                        )}
                                     </select>
                                     <div className={style.containerAddCategory}>
                                         <button className={style.buttonAddCategory} type='button' onClick={() => handleShowCategoryForm('create')}>+</button>
@@ -527,7 +535,7 @@ const FormProduct = () => {
                                 </div> 
                             </div>
                             <div>
-                                <button type="submit" disabled={isSubmitDisabled}>Agregar</button>
+                                <button type="submit" disabled={isSubmitDisabled}>Agregar</button>                    
                             </div>
                         </div>
                     </form>
