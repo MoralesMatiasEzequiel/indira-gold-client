@@ -155,3 +155,18 @@
     font-size: 0.5rem;
     background-color: var(--red);
 }
+
+.buttonOnClose{
+    background: none;
+    border: none;
+    padding: 5px;
+    color: var(--red);
+    font-size: large;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.buttonOnClose:hover{
+    background: none;
+}

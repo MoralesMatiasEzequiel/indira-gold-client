@@ -564,7 +564,8 @@ const FormSales = () => {
                     </div> 
                 </form>
                 <div className={`${style.addClientComponent} ${showClientForm ? style.addClientComponentBorder : ''}`}>
-                    {showClientForm && <FormClient onClientAdded={handleClientAdded} onClose={handleCloseClientForm}/>}
+                    <button className={style.buttonOnClose} type='button' onClick={handleCloseClientForm}>X</button>
+                    {showClientForm && <FormClient onClientAdded={handleClientAdded}/>}
                 </div>
             </div>
             
