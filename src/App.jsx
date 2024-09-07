@@ -1,7 +1,7 @@
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import React, { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, NavLink } from 'react-router-dom';
 import SideBar from "./components/common/SideBar.jsx"; 
 import Stats from "./components/pages/Stats/Stats.jsx";
 import Sales from "./components/pages/Sales/Sales.jsx";
@@ -61,7 +61,7 @@ const App = () => {
       <div className="content">
         <Routes>
           <Route path='/main_window/stats' element={<Stats />}/>
-          <Route path='/main_window/' element={<Sales />}/>
+          <Route path='/' element={<Sales />}/>
           <Route path='/main_window/sales/:id' element={<DetailSale />}/>
           <Route path='/main_window/sales/edit/:id' element={<PutSale/>}/>
           <Route path='/main_window/products' element={<Products />}/>

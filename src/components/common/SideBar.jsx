@@ -27,7 +27,7 @@ const SideBar = () => {
                 <h1><img src={logo} alt="Indira Gold"/></h1>
                 <div className={style.nav}>
                     <ul>                                
-                        <NavLink className={`${style.NavLink} ${location.pathname === '/main_window' ? style.selected : ''}`} to="/main_window" onClick={() => handleClick('sales')}>
+                        <NavLink className={`${style.NavLink} ${location.pathname === '/' ? style.selected : ''}`} to="/" onClick={() => handleClick('sales')}>
                             <li>
                                 <div className={style.icon}></div>
                                 <div className={style.text}>
