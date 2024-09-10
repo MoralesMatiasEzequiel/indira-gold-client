@@ -52,7 +52,7 @@ const DetailProduct = () => {
                     <div className={!productDetail.active ? style.columnInactive : style.column}>
                         <div className={style.containerImgProduct}>
                             {productDetail.imageGlobal 
-                            ? <img className={style.imgProduct} src={getImageUrl(productDetail.imageGlobal)} alt="Product Image"/> 
+                            ? <img className={style.imgProduct} src={getImageUrl(productDetail.imageGlobal) || imgProduct} alt="Product Image"/> 
                             : productDetail.color?.map(color => (
                                 color.image 
                                 ? (<img key={color.image} className={style.imgProduct} src={getImageUrl(color.image)} alt="Product Image" />) 

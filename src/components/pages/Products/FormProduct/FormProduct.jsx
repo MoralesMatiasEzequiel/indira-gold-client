@@ -31,7 +31,6 @@ const FormProduct = () => {
     }, [dispatch]);
 
     const categories = useSelector(state => state.categories.categories);
-    // console.log('CATTTT = ' + categories);
     
     const [newProduct, setNewProduct] = useState(initialProductState);
     const [colors, setColors] = useState([]);
@@ -323,22 +322,6 @@ const FormProduct = () => {
     };
 
     //-----------SUBMIT-----------//
-    // const validateForm = () => {
-    // const isProductNameValid = newProduct.name.trim() !== '';
-    // const isColorValid = colors.length > 0;
-    // const isSizeValid = sizes.length > 0;
-    // const isCategoryValid = newProduct.category.length > 0;
-    // const isPriceValid = newProduct.price > 0;
-
-    // // Validar que todas las combinaciones de color y talla tengan stock mayor a 0
-    // const areAllStocksValid = combinations.every(combination => {
-    //     const color = newProduct.color.find(c => c.colorName === combination.color);
-    //     const size = color ? color.size.find(s => s.sizeName === combination.size) : null;
-    //     return size ? size.stock > 0 : false;
-    // });
-
-    //     setIsSubmitDisabled(!(isProductNameValid && isColorValid && isSizeValid && isCategoryValid && isPriceValid && areAllStocksValid));
-    // };
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData();
