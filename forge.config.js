@@ -4,6 +4,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: 'assets/macOSIcon.icns'
   },
   rebuildConfig: {},
   makers: [
@@ -14,6 +15,12 @@ module.exports = {
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
+    },
+    {
+      name: '@electron-forge/maker-dmg',  // Añadir este maker para DMG
+      config: {
+        name: 'Indira-Gold',  // Opcional: nombre para el archivo DMG
+      },
     },
     {
       name: '@electron-forge/maker-deb',
