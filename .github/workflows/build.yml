@@ -3,7 +3,7 @@ name: Build Electron App
 on:
   push:
     branches:
-      - main  # O la rama que prefieras para desencadenar la construcción
+      - main
 
 jobs:
   build:
@@ -12,22 +12,25 @@ jobs:
       matrix:
         architecture: [x86_64, arm64]
     steps:
-      - name: Checkout code
+      - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # Puedes ajustar la versión de Node.js si es necesario
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
 
       - name: Build app
-        run: npm run make  # O el comando que usas para construir tu aplicación
+        run: npm run make
 
-      - name: Archive production artifacts
+      - name: Compress output files
+        run: tar -czvf electron-app.tar.gz -C out
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: electron-app
-          path: out
+          path: electron-app.tar.gz
