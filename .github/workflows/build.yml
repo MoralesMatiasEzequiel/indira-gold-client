@@ -27,7 +27,7 @@ jobs:
         run: npm run make
 
       - name: Compress output files
-        run: tar -czvf electron-app.tar.gz -C out
+        run: tar -czvf electron-app.tar.gz -C out/make
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
