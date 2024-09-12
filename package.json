@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-builder --mac",
+    "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
@@ -28,7 +28,6 @@
     "babel-loader": "^9.1.3",
     "css-loader": "^6.11.0",
     "electron": "31.0.1",
-    "electron-builder": "^25.0.5",
     "file-loader": "^6.2.0",
     "node-loader": "^2.0.0",
     "style-loader": "^3.3.4"
@@ -55,14 +54,5 @@
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.5",
     "redux": "^5.0.1"
-  },
-  "build": {
-    "appId": "indira-gold",
-    "mac": {
-      "target": [
-        "dmg",
-        "zip"
-      ]
-    }
   }
 }
