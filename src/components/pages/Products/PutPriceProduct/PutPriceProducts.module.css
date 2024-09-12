@@ -44,8 +44,12 @@
 }
 
 .containerButtonSubmit{
-    width: 50%;
+    width: 35%;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.submitButton{
+    width: 100%;
 }
