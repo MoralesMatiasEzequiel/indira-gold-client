@@ -4,26 +4,42 @@ import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
-import { getAllProducts, getProductByName } from "../../../../redux/productActions.js";
+import { getAllProducts, getProducts, getProductByName } from "../../../../redux/productActions.js";
+import { getCategories } from "../../../../redux/categoryActions.js";
 
 
 const ProductManagement = () => {
     
     const dispatch = useDispatch();
-    // const products = useSelector(state => state.products.products);
+    const productsActive = useSelector(state => state.products.products);
     const allProducts = useSelector(state => state.products.allProducts);
+    const categories = useSelector(state => state.categories.categories);
 
+    const [productFilter, setProductFilter] = useState('active');
+    const [category, setCategory] = useState('allCategories');
     const [name, setName] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true); // Indicador de carga
+// console.log(category);
 
     const itemsPerPage = 20;
 
-    // const paginatedProducts = allProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    const paginatedProducts = Array.isArray(allProducts) ? allProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
-    const totalPages = Math.ceil(allProducts.length / itemsPerPage);
-    // const paginatedProducts = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    // const totalPages = Math.ceil(products.length / itemsPerPage);
+    // Filtrar productos según el estado del filtro y la categoría seleccionada
+    const filteredProducts = () => {
+        let products = productFilter === 'active' ? productsActive : allProducts;
+
+        if (category !== 'allCategories') {
+            products = products.filter(product => product.category.some(cat => cat.name === category));
+        };
+
+        return products;
+    };
+
+    // Obtener productos filtrados
+    const productsForPagination = filteredProducts();
+
+    const paginatedProducts = Array.isArray(productsForPagination) ? productsForPagination.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
+    const totalPages = Math.ceil(productsForPagination.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -65,9 +81,19 @@ const ProductManagement = () => {
 
         return buttons;
     };
+
+    const handleCheckboxChange = (option) => {
+        setProductFilter(option);
+        setCurrentPage(1); // Resetear a la primera página al cambiar el filtro
+    };
     
     const handleChangeName = (event) => {
         setName(event.target.value);
+    };
+
+    const handleInputChangeCategories = (event) => {
+        setCategory(event.target.value);
+        setCurrentPage(1); // Resetear a la primera página al cambiar la categoría
     };
 
     const getImageUrl = (imagePath) => {
@@ -85,7 +111,9 @@ const ProductManagement = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+                await dispatch(getProducts());
                 await dispatch(getAllProducts());
+                await dispatch(getCategories());
             } finally {
                 setLoading(false);
             }
@@ -95,7 +123,6 @@ const ProductManagement = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        // dispatch(getAllProducts());
         if (name) {
             dispatch(getProductByName(name));
         } else {
@@ -104,7 +131,9 @@ const ProductManagement = () => {
     }, [name, dispatch]);
     
     useEffect(() => {
+        dispatch(getProducts());
         dispatch(getAllProducts());
+        dispatch(getCategories());
     }, [dispatch]);
     
 
@@ -124,6 +153,26 @@ const ProductManagement = () => {
                     </div>
                 </div>
                 <div className="container">
+                    <div className={style.containerFilters}>
+                        <div className={style.containerInputCheckbox}>
+                            <input className={style.inputCheckbox} type="checkbox" name="active" id="active" checked={productFilter === 'active'} onChange={() => handleCheckboxChange('active')} />
+                            <span className={style.spanCheckbox}>Productos activos</span>
+                            <input className={style.inputCheckbox} type="checkbox" name="all" id="all" checked={productFilter === 'all'} onChange={() => handleCheckboxChange('all')} />
+                            <span className={style.spanCheckbox}>Todos los productos</span>
+                        </div>
+                        <div className={style.containerSelected}>
+                            <select name="category" value={category} onChange={handleInputChangeCategories}>
+                                <option value="allCategories">Todas las categorías</option>
+                                {categories && categories.length > 0 ? (
+                                    categories.map((category) => (
+                                        <option key={category._id} value={category.name}>{category.name}</option>
+                                    ))
+                                ) : (
+                                    <option value="" disabled>No hay categorías disponibles</option>
+                                )}
+                            </select>
+                        </div>
+                    </div>              
                     <div className="tableContainer">
                         <table>
                             <thead>

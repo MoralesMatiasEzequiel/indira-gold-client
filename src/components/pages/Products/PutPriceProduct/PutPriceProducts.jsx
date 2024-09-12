@@ -18,6 +18,7 @@ const PutPriceProducts = () => {
     }, [dispatch]);
 
     const initialPriceState = {
+        adjust: 'increase',
         porcentage: '',
         products: [],
         category: []
@@ -25,23 +26,24 @@ const PutPriceProducts = () => {
 
     const [newPrice, setNewPrice] = useState(initialPriceState)
     const [selectedOption, setSelectedOption] = useState('byProducts');
+    const [adjust, setAdjust] = useState('increase');
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
 // console.log(newPrice);
 
     const validateForm = () => {
+        const isAdjustValid = (newPrice.adjust !== '');
         const isPorcentageValid = (newPrice.porcentage !== '') && (newPrice.porcentage !== 0);
         const isCategoryValid = selectedOption === 'allProducts' || (selectedOption === 'byCategory' && newPrice.category.length > 0);
         const isProductValid = selectedOption === 'allProducts' || (selectedOption === 'byProducts' && newPrice.products.length > 0);
 
-        const shouldEnableSubmit = 
-            (isProductValid || isCategoryValid || selectedOption === 'allProducts') && isPorcentageValid;
+        const shouldEnableSubmit = isAdjustValid && (isProductValid || isCategoryValid || selectedOption === 'allProducts') && isPorcentageValid;
 
         setIsSubmitDisabled(!shouldEnableSubmit);
     };
 
     useEffect(() => {
         validateForm();
-    }, [newPrice.porcentage, newPrice.products, newPrice.category, selectedOption]);
+    }, [newPrice.adjust, newPrice.porcentage, newPrice.products, newPrice.category, selectedOption]);
 
     // Convert categories to the format needed for react-select
     const categoryOptions = categories.map(category => ({
@@ -53,6 +55,15 @@ const PutPriceProducts = () => {
         value: product._id,
         label: product.name
     }));
+
+    const handleAdjustCheckboxChange = (option) => {
+        setAdjust(option);
+        setNewPrice({
+            ...newPrice,
+            adjust: option
+        });
+        validateForm();
+    };
 
     const handleInputChange = (event) => {
         const { value } = event.target;
@@ -111,7 +122,8 @@ const PutPriceProducts = () => {
             boxShadow: state.isFocused ? '0 0 0 1px #e4b61a' : provided.boxShadow,
             '&:hover': {
                 borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
-            }
+            },
+            width: '100%'
         }),
         input: (provided) => ({
             ...provided,
@@ -149,6 +161,14 @@ const PutPriceProducts = () => {
                 </div>
                 <div className="container">
                     <form onSubmit={handleSubmit}>
+                        <div className={style.containerCheckbox}>
+                            <div className={style.containerInputCheckbox}>
+                                <input className={style.inputCheckbox} type="checkbox" name="increase" id="increase" checked={adjust === 'increase'} onChange={() => handleAdjustCheckboxChange('increase')} />
+                                <span className={style.spanCheckbox}>Aumentar</span>
+                                <input className={style.inputCheckbox} type="checkbox" name="decrease" id="decrease" checked={adjust === 'decrease'} onChange={() => handleAdjustCheckboxChange('decrease')} />
+                                <span className={style.spanCheckbox}>Reducir</span>
+                            </div>
+                        </div>
                         <div className={style.containerCheckbox}>
                             <div className={style.containerInputCheckbox}>
                                 <input className={style.inputCheckbox} type="checkbox" name="byProducts" id="byProducts" checked={selectedOption === 'byProducts'} onChange={() => handleCheckboxChange('byProducts')} />
@@ -206,7 +226,7 @@ const PutPriceProducts = () => {
                         </div>
                         <div className={style.labelInput}>
                             <div className={style.left}>
-                                <label htmlFor="porcentage">Aumento %</label>
+                                <label htmlFor="porcentage">Porentaje %</label>
                             </div>
                             <div className={style.right}>
                                 <input 
@@ -221,7 +241,7 @@ const PutPriceProducts = () => {
                             </div>
                         </div>
                         <div className={style.containerButtonSubmit}>
-                            <button type='submit' disabled={isSubmitDisabled}>Actualizar</button>
+                            <button className={style.submitButton} type='submit' disabled={isSubmitDisabled}>Actualizar</button>
                         </div>
                     </form>
                 </div>

@@ -1,3 +1,33 @@
+.containerFilters{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.containerInputCheckbox{
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.inputCheckbox {
+    cursor: pointer;
+}
+
+.containerInputCheckbox span{
+    padding-right: 10px;
+    font-size: 0.75rem;
+}
+
+.containerSelected{
+    padding-bottom: 20px;
+}
+
+.containerSelected label{
+    margin-right: 5px;
+}
+
 .inactive{
     opacity: 0.3;
 }
