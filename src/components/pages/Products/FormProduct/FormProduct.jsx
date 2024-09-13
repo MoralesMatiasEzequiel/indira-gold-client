@@ -1,4 +1,5 @@
 import style from './FormProduct.module.css';
+import iconClear from '../../../../../assets/icons8-símbolo-vaciar-30.png';
 import x from '../../Sales/FormSales/img/x.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
@@ -20,7 +21,7 @@ const FormProduct = () => {
             name: '',
             phone: ''
         },
-        price: 0,
+        price: '',
         category: [],
         description: ''
     };
@@ -44,7 +45,15 @@ const FormProduct = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [actionType, setActionType] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-// console.log(newProduct); 
+// console.log(colors, sizes); 
+
+    const handleSetForm = () => {
+        setNewProduct(initialProductState);
+        setColors([]);
+        setSizes([]);
+        setImageGlobal(null);
+        setIsSubmitDisabled(true);
+    };
 
     const validateForm = () => {
         const isProductNameValid = newProduct.name.trim() !== '';
@@ -101,6 +110,14 @@ const FormProduct = () => {
         //     });
         // }
         validateForm();
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addColor();
+            addSize();
+        };
     };
 
     //-----------COLOR-----------//
@@ -362,8 +379,9 @@ const FormProduct = () => {
     return (
         <div className="page">
             <div className="component">
-                <div className="title">
+                <div className={style.titleContainer}>
                     <h2>NUEVO PRODUCTO</h2>
+                    <button className={style.buttonClear} type='button' onClick={() => handleSetForm()}><img src={iconClear} alt="icon-clear" /></button>
                 </div>
                 <div className="container">
                     <form onSubmit={handleSubmit} className={style.productForm}>
@@ -389,7 +407,7 @@ const FormProduct = () => {
                                                 </li>
                                             ))}
                                         </ol>
-                                        <input className={style.inputAddColor} type="text" name="color" value={newColor} onChange={handleInputColorChange} placeholder='Agregar' />
+                                        <input className={style.inputAddColor} type="text" name="color" value={newColor} onChange={handleInputColorChange} onKeyDown={handleKeyDown} placeholder='Agregar' />
                                         <button type="button" className={style.buttonAdd} onClick={addColor}>+</button>
                                     </div>
                                 </div>
@@ -406,7 +424,7 @@ const FormProduct = () => {
                                                 </li>
                                             ))}
                                         </ol>
-                                        <input className={style.inputAddSize} type="text" name="size" value={newSize} onChange={handleInputSizeChange} placeholder='Agregar' />
+                                        <input className={style.inputAddSize} type="text" name="size" value={newSize} onChange={handleInputSizeChange} onKeyDown={handleKeyDown} placeholder='Agregar' />
                                         <button type="button" className={style.buttonAdd} onClick={addSize}>+</button>
                                     </div>
                                 </div>
@@ -450,12 +468,6 @@ const FormProduct = () => {
                                 <div className={style.imageTitleContainer}>
                                     <div className={style.title}>
                                         <label htmlFor="image">Imágenes</label>
-                                        {selectedOptionImage === 'unique' && (
-                                            <div>
-                                                <label htmlFor={'imageUniqueProduct'} className={style.labelImage}>+</label>
-                                                <input type="file" accept="image/*" id={'imageUniqueProduct'} onChange={(event) => handleImageChange(event)} className={style.inputImage} />
-                                            </div>
-                                        )}
                                     </div>
                                     <div>
                                         <input className={style.inputCheckbox} type="checkbox" name="unique" id="unique" checked={selectedOptionImage === 'unique'} onChange={() => handleCheckboxChange('unique')} />
@@ -469,22 +481,37 @@ const FormProduct = () => {
                                         {newProduct.color.map((color, index) => (
                                             <li key={index} className={style.list}>
                                                 <span className={style.spanList}>{color.colorName}</span>
-                                                {selectedOptionImage === 'byColor' && (
-                                                    <div>
-                                                        <label className={style.labelImage} htmlFor={`imageProduct-${index}`}>Cargar imagen</label>
+                                                {selectedOptionImage === 'unique' && (
+                                                    <div className={style.addImg}>
+                                                        <label className={style.buttonImg} htmlFor={'imageUniqueProduct'}>
+                                                            <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
+                                                        </label>
                                                         <input 
                                                             className={style.inputImage} 
                                                             type="file" 
                                                             accept="image/*" 
-                                                            onChange={(event) => handleImageChange(event, index)} 
-                                                            id={`imageProduct-${index}`}
+                                                            id={'imageUniqueProduct'} 
+                                                            onChange={(event) => handleImageChange(event)} 
                                                         />
                                                     </div>
                                                 )}
-                                                <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
+                                                {selectedOptionImage === 'byColor' && (
+                                                    <div className={style.addImg}>
+                                                        <label className={style.buttonImg} htmlFor={`imageProduct-${index}`}>
+                                                            <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
+                                                        </label>
+                                                        <input 
+                                                            className={style.inputImage} 
+                                                            type="file" 
+                                                            accept="image/*" 
+                                                            id={`imageProduct-${index}`}
+                                                            onChange={(event) => handleImageChange(event, index)} 
+                                                        />
+                                                    </div>
+                                                )}     
                                                 <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
                                                     <img src={x} alt="x" />
-                                                </button>
+                                                </button>                                           
                                             </li>
                                         ))}
                                     </ol>                                              
@@ -510,7 +537,7 @@ const FormProduct = () => {
                                 </div>
                                 <div className={style.priceContainer}>
                                     <label htmlFor="price" className={style.nameTitle}>*Precio $</label>
-                                    <input type="number" name="price" onChange={handleInputChange} placeholder='0' min='0'/>
+                                    <input type="number" name="price" value={newProduct.price} onChange={handleInputChange} placeholder='0' min='0'/>
                                 </div>    
                                 <div className={style.descriptionContainer}>
                                     <label htmlFor="description" className={style.nameTitle}>Descripción</label>
@@ -518,7 +545,7 @@ const FormProduct = () => {
                                 </div> 
                             </div>
                             <div>
-                                <button type="submit" disabled={isSubmitDisabled}>Agregar</button>                    
+                                <button className={style.buttonSubmit} type="submit" disabled={isSubmitDisabled}>Agregar</button>                    
                             </div>
                         </div>
                     </form>
