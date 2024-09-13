@@ -6,16 +6,18 @@ import { getProductById } from '../../../../redux/productActions.js';
 import style from "./DetailClient.module.css";
 
 const DetailClient = () => {
+
     let { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const clientDetail = useSelector(state => state.clients.clientDetail);    
     const products = useSelector(state => state.products.products);
+    
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [productsLoading, setProductsLoading] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    
+    const [showDeleteModal, setShowDeleteModal] = useState(false);    
 
     useEffect(() => {
         dispatch(clearClientDetail());
@@ -132,6 +134,7 @@ const DetailClient = () => {
                             <div className={`container ${style.content}`}>
                                 <div className={style.column}>
                                     {/* <p><span>ID de cliente:&nbsp;</span>{id}</p> */}
+                                    {clientDetail.dni && <p><span>DNI:&nbsp;</span>{clientDetail.dni}</p>}
                                     {clientDetail.name && <p><span>Nombre:&nbsp;</span>{clientDetail.name}</p>}
                                     {clientDetail.lastname && <p><span>Apellido:&nbsp;</span>{clientDetail.lastname}</p>}
                                     {clientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{clientDetail.email}</p>}
