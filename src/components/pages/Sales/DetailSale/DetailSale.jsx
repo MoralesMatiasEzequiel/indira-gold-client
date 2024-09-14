@@ -101,6 +101,12 @@ const DetailSale = () => {
         });
     };
 
+    const formatDate = (date) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const formattedDate = new Date(date).toLocaleDateString('es-ES', options).replace(',', ' -');
+        return formattedDate;
+    };
+
     const toggleShowDeleteModal = () => {
         setShowDeleteModal(!showDeleteModal);
     }
@@ -131,6 +137,9 @@ const DetailSale = () => {
             totalHeight += 60; // Título
     
             // Información general de la venta
+            totalHeight += calculateLines(`Fecha: ${formatDate(saleDetail.orderNumber) || 'N/A'}`) * lineHeight;
+            totalHeight += calculateLines(`Tenés hasta 15 días para realizar el cambio`) * lineHeight;
+            totalHeight += calculateLines(``) * lineHeight;
             totalHeight += calculateLines(`N° de orden: ${saleDetail.orderNumber || 'N/A'}`) * lineHeight;
             totalHeight += calculateLines(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`) * lineHeight;
             totalHeight += calculateLines(`Modo de pago: ${saleDetail.paymentMethod || 'N/A'}`) * lineHeight;
@@ -193,6 +202,9 @@ const DetailSale = () => {
             return y;
         };
     
+        yPos = addWrappedText(`Fecha: ${formatDate(saleDetail.date) || 'N/A'}`, 4, yPos);
+        yPos = addWrappedText(`Tenés hasta 15 días para realizar el cambio`, 4, yPos);
+        yPos = addWrappedText(``, 4, yPos);
         yPos = addWrappedText(`N° de orden: ${saleDetail.orderNumber || 'N/A'}`, 4, yPos);
         yPos = addWrappedText(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`, 4, yPos);
         yPos = addWrappedText(`Modo de pago: ${saleDetail.paymentMethod || 'N/A'}`, 4, yPos);
@@ -284,13 +296,14 @@ const DetailSale = () => {
                                 <button onClick={generatePDF}><img src={print} alt=""/></button>
                                 <button><Link to={`/main_window/sales/edit/${id}`}>Cambio</Link></button>
                                 <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>
-                                <button><Link to={`/main_window/`}>Atrás</Link></button>
+                                <button><Link to={`/`}>Atrás</Link></button>
                             </div>
                         </div>
                         <div className={`container ${style.content}`}>
                             {saleDetail.orderNumber && <div className={style.orderNumber}><span>N° de orden:</span> {saleDetail.orderNumber}</div>}
                             
                             <div className={style.column}>
+                                {saleDetail.date && <p><span>Fecha:&nbsp;</span>{formatDate(saleDetail.date)}</p>}
                                 {saleDetail.client
                                 ?  <p>
                                         <span>Cliente:&nbsp;</span>{saleDetail.client.dni} - {saleDetail.client.name} {saleDetail.client.lastname}

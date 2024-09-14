@@ -11,6 +11,10 @@ import { getClients, putAddProducts } from '../../../../redux/clientActions.js';
 import { getSales, postSale } from '../../../../redux/saleActions.js';
 import FormClient from '../../Clients/FormClient/FormClient.jsx';
 import NewSale from '../NewSale/NewSale.jsx';
+import print from "../../../../assets/img/print.png";
+import detail from "../../../../assets/img/detail.png";
+import jsPDF from 'jspdf';
+
 
 const FormSales = () => {
     
@@ -375,6 +379,147 @@ const FormSales = () => {
         });
     };
 
+    const formatDate = (date) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const formattedDate = new Date(date).toLocaleDateString('es-ES', options).replace(',', ' -');
+        return formattedDate;
+    };
+
+    const generatePDF = () => {
+
+        // Variables para el ancho del papel de ticket (58 mm) y la altura mínima
+        const pageWidth = 58;
+        const minPageHeight = 100; // Altura mínima en mm (ajústala según sea necesario)
+        const lineHeight = 6; // Altura de cada línea de texto en mm
+        const maxLineWidth = pageWidth - 8; // Deja un margen de 4 mm en cada lado
+    
+        // Crear el PDF inicialmente sin la altura dinámica
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [pageWidth, minPageHeight] // Se ajustará más adelante
+        });
+    
+        // Función para ajustar texto al ancho del ticket
+        const calculateLines = (text) => {
+            const lines = doc.splitTextToSize(text, maxLineWidth);
+            return lines.length;
+        };
+    
+        // Función para calcular la altura del contenido
+        const calculateContentHeight = () => {
+            let totalHeight = 20; // Margen superior inicial
+            totalHeight += 60; // Título
+    
+            // Información general de la venta
+            totalHeight += calculateLines(`Fecha: ${formatDate(saleResponse.data.orderNumber) || 'N/A'}`) * lineHeight;
+            totalHeight += calculateLines(`Tenés hasta 15 días para realizar el cambio`) * lineHeight;
+            totalHeight += calculateLines(``) * lineHeight;
+            totalHeight += calculateLines(`N° de orden: ${saleResponse.data.orderNumber || 'N/A'}`) * lineHeight;
+            totalHeight += calculateLines(`Cliente: ${saleResponse.data.client ? `${saleResponse.data.client.name} ${saleResponse.data.client.lastname}` : 'Anónimo'}`) * lineHeight;
+            totalHeight += calculateLines(`Modo de pago: ${saleResponse.data.paymentMethod || 'N/A'}`) * lineHeight;
+            totalHeight += calculateLines(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`) * lineHeight;
+            totalHeight += calculateLines(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`) * lineHeight;
+            totalHeight += calculateLines(`Total: $${formatNumber(saleResponse.data.totalPrice) || '0.00'}`) * lineHeight;
+            totalHeight += 6; // Espacio adicional entre secciones
+    
+            // Calcular espacio para los productos de la venta
+            if (saleResponse.data.products?.length) {
+                totalHeight += lineHeight; // Título de productos
+                saleResponse.data.products.forEach(product => {
+
+                    let productWithPrice = products.find(p => p._id === product._id);
+
+                    totalHeight += calculateLines(`${product.name || 'Producto desconocido'}`) * lineHeight;
+                    totalHeight += calculateLines(`Color: ${product.selectedColor?.colorName || 'N/A'}`) * lineHeight;
+                    totalHeight += calculateLines(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`) * lineHeight;
+                    totalHeight += calculateLines(`Precio: $${formatNumber(productWithPrice?.price) || '0.00'}`) * lineHeight;
+                });
+            }
+    
+            // Ajusta la altura de la página al contenido o un mínimo
+            return Math.max(totalHeight, minPageHeight);
+        };
+    
+        // Recalcular la altura de la página en función del contenido
+        const pageHeight = calculateContentHeight();
+        doc.setPage(1); // Asegura que estamos trabajando en la primera página
+        doc.internal.pageSize.setHeight(pageHeight); // Ajusta la altura del documento
+    
+        const charSpace = 0.5; // Ajusta el espaciado entre caracteres en mm
+        doc.setCharSpace(charSpace);
+
+        let yPos = 20;
+
+        // Definir el texto y su alineación
+        const text = 'INDIRA GOLD';
+        const x = (doc.internal.pageSize.getWidth() / 2) - 3; // Posición X centrada
+        const textWidth = doc.getTextWidth(text);
+
+        // Agregar el texto al PDF, centrado horizontalmente
+        doc.text(text, x - (textWidth / 2), yPos);
+
+        doc.setCharSpace(0);
+
+        yPos = 40;
+        // Añade título
+        doc.setFontSize(16);
+        doc.text('Ticket de cambio', 4, yPos);
+    
+        // Información general de la venta
+        yPos = 50;
+        doc.setFontSize(12);
+    
+        // Función para ajustar texto al ancho del ticket y añadirlo al documento
+        const addWrappedText = (text, x, y) => {
+            const lines = doc.splitTextToSize(text, maxLineWidth);
+            lines.forEach(line => {
+                doc.text(line, x, y);
+                y += lineHeight;
+            });
+            return y;
+        };
+    
+        yPos = addWrappedText(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`, 4, yPos);
+        yPos = addWrappedText(`Tenés hasta 15 días para realizar el cambio`, 4, yPos);
+        yPos = addWrappedText(``, 4, yPos);
+        yPos = addWrappedText(`N° de orden: ${saleResponse.data.orderNumber || 'N/A'}`, 4, yPos);
+        yPos = addWrappedText(`Cliente: ${saleResponse.data.client ? `${saleResponse.data.name} ${saleResponse.data.lastname}` : 'Anónimo'}`, 4, yPos);
+        yPos = addWrappedText(`Modo de pago: ${saleResponse.data.paymentMethod || 'N/A'}`, 4, yPos);
+        yPos = addWrappedText(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`, 4, yPos);
+        yPos = addWrappedText(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`, 4, yPos);
+        yPos = addWrappedText(`Total: $${formatNumber(saleResponse.data.totalPrice) || '0.00'}`, 4, yPos);
+        yPos += 6;
+    
+        // Productos de la venta
+        if (saleResponse.data.products?.length) {
+            yPos = addWrappedText('Productos:', 4, yPos);
+            yPos += 6;
+
+            saleResponse.data.products.forEach(product => {
+                let productWithPrice = products.find(p => p._id === product._id);
+                yPos = addWrappedText(`${product.name || 'Producto desconocido'}`, 4, yPos);
+                yPos = addWrappedText(`Color: ${product.selectedColor?.colorName || 'N/A'}`, 4, yPos);
+                yPos = addWrappedText(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`, 4, yPos);
+                yPos = addWrappedText(`Precio: $${formatNumber(productWithPrice.price) || '0.00'}`, 4, yPos);
+                yPos += 6;
+            });
+        }
+    
+        // Abre el PDF en una nueva pestaña/ventana y activa el diálogo de impresión
+        const pdfBlob = doc.output('blob'); // Crea un Blob del PDF
+        const pdfUrl = URL.createObjectURL(pdfBlob); // Crea una URL del Blob
+        const printWindow = window.open(pdfUrl); // Abre una nueva ventana con el PDF
+    
+        if (printWindow) {
+            printWindow.onload = function () {
+                printWindow.print(); // Llama a la función de impresión de la nueva ventana
+            };
+        } else {
+            alert("Por favor, permite las ventanas emergentes para imprimir el ticket.");
+        }
+    };
+
     const handleClientAdded = (newClient) => {
         setShowClientForm(false);
 
@@ -591,7 +736,10 @@ const FormSales = () => {
                 <div className={`${style.newSaleModal} ${"component"}`}>
                     <div className="title">
                         <h2>NUEVA VENTA REGISTRADA</h2>
-                        <button onClick={toggleSaleMade}>X</button>
+                        <div className="titleButtons">
+                            <button onClick={generatePDF}><img src={print} alt=""/></button>
+                            <button className="delete" onClick={toggleSaleMade}>X</button>
+                        </div>
                     </div>
                     <NewSale saleResponse={saleResponse}/>
                 </div>

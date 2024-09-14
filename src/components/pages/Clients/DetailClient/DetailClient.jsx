@@ -165,8 +165,7 @@ const DetailClient = () => {
                                         </ul>
                                     ) : (
                                         <p>No hay productos vendidos disponibles.</p>
-                                    )}
-                                    
+                                    )}           
                                 </div>
                             </div>
                         </div>
@@ -179,9 +178,6 @@ const DetailClient = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )
-            }
         </div>
     );
 };
