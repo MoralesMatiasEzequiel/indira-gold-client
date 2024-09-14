@@ -1,7 +1,8 @@
+import style from './FormClient.module.css';
+import iconClear from '../../../../../assets/icons8-símbolo-vaciar-30.png';
 import React, { useState } from 'react';
 import { postClient, getClients } from '../../../../redux/clientActions';
 import { useDispatch } from 'react-redux';
-import style from './FormClient.module.css';
 
 const FormClient = ({ onClientAdded = () => {}}) => {
 
@@ -16,6 +17,10 @@ const FormClient = ({ onClientAdded = () => {}}) => {
     };
 
     const [newClient, setNewClient] = useState(initialClientState);
+
+    const handleSetForm = () => {
+        setNewClient(initialClientState);
+    };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -43,6 +48,7 @@ const FormClient = ({ onClientAdded = () => {}}) => {
         <div className="component">
             <div className={style.titleForm}>
                 <h2>NUEVO CLIENTE</h2>
+                <button className={style.buttonClear} type='button' onClick={() => handleSetForm()}><img src={iconClear} alt="icon-clear" /></button>
             </div>
             <div className="container">
                 <form onSubmit={handleSubmit} className={style.clientForm}>

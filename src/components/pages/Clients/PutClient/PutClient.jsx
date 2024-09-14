@@ -1,6 +1,6 @@
 import style from './PutClient.module.css';
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getClients, getClientById, putClient } from '../../../../redux/clientActions';
 
@@ -8,10 +8,12 @@ const PutClient = ({ onClientAdded = () => {}}) => {
 
     const { id } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const clientDetail = useSelector(state => state.clients.clientDetail);
 
     useEffect(() => {
-    dispatch(getClientById(id));
+        dispatch(getClientById(id));
     }, [dispatch, id]);
 
     useEffect(() => {    
@@ -42,18 +44,38 @@ const PutClient = ({ onClientAdded = () => {}}) => {
     };
 
     //-----------SUBMIT-----------//
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        dispatch(putClient(editClient)).then((response) => {
-            onClientAdded(response);
-            dispatch(getClients());   
-            dispatch(getClientById(id));   
-            setEditClient({}); // Reset form
-        });
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     dispatch(putClient(editClient)).then((response) => {
+    //         onClientAdded(response);
+    //         dispatch(getClients());   
+    //         dispatch(getClientById(id));   
+    //         // setEditClient({}); // Reset form
+    //     });
         
-        if (onClientAdded) {
-            onClientAdded();
-        };
+    //     if (onClientAdded) {
+    //         onClientAdded();
+    //     };
+    //     navigate('/main_window/clients/:id');
+    // };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        try {
+            const response = await dispatch(putClient(editClient));
+            
+            // Espera a que el cliente se actualice antes de redirigir
+            await dispatch(getClientById(id));
+            
+            onClientAdded(response);
+            dispatch(getClients());
+            
+            // Redirige después de actualizar el cliente
+            navigate(`/main_window/clients/${id}`);
+        } catch (error) {
+            console.error('Error updating client:', error);
+        }
     };
 
     return (
@@ -126,7 +148,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                 />
                             </div>
                             <div className={style.containerSubmit}>
-                                <button type="submit">Editar</button>
+                                <button className={style.buttonSubmit} type="submit">Editar</button>
                             </div>
                         </div>                       
                         {/* <button type="submit"><Link to={`/main_window/clients/${id}`}>Editar</Link></button> */}

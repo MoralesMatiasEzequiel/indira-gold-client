@@ -65,8 +65,6 @@ const PutProduct = () => {
     }, [dispatch, id, productDetail]);
 
     const [editProduct, setEditProduct] = useState({});  
-    console.log(editProduct);
-
     const [colors, setColors] = useState([]);
     const [newColor, setNewColor] = useState('');
     const [sizes, setSizes] = useState([]);
@@ -76,11 +74,7 @@ const PutProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
-    const [actionType, setActionType] = useState(null);
-    // const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-    // console.log('Colors ' + colors);
-    // console.log('Sizes ' + sizes);    
-    
+    const [actionType, setActionType] = useState(null);    
 
     // const validateForm = () => {
     //     const isProductNameValid = editProduct.name.trim() !== '';
@@ -250,8 +244,7 @@ const PutProduct = () => {
             setNewSize('');
         }
         // validateForm();
-    };
-    
+    }; 
 
     const deleteSize = (index) => {
         const updatedSizes = [...sizes];
@@ -600,9 +593,7 @@ const PutProduct = () => {
             console.error("Error editing product:", error);
         };
     };
-    
-    
-    
+  
     // const handleSubmit = async (event) => {
     //     event.preventDefault();
     //     const formData = new FormData();

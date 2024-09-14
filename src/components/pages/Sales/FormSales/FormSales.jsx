@@ -1,3 +1,7 @@
+import style from "./FormSales.module.css"
+import iconClear from "../../../../../assets/icons8-símbolo-vaciar-30.png";
+import add from "./img/add.png";
+import x from "./img/x.png";
 import React, { useState, useRef, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
@@ -7,12 +11,10 @@ import { getClients, putAddProducts } from '../../../../redux/clientActions.js';
 import { getSales, postSale } from '../../../../redux/saleActions.js';
 import FormClient from '../../Clients/FormClient/FormClient.jsx';
 import NewSale from '../NewSale/NewSale.jsx';
-import style from "./FormSales.module.css"
-import add from "./img/add.png";
 import print from "../../../../assets/img/print.png";
 import detail from "../../../../assets/img/detail.png";
 import jsPDF from 'jspdf';
-import x from "./img/x.png";
+
 
 const FormSales = () => {
     
@@ -26,7 +28,6 @@ const FormSales = () => {
     }, [dispatch]);
 
     const [showClientForm, setShowClientForm] = useState(false);
-    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const paymentMethods = [
         { value: 'Efectivo', label: 'Efectivo' },
         { value: 'Crédito', label: 'Crédito' },
@@ -36,11 +37,13 @@ const FormSales = () => {
     const [selectedProducts, setSelectedProducts] = useState([{ productId: null, colorId: null, sizeId: null, category: null }]);
     const [selectedProductQuantities, setSelectedProductQuantities] = useState({});
     const [selectedClient, setSelectedClient] = useState(null);
-    const [subtotal, setSubtotal] = useState(0);
     const [clientOptions, setClientOptions] = useState([]);
+    const [paymentMethod, setPaymentMethod] = useState(null);
+    const [subtotal, setSubtotal] = useState(0);
     const [selectKey, setSelectKey] = useState(Date.now());
     const [saleMade, setSaleMade] = useState(false);
     const [saleResponse, setSaleResponse] = useState(null);
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
 
     const initialSaleState = {
         client: '',
@@ -54,6 +57,16 @@ const FormSales = () => {
     const [newSale, setNewSale] = useState(initialSaleState);
 
     const productRefs = useRef([]);
+
+    const handleSetForm = () => {
+        setIsSubmitDisabled(true);
+        setNewSale(initialSaleState);
+        setSelectedClient(null);
+        setPaymentMethod(null);
+        setSelectedProducts([{ productId: null, colorId: null, sizeId: null, category: null }]);
+        setSubtotal(0);
+        
+    };
 
     const transformProductOptions = (products) => {        
         let productOptions = [];
@@ -303,6 +316,7 @@ const FormSales = () => {
 
     const toggleSaleMade = () => {
         setSaleMade(prevSaleMade => !prevSaleMade);
+        handleSetForm();
     };
 
     const handleSubmit = (event) => {
@@ -526,8 +540,10 @@ const FormSales = () => {
 
     return (
         <div className="component">
-            <div className="title" style={{ display: saleMade ? 'none' : 'block' }}>
+            {/* <div className="title" style={{ display: saleMade ? 'none' : 'block' }}> */}
+            <div className={style.titleContainer}>
                 <h2>NUEVA VENTA</h2>
+                <button className={style.buttonClear} type='button' onClick={() => handleSetForm()}><img src={iconClear} alt="icon-clear" /></button>
             </div>
             <div className="container" style={{ display: saleMade ? 'none' : 'block' }}>
                 <form onSubmit={handleSubmit} className={style.salesForm}>
@@ -565,8 +581,11 @@ const FormSales = () => {
                             <div className={style.right}>
                                 <Select
                                     name="paymentMethod"
-                                    value={paymentMethods.find(method => method.value === newSale.paymentMethod)}
-                                    onChange={handlePaymentMethodChange}
+                                    value={paymentMethods.find(method => method.value === paymentMethod) || null}
+                                    onChange={(selectedOption) => {
+                                        setPaymentMethod(selectedOption ? selectedOption.value : null);
+                                        handlePaymentMethodChange(selectedOption); // Si es necesario
+                                    }}
                                     options={paymentMethods}
                                     menuPortalTarget={document.body}
                                         styles={{
