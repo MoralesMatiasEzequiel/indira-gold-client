@@ -50,40 +50,52 @@ const DetailSale = () => {
                             name: 'Producto no disponible',
                             selectedColor: null,
                             selectedSize: null,
-                            price: null,
+                            price: product.price, // Usar el precio almacenado en saleDetail.products
                         });
                     } else {
                         const productInfo = response;
                         const selectedColor = getColorById(productInfo, product.colorId);
                         const selectedSize = getSizeById(productInfo, product.colorId, product.sizeId);
-
-                        updatedProducts.push({ ...productInfo, selectedColor, selectedSize });
-                    
+    
+                        // Usar el precio de saleDetail.products, no el de productInfo
+                        updatedProducts.push({ 
+                            ...productInfo, 
+                            selectedColor, 
+                            selectedSize,
+                            price: product.price // Precio almacenado en la venta
+                        });
                     }
-                    // Solo actualiza purchasedProducts después de que todos los productos hayan sido cargados
+    
+                    // Actualiza purchasedProducts solo después de que todos los productos hayan sido cargados
                     if (updatedProducts.length === saleDetail.products.length) {
                         setPurchasedProducts(updatedProducts);
                         setProductsLoading(false);
                     }
                 })
                 .catch(() => {
-                        const filteredProduct = products.find(p => p._id === product.productId);
-                        if (filteredProduct) {
-                            const selectedColor = getColorById(filteredProduct, product.colorId);
-                            const selectedSize = getSizeById(filteredProduct, product.colorId, product.sizeId);
-
-                            updatedProducts.push({ ...filteredProduct, selectedColor, selectedSize });
-                        } 
-                        if (updatedProducts.length === saleDetail.products.length) {
-                            setPurchasedProducts(updatedProducts);
-                            setProductsLoading(false);
-                        }
+                    const filteredProduct = products.find(p => p._id === product.productId);
+                    if (filteredProduct) {
+                        const selectedColor = getColorById(filteredProduct, product.colorId);
+                        const selectedSize = getSizeById(filteredProduct, product.colorId, product.sizeId);
+    
+                        updatedProducts.push({ 
+                            ...filteredProduct, 
+                            selectedColor, 
+                            selectedSize,
+                            price: product.price // Mantener el precio de la venta
+                        });
+                    }
+                    if (updatedProducts.length === saleDetail.products.length) {
+                        setPurchasedProducts(updatedProducts);
+                        setProductsLoading(false);
+                    }
                 });
             });
         } else {
             setPurchasedProducts([]);
         }
     }, [saleDetail, dispatch, loading]);
+    
 
     const getColorById = (product, colorId) => {
         return product?.color?.find(c => c._id === colorId);
