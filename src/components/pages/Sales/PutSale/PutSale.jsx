@@ -9,7 +9,7 @@ import style from "./PutSale.module.css";
 import detail from "../../../../assets/img/detail.png";
 import x from "./img/x.png";
 
-const DetailSale = () => {
+const PutSale = () => {
     let { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ const DetailSale = () => {
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [deletedPurchasedProducts, setDeletedPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedProducts, setSelectedProducts] = useState([{ productId: null, colorId: null, sizeId: null }]);
+    const [selectedProducts, setSelectedProducts] = useState([{ productId: null, colorId: null, sizeId: null, price: null }]);
     const [selectedProductQuantities, setSelectedProductQuantities] = useState({});
     const [subtotal, setSubtotal] = useState(0);
     const [discount, setDiscount] = useState(0);
@@ -37,7 +37,7 @@ const DetailSale = () => {
                             productId: product._id,
                             colorId: color._id,
                             sizeId: size._id,
-                            label: `${product.name} - ${color.colorName} - Talle ${size.sizeName}`,
+                            label: `${product.name} - ${color.colorName} - Talle ${size.sizeName} - $${formatNumber(product.price)}`,
                             price: product.price,
                             stock: size.stock,
                         });
@@ -51,7 +51,7 @@ const DetailSale = () => {
     const loadProductOptions = (inputValue, callback) => {
         const productOptions = transformProductOptions(products);
         const filteredOptions = productOptions.filter(product => {
-            const key = `${product.productId}_${product.colorId}_${product.sizeId}`;
+            const key = `${product.productId}_${product.colorId}_${product.sizeId}_${product.price}`;
             const selectedQuantity = selectedProductQuantities[key] || 0;
             const availableStock = product.stock - selectedQuantity;
 
@@ -78,10 +78,10 @@ const DetailSale = () => {
     const handleProductChange = (selectedOption, index) => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
-            newSelectedProducts[index] = selectedOption ? { ...selectedOption } : { productId: null, colorId: null, sizeId: null };
+            newSelectedProducts[index] = selectedOption ? { ...selectedOption } : { productId: null, colorId: null, sizeId: null, price: null };
     
             if (index === newSelectedProducts.length - 1 && selectedOption) {
-                newSelectedProducts.push({ productId: null, colorId: null, sizeId: null });
+                newSelectedProducts.push({ productId: null, colorId: null, sizeId: null, price: null });
                 setTimeout(() => {
                     productRefs.current[index + 1].focus();
                 }, 0);
@@ -89,7 +89,7 @@ const DetailSale = () => {
     
             setSelectedProductQuantities((prevQuantities) => {
                 const newQuantities = { ...prevQuantities };
-                const key = selectedOption ? `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}` : null;
+                const key = selectedOption ? `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}_${selectedOption.price}` : null;
                 
                 if (selectedOption) {
                     newQuantities[key] = (newQuantities[key] || 0) + 1;
@@ -164,14 +164,19 @@ const DetailSale = () => {
                             name: 'Producto no disponible',
                             selectedColor: null,
                             selectedSize: null,
-                            price: 0,
+                            price: product.price,
                         });
                     } else {
                         const productInfo = response;
                         const selectedColor = getColorById(productInfo, product.colorId);
                         const selectedSize = getSizeById(productInfo, product.colorId, product.sizeId);
         
-                        updatedProducts.push({ ...productInfo, selectedColor, selectedSize });
+                        updatedProducts.push({ 
+                            ...productInfo, 
+                            selectedColor, 
+                            selectedSize,
+                            price: product.price // Precio almacenado en la venta
+                        });
                         
                     }
         
@@ -219,13 +224,15 @@ const DetailSale = () => {
                 productId: product._id,
                 colorId: product.selectedColor._id,
                 sizeId: product.selectedSize._id,
+                price: product.price
             })),
             ...selectedProducts
                 .filter(product => product.productId)
                 .map(product => ({
                     productId: product.productId,
                     colorId: product.colorId,
-                    sizeId: product.sizeId
+                    sizeId: product.sizeId,
+                    price: product.price
                 }))
         ];
     
@@ -261,7 +268,8 @@ const DetailSale = () => {
                         {
                             productId: product._id,
                             colorId: product.selectedColor._id,
-                            sizeId: product.selectedSize._id
+                            sizeId: product.selectedSize._id,
+                            price: product.price
                         }
                     ]
                 }
@@ -295,7 +303,8 @@ const DetailSale = () => {
                                 {
                                     productId: product.productId,
                                     colorId: product.colorId,
-                                    sizeId: product.sizeId
+                                    sizeId: product.sizeId,
+                                    price: product.price
                                 }
                             ]
                         }
@@ -436,4 +445,4 @@ const DetailSale = () => {
     );
 };
 
-export default DetailSale;
+export default PutSale;
