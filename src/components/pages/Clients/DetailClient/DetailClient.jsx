@@ -178,6 +178,9 @@ const DetailClient = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                )
+            }
         </div>
     );
 };
