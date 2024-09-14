@@ -34,7 +34,7 @@ const FormSales = () => {
         { value: 'Débito', label: 'Débito' },
         { value: 'Transferencia', label: 'Transferencia' }
     ];
-    const [selectedProducts, setSelectedProducts] = useState([{ productId: null, colorId: null, sizeId: null, category: null }]);
+    const [selectedProducts, setSelectedProducts] = useState([{ productId: null, colorId: null, sizeId: null, price: null, category: null }]);
     const [selectedProductQuantities, setSelectedProductQuantities] = useState({});
     const [selectedClient, setSelectedClient] = useState(null);
     const [clientOptions, setClientOptions] = useState([]);
@@ -63,7 +63,7 @@ const FormSales = () => {
         setNewSale(initialSaleState);
         setSelectedClient(null);
         setPaymentMethod(null);
-        setSelectedProducts([{ productId: null, colorId: null, sizeId: null, category: null }]);
+        setSelectedProducts([{ productId: null, colorId: null, sizeId: null, price: null, category: null }]);
         setSubtotal(0);
         
     };
@@ -78,7 +78,7 @@ const FormSales = () => {
                             productId: product._id,
                             colorId: color._id,
                             sizeId: size._id,
-                            label: `${product.name} - ${color.colorName} - Talle ${size.sizeName}`,
+                            label: `${product.name} - ${color.colorName} - Talle ${size.sizeName} - $${formatNumber(product.price)}`,
                             price: product.price,
                             stock: size.stock,
                             category: product.category[0].name
@@ -105,7 +105,7 @@ const FormSales = () => {
         // console.log(productOptions);
 
         const filteredOptions = productOptions.filter(product => {
-            const key = `${product.productId}_${product.colorId}_${product.sizeId}`;
+            const key = `${product.productId}_${product.colorId}_${product.sizeId}_${product.price}`;
             const selectedQuantity = selectedProductQuantities[key] || 0;
             const availableStock = product.stock - selectedQuantity;
 
@@ -211,10 +211,10 @@ const FormSales = () => {
     const handleProductChange = (selectedOption, index) => {
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
-            newSelectedProducts[index] = selectedOption ? { ...selectedOption } : { productId: null, colorId: null, sizeId: null, category: null };
+            newSelectedProducts[index] = selectedOption ? { ...selectedOption } : { productId: null, colorId: null, sizeId: null, price: null, category: null };
 
             if (index === newSelectedProducts.length - 1 && selectedOption) {
-                newSelectedProducts.push({ productId: null, colorId: null, sizeId: null, category: null });
+                newSelectedProducts.push({ productId: null, colorId: null, sizeId: null, price: null, category: null });
                 setTimeout(() => {
                     productRefs.current[index + 1].focus();
                 }, 0);
@@ -223,7 +223,7 @@ const FormSales = () => {
             // Update selectedProductQuantities
             setSelectedProductQuantities((prevQuantities) => {
                 const newQuantities = { ...prevQuantities };
-                const key = `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}_${selectedOption.category}`;
+                const key = `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}_${selectedOption.price}_${selectedOption.category}`;
                 
                 if (selectedOption) {
                     if (newQuantities[key]) {
@@ -365,12 +365,13 @@ const FormSales = () => {
             dispatch(putAddProducts(clientData));
         }
         
+        console.log(saleData);
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
             dispatch(getSales());
             // Resetear el formulario
             setNewSale(initialSaleState);
-            setSelectedProducts([{ productId: null, colorId: null, sizeId: null, category: null }]);
+            setSelectedProducts([{ productId: null, colorId: null, sizeId: null, price: null, category: null }]);
             setSubtotal(0);
             setSelectedClient(null);
             setIsSubmitDisabled(true);
