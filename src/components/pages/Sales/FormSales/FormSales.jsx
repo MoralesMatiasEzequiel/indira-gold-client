@@ -359,7 +359,8 @@ const FormSales = () => {
                 purchases: productsToSend.map(product => ({
                     productId: product.productId,
                     colorId: product.colorId,
-                    sizeId: product.sizeId
+                    sizeId: product.sizeId,
+                    price: product.price
                 }))
             };
             dispatch(putAddProducts(clientData));
