@@ -1,7 +1,8 @@
 import style from "./FormSales.module.css"
-import iconClear from "../../../../../assets/icons8-símbolo-vaciar-30.png";
+import iconClear from "../../../../assets/img/clearForm.png"
 import add from "./img/add.png";
 import x from "./img/x.png";
+import close from "../../../../assets/img/x.png";
 import React, { useState, useRef, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
@@ -12,7 +13,6 @@ import { getSales, postSale } from '../../../../redux/saleActions.js';
 import FormClient from '../../Clients/FormClient/FormClient.jsx';
 import NewSale from '../NewSale/NewSale.jsx';
 import print from "../../../../assets/img/print.png";
-import detail from "../../../../assets/img/detail.png";
 import jsPDF from 'jspdf';
 
 
@@ -394,7 +394,6 @@ const FormSales = () => {
 
     const generatePDF = () => {
 
-        console.log(saleResponse.data);
         // Variables para el ancho del papel de ticket (58 mm) y la altura mínima
         const pageWidth = 58;
         const minPageHeight = 100; // Altura mínima en mm (ajústala según sea necesario)
@@ -582,198 +581,6 @@ const FormSales = () => {
 
     return (
         <div className="component">
-            {/* <div className="title" style={{ display: saleMade ? 'none' : 'block' }}> */}
-            <div className={style.titleContainer}>
-                <h2>NUEVA VENTA</h2>
-                <button className={style.buttonClear} type='button' onClick={() => handleSetForm()}><img src={iconClear} alt="icon-clear" /></button>
-            </div>
-            <div className="container" style={{ display: saleMade ? 'none' : 'block' }}>
-                <form onSubmit={handleSubmit} className={style.salesForm}>
-                    <div className={style.column1}>
-                        <div className={style.labelInput}>
-                            <div className={style.left}>
-                                <label htmlFor="client">Cliente</label>
-                            </div>
-                            <div className={style.right}>
-                                <div className={style.clientInput}>
-                                    <AsyncSelect
-                                        key={selectKey}
-                                        cacheOptions
-                                        name="client"
-                                        value={selectedClient}
-                                        loadOptions={loadClientOptions}
-                                        onChange={handleClientChange}
-                                        placeholder="Buscar Cliente"
-                                        defaultOptions={clientOptions}
-                                        menuPortalTarget={document.body}
-                                        styles={{
-                                            menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                            ...clientInputStyles
-                                        }}
-                                    />
-                                    <button type="button" onClick={handleShowClientForm} className={style.addClient}><img src={add} alt=""/></button>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div className={style.labelInput}>
-                            <div className={style.left}>
-                                <label htmlFor="paymentMethod">Medio de pago</label>
-                            </div>
-                            <div className={style.right}>
-                                <Select
-                                    name="paymentMethod"
-                                    value={paymentMethods.find(method => method.value === paymentMethod) || null}
-                                    onChange={(selectedOption) => {
-                                        setPaymentMethod(selectedOption ? selectedOption.value : null);
-                                        handlePaymentMethodChange(selectedOption); // Si es necesario
-                                    }}
-                                    options={paymentMethods}
-                                    menuPortalTarget={document.body}
-                                        styles={{
-                                            menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                            ...clientInputStyles
-                                        }}
-                                    placeholder="Seleccionar"
-                                />
-                            </div>
-                        </div>                        
-                        <div className={style.labelInput}>
-                            <div className={style.left}>
-                                <label htmlFor="installments">Cuotas</label>
-                            </div>
-                            <div className={style.right}>
-                                <input 
-                                    name="installments"
-                                    placeholder='1'
-                                    min='1'
-                                    value={newSale.installments}
-                                    onChange={handleInputChange}
-                                    className={style.discount}
-                                    type='number'
-                                />
-                            </div>
-                        </div>
-                        <div className={style.labelInput}>
-                            <div className={style.left}>
-                                <label htmlFor="discount">Descuento</label>
-                            </div>
-                            <div className={style.right}>
-                                <input 
-                                    name="discount"
-                                    placeholder='%'
-                                    min='0'
-                                    value={newSale.discount}
-                                    onChange={handleInputChange}
-                                    className={style.discount}
-                                    type='number'
-                                />
-                            </div>
-                        </div>
-                        <div className={style.labelInput}>
-                            <div className={style.left}>
-                                <label htmlFor="paymentFee">Retención</label>
-                            </div>
-                            <div className={style.right}>
-                                <input 
-                                    name="paymentFee"
-                                    placeholder='%'
-                                    min='0'
-                                    value={newSale.paymentFee}
-                                    onChange={handleInputChange}
-                                    className={style.discount}
-                                    type='number'
-                                />
-                            </div>
-                        </div>
-                        <div className={style.labelInput}>
-                            <div className={style.left}>
-                                <label htmlFor="soldAt">Tipo de venta</label>
-                            </div>
-                            <div className={style.right}>
-                                <div className={style.soldAt}>
-                                    <label htmlFor="Local">
-                                        <input
-                                            type="radio"
-                                            name="soldAt"
-                                            value="Local"
-                                            checked={newSale.soldAt === 'Local'}
-                                            onChange={handleInputChange}
-                                        />
-                                        Local
-                                    </label>
-                                    
-                                    <label htmlFor="Online">
-                                        <input
-                                            type="radio"
-                                            name="soldAt"
-                                            value="Online"
-                                            checked={newSale.soldAt === 'Online'}
-                                            onChange={handleInputChange}
-                                        />
-                                        Online
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={style.column2}>
-                        <label htmlFor="products">Productos</label>
-                        {selectedProducts.map((selectedProduct, index) => (
-                            <div key={index} className={style.product}>
-                                
-                                <div className={style.productSelect}>
-                                    <AsyncSelect
-                                        name="products"
-                                        value={selectedProduct.productId ? selectedProduct : null}
-                                        loadOptions={loadProductOptions}
-                                        onChange={(selectedOption) => handleProductChange(selectedOption, index)}
-                                        placeholder="Buscar Producto"
-                                        ref={(element) => productRefs.current[index] = element}
-                                        components={{DropdownIndicator}}
-                                        noOptionsMessage={customNoOptionsMessage}
-                                        menuPortalTarget={document.body}
-                                        styles={{
-                                            menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                            ...productInputStyles
-                                        }}
-                                    />
-                                </div>
-                                {index ? <button type="button" onClick={() => handleRemoveProduct(index)} className={style.removeProduct}><img src={x} alt=""/></button> : ''}
-                            </div>
-                        ))}
-                    </div>
-                    <div className={style.column3}>
-                        <div className={style.subtotal}>
-                            <div className={style.left}>Subtotal</div>
-                            <div className={style.right}>${formatNumber(subtotal)}</div>
-                        </div>
-                        <div className={style.discount}>
-                            <div className={style.left}>Descuento</div>
-                            <div className={style.right}>- ${formatNumber(subtotal * newSale.discount / 100)}</div>
-                        </div>
-                        <div className={style.discount}>
-                            <div className={style.left}>Retención</div>
-                            <div className={style.right}>- ${formatNumber((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100))}</div>
-                        </div>
-                        <div className={style.discount}>
-                            <div className={style.left}>Total con retención</div>
-                            <div className={style.right}>${formatNumber((subtotal * (1 - newSale.discount / 100)) - ((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100)))}</div>
-                        </div>
-                        <div className={style.total}>
-                            <div className={style.left}>Total</div>
-                            <div className={style.right}>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
-                        </div>
-                       
-                        <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
-                    </div> 
-                </form>
-                <div className={`${style.addClientComponent} ${showClientForm ? style.addClientComponentBorder : ''}`}>
-                    <button className={style.buttonOnClose} type='button' onClick={handleCloseClientForm}>X</button>
-                    {showClientForm && <FormClient onClientAdded={handleClientAdded}/>}
-                </div>
-            </div>
-            
             {saleMade ? (
                 <div className={`${style.newSaleModal} ${"component"}`}>
                     <div className="title">
@@ -786,7 +593,200 @@ const FormSales = () => {
                     <NewSale saleResponse={saleResponse}/>
                 </div>
             ) : (
-                <div></div>
+                <div className="component">
+                    <div className="title">
+                        <h2>Nueva venta</h2>
+                        <div className="titleButtons">
+                            <button onClick={handleSetForm}><img src={iconClear} alt="" /></button>
+                        </div>
+                    </div>
+                    <div className="container" style={{ display: saleMade ? 'none' : 'block' }}>
+                        <form onSubmit={handleSubmit} className={style.salesForm}>
+                            <div className={style.column1}>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label htmlFor="client">Cliente</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <div className={style.clientInput}>
+                                            <AsyncSelect
+                                                key={selectKey}
+                                                cacheOptions
+                                                name="client"
+                                                value={selectedClient}
+                                                loadOptions={loadClientOptions}
+                                                onChange={handleClientChange}
+                                                placeholder="Buscar Cliente"
+                                                defaultOptions={clientOptions}
+                                                menuPortalTarget={document.body}
+                                                styles={{
+                                                    menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                    ...clientInputStyles
+                                                }}
+                                            />
+                                            <button type="button" onClick={handleShowClientForm} className={style.addClient}><img src={add} alt=""/></button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label htmlFor="paymentMethod">Medio de pago</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <Select
+                                            name="paymentMethod"
+                                            value={paymentMethods.find(method => method.value === paymentMethod) || null}
+                                            onChange={(selectedOption) => {
+                                                setPaymentMethod(selectedOption ? selectedOption.value : null);
+                                                handlePaymentMethodChange(selectedOption); // Si es necesario
+                                            }}
+                                            options={paymentMethods}
+                                            menuPortalTarget={document.body}
+                                                styles={{
+                                                    menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                    ...clientInputStyles
+                                                }}
+                                            placeholder="Seleccionar"
+                                        />
+                                    </div>
+                                </div>                        
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label htmlFor="installments">Cuotas</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <input 
+                                            name="installments"
+                                            placeholder='1'
+                                            min='1'
+                                            value={newSale.installments}
+                                            onChange={handleInputChange}
+                                            className={style.discount}
+                                            type='number'
+                                        />
+                                    </div>
+                                </div>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label htmlFor="discount">Descuento</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <input 
+                                            name="discount"
+                                            placeholder='%'
+                                            min='0'
+                                            value={newSale.discount}
+                                            onChange={handleInputChange}
+                                            className={style.discount}
+                                            type='number'
+                                        />
+                                    </div>
+                                </div>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label htmlFor="paymentFee">Retención</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <input 
+                                            name="paymentFee"
+                                            placeholder='%'
+                                            min='0'
+                                            value={newSale.paymentFee}
+                                            onChange={handleInputChange}
+                                            className={style.discount}
+                                            type='number'
+                                        />
+                                    </div>
+                                </div>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label htmlFor="soldAt">Tipo de venta</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <div className={style.soldAt}>
+                                            <label htmlFor="Local">
+                                                <input
+                                                    type="radio"
+                                                    name="soldAt"
+                                                    value="Local"
+                                                    checked={newSale.soldAt === 'Local'}
+                                                    onChange={handleInputChange}
+                                                />
+                                                Local
+                                            </label>
+                                            
+                                            <label htmlFor="Online">
+                                                <input
+                                                    type="radio"
+                                                    name="soldAt"
+                                                    value="Online"
+                                                    checked={newSale.soldAt === 'Online'}
+                                                    onChange={handleInputChange}
+                                                />
+                                                Online
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={style.column2}>
+                                <label htmlFor="products">Productos</label>
+                                {selectedProducts.map((selectedProduct, index) => (
+                                    <div key={index} className={style.product}>
+                                        
+                                        <div className={style.productSelect}>
+                                            <AsyncSelect
+                                                name="products"
+                                                value={selectedProduct.productId ? selectedProduct : null}
+                                                loadOptions={loadProductOptions}
+                                                onChange={(selectedOption) => handleProductChange(selectedOption, index)}
+                                                placeholder="Buscar Producto"
+                                                ref={(element) => productRefs.current[index] = element}
+                                                components={{DropdownIndicator}}
+                                                noOptionsMessage={customNoOptionsMessage}
+                                                menuPortalTarget={document.body}
+                                                styles={{
+                                                    menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                    ...productInputStyles
+                                                }}
+                                            />
+                                        </div>
+                                        {index ? <button type="button" onClick={() => handleRemoveProduct(index)} className={style.removeProduct}><img src={x} alt=""/></button> : ''}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className={style.column3}>
+                                <div className={style.subtotal}>
+                                    <div className={style.left}>Subtotal</div>
+                                    <div className={style.right}>${formatNumber(subtotal)}</div>
+                                </div>
+                                <div className={style.discount}>
+                                    <div className={style.left}>Descuento</div>
+                                    <div className={style.right}>- ${formatNumber(subtotal * newSale.discount / 100)}</div>
+                                </div>
+                                <div className={style.discount}>
+                                    <div className={style.left}>Retención</div>
+                                    <div className={style.right}>- ${formatNumber((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100))}</div>
+                                </div>
+                                <div className={style.discount}>
+                                    <div className={style.left}>Total con retención</div>
+                                    <div className={style.right}>${formatNumber((subtotal * (1 - newSale.discount / 100)) - ((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100)))}</div>
+                                </div>
+                                <div className={style.total}>
+                                    <div className={style.left}>Total</div>
+                                    <div className={style.right}>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
+                                </div>
+                            
+                                <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
+                            </div> 
+                        </form>
+                        <div className={`${style.addClientComponent} ${showClientForm ? style.addClientComponentBorder : ''}`}>
+                            <button className={style.buttonOnClose} type='button' onClick={handleCloseClientForm}><img src={close} alt=""/></button>
+                            {showClientForm && <FormClient onClientAdded={handleClientAdded}/>}
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

@@ -46,9 +46,8 @@ const FormClient = ({ onClientAdded = () => {}}) => {
 
     return (
         <div className="component">
-            <div className={style.titleForm}>
+            <div className="title">
                 <h2>NUEVO CLIENTE</h2>
-                <button className={style.buttonClear} type='button' onClick={() => handleSetForm()}><img src={iconClear} alt="icon-clear" /></button>
             </div>
             <div className="container">
                 <form onSubmit={handleSubmit} className={style.clientForm}>
