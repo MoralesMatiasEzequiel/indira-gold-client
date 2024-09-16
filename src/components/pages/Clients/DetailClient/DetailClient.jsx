@@ -78,6 +78,7 @@ const DetailClient = () => {
             });
         } else {
             setPurchasedProducts([]);
+            setProductsLoading(false);
         }
     }, [clientDetail, dispatch, loading]);
 
