@@ -1,5 +1,4 @@
 import style from './FormClient.module.css';
-import iconClear from '../../../../../assets/icons8-símbolo-vaciar-30.png';
 import React, { useState } from 'react';
 import { postClient, getClients } from '../../../../redux/clientActions';
 import { useDispatch } from 'react-redux';
