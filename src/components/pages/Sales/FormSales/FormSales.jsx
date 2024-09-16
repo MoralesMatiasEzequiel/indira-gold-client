@@ -135,10 +135,15 @@ const FormSales = () => {
     };
 
     const formatNumber = (number) => {
-        return number.toLocaleString('es-ES', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
+
+        if(number){
+            return number.toLocaleString('es-ES', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+        }
+
+        return null;
     };
 
     const clientInputStyles = {
@@ -389,6 +394,7 @@ const FormSales = () => {
 
     const generatePDF = () => {
 
+        console.log(saleResponse.data);
         // Variables para el ancho del papel de ticket (58 mm) y la altura mínima
         const pageWidth = 58;
         const minPageHeight = 100; // Altura mínima en mm (ajústala según sea necesario)
@@ -413,12 +419,13 @@ const FormSales = () => {
             let totalHeight = 20; // Margen superior inicial
             totalHeight += 60; // Título
     
+            let clientFound = clients.find(c => c._id === saleResponse.data.client);
             // Información general de la venta
-            totalHeight += calculateLines(`Fecha: ${formatDate(saleResponse.data.orderNumber) || 'N/A'}`) * lineHeight;
+            totalHeight += calculateLines(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`) * lineHeight;
             totalHeight += calculateLines(`Tenés hasta 15 días para realizar el cambio`) * lineHeight;
             totalHeight += calculateLines(``) * lineHeight;
             totalHeight += calculateLines(`N° de orden: ${saleResponse.data.orderNumber || 'N/A'}`) * lineHeight;
-            totalHeight += calculateLines(`Cliente: ${saleResponse.data.client ? `${saleResponse.data.client.name} ${saleResponse.data.client.lastname}` : 'Anónimo'}`) * lineHeight;
+            totalHeight += calculateLines(`Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`) * lineHeight;
             totalHeight += calculateLines(`Modo de pago: ${saleResponse.data.paymentMethod || 'N/A'}`) * lineHeight;
             totalHeight += calculateLines(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`) * lineHeight;
             totalHeight += calculateLines(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`) * lineHeight;
@@ -429,15 +436,32 @@ const FormSales = () => {
             if (saleResponse.data.products?.length) {
                 totalHeight += lineHeight; // Título de productos
                 saleResponse.data.products.forEach(product => {
-
-                    let productWithPrice = products.find(p => p._id === product._id);
-
-                    totalHeight += calculateLines(`${product.name || 'Producto desconocido'}`) * lineHeight;
-                    totalHeight += calculateLines(`Color: ${product.selectedColor?.colorName || 'N/A'}`) * lineHeight;
-                    totalHeight += calculateLines(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`) * lineHeight;
-                    totalHeight += calculateLines(`Precio: $${formatNumber(productWithPrice?.price) || '0.00'}`) * lineHeight;
+                    // Filtrar el producto correspondiente en el array "products"
+                    const fullProduct = products.find(p => p._id === product.productId);
+            
+                    // Si el producto existe
+                    if (fullProduct) {
+                        // Encontrar el color correspondiente
+                        const selectedColor = fullProduct.color.find(c => c._id === product.colorId);
+                        // Encontrar el talle correspondiente
+                        const selectedSize = selectedColor?.size.find(s => s._id === product.sizeId);
+            
+                        // Calcular las líneas para el nombre, color y talle
+                        totalHeight += calculateLines(`${fullProduct.name || 'Producto desconocido'}`) * lineHeight;
+                        totalHeight += calculateLines(`Color: ${selectedColor?.colorName || 'N/A'}`) * lineHeight;
+                        totalHeight += calculateLines(`Talle: ${selectedSize?.sizeName || 'N/A'}`) * lineHeight;
+                    } else {
+                        // Manejar el caso donde no se encuentra el producto
+                        totalHeight += calculateLines(`Producto desconocido`) * lineHeight;
+                        totalHeight += calculateLines(`Color: N/A`) * lineHeight;
+                        totalHeight += calculateLines(`Talle: N/A`) * lineHeight;
+                    }
+            
+                    // Siempre sumar el precio, ya que está presente en saleResponse.data.products
+                    totalHeight += calculateLines(`Precio: $${formatNumber(product.price) || '0.00'}`) * lineHeight;
                 });
             }
+            
     
             // Ajusta la altura de la página al contenido o un mínimo
             return Math.max(totalHeight, minPageHeight);
@@ -481,12 +505,14 @@ const FormSales = () => {
             });
             return y;
         };
+
+        let clientFound = clients.find(c => c._id === saleResponse.data.client);
     
         yPos = addWrappedText(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`, 4, yPos);
         yPos = addWrappedText(`Tenés hasta 15 días para realizar el cambio`, 4, yPos);
         yPos = addWrappedText(``, 4, yPos);
         yPos = addWrappedText(`N° de orden: ${saleResponse.data.orderNumber || 'N/A'}`, 4, yPos);
-        yPos = addWrappedText(`Cliente: ${saleResponse.data.client ? `${saleResponse.data.name} ${saleResponse.data.lastname}` : 'Anónimo'}`, 4, yPos);
+        yPos = addWrappedText(`Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`, 4, yPos);
         yPos = addWrappedText(`Modo de pago: ${saleResponse.data.paymentMethod || 'N/A'}`, 4, yPos);
         yPos = addWrappedText(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`, 4, yPos);
         yPos = addWrappedText(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`, 4, yPos);
@@ -499,11 +525,25 @@ const FormSales = () => {
             yPos += 6;
 
             saleResponse.data.products.forEach(product => {
-                let productWithPrice = products.find(p => p._id === product._id);
-                yPos = addWrappedText(`${product.name || 'Producto desconocido'}`, 4, yPos);
-                yPos = addWrappedText(`Color: ${product.selectedColor?.colorName || 'N/A'}`, 4, yPos);
-                yPos = addWrappedText(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`, 4, yPos);
-                yPos = addWrappedText(`Precio: $${formatNumber(productWithPrice.price) || '0.00'}`, 4, yPos);
+
+                const fullProduct = products.find(p => p._id === product.productId);
+
+                if(fullProduct){
+
+                    const selectedColor = fullProduct.color.find(c => c._id === product.colorId);
+                        // Encontrar el talle correspondiente
+                    const selectedSize = selectedColor?.size.find(s => s._id === product.sizeId);
+
+                    yPos = addWrappedText(`${fullProduct.name || 'Producto desconocido'}`, 4, yPos);
+                    yPos = addWrappedText(`Color: ${selectedColor?.colorName || 'N/A'}`, 4, yPos);
+                    yPos = addWrappedText(`Talle: ${selectedSize?.sizeName || 'N/A'}`, 4, yPos);
+                } else {
+                    yPos = addWrappedText('Producto desconocido', 4, yPos);
+                    yPos = addWrappedText('Color: N/A', 4, yPos);
+                    yPos = addWrappedText('Talle: N/A', 4, yPos);
+                }
+
+                yPos = addWrappedText(`Precio: $${formatNumber(product.price) || '0.00'}`, 4, yPos);
                 yPos += 6;
             });
         }
