@@ -1,26 +1,3 @@
-.titleForm{
-    border-bottom: var(--border-medium);
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-/* .titleContainer {
-    border-bottom: var(--border-medium);
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-} */
-
-.buttonClear{
-    all: unset;
-    background: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    cursor: pointer;
-}
-
 .clientForm{
     display: flex;
     gap: 1rem;

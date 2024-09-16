@@ -1,5 +1,5 @@
 import style from './FormProduct.module.css';
-import iconClear from '../../../../../assets/icons8-símbolo-vaciar-30.png';
+import iconClear from '../../../../assets/img/clearForm.png';
 import x from '../../Sales/FormSales/img/x.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
@@ -379,9 +379,11 @@ const FormProduct = () => {
     return (
         <div className="page">
             <div className="component">
-                <div className={style.titleContainer}>
+                <div className="title">
                     <h2>NUEVO PRODUCTO</h2>
-                    <button className={style.buttonClear} type='button' onClick={() => handleSetForm()}><img src={iconClear} alt="icon-clear" /></button>
+                    <div className="titleButtons">
+                        <button onClick={handleSetForm}><img src={iconClear} alt="" /></button>
+                    </div>
                 </div>
                 <div className="container">
                     <form onSubmit={handleSubmit} className={style.productForm}>
