@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { postClient, getClients } from '../../../../redux/clientActions';
 import { useDispatch } from 'react-redux';
 
-const FormClient = ({ onClientAdded = () => {}}) => {
+const FormClient = ({ onClientAdded = () => {} }) => {
 
     const dispatch = useDispatch();
 
@@ -16,9 +16,11 @@ const FormClient = ({ onClientAdded = () => {}}) => {
     };
 
     const [newClient, setNewClient] = useState(initialClientState);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSetForm = () => {
         setNewClient(initialClientState);
+        setErrorMessage('');
     };
 
     const handleChange = (event) => {
@@ -32,15 +34,17 @@ const FormClient = ({ onClientAdded = () => {}}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setErrorMessage('');
+
         dispatch(postClient(newClient)).then((response) => {
-            onClientAdded(response);
-            dispatch(getClients());   
-            setNewClient(initialClientState); // Reset form
+            if (typeof response === 'string') {
+                setErrorMessage(response);
+            } else {
+                onClientAdded(response);
+                dispatch(getClients());
+                setNewClient(initialClientState);
+            }
         });
-        
-        if (onClientAdded) {
-            onClientAdded();
-        };
     };
 
     return (
@@ -108,10 +112,13 @@ const FormClient = ({ onClientAdded = () => {}}) => {
                                 required 
                             />
                         </div>
+                        {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
                     </div>
                     
                     <button type="submit">Agregar</button>
+
                 </form>
+
             </div>
         </div>
     );

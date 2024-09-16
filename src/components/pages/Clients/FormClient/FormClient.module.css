@@ -29,3 +29,8 @@
 .clientForm button{
     width: 16%;
 }
+
+.clientForm .errorMessage{
+    color: var(--red);
+    text-align: center;
+}

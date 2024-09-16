@@ -108,8 +108,16 @@ export const getClientByLastname = (lastname) => {
 
 export const postClient = (clientData) => {
     return async (dispatch) => {
-        const response = await axios.post('/clients', clientData);
-        return response.data;
+        try {
+            const response = await axios.post('/clients', clientData);
+            return response.data;
+        } catch (error) {
+            if (error.response && error.response.status === 409) {
+                return error.response.data.error;
+            } else {
+                console.log('Otro error:', error.message);
+            }
+        }
     };
 };
 
