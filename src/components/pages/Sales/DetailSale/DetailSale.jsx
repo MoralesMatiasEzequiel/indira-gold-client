@@ -287,12 +287,12 @@ const DetailSale = () => {
 
         dispatch(deleteSale(id)).then(
             dispatch(getSales()).then(
-                navigate('/main_window/')
+                navigate('/')
             )
         )
         .catch(
             dispatch(getSales()).then(
-                navigate('/main_window/')
+                navigate('/')
         ));
     }
 
