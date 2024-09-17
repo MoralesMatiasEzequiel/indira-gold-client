@@ -172,7 +172,7 @@ button{
     border: none;
 }
 
-button:hover, button.delete:hover{
+button:hover{
     background-color: #000000;
 }
 
@@ -200,6 +200,10 @@ button:disabled {
 
 button.delete{
     background-color: var(--red);
+}
+
+button.delete:hover{
+    background-color: #7d0000 !important;
 }
 
 button.add{
