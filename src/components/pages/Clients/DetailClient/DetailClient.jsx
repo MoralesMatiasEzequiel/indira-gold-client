@@ -122,66 +122,65 @@ const DetailClient = () => {
                 loading ? (
                     <div>Cargando</div>
                 ) : (
-                    <div>
-                        <div className="component">
-                            <div className="title">
-                                <h2>Detalle del Cliente</h2>
-                                <div className="titleButtons">
-                                    {clientDetail.active ? <button><Link to={`/main_window/clients/edit/${id}`}>Editar</Link></button> : ''}
-                                    {!clientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
-                                    <button><Link to={`/main_window/clients`}>Atrás</Link></button>
-                                </div>
-                            </div>
-                            <div className={`container ${style.content}`}>
-                                <div className={style.column}>
-                                    {/* <p><span>ID de cliente:&nbsp;</span>{id}</p> */}
-                                    {clientDetail.dni && <p><span>DNI:&nbsp;</span>{clientDetail.dni}</p>}
-                                    {clientDetail.name && <p><span>Nombre:&nbsp;</span>{clientDetail.name}</p>}
-                                    {clientDetail.lastname && <p><span>Apellido:&nbsp;</span>{clientDetail.lastname}</p>}
-                                    {clientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{clientDetail.email}</p>}
-                                    {clientDetail.phone && <p><span>Teléfono:&nbsp;</span>{clientDetail.phone}</p>}
-                                    {clientDetail.date && <p><span>Fecha de suscripción:&nbsp;</span>{formatDate(clientDetail.date)}</p>}
-                                    <p><span>Estado:&nbsp;</span>{clientDetail.active ? 'Activo' : 'Inactivo'}</p>
-                                </div>
-                                <div className={style.column}>
-                                    <p><span>Historial de compras:&nbsp;</span></p>
-                                    {productsLoading ? (
-                                        <div>Cargando productos...</div>
-                                    ) : purchasedProducts?.length ? (
-                                        <ul>
-                                            {purchasedProducts.length > 0 ? (
-                                                purchasedProducts.map((product, index) => (
-                                                    <li key={index}>
-                                                        <p><span>{product.name}</span></p>
-                                                        <ul className={style.productList}>
-                                                            {product.selectedColor && <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>}
-                                                            {product.selectedSize && <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>}
-                                                            {product.price &&<li><span>Precio:&nbsp;</span>${formatNumber(product.price)}</li>}
-                                                        </ul>
-                                                    </li>
-                                                ))
-                                            ) : (
-                                                <div>No hay compras registradas</div>
-                                            )}
-                                        </ul>
-                                    ) : (
-                                        <p>No hay productos vendidos disponibles.</p>
-                                    )}           
-                                </div>
+                    <div className="component">
+                        <div className="title">
+                            <h2>Detalle del Cliente</h2>
+                            <div className="titleButtons">
+                                {clientDetail.active ? <button><Link to={`/main_window/clients/edit/${id}`}>Editar</Link></button> : ''}
+                                {!clientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
+                                <button><Link to={`/main_window/clients`}>Atrás</Link></button>
                             </div>
                         </div>
-                        <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
-                            <div className={style.deleteContent}>
-                                <p>¿Está seguro que desea {clientDetail.active ? 'desactivar' : 'activar'} este cliente?</p>
-                                <div className={style.deleteButtons}>
-                                    <button onClick={toggleShowDeleteModal}>Cancelar</button>
-                                    <button onClick={handleDelete} className={clientDetail.active ? 'delete' : 'add'}>{clientDetail.active ? 'Desactivar' : 'Activar'}</button>
-                                </div>
+                        <div className={`container ${style.content}`}>
+                            <div className={style.column}>
+                                {/* <p><span>ID de cliente:&nbsp;</span>{id}</p> */}
+                                {clientDetail.dni && <p><span>DNI:&nbsp;</span>{clientDetail.dni}</p>}
+                                {clientDetail.name && <p><span>Nombre:&nbsp;</span>{clientDetail.name}</p>}
+                                {clientDetail.lastname && <p><span>Apellido:&nbsp;</span>{clientDetail.lastname}</p>}
+                                {clientDetail.email && <p><span>Correo electrónico:&nbsp;</span>{clientDetail.email}</p>}
+                                {clientDetail.phone && <p><span>Teléfono:&nbsp;</span>{clientDetail.phone}</p>}
+                                {clientDetail.date && <p><span>Fecha de suscripción:&nbsp;</span>{formatDate(clientDetail.date)}</p>}
+                                <p><span>Estado:&nbsp;</span>{clientDetail.active ? 'Activo' : 'Inactivo'}</p>
+                            </div>
+                            <div className={style.column}>
+                                <p><span>Historial de compras:&nbsp;</span></p>
+                                {productsLoading ? (
+                                    <div>Cargando productos...</div>
+                                ) : purchasedProducts?.length ? (
+                                    <ul>
+                                        {purchasedProducts.length > 0 ? (
+                                            purchasedProducts.map((product, index) => (
+                                                <li key={index}>
+                                                    <p><span>{product.name}</span></p>
+                                                    <ul className={style.productList}>
+                                                        {product.selectedColor && <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>}
+                                                        {product.selectedSize && <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>}
+                                                        {product.price &&<li><span>Precio:&nbsp;</span>${formatNumber(product.price)}</li>}
+                                                    </ul>
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <div>No hay compras registradas</div>
+                                        )}
+                                    </ul>
+                                ) : (
+                                    <p>No hay productos vendidos disponibles.</p>
+                                )}           
                             </div>
                         </div>
                     </div>
+
                 )
             }
+            <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
+                <div className={style.deleteContent}>
+                    <p>¿Está seguro que desea {clientDetail.active ? 'desactivar' : 'activar'} este cliente?</p>
+                    <div className={style.deleteButtons}>
+                        <button onClick={toggleShowDeleteModal}>Cancelar</button>
+                        <button onClick={handleDelete} className={clientDetail.active ? 'delete' : 'add'}>{clientDetail.active ? 'Desactivar' : 'Activar'}</button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
