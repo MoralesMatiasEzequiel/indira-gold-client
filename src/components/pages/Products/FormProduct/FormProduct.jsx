@@ -45,8 +45,7 @@ const FormProduct = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [actionType, setActionType] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-console.log(newProduct); 
-console.log("imageGlobal " + imageGlobal); 
+// console.log(newProduct); 
 
     const handleSetForm = () => {
         setNewProduct(initialProductState);
@@ -339,8 +338,7 @@ console.log("imageGlobal " + imageGlobal);
         setImageGlobal(imgProduct);
         setNewProduct(updatedProduct);
         setImagePreview(imgProduct);
-    };
-    
+    }; 
 
     //-----------CATEGORY-----------//
     const handleShowCategoryForm = (type) => {
