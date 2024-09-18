@@ -376,6 +376,10 @@ const FormProduct = () => {
         }
     };    
 
+    useEffect(() => {
+        validateForm();
+    }, [newProduct, colors, sizes]);
+
     return (
         <div className="page">
             <div className="component">
