@@ -45,7 +45,8 @@ const FormProduct = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [actionType, setActionType] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-// console.log(colors, sizes); 
+console.log(newProduct); 
+console.log("imageGlobal " + imageGlobal); 
 
     const handleSetForm = () => {
         setNewProduct(initialProductState);
@@ -301,18 +302,45 @@ const FormProduct = () => {
         }
     };
     
+    // const deleteImage = (index) => {
+    //     const updatedProduct = { ...newProduct };
+
+    //         updatedProduct.imageGlobal = null;
+    //         updatedProduct.imageGlobalPreview = null;
+    //         updatedProduct.color[index].imageFile = null;
+    //         updatedProduct.color[index].image = null;
+    //         setImageGlobal(imgProduct);
+
+    //     setNewProduct(updatedProduct);
+    //     setImagePreview(imgProduct);
+    // };
+
     const deleteImage = (index) => {
         const updatedProduct = { ...newProduct };
-
+    
+        if (index !== null) { // Elimina imagen específica por color
+            if (updatedProduct.color[index]) {
+                updatedProduct.color[index].imageFile = null;
+                updatedProduct.color[index].image = null;
+                updatedProduct.imageGlobal = null;
+                updatedProduct.imageGlobalPreview = null;
+            }
+        } else { // Elimina imagen global
             updatedProduct.imageGlobal = null;
             updatedProduct.imageGlobalPreview = null;
-            updatedProduct.color[index].imageFile = null;
-            updatedProduct.color[index].image = null;
-            setImageGlobal(imgProduct);
-
+    
+            // Opcional: Resetea todas las imágenes de color
+            updatedProduct.color.forEach(color => {
+                color.imageFile = null;
+                color.image = null;
+            });
+        }
+    
+        setImageGlobal(imgProduct);
         setNewProduct(updatedProduct);
         setImagePreview(imgProduct);
     };
+    
 
     //-----------CATEGORY-----------//
     const handleShowCategoryForm = (type) => {
@@ -480,25 +508,30 @@ const FormProduct = () => {
                                 </div>
                                 <div className={style.imageComponent}>  
                                     <ol>
-                                        {newProduct.color.map((color, index) => (
-                                            <li key={index} className={style.list}>
-                                                <span className={style.spanList}>{color.colorName}</span>
-                                                {selectedOptionImage === 'unique' && (
+                                        {selectedOptionImage === 'unique' && newProduct.color.length > 0 && (
+                                            <li key="unique" className={style.list}>
+                                                <div className={style.addImg}>
+                                                    <label className={style.buttonImg} htmlFor={'imageUniqueProduct'}>
+                                                        <img className={style.imgProduct} src={imageGlobal || imgProduct} alt="image-product" />
+                                                    </label>
+                                                    <input 
+                                                        className={style.inputImage} 
+                                                        type="file" 
+                                                        accept="image/*" 
+                                                        id={'imageUniqueProduct'} 
+                                                        onChange={(event) => handleImageChange(event)} 
+                                                    />
+                                                </div>
+                                                <button type="button" className={style.buttonDelete} onClick={() => deleteImage(null)}>
+                                                    <img src={x} alt="x" />
+                                                </button>
+                                            </li>
+                                        )}
+                                        {selectedOptionImage === 'byColor' && newProduct.color.length > 0 && (
+                                            newProduct.color?.map((color, index) => (
+                                                <li key={color.colorName} className={style.list}>
                                                     <div className={style.addImg}>
-                                                        <label className={style.buttonImg} htmlFor={'imageUniqueProduct'}>
-                                                            <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
-                                                        </label>
-                                                        <input 
-                                                            className={style.inputImage} 
-                                                            type="file" 
-                                                            accept="image/*" 
-                                                            id={'imageUniqueProduct'} 
-                                                            onChange={(event) => handleImageChange(event)} 
-                                                        />
-                                                    </div>
-                                                )}
-                                                {selectedOptionImage === 'byColor' && (
-                                                    <div className={style.addImg}>
+                                                        <span className={style.spanList}>{color.colorName}</span>
                                                         <label className={style.buttonImg} htmlFor={`imageProduct-${index}`}>
                                                             <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
                                                         </label>
@@ -510,12 +543,12 @@ const FormProduct = () => {
                                                             onChange={(event) => handleImageChange(event, index)} 
                                                         />
                                                     </div>
-                                                )}     
-                                                <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
-                                                    <img src={x} alt="x" />
-                                                </button>                                           
-                                            </li>
-                                        ))}
+                                                    <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
+                                                        <img src={x} alt="x" />
+                                                    </button>  
+                                                </li>
+                                            ))
+                                        )}
                                     </ol>                                              
                                 </div>
                             </div>
