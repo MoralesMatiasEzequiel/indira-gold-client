@@ -55,19 +55,22 @@
 }
 
 .containerImgProduct {
+    margin-bottom: 2rem;
+    padding: 0.5rem 0 1.5rem;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Alinea las imágenes al principio */
     gap: 2em; /* Espacio entre las imágenes */
-    flex-wrap: wrap;
+    overflow-x: auto; /* Permite el scroll lateral si el contenido es más grande */
+    width: 100%; /* Asegura que el contenedor ocupe el 100% del ancho */
+    white-space: nowrap; /* Mantiene las imágenes en una sola línea */
 }
 
 .imgProduct {
-    flex: 1 0 calc(25% - 10px); /* Cada imagen ocupará el 25% del ancho del contenedor menos el espacio de gap */
     max-width: 150px;        
     height: auto;        
-    /* display: block;*/
     object-fit: cover;     
+    flex-shrink: 0; /* Previene que las imágenes se reduzcan si no hay suficiente espacio */
 }
 
 .columnInactive p, .columnInactive div ul{
@@ -104,20 +107,24 @@
     margin: 5px;
 }
 
+.colorSection .colorTag{
+    background-color: #e5e5e5;
+    margin: 0;
+    padding: 0.5rem;
+}
+
 .containerColor{
     /* width: 100%; */
     padding-bottom: 10px;
     display: flex; /* Alinea los elementos hijos en una fila */
     flex-wrap: wrap; /* Permite que los elementos se envuelvan en múltiples líneas si hay más de uno */
     gap: 20px; /* Espacio entre los bloques de tamaño */
-    border-bottom: solid 1px #e5e5e5;
 }
 
 .sizeBlock {
     box-sizing: border-box; /* Incluye el padding y el borde en el ancho total del elemento */
     padding: 10px; /* Espaciado interno del bloque */
-    border: 1px solid #cfbb77; /* Opcional: agrega un borde para distinguir cada bloque */
-    border-radius: 5px; /* Opcional: agrega esquinas redondeadas */
+    border-left: 2px solid #e5e5e5; /* Opcional: agrega un borde para distinguir cada bloque */
     margin-bottom: 10px;
 }
 

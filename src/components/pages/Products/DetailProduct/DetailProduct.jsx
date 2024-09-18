@@ -75,7 +75,7 @@ const DetailProduct = () => {
                     <div className={!productDetail.active ? style.columnInactive : style.column}>
                         {productDetail.color?.map(color => (
                             <div className={style.colorSection}>
-                                <p><span>Color:&nbsp;</span>{color.colorName}</p>
+                                <p className={style.colorTag}><span>Color:&nbsp;</span>{color.colorName}</p>
                                 <div className={style.containerColor}>                  
                                     {color.size.map(size => (
                                         <div key={size.sizeName} className={style.sizeBlock}>
