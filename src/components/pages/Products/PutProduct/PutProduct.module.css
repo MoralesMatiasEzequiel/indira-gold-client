@@ -306,60 +306,18 @@
     justify-content:space-between;
 }
 
-.imageTitleContainer .labelImage{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 25px;
-    height: 0px;
-    color: #e4b61a;
-    font-size: 35px;
-    font-weight: bold;
-}
-
 .title{
     display: flex;
     align-items: center;
-}
-
-.butonImage{
-    background: none;
-    margin: 0;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-}
-
-.addImage{
-    display: flex;
-    height: 25%;
-    width: 25%;
-}
-
-.checkboxContainer{
-    margin-left: 50px;
-    display: flex;
-    align-items: center;
-}
-
-.spanImage{
-    font-size: 0.75rem;
 }
 
 .inputCheckbox {
     cursor: pointer;
 }
 
-/* .inputCheckbox:checked {
-    appearance: none;
-    -webkit-appearance: none;
-    padding: 0;
-    border: 1px solid #929292;
-    border-radius: 2px;
-    width: 13px;
-    height: 13px;
-    background-color: red; 
-} */
+.spanImage{
+    font-size: 0.75rem;
+}
 
 .imageComponent{
     margin-top: 10px;
@@ -372,13 +330,14 @@
     overflow-y: auto;
 }
 
-.inputImage{
-    display: none;    
+.addImg{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.labelImage{
+.buttonImg{
     cursor: pointer;
-    /* display: block; */
 }
 
 .imgProduct{
@@ -386,6 +345,56 @@
     width: 20%;
     height: 20%;
 }
+
+.inputImage{
+    display: none;    
+}
+
+/* .labelImage{
+    cursor: pointer;
+} */
+
+/* .addImage{
+    display: flex;
+    height: 25%;
+    width: 25%;
+} */
+
+/* .imageTitleContainer .labelImage{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 0px;
+    color: #e4b61a;
+    font-size: 35px;
+    font-weight: bold;
+} */
+
+/* .butonImage{
+    background: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+} */
+
+/* .checkboxContainer{
+    margin-left: 50px;
+    display: flex;
+    align-items: center;
+} */
+
+/* .inputCheckbox:checked {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+    border: 1px solid #929292;
+    border-radius: 2px;
+    width: 13px;
+    height: 13px;
+    background-color: red; 
+} */
 
 /* ----------------- CATEGORÍA ----------------- */
 
