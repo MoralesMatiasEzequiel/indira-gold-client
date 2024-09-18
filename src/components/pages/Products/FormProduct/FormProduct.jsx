@@ -510,7 +510,7 @@ const FormProduct = () => {
                                 </div>
                                 <div className={style.imageComponent}>  
                                     <ol>
-                                        {selectedOptionImage === 'unique' && newProduct.color.length > 0 && (
+                                        {selectedOptionImage === 'unique' && newProduct.color?.length > 0 && (
                                             <li key="unique" className={style.list}>
                                                 <div className={style.addImg}>
                                                     <label className={style.buttonImg} htmlFor={'imageUniqueProduct'}>
@@ -529,7 +529,7 @@ const FormProduct = () => {
                                                 </button>
                                             </li>
                                         )}
-                                        {selectedOptionImage === 'byColor' && newProduct.color.length > 0 && (
+                                        {selectedOptionImage === 'byColor' && newProduct.color?.length > 0 && (
                                             newProduct.color?.map((color, index) => (
                                                 <li key={color.colorName} className={style.list}>
                                                     <div className={style.addImg}>

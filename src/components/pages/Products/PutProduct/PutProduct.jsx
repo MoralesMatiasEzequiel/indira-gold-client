@@ -69,12 +69,13 @@ const PutProduct = () => {
     const [newColor, setNewColor] = useState('');
     const [sizes, setSizes] = useState([]);
     const [newSize, setNewSize] = useState('');
-    const [selectedOptionImage, setSelectedOptionImage] = useState('unique');
+    const [selectedOptionImage, setSelectedOptionImage] = useState(productDetail.imageGlobal ? 'unique' : 'byColor');
     const [imageGlobal, setImageGlobal] = useState(null);
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
     const [actionType, setActionType] = useState(null);    
+console.log(editProduct);
 
  
     const handleInputChange = (event) => {
@@ -257,8 +258,6 @@ const PutProduct = () => {
         setEditProduct(updatedEditProduct);
     };
 
-
-
     //-----------SUPPLIER-----------//
     const handleSupplierChange = (event) => {
         const { name, value } = event.target;
@@ -277,10 +276,22 @@ const PutProduct = () => {
     //-----------IMAGEN-----------//
     const getImageUrl = (imagePath) => {
         if (!imagePath) return '';
+        
+        // Reemplazar barras invertidas por barras inclinadas
+        const correctedPath = imagePath.replace(/\\/g, '/');
+        
         // URL base para los archivos estáticos
         const baseUrl = 'http://localhost:3001/';
-        return `${baseUrl}${imagePath}`;
+        
+        return `${baseUrl}${correctedPath}`;
     };
+
+    // const getImageUrl = (imagePath) => {
+    //     if (!imagePath) return '';
+    //     // URL base para los archivos estáticos
+    //     const baseUrl = 'http://localhost:3001/';
+    //     return `${baseUrl}${imagePath}`;
+    // };
 
     const handleCheckboxChange = (option) => {
         setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
@@ -330,21 +341,32 @@ const PutProduct = () => {
             reader.readAsDataURL(file);
         } 
     };
-    
+     
     const deleteImage = (index) => {
         const updatedProduct = { ...editProduct };
-
+    
+        if (index !== null) { // Elimina imagen específica por color
+            if (updatedProduct.color[index]) {
+                updatedProduct.color[index].imageFile = null;
+                updatedProduct.color[index].image = null;
+                updatedProduct.imageGlobal = null;
+                updatedProduct.imageGlobalPreview = null;
+            }
+        } else { // Elimina imagen global
             updatedProduct.imageGlobal = null;
             updatedProduct.imageGlobalPreview = null;
-            updatedProduct.color[index].imageFile = null;
-            updatedProduct.color[index].image = null;
-            setImageGlobal(imgProduct);
-
+    
+            // Opcional: Resetea todas las imágenes de color
+            updatedProduct.color.forEach(color => {
+                color.imageFile = null;
+                color.image = null;
+            });
+        }
+    
+        setImageGlobal(imgProduct);
         setEditProduct(updatedProduct);
         setImagePreview(imgProduct);
-
-        // validateForm();
-    };   
+    }; 
 
     //-----------CATEGORY-----------//
     const handleShowCategoryForm = (type) => {
@@ -369,7 +391,7 @@ const PutProduct = () => {
         dispatch(getCategories());
     };    
 
- 
+    //-----------SUBMIT-----------//
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData();
@@ -553,12 +575,6 @@ const PutProduct = () => {
                                 <div className={style.imageTitleContainer}>
                                     <div className={style.title}>
                                         <label htmlFor="image">Imágenes</label>
-                                        {selectedOptionImage === 'unique' && (
-                                            <div>
-                                                <label htmlFor={'imageUniqueProduct'} className={style.labelImage}>+</label>
-                                                <input type="file" accept="image/*" id={'imageUniqueProduct'} onChange={(event) => handleImageChange(event)} className={style.inputImage} />
-                                            </div>
-                                        )}
                                     </div>
                                     <div>
                                         <input className={style.inputCheckbox} type="checkbox" name="unique" id="unique" checked={selectedOptionImage === 'unique'} onChange={() => handleCheckboxChange('unique')} />
@@ -569,38 +585,48 @@ const PutProduct = () => {
                                 </div>
                                 <div className={style.imageComponent}>  
                                     <ol>
-                                        {editProduct.color?.map((color, index) => (
-                                            <li key={index} className={style.list}>
-                                                <span className={style.spanList}>{color.colorName}</span>
-                                                {selectedOptionImage === 'byColor' && (
-                                                    <div>
-                                                        <label className={style.labelImage} htmlFor={`imageProduct-${index}`}>Cargar imagen</label>
+                                        {selectedOptionImage === 'unique' && editProduct.color?.length > 0 && (
+                                            <li key="unique" className={style.list}>
+                                                <div className={style.addImg}>
+                                                    <label className={style.buttonImg} htmlFor={'imageUniqueProduct'}>
+                                                        <img className={style.imgProduct} src={getImageUrl(editProduct.imageGlobal) || imgProduct} alt="image-product" />
+                                                    </label>
+                                                    <input 
+                                                        className={style.inputImage} 
+                                                        type="file" 
+                                                        accept="image/*" 
+                                                        id={'imageUniqueProduct'} 
+                                                        onChange={(event) => handleImageChange(event)} 
+                                                    />
+                                                </div>
+                                                <button type="button" className={style.buttonDelete} onClick={() => deleteImage(null)}>
+                                                    <img src={x} alt="x" />
+                                                </button>
+                                            </li>
+                                        )}
+                                        {selectedOptionImage === 'byColor' && editProduct.color?.length > 0 && (
+                                            editProduct.color?.map((color, index) => (
+                                                <li key={color.colorName} className={style.list}>
+                                                    <div className={style.addImg}>
+                                                        <span className={style.spanList}>{color.colorName}</span>
+                                                        <label className={style.buttonImg} htmlFor={`imageProduct-${index}`}>
+                                                            <img className={style.imgProduct} src={getImageUrl(color.image) || imgProduct} alt="image-product" />
+                                                        </label>
                                                         <input 
                                                             className={style.inputImage} 
                                                             type="file" 
                                                             accept="image/*" 
-                                                            onChange={(event) => handleImageChange(event, index)} 
                                                             id={`imageProduct-${index}`}
+                                                            onChange={(event) => handleImageChange(event, index)} 
                                                         />
                                                     </div>
-                                                )}
-                                                {color.image && !color.imageFile ? (
-                                                    <img className={style.imgProduct} src={getImageUrl(color.image)} alt="Product Image" />
-                                                ) : color.image ? (
-                                                    <img className={style.imgProduct} src={color.image} alt="Product Image" />
-                                                ) : editProduct.imageGlobal && !editProduct.imageGlobalPreview ? (
-                                                    <img className={style.imgProduct} src={getImageUrl(editProduct.imageGlobal)} alt="Product Image" />
-                                                ) : editProduct.imageGlobalPreview ? (
-                                                    <img className={style.imgProduct} src={editProduct.imageGlobalPreview} alt="Product Image" />
-                                                ) : (
-                                                    <img src={imgProduct} alt="Product Image" className={style.imgProduct} />
-                                                )}
-                                                <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
-                                                    <img src={x} alt="x" />
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ol>                                              
+                                                    <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
+                                                        <img src={x} alt="x" />
+                                                    </button>  
+                                                </li>
+                                            ))
+                                        )}
+                                    </ol>
                                 </div>
                             </div>
                             <div className={style.rigthContainer}> 
