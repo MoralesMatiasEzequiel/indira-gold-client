@@ -75,28 +75,8 @@ const PutProduct = () => {
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
     const [actionType, setActionType] = useState(null);    
-    // const validateForm = () => {
-    //     const isProductNameValid = editProduct.name.trim() !== '';
-    //     const isColorValid = colors.length > 0;
-    //     const isSizeValid = sizes.length > 0;
-    //     const isSupplierValid = Object.keys(editProduct.supplier).length > 0;
-    //     // Verificar que exista una imagen global o que cada color tenga su imagen específica
-    //     const isImageGlobalValid = !!editProduct.imageGlobal || !!editProduct.imageGlobalPreview;
-    //     const isColorImagesValid = editProduct.color.every(color => color.image || color.imageFile);
-    //     const isImagesValid = isImageGlobalValid || isColorImagesValid;
-    //     const isCategoryValid = editProduct.category.length > 0;
-    //     const isPriceValid = editProduct.price > 0;
 
-    //     // Validar que al menos una combinación de color y talla tenga stock mayor a 0
-    //     const hasAtLeastOneValidStock = combinations.some(combination => {
-    //         const color = editProduct.color.find(c => c.colorName === combination.color);
-    //         const size = color ? color.size.find(s => s.sizeName === combination.size) : null;
-    //         return size ? size.stock > 0 : false;
-    //     });
-
-    //     setIsSubmitDisabled(!(isProductNameValid && isColorValid && isSizeValid && isSupplierValid && isImagesValid && isCategoryValid && isPriceValid && hasAtLeastOneValidStock));
-    // };
-
+ 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
     
@@ -147,14 +127,6 @@ const PutProduct = () => {
         setNewColor(event.target.value);
     };
 
-    // const addColor = () => {
-    //     if (newColor !== '') {
-    //         setColors([...colors, newColor]);
-    //         setNewColor('');
-    //     };
-    //     // validateForm();
-    // };
-
     const addColor = () => {
         if (newColor !== '') {
             setColors([...colors, newColor]);
@@ -178,27 +150,7 @@ const PutProduct = () => {
     
             setNewColor('');
         }
-        // validateForm();
     };
-    
-    // const deleteColor = (index) => {
-    //     const updatedColors = [...colors];
-    //     updatedColors.splice(index, 1);
-    //     setColors(updatedColors);
-    
-    //     const updatedProductsColor = [...editProduct.color];
-    
-    //     // Se busca el color a eliminar basado en el índice de colors
-    //     const colorToDelete = colors[index]; 
-    //     // Y aca filtramos el array color de newProduct para eliminar el objeto correspondiente
-    //     const filteredProductsColor = updatedProductsColor.filter(item => item.colorName !== colorToDelete);
-
-    //     setEditProduct({
-    //         ...editProduct,
-    //         color: filteredProductsColor
-    //     });
-    //     // validateForm();
-    // };
 
     const deleteColor = (index) => {
         const updatedColors = [...colors];
@@ -218,14 +170,6 @@ const PutProduct = () => {
     const handleInputSizeChange = (event) => {
         setNewSize(event.target.value);
     };
-
-    // const addSize = () => {
-    //     if (newSize !== '') {
-    //         setSizes([...sizes, newSize]);
-    //         setNewSize('');
-    //     };
-    //     // validateForm();
-    // };
 
     const addSize = () => {
         if (newSize !== '') {
@@ -283,54 +227,7 @@ const PutProduct = () => {
     };
 
     const combinations = generateCombinations();
-
-    //-----------STOCK-----------//
-    // const handleStockChange = (combination, event) => {
-    //     const { name, value } = event.target;
-    //     const updatedProduct = { ...editProduct };
-    
-    //     let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
-    //     if (colorIndex === -1) {
-    //         // Agregar un nuevo color si no existe
-    //         updatedProduct.color.push({
-    //             colorName: combination.color,
-    //             size: [],
-    //             image: ''
-    //         });
-    //         colorIndex = updatedProduct.color.length - 1; // Actualizar colorIndex al nuevo color
-    //     }
-    
-    //     let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
-    //     if (sizeIndex === -1) {
-    //         // Agregar un nuevo talle si no existe
-    //         updatedProduct.color[colorIndex].size.push({
-    //             sizeName: combination.size,
-    //             measurements: { width: '', long: '', rise: '' },
-    //             code: 'CÓDIGO QR',
-    //             stock: 0
-    //         });
-    //         sizeIndex = updatedProduct.color[colorIndex].size.length - 1; // Actualizar sizeIndex al nuevo tamaño
-    //     }
-    
-    //     // Actualización de medidas y stock
-    //     if (['width', 'long', 'rise'].includes(name)) {
-    //         updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
-    //     } else if (name === 'stock') {
-    //         if (value > 0) {
-    //             updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
-    //         } else {
-    //             updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
-    //         }
-    //     }
-    
-    //     // Verificar si se debe eliminar el objeto `color` si todos los `size` tienen stock 0
-    //     if (updatedProduct.color[colorIndex].size.length === 0) {
-    //         updatedProduct.color.splice(colorIndex, 1);
-    //     }
-    
-    //     setEditProduct(updatedProduct);
-    //     // validateForm();
-    // };   
+  
 
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
@@ -360,27 +257,7 @@ const PutProduct = () => {
         setEditProduct(updatedEditProduct);
     };
 
-    // const handleStockChange = (combination, event) => {
-    //     const { name, value } = event.target;
-    //     const updatedEditProduct = { ...editProduct };
-    
-    //     const colorIndex = updatedEditProduct.color.findIndex(c => c.colorName === combination.color);
-    //     const sizeIndex = updatedEditProduct.color[colorIndex].size.findIndex(s => s.sizeName === combination.size);
-    
-    //     if (colorIndex >= 0 && sizeIndex >= 0) {
-    //         updatedEditProduct.color[colorIndex].size[sizeIndex].measurements = {
-    //             ...updatedEditProduct.color[colorIndex].size[sizeIndex].measurements,
-    //             [name]: value
-    //         };
-    
-    //         if (name === 'stock') {
-    //             updatedEditProduct.color[colorIndex].size[sizeIndex].stock = value;
-    //         }
-    //     }
-    
-    //     setEditProduct(updatedEditProduct);
-    // };
-    
+
 
     //-----------SUPPLIER-----------//
     const handleSupplierChange = (event) => {
@@ -452,9 +329,6 @@ const PutProduct = () => {
             };
             reader.readAsDataURL(file);
         } 
-        // else {
-        //     validateForm();
-        // };
     };
     
     const deleteImage = (index) => {
@@ -493,62 +367,9 @@ const PutProduct = () => {
             }));
         };
         dispatch(getCategories());
-        // validateForm();
     };    
 
-    //-----------SUBMIT-----------//
-
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-    //     const formData = new FormData();
-    
-    //     // Verificar y preservar la imagen global si no fue modificada
-    //     if (editProduct.imageGlobal) {
-    //         formData.append('imageGlobal', editProduct.imageGlobal);
-    //     } else if (productDetail.imageGlobal) {
-    //         formData.append('imageGlobal', productDetail.imageGlobal);
-    //     }
-    
-    //     // Verificar y preservar las imágenes de cada color si no fueron modificadas
-    //     editProduct.color.forEach((color) => {
-    //         // Busca el color original en productDetail
-    //         const originalColor = productDetail.color.find(c => c._id === color._id);
-            
-    //         if (color.imageFile) {
-    //             formData.append('images', color.imageFile);
-    //         } else if (originalColor && originalColor.image) {
-    //             formData.append('images', originalColor.image);
-    //         }
-    //     });
-    
-    //     // Agregar los demás campos al formData
-    //     formData.append("_id", editProduct._id);
-    //     formData.append("name", editProduct.name);
-    //     formData.append("color", JSON.stringify(editProduct.color));
-    //     formData.append("supplier", JSON.stringify(editProduct.supplier));
-    //     formData.append("price", editProduct.price);
-    //     formData.append("category", JSON.stringify(editProduct.category));
-    //     formData.append("description", editProduct.description);
-    //     formData.append("active", editProduct.active);
-    
-    //     // Revisión final para asegurarte de que todo esté en el formData
-    //     console.log([...formData.entries()]);
-    
-    //     try {
-    //         const response = await dispatch(putProduct(formData));
-    
-    //         if (response.data) {
-    //             console.log("Successfully edited product");
-    //             dispatch(getProducts());
-    //             // dispatch(getProductById(id));
-    //             dispatch(getCategories());
-    //             navigate('/main_window/products/succes/put');
-    //         };
-    //     } catch (error) {
-    //         console.error("Error editing product:", error);
-    //     };
-    // };
-    
+ 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData();
@@ -600,51 +421,6 @@ const PutProduct = () => {
             console.error("Error editing product:", error);
         };
     };
-  
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-    //     const formData = new FormData();
-    
-    //     // Agregar la imagen global si existe
-    //     if (editProduct.imageGlobal) {
-    //         formData.append('imageGlobal', editProduct.imageGlobal);
-    //     };
-        
-    //     editProduct.color.forEach((color, index) => {
-    //         if (color.imageFile) {
-    //             formData.append('images', color.imageFile);
-    //         };
-    //     });
-    
-    //     formData.append("_id", editProduct._id);
-    //     formData.append("name", editProduct.name);
-    //     formData.append("color", JSON.stringify(editProduct.color));
-    //     formData.append("supplier", JSON.stringify(editProduct.supplier));
-    //     formData.append("price", editProduct.price);
-    //     formData.append("category", JSON.stringify(editProduct.category));
-    //     formData.append("description", editProduct.description);
-    //     formData.append("active", editProduct.active);
-    // // console.log(formData);
-    
-    //     try {
-    //         const response = await dispatch(putProduct(formData));
-    
-    //         if (response.data) {
-    //             console.log("Successfully edited product");
-    //             // setColors([]);
-    //             // setSizes([]);
-    //             // setImageGlobal(null);
-    //             dispatch(getProducts());
-    //             dispatch(getProductById(id));
-    //             dispatch(getCategories());
-    //             // setEditProduct(initialEditProductState); // Reset form
-    //             // setEditProduct({}); 
-    //             navigate('/main_window/products/succes/put');
-    //         };
-    //     } catch (error) {
-    //         console.error("Error editing product:", error);
-    //     };
-    // };
     
     return (
         <div className="page">
@@ -856,8 +632,7 @@ const PutProduct = () => {
                                 </div>  
                             </div>
                             <div>
-                                {/* <button type="submit" disabled={isSubmitDisabled}>Editar</button> */}
-                                <button type="submit">Editar</button>
+                                <button className={style.buttonSubmit} type="submit">Editar</button>
                             </div>
                         </div>
                     </form>

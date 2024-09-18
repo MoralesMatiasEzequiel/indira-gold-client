@@ -13,6 +13,9 @@
 
 .column1{
     width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .column2{
