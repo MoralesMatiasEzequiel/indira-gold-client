@@ -46,7 +46,7 @@ const DetailProduct = () => {
                         <button><Link to={`/main_window/products/management`}>Atrás</Link></button>
                     </div>
                 </div>
-                <div className="container">
+                <div className={`container ${style.content}`}>
                     {!productDetail.active && <div className={style.productInactive}><span>Este producto ha sido eliminado</span></div>}
                     {productDetail.name && <div className={!productDetail.active ? style.nameProductInactive : style.nameProduct}><span>{productDetail.name}</span></div>}
                     <div className={!productDetail.active ? style.columnInactive : style.column}>
@@ -62,6 +62,17 @@ const DetailProduct = () => {
                         <p><span>Precio:&nbsp;</span>${productDetail.price}</p>
                         <p><span>Categoría:&nbsp;</span>{(productDetail.category && productDetail.category.length > 0) ? productDetail.category[0].name : 'No tiene categoría'}</p>
                         {/* <p><span>Código QR:</span></p> */}
+                        {productDetail.description ? <p><span>Descripción:&nbsp;</span>{productDetail.description}</p> : ''}
+                        {productDetail.supplier && productDetail.supplier.name.trim() !== '' || productDetail.supplier && productDetail.supplier.phone.trim() !== ''  
+                        ? (
+                            <div className={style.containerSupplier}>
+                                <p><span>Proveedor:</span></p>
+                                <li><span>Nombre:&nbsp;</span>{productDetail.supplier.name}</li>
+                                <li><span>Teléfono:&nbsp;</span>{productDetail.supplier.phone}</li>
+                            </div> 
+                        ) : <span className={style.messageSupplier}>No hay información del proveedor.</span>}
+                    </div>
+                    <div className={!productDetail.active ? style.columnInactive : style.column}>
                         {productDetail.color?.map(color => (
                             <div className={style.colorSection}>
                                 <p><span>Color:&nbsp;</span>{color.colorName}</p>
@@ -79,15 +90,6 @@ const DetailProduct = () => {
                                 </div>
                             </div>
                         ))}
-                        {productDetail.description ? <p><span>Descripción:&nbsp;</span>{productDetail.description}</p> : ''}
-                        {productDetail.supplier && productDetail.supplier.name.trim() !== '' || productDetail.supplier && productDetail.supplier.phone.trim() !== ''  
-                        ? (
-                            <div className={style.containerSupplier}>
-                                <p><span>Proveedor:</span></p>
-                                <li><span>Nombre:&nbsp;</span>{productDetail.supplier.name}</li>
-                                <li><span>Teléfono:&nbsp;</span>{productDetail.supplier.phone}</li>
-                            </div> 
-                        ) : <span className={style.messageSupplier}>No hay información del proveedor.</span>}
                     </div>
                 </div>
             </div>
