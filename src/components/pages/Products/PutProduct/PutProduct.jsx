@@ -75,7 +75,6 @@ const PutProduct = () => {
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
     const [actionType, setActionType] = useState(null);    
-
     // const validateForm = () => {
     //     const isProductNameValid = editProduct.name.trim() !== '';
     //     const isColorValid = colors.length > 0;
@@ -134,6 +133,14 @@ const PutProduct = () => {
     
         // validateForm();
     };  
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addColor();
+            addSize();
+        };
+    };
 
     //-----------COLOR-----------//
     const handleInputColorChange = (event) => {
@@ -669,7 +676,7 @@ const PutProduct = () => {
                                                 </li>
                                             ))}
                                         </ol>
-                                        <input className={style.inputAddColor} type="text" name="color" value={newColor} onChange={handleInputColorChange} placeholder='Agregar' />
+                                        <input className={style.inputAddColor} type="text" name="color" value={newColor} onChange={handleInputColorChange} onKeyDown={handleKeyDown} placeholder='Agregar' />
                                         <button type="button" className={style.buttonAdd} onClick={addColor}>+</button>
                                     </div>
                                 </div>
@@ -686,7 +693,7 @@ const PutProduct = () => {
                                                 </li>
                                             ))}
                                         </ol>
-                                        <input className={style.inputAddSize} type="text" name="size" value={newSize} onChange={handleInputSizeChange} placeholder='Agregar' />
+                                        <input className={style.inputAddSize} type="text" name="size" value={newSize} onChange={handleInputSizeChange} onKeyDown={handleKeyDown} placeholder='Agregar' />
                                         <button type="button" className={style.buttonAdd} onClick={addSize}>+</button>
                                     </div>
                                 </div>
