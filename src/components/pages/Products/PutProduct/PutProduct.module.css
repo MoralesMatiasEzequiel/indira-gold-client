@@ -13,6 +13,9 @@
 
 .column1{
     width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .column2{
@@ -454,4 +457,9 @@
     width: 50%;
     padding: 3px;
     min-height: 30px;
+}
+
+/* ----------------- SUBMIT ----------------- */
+.buttonSubmit{
+    width: 100%;
 }
