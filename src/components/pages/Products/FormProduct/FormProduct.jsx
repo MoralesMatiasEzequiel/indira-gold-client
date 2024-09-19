@@ -429,7 +429,7 @@ const FormProduct = () => {
         event.preventDefault();
         const formData = new FormData();
 
-        // Agregar la imagen global si existe
+        // Agregar la imagen global si existe.
         if (newProduct.imageGlobal) {
             formData.append('imageGlobal', newProduct.imageGlobal);
         };
