@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
 import { postProduct } from '../../../../redux/productActions.js';
+import imageCompression from 'browser-image-compression';
 
 const FormProduct = () => {
     
@@ -45,7 +46,7 @@ const FormProduct = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [actionType, setActionType] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-// console.log(newProduct); 
+// console.log(imageGlobal); 
 
     const handleSetForm = () => {
         setNewProduct(initialProductState);
@@ -258,48 +259,48 @@ const FormProduct = () => {
         setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
     };
 
-    const handleImageChange = (event, colorIndex) => {
-        const file = event.target.files[0];
+    // const handleImageChange = (event, colorIndex) => {
+    //     const file = event.target.files[0];
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const updatedProduct = { ...newProduct };
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             const updatedProduct = { ...newProduct };
 
-                if (colorIndex !== undefined) {
-                    // Subir imagen específica por color
-                    updatedProduct.color[colorIndex].imageFile = file;
-                    updatedProduct.color[colorIndex].image = reader.result;
+    //             if (colorIndex !== undefined) {
+    //                 // Subir imagen específica por color
+    //                 updatedProduct.color[colorIndex].imageFile = file;
+    //                 updatedProduct.color[colorIndex].image = reader.result;
 
-                    // Eliminar imagen global si hay una
-                    if (updatedProduct.imageGlobal) {
-                        updatedProduct.imageGlobal = null;
-                        updatedProduct.imageGlobalPreview = null;
-                        setImageGlobal(null);
-                    }
+    //                 // Eliminar imagen global si hay una
+    //                 if (updatedProduct.imageGlobal) {
+    //                     updatedProduct.imageGlobal = null;
+    //                     updatedProduct.imageGlobalPreview = null;
+    //                     setImageGlobal(null);
+    //                 }
 
-                    setNewProduct(updatedProduct);
-                    setImagePreview(reader.result);
-                } else {
-                    // Subir imagen global
-                    updatedProduct.imageGlobal = file;
-                    updatedProduct.imageGlobalPreview = reader.result;
+    //                 setNewProduct(updatedProduct);
+    //                 setImagePreview(reader.result);
+    //             } else {
+    //                 // Subir imagen global
+    //                 updatedProduct.imageGlobal = file;
+    //                 updatedProduct.imageGlobalPreview = reader.result;
 
-                    // Eliminar imágenes específicas de cada color
-                    updatedProduct.color = updatedProduct.color.map(color => ({
-                        ...color,
-                        imageFile: null,
-                        image: null
-                    }));
+    //                 // Eliminar imágenes específicas de cada color
+    //                 updatedProduct.color = updatedProduct.color.map(color => ({
+    //                     ...color,
+    //                     imageFile: null,
+    //                     image: null
+    //                 }));
 
-                    setNewProduct(updatedProduct);
-                    setImageGlobal(reader.result);
-                    setImagePreview(reader.result);
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    //                 setNewProduct(updatedProduct);
+    //                 setImageGlobal(reader.result);
+    //                 setImagePreview(reader.result);
+    //             }
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
     
     // const deleteImage = (index) => {
     //     const updatedProduct = { ...newProduct };
@@ -313,6 +314,65 @@ const FormProduct = () => {
     //     setNewProduct(updatedProduct);
     //     setImagePreview(imgProduct);
     // };
+
+    const handleImageChange = async (event, colorIndex) => {
+        const file = event.target.files[0];
+    
+        if (file) {
+            try {
+                // Configuración para la compresión
+                const options = {
+                    maxSizeMB: 1, // Tamaño máximo de la imagen en MB
+                    maxWidthOrHeight: 1920, // Dimensión máxima de la imagen
+                    useWebWorker: true, // Habilitar el uso de web workers para mejorar el rendimiento
+                };
+    
+                // Comprimir la imagen
+                const compressedFile = await imageCompression(file, options);
+    
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const updatedProduct = { ...newProduct };
+    
+                    if (colorIndex !== undefined) {
+                        // Subir imagen específica por color
+                        updatedProduct.color[colorIndex].imageFile = compressedFile;
+                        updatedProduct.color[colorIndex].image = reader.result;
+    
+                        // Eliminar imagen global si hay una
+                        if (updatedProduct.imageGlobal) {
+                            updatedProduct.imageGlobal = null;
+                            updatedProduct.imageGlobalPreview = null;
+                            setImageGlobal(null);
+                        }
+    
+                        setNewProduct(updatedProduct);
+                        setImagePreview(reader.result);
+                    } else {
+                        // Subir imagen global
+                        updatedProduct.imageGlobal = compressedFile;
+                        updatedProduct.imageGlobalPreview = reader.result;
+    
+                        // Eliminar imágenes específicas de cada color
+                        updatedProduct.color = updatedProduct.color.map(color => ({
+                            ...color,
+                            imageFile: null,
+                            image: null
+                        }));
+    
+                        setNewProduct(updatedProduct);
+                        setImageGlobal(reader.result);
+                        setImagePreview(reader.result);
+                    }
+                };
+                // console.log('Original file size:', file.size / 1024 / 1024, 'MB');
+                // console.log('Compressed file size:', compressedFile.size / 1024 / 1024, 'MB');
+                reader.readAsDataURL(compressedFile);
+            } catch (error) {
+                console.error('Error compressing the image:', error);
+            }
+        }
+    };
 
     const deleteImage = (index) => {
         const updatedProduct = { ...newProduct };
@@ -369,10 +429,11 @@ const FormProduct = () => {
         event.preventDefault();
         const formData = new FormData();
 
-        // Agregar la imagen global si existe
+        // Agregar la imagen global si existe.
         if (newProduct.imageGlobal) {
             formData.append('imageGlobal', newProduct.imageGlobal);
         };
+
         newProduct.color.forEach((color, index) => {
             if (color.imageFile) {
                 formData.append('images', color.imageFile);
@@ -385,6 +446,11 @@ const FormProduct = () => {
         formData.append("price", newProduct.price);
         formData.append("category", JSON.stringify(newProduct.category));
         formData.append("description", newProduct.description);
+
+        // Log de FormData
+        // for (const pair of formData.entries()) {
+        //     console.log(`${pair[0]}, ${pair[1]}`);
+        // };
 
         try {
             const response = await dispatch(postProduct(formData));
