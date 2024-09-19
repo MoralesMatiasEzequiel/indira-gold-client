@@ -41,6 +41,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
     "axios": "^1.7.2",
+    "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.3",
     "electron-squirrel-startup": "^1.0.1",
     "ibd": "^0.0.0-alpha.0",
