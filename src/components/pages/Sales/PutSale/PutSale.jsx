@@ -26,6 +26,8 @@ const PutSale = () => {
     const [total, setTotal] = useState(0);
     const [previousTotal, setPreviousTotal] = useState(0);  // Nuevo estado para almacenar el total previo
     const productRefs = useRef([]);
+    const [changeProductIndex, setChangeProductIndex] = useState(null);
+    const [newSelectedProduct, setNewSelectedProduct] = useState(null);
 
     const transformProductOptions = (products) => {
         let productOptions = [];
@@ -59,8 +61,6 @@ const PutSale = () => {
         });
         callback(filteredOptions);
     };
-
-   
 
     const calculateSubtotal = (products) => {
         return products.reduce((subtotal, product) => {
@@ -215,9 +215,52 @@ const PutSale = () => {
         setPaymentFee(newPaymentFee);
     };
 
+    const loadChangeProductOptions = (inputValue, callback) => {
+        if (changeProductIndex !== null) {
+            const productId = purchasedProducts[changeProductIndex]._id;
+            const productOptions = transformProductOptions(products).filter(option => option.productId === productId);
+            const filteredOptions = productOptions.filter(option => option.label.toLowerCase().includes(inputValue.toLowerCase()));
+            callback(filteredOptions);
+        } else {
+            callback([]);
+        }
+    };
+    
+    const handleChangeProductSelect = (selectedOption) => {
+        if (selectedOption) {
+            setNewSelectedProduct(selectedOption);
+        }
+    };
+    
+    // Función para manejar el cambio de producto
+    const handleChangeProduct = (index) => {
+        setChangeProductIndex(index);
+        setNewSelectedProduct(null); // Resetear selección previa
+    };
+    
+    // Cuando se confirme el cambio
+    const confirmChangeProduct = () => {
+        if (newSelectedProduct && changeProductIndex !== null) {
+            setPurchasedProducts((prev) => {
+                const updatedProducts = [...prev];
+                updatedProducts[changeProductIndex] = {
+                    ...updatedProducts[changeProductIndex],
+                    selectedColor: { _id: newSelectedProduct.colorId, colorName: newSelectedProduct.label },
+                    selectedSize: { _id: newSelectedProduct.sizeId, sizeName: newSelectedProduct.label },
+                    price: newSelectedProduct.price
+                };
+                const newSubtotal = calculateSubtotal(updatedProducts);
+                setSubtotal(newSubtotal);
+                setTotal(newSubtotal - ((newSubtotal * discount) / 100));
+                return updatedProducts;
+            });
+            setChangeProductIndex(null); // Resetear índice
+            setNewSelectedProduct(null); // Resetear selección
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-    
         // Calcular los productos a enviar con la información necesaria
         const productsData = [
             ...purchasedProducts.map(product => ({
@@ -243,10 +286,7 @@ const PutSale = () => {
             discount,
             paymentFee,
         };
-        
-        
-        
-
+    
         deletedPurchasedProducts.forEach(product => {
             const key = `${product._id}_${product.selectedColor._id}_${product.selectedSize._id}`;
 
@@ -311,9 +351,13 @@ const PutSale = () => {
                         dispatch(putAddProducts(clientData));
                     };
                 }
+
             }
         });
-    
+        
+        if (newSelectedProduct) {
+            console.log(newSelectedProduct);
+        }
         // Realizar la actualización de la venta
         dispatch(putSale(saleData)).then(() => {
             
@@ -360,8 +404,27 @@ const PutSale = () => {
                                                 <button type="button" onClick={() => handleRemoveProduct(index, true)}>
                                                     <img src={x} alt="Eliminar" />
                                                 </button>
+                                                <button type="button" onClick={() => handleChangeProduct(index)}>
+                                                    Cambiar
+                                                </button>
+                                                {changeProductIndex === index && (
+                                                    <AsyncSelect
+                                                        cacheOptions
+                                                        defaultOptions
+                                                        loadOptions={loadChangeProductOptions}
+                                                        onChange={handleChangeProductSelect}
+                                                        value={newSelectedProduct}
+                                                        placeholder="Selecciona un nuevo producto"
+                                                    />
+                                                )}
                                             </li>
                                         ))}
+
+                                        {changeProductIndex !== null && (
+                                            <button type="button" onClick={confirmChangeProduct}>
+                                                Confirmar Cambio
+                                            </button>
+                                        )}
                                     </ul>
                                 </div>
                                 <div className={style.section}>

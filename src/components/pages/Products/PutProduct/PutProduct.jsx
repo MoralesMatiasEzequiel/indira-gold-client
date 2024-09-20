@@ -37,8 +37,10 @@ const PutProduct = () => {
                 _id: productDetail._id,
                 name: productDetail.name,
                 color: productDetail.color?.map(color => ({
+                    _id: color._id,
                     colorName: color.colorName,
                     size: color.size?.map(size => ({
+                        _id: size._id,
                         sizeName: size.sizeName,
                         measurements: {
                             width: size.measurements[0]?.width || '',
