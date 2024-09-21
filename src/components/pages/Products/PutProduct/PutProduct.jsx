@@ -169,6 +169,7 @@ const PutProduct = () => {
             color: filteredProductColors
         }));
     };
+
     //-----------SIZE-----------//
     const handleInputSizeChange = (event) => {
         setNewSize(event.target.value);
@@ -231,7 +232,7 @@ const PutProduct = () => {
 
     const combinations = generateCombinations();
   
-
+    //-----------STOCK-----------//
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
         const updatedEditProduct = { ...editProduct };
@@ -252,6 +253,20 @@ const PutProduct = () => {
             ...updatedEditProduct.color[colorIndex].size[sizeIndex].measurements,
             [name]: value
         };
+
+        // Actualizar las medidas (width, long, rise)
+    if (name === 'width' || name === 'long' || name === 'rise') {
+        updatedEditProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
+
+        // Reflejar el cambio en otros tamaños que coincidan
+        const sizeToUpdate = combination.size;
+        updatedEditProduct.color.forEach(color => {
+            const matchingSizeIndex = color.size.findIndex(item => item.sizeName === sizeToUpdate);
+            if (matchingSizeIndex !== -1 && color.colorName !== combination.color) {
+                color.size[matchingSizeIndex].measurements[name] = value;
+            }
+        });
+    }
     
         if (name === 'stock') {
             updatedEditProduct.color[colorIndex].size[sizeIndex].stock = value;
@@ -470,9 +485,9 @@ const PutProduct = () => {
                                             {colors?.map((color, colorIndex) => (
                                                 <li key={colorIndex} className={style.list}>
                                                     <span className={style.spanList}>{color}</span>
-                                                    <button type="button" className={style.buttonDelete} onClick={() => deleteColor(colorIndex)}>
+                                                    {/* <button type="button" className={style.buttonDelete} onClick={() => deleteColor(colorIndex)}>
                                                         <img src={x} alt="x" />
-                                                    </button>
+                                                    </button> */}
                                                 </li>
                                             ))}
                                         </ol>
@@ -487,9 +502,9 @@ const PutProduct = () => {
                                             {sizes.map((size, index) => (
                                                 <li key={index} className={style.list}>
                                                     <span className={style.spanList}>{size}</span>
-                                                    <button type="button" className={style.buttonDelete} onClick={() => deleteSize(index)}>
+                                                    {/* <button type="button" className={style.buttonDelete} onClick={() => deleteSize(index)}>
                                                         <img src={x} alt="x" />
-                                                    </button>
+                                                    </button> */}
                                                 </li>
                                             ))}
                                         </ol>
