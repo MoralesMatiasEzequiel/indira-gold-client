@@ -77,7 +77,7 @@ const PutProduct = () => {
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
     const [actionType, setActionType] = useState(null);    
-console.log(editProduct);
+// console.log(editProduct);
 
  
     const handleInputChange = (event) => {
