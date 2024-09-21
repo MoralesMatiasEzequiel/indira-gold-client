@@ -52,6 +52,19 @@
 
 .section p{
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.section p div{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 0.25rem;
+}
+
+.section p span{
+    margin-right: 0.25rem;
 }
 
 .section p label{
@@ -88,4 +101,8 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+}
+
+.buttonSubmit{
+    width: 100%;
 }

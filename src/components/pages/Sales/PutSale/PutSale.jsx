@@ -24,10 +24,10 @@ const PutSale = () => {
     const [discount, setDiscount] = useState(0);
     const [paymentFee, setPaymentFee] = useState(0);
     const [total, setTotal] = useState(0);
-    const [previousTotal, setPreviousTotal] = useState(0);  // Nuevo estado para almacenar el total previo
+    const [previousTotal, setPreviousTotal] = useState(0);
     const productRefs = useRef([]);
-    const [changeProductIndex, setChangeProductIndex] = useState(null);
-    const [newSelectedProduct, setNewSelectedProduct] = useState(null);
+    const [editableSubtotal, setEditableSubtotal] = useState(0); 
+    const [isEditingSubtotal, setIsEditingSubtotal] = useState(false);
 
     const transformProductOptions = (products) => {
         let productOptions = [];
@@ -215,52 +215,26 @@ const PutSale = () => {
         setPaymentFee(newPaymentFee);
     };
 
-    const loadChangeProductOptions = (inputValue, callback) => {
-        if (changeProductIndex !== null) {
-            const productId = purchasedProducts[changeProductIndex]._id;
-            const productOptions = transformProductOptions(products).filter(option => option.productId === productId);
-            const filteredOptions = productOptions.filter(option => option.label.toLowerCase().includes(inputValue.toLowerCase()));
-            callback(filteredOptions);
-        } else {
-            callback([]);
+    const handleEditSubtotalToggle = () => {
+        setIsEditingSubtotal(!isEditingSubtotal);
+        if (!isEditingSubtotal) {
+            setEditableSubtotal(subtotal); // Establecer el subtotal actual al iniciar la edición
         }
     };
-    
-    const handleChangeProductSelect = (selectedOption) => {
-        if (selectedOption) {
-            setNewSelectedProduct(selectedOption);
-        }
+
+    const handleEditableSubtotalChange = (e) => {
+        const newSubtotal = parseFloat(e.target.value) || 0;
+        setEditableSubtotal(newSubtotal);
     };
-    
-    // Función para manejar el cambio de producto
-    const handleChangeProduct = (index) => {
-        setChangeProductIndex(index);
-        setNewSelectedProduct(null); // Resetear selección previa
-    };
-    
-    // Cuando se confirme el cambio
-    const confirmChangeProduct = () => {
-        if (newSelectedProduct && changeProductIndex !== null) {
-            setPurchasedProducts((prev) => {
-                const updatedProducts = [...prev];
-                updatedProducts[changeProductIndex] = {
-                    ...updatedProducts[changeProductIndex],
-                    selectedColor: { _id: newSelectedProduct.colorId, colorName: newSelectedProduct.label },
-                    selectedSize: { _id: newSelectedProduct.sizeId, sizeName: newSelectedProduct.label },
-                    price: newSelectedProduct.price
-                };
-                const newSubtotal = calculateSubtotal(updatedProducts);
-                setSubtotal(newSubtotal);
-                setTotal(newSubtotal - ((newSubtotal * discount) / 100));
-                return updatedProducts;
-            });
-            setChangeProductIndex(null); // Resetear índice
-            setNewSelectedProduct(null); // Resetear selección
-        }
+
+    const saveNewSubTotal = () => {
+        setSubtotal(editableSubtotal);
+        setTotal(editableSubtotal - ((editableSubtotal * discount) / 100));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+    
         // Calcular los productos a enviar con la información necesaria
         const productsData = [
             ...purchasedProducts.map(product => ({
@@ -285,8 +259,9 @@ const PutSale = () => {
             products: productsData,
             discount,
             paymentFee,
-        };
-    
+            subtotal: isEditingSubtotal ? editableSubtotal : null // Incluir el subtotal editable si está en modo edición
+        };   
+        
         deletedPurchasedProducts.forEach(product => {
             const key = `${product._id}_${product.selectedColor._id}_${product.selectedSize._id}`;
 
@@ -351,14 +326,11 @@ const PutSale = () => {
                         dispatch(putAddProducts(clientData));
                     };
                 }
-
             }
         });
-        
-        if (newSelectedProduct) {
-            console.log(newSelectedProduct);
-        }
+    
         // Realizar la actualización de la venta
+        console.log(saleData);
         dispatch(putSale(saleData)).then(() => {
             
     
@@ -404,27 +376,8 @@ const PutSale = () => {
                                                 <button type="button" onClick={() => handleRemoveProduct(index, true)}>
                                                     <img src={x} alt="Eliminar" />
                                                 </button>
-                                                <button type="button" onClick={() => handleChangeProduct(index)}>
-                                                    Cambiar
-                                                </button>
-                                                {changeProductIndex === index && (
-                                                    <AsyncSelect
-                                                        cacheOptions
-                                                        defaultOptions
-                                                        loadOptions={loadChangeProductOptions}
-                                                        onChange={handleChangeProductSelect}
-                                                        value={newSelectedProduct}
-                                                        placeholder="Selecciona un nuevo producto"
-                                                    />
-                                                )}
                                             </li>
                                         ))}
-
-                                        {changeProductIndex !== null && (
-                                            <button type="button" onClick={confirmChangeProduct}>
-                                                Confirmar Cambio
-                                            </button>
-                                        )}
                                     </ul>
                                 </div>
                                 <div className={style.section}>
@@ -456,7 +409,23 @@ const PutSale = () => {
                             </div>
                             <div className={style.column}>
                                 <div className={style.section}>
-                                    <p><span>Subtotal: </span>${formatNumber(subtotal)}</p>
+                                    <p><span>Subtotal: </span>
+                                        {isEditingSubtotal ? (
+                                            <div>
+                                                <input
+                                                    type="number"
+                                                    value={editableSubtotal}
+                                                    onChange={handleEditableSubtotalChange}
+                                                />
+                                                <button type="button" onClick={saveNewSubTotal}>Actualizar</button>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                ${formatNumber(subtotal)}
+                                                <button type="button" onClick={handleEditSubtotalToggle}>Editar subtotal</button>
+                                            </div>
+                                        )}
+                                    </p>
                                 </div>
                                 <div className={style.section}>
                                     <p>
@@ -496,7 +465,7 @@ const PutSale = () => {
                                     `El cliente debe abonar una diferencia de $${formatNumber(total - previousTotal)}`}</p>
                                 </div>
                                 <div className={style.section}>
-                                    <button type="submit">Guardar</button>
+                                    <button className={style.buttonSubmit} type="submit">Guardar</button>
                                 </div>
                             </div>
                         </form>
