@@ -147,7 +147,11 @@ export const postProduct = (productData) => {
 
 export const putProduct = (productData) => {    
     return async (dispatch) => {     
-        const response = await axios.put('/products', productData);
+        const response = await axios.put('/products', productData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response;
     };
 };
