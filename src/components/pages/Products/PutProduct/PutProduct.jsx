@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
 import { getProducts, getProductById, putProduct } from '../../../../redux/productActions.js';
+import imageCompression from 'browser-image-compression';
 
 const PutProduct = () => {
 
@@ -291,71 +292,68 @@ const PutProduct = () => {
     };
     
     //-----------IMAGEN-----------//
-    const getImageUrl = (imagePath) => {
-        if (!imagePath) return '';
-        
-        // Reemplazar barras invertidas por barras inclinadas
-        const correctedPath = imagePath.replace(/\\/g, '/');
-        
-        // URL base para los archivos estáticos
-        const baseUrl = 'http://localhost:3001/';
-        
-        return `${baseUrl}${correctedPath}`;
-    };
-
-    // const getImageUrl = (imagePath) => {
-    //     if (!imagePath) return '';
-    //     // URL base para los archivos estáticos
-    //     const baseUrl = 'http://localhost:3001/';
-    //     return `${baseUrl}${imagePath}`;
-    // };
-
     const handleCheckboxChange = (option) => {
         setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
     };
 
-    const handleImageChange = (event, colorIndex) => {
+    const handleImageChange = async (event, colorIndex) => {
         const file = event.target.files[0];
     
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const updatedProduct = { ...editProduct };
-    
-                if (colorIndex !== undefined) {
-                    // Subir imagen específica por color
-                    updatedProduct.color[colorIndex].imageFile = file;
-                    updatedProduct.color[colorIndex].image = reader.result;
-    
-                    // Eliminar imagen global si hay una
-                    if (updatedProduct.imageGlobal) {
-                        updatedProduct.imageGlobal = null;
-                        updatedProduct.imageGlobalPreview = null;
-                        setImageGlobal(null);
-                    };
-    
-                    setEditProduct(updatedProduct);
-                    setImagePreview(reader.result);
-
-                } else {
-                    // Subir imagen global
-                    updatedProduct.imageGlobal = file;
-                    updatedProduct.imageGlobalPreview = reader.result;
-    
-                    // Eliminar imágenes específicas de cada color
-                    updatedProduct.color = updatedProduct.color.map(color => ({
-                        ...color,
-                        imageFile: null,
-                        image: null
-                    }));
-    
-                    setEditProduct(updatedProduct);
-                    setImageGlobal(reader.result);
-                    setImagePreview(reader.result);
+            try {
+                // Configuración para la compresión
+                const options = {
+                    maxSizeMB: 1, // Tamaño máximo de la imagen en MB
+                    maxWidthOrHeight: 1920, // Dimensión máxima de la imagen
+                    useWebWorker: true, // Habilitar el uso de web workers para mejorar el rendimiento
                 };
-                // validateForm();
+
+                // Comprimir la imagen
+                const compressedFile = await imageCompression(file, options);
+                // const compressedFile = await imageCompression(file, options);
+    
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const updatedProduct = { ...editProduct };
+        
+                    if (colorIndex !== undefined) {
+                        // Subir imagen específica por color
+                        updatedProduct.color[colorIndex].imageFile = compressedFile;
+                        updatedProduct.color[colorIndex].image = reader.result;
+        
+                        // Eliminar imagen global si hay una
+                        if (updatedProduct.imageGlobal) {
+                            updatedProduct.imageGlobal = null;
+                            updatedProduct.imageGlobalPreview = null;
+                            setImageGlobal(null);
+                        };
+        
+                        setEditProduct(updatedProduct);
+                        setImagePreview(reader.result);
+    
+                    } else {
+                        // Subir imagen global
+                        updatedProduct.imageGlobal = file;
+                        updatedProduct.imageGlobalPreview = reader.result;
+        
+                        // Eliminar imágenes específicas de cada color
+                        updatedProduct.color = updatedProduct.color.map(color => ({
+                            ...color,
+                            imageFile: null,
+                            image: null
+                        }));
+        
+                        setEditProduct(updatedProduct);
+                        setImageGlobal(reader.result);
+                        setImagePreview(reader.result);
+                    };
+                    // validateForm();
+                };
+                reader.readAsDataURL(compressedFile);
+                
+            } catch (error) {
+                console.error('Error compressing the image:', error);
             };
-            reader.readAsDataURL(file);
         } 
     };
      
@@ -444,7 +442,7 @@ const PutProduct = () => {
         formData.append("active", editProduct.active);
     
         // Revisión final para asegurarte de que todo esté en el formData
-        console.log([...formData.entries()]);
+        // console.log([...formData.entries()]);
     
         try {
             const response = await dispatch(putProduct(formData));
@@ -606,7 +604,7 @@ const PutProduct = () => {
                                             <li key="unique" className={style.list}>
                                                 <div className={style.addImg}>
                                                     <label className={style.buttonImg} htmlFor={'imageUniqueProduct'}>
-                                                        <img className={style.imgProduct} src={getImageUrl(editProduct.imageGlobal) || imgProduct} alt="image-product" />
+                                                        <img className={style.imgProduct} src={imageGlobal || imgProduct} alt="image-product" />
                                                     </label>
                                                     <input 
                                                         className={style.inputImage} 
@@ -627,7 +625,7 @@ const PutProduct = () => {
                                                     <div className={style.addImg}>
                                                         <span className={style.spanList}>{color.colorName}</span>
                                                         <label className={style.buttonImg} htmlFor={`imageProduct-${index}`}>
-                                                            <img className={style.imgProduct} src={getImageUrl(color.image) || imgProduct} alt="image-product" />
+                                                            <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
                                                         </label>
                                                         <input 
                                                             className={style.inputImage} 
