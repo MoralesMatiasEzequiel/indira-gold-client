@@ -356,6 +356,7 @@ const FormProduct = () => {
         validateForm();
     };
 
+
     //-----------SUPPLIER-----------//
     const handleSupplierChange = (event) => {
         const { name, value } = event.target;
@@ -709,11 +710,21 @@ const FormProduct = () => {
                                                     <span className={style.spansinMed} htmlFor="stock">*Stock:</span>
                                                     <input
                                                         className={style.inputsinStock}
-                                                        type="number"
-                                                        name="stock"
-                                                        min='0'
+                                                        type="text" // Tipo texto
                                                         placeholder='0'
-                                                        onChange={(event) => handleStockChange(combination, event)}
+                                                        onKeyDown={(event) => {
+                                                            // Solo permite teclas numéricas
+                                                            if (!/[\d]/.test(event.key)) {
+                                                                event.preventDefault();
+                                                            }
+                                                        }}
+                                                        onChange={(event) => {
+                                                            const value = event.target.value;
+                                                            // Actualiza solo si es un número
+                                                            if (/^\d*$/.test(value)) {
+                                                                handleStockChange(combination, { target: { name: 'stock', value } });
+                                                            }
+                                                        }}
                                                     />
                                                 </li>
                                             );
