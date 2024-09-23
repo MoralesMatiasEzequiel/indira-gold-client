@@ -528,7 +528,8 @@ const PutProduct = () => {
                                                     <>
                                                         <span className={style.spansinMed} htmlFor="width">Ancho:</span>
                                                         <input 
-                                                            className={style.inputsinMed} 
+                                                            className={style.inputsinMed}
+                                                            min='0'
                                                             type="number" 
                                                             name="width" 
                                                             placeholder='0' 
@@ -538,6 +539,7 @@ const PutProduct = () => {
                                                         <span className={style.spansinMed} htmlFor="long">Largo:</span>
                                                         <input 
                                                             className={style.inputsinMed} 
+                                                            min='0'
                                                             type="number" 
                                                             name="long" 
                                                             placeholder='0' 
@@ -547,6 +549,7 @@ const PutProduct = () => {
                                                         <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
                                                         <input 
                                                             className={style.inputsinMed} 
+                                                            min='0'
                                                             type="number" 
                                                             name="rise" 
                                                             placeholder='0' 
