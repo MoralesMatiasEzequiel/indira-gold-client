@@ -556,12 +556,16 @@ const PutProduct = () => {
                                                         <span className={style.spansinMed} htmlFor="stock">Stock:</span>
                                                         <input 
                                                             className={style.inputsinStock} 
-                                                            type="number" 
-                                                            name="stock" 
-                                                            min='0' 
+                                                            type="text" 
+                                                            name="stock"
                                                             placeholder='0' 
                                                             value={sizeState?.stock || ''}
-                                                            onChange={(event) => handleStockChange(combination, event)} 
+                                                            onChange={(event) => {
+                                                                const value = event.target.value;
+                                                                if (value === '' || /^\d*$/.test(value)) {
+                                                                    handleStockChange(combination, { target: { name: 'stock', value } });
+                                                                }
+                                                            }} 
                                                         />
                                                     </>
                                                 ) : (
