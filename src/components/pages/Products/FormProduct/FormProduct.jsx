@@ -286,7 +286,7 @@ const FormProduct = () => {
                         long: '',
                         rise: ''
                     },
-                    code: 'CÓDIGO QR',
+                    code: '',
                     stock: 0
                 });
                 sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
@@ -335,7 +335,7 @@ const FormProduct = () => {
                             long: '',
                             rise: ''
                         },
-                        code: 'CÓDIGO QR',
+                        code: '',
                         stock: value // Ahora el stock es mayor que 0
                     });
                 }
@@ -356,7 +356,6 @@ const FormProduct = () => {
         validateForm();
     };
 
-
     //-----------SUPPLIER-----------//
     const handleSupplierChange = (event) => {
         const { name, value } = event.target;
@@ -375,62 +374,6 @@ const FormProduct = () => {
     const handleCheckboxChange = (option) => {
         setSelectedOptionImage(!option === selectedOptionImage ? 'unique' : option);
     };
-
-    // const handleImageChange = (event, colorIndex) => {
-    //     const file = event.target.files[0];
-
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             const updatedProduct = { ...newProduct };
-
-    //             if (colorIndex !== undefined) {
-    //                 // Subir imagen específica por color
-    //                 updatedProduct.color[colorIndex].imageFile = file;
-    //                 updatedProduct.color[colorIndex].image = reader.result;
-
-    //                 // Eliminar imagen global si hay una
-    //                 if (updatedProduct.imageGlobal) {
-    //                     updatedProduct.imageGlobal = null;
-    //                     updatedProduct.imageGlobalPreview = null;
-    //                     setImageGlobal(null);
-    //                 }
-
-    //                 setNewProduct(updatedProduct);
-    //                 setImagePreview(reader.result);
-    //             } else {
-    //                 // Subir imagen global
-    //                 updatedProduct.imageGlobal = file;
-    //                 updatedProduct.imageGlobalPreview = reader.result;
-
-    //                 // Eliminar imágenes específicas de cada color
-    //                 updatedProduct.color = updatedProduct.color.map(color => ({
-    //                     ...color,
-    //                     imageFile: null,
-    //                     image: null
-    //                 }));
-
-    //                 setNewProduct(updatedProduct);
-    //                 setImageGlobal(reader.result);
-    //                 setImagePreview(reader.result);
-    //             }
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
-    
-    // const deleteImage = (index) => {
-    //     const updatedProduct = { ...newProduct };
-
-    //         updatedProduct.imageGlobal = null;
-    //         updatedProduct.imageGlobalPreview = null;
-    //         updatedProduct.color[index].imageFile = null;
-    //         updatedProduct.color[index].image = null;
-    //         setImageGlobal(imgProduct);
-
-    //     setNewProduct(updatedProduct);
-    //     setImagePreview(imgProduct);
-    // };
 
     const handleImageChange = async (event, colorIndex) => {
         const file = event.target.files[0];
@@ -647,23 +590,6 @@ const FormProduct = () => {
                             <div className={style.stockContainer}>
                                 <label htmlFor="color">Medidas y stock</label>
                                 <div className={style.stockCard}>
-                                    {/* <ol>
-                                        {combinations.map((combination, index) => (
-                                            <li key={index} className={style.list}>
-                                                <span className={style.spanList}>
-                                                    Color {combination.color} - Talle {combination.size}
-                                                </span>
-                                                <span className={style.spansinMed} htmlFor="width">Ancho:</span>
-                                                <input className={style.inputsinMed} type="number" name="width" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                                <span className={style.spansinMed} htmlFor="long">Largo:</span>
-                                                <input className={style.inputsinMed} type="number" name="long" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                                <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
-                                                <input className={style.inputsinMed} type="number" name="rise" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                                <span className={style.spansinMed} htmlFor="stock">*Stock:</span>
-                                                <input className={style.inputsinStock} type="number" name="stock" min='0' placeholder='0' onChange={(event) => handleStockChange(combination, event)} />
-                                            </li>
-                                        ))}
-                                    </ol> */}
                                     <ol>
                                         {combinations.map((combination, index) => {
                                             // Buscar el valor actual de las medidas para el tamaño

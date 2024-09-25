@@ -138,6 +138,11 @@
     margin: 5px 0; /* Espaciado entre los ítems de la lista */
 }
 
+.barcodeCanvas{
+    width: 100%;
+    height: auto;
+}
+
 .containerSupplier{
     margin-bottom: 10px;
     padding-bottom: 20px;

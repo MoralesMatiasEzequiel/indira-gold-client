@@ -3,7 +3,8 @@ import detail from '../../../../assets/img/detail.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { getAllProducts, getProducts, getProductByName, getActiveProductsByName } from "../../../../redux/productActions.js";
 import { getCategories } from "../../../../redux/categoryActions.js";
 
@@ -11,15 +12,19 @@ import { getCategories } from "../../../../redux/categoryActions.js";
 const ProductManagement = () => {
     
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const productsActive = useSelector(state => state.products.products);
     const allProducts = useSelector(state => state.products.allProducts);
     const categories = useSelector(state => state.categories.categories);
 
     const [productFilter, setProductFilter] = useState('active');
     const [category, setCategory] = useState('allCategories');
+    const [productId, setProductId] = useState('');
     const [name, setName] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true); // Indicador de carga
+    const [errorShown, setErrorShown] = useState(false); 
 // console.log(category);
 
     const itemsPerPage = 20;
@@ -85,6 +90,21 @@ const ProductManagement = () => {
     const handleCheckboxChange = (option) => {
         setProductFilter(option);
         setCurrentPage(1); // Resetear a la primera página al cambiar el filtro
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            const id = productId; // Usa el estado actual del ID
+            const productExists = allProducts.some(product => product._id === id);
+    
+            if (productExists) {
+                navigate(`/main_window/products/${id}`);
+            } else {
+                if (id) {
+                    toast.error('Este código no existe.'); // Muestra el mensaje de error
+                }
+            }
+        }
     };
     
     const handleChangeName = (event) => {
@@ -161,6 +181,7 @@ const ProductManagement = () => {
                             <span className={style.spanCheckbox}>Productos activos</span>
                             <input className={style.inputCheckbox} type="checkbox" name="all" id="all" checked={productFilter === 'all'} onChange={() => handleCheckboxChange('all')} />
                             <span className={style.spanCheckbox}>Todos los productos</span>
+                            <input className="filterSearch" type="search" name="searchIDProduct" id="searchIDProduct" onChange={(e) => setProductId(e.target.value)} onKeyDown={handleKeyDown} placeholder="Buscar código" autoComplete="off" />
                         </div>
                         <div className={style.containerSelected}>
                             <select name="category" value={category} onChange={handleInputChangeCategories}>

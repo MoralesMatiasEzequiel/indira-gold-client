@@ -1,8 +1,9 @@
 import style from './DetailProduct.module.css';
-import React, { useEffect, useState } from 'react';
+import imgProduct from '../../../../assets/img/imgProduct.jpeg';
+import React, { useEffect, useState, useRef } from 'react';
+import JsBarcode from 'jsbarcode';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import { getProductById, putProductStatus } from '../../../../redux/productActions.js';
 
 
@@ -11,6 +12,10 @@ const DetailProduct = () => {
     let { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    // Crear referencias para los códigos de barras
+    const barcodeRefs = useRef({});
+
     const productDetail = useSelector(state => state.products.productDetail);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -34,6 +39,19 @@ const DetailProduct = () => {
     useEffect(() => {
         dispatch(getProductById(id));
     }, [dispatch, id]);
+
+    useEffect(() => {
+        if (productDetail && productDetail.color) {
+            productDetail.color.forEach(color => {
+                color.size.forEach(size => {
+                    const barcodeId = productDetail._id;
+                    if (barcodeRefs.current[barcodeId]) {
+                        JsBarcode(barcodeRefs.current[barcodeId], barcodeId, { format: 'CODE128' });
+                    }
+                });
+            });
+        }
+    }, [productDetail]);
 
     return(
         <div className="page">
@@ -61,7 +79,10 @@ const DetailProduct = () => {
                         </div>                      
                         <p><span>Precio:&nbsp;</span>${productDetail.price}</p>
                         <p><span>Categoría:&nbsp;</span>{(productDetail.category && productDetail.category.length > 0) ? productDetail.category[0].name : 'No tiene categoría'}</p>
-                        {/* <p><span>Código QR:</span></p> */}
+                        <canvas 
+                            className={style.barcodeCanvas}
+                            ref={el => barcodeRefs.current[productDetail._id] = el} 
+                        />
                         {productDetail.description ? <p><span>Descripción:&nbsp;</span>{productDetail.description}</p> : ''}
                         {productDetail.supplier && productDetail.supplier.name.trim() !== '' || productDetail.supplier && productDetail.supplier.phone.trim() !== ''  
                         ? (
