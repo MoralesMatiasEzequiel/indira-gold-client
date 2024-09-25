@@ -1,7 +1,9 @@
 import style from './DetailProduct.module.css';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
+import iconPDF from "../../../../assets/img/pdf.png";
 import React, { useEffect, useState, useRef } from 'react';
 import JsBarcode from 'jsbarcode';
+import jsPDF from 'jspdf';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getProductById, putProductStatus } from '../../../../redux/productActions.js';
@@ -36,6 +38,77 @@ const DetailProduct = () => {
         return `${baseUrl}${imagePath}`;
     };
 
+    const generatePDF = () => {
+        const doc = new jsPDF('portrait', 'mm', 'a4'); // Configurar el documento en A4
+
+        const barcodeCanvas = barcodeRefs.current[productDetail._id];
+        const barcodeWidth = 50; // Ancho máximo del código de barras en mm (5 cm)
+        const barcodeHeight = 20; // Alto del código de barras en mm
+    
+        // Verifica que el canvas tenga un código de barras generado
+        if (barcodeCanvas) {
+            const imgData = barcodeCanvas.toDataURL("image/png");
+
+            // Dimensiones de la página A4
+            const pageWidth = 210; // mm
+            const pageHeight = 297; // mm
+
+            // Definir márgenes y espacios entre códigos
+            const margin = 10; // mm
+            const spaceBetween = 10; // Espacio entre códigos
+
+            // Calcular cuántos códigos de barras caben en una fila y cuántas filas
+            const codesPerRow = Math.floor((pageWidth - 2 * margin) / (barcodeWidth + spaceBetween));
+            const codesPerColumn = Math.floor((pageHeight - 2 * margin) / (barcodeHeight + spaceBetween));
+
+            let currentX = margin;
+            let currentY = margin;
+            let codeCount = 0;
+
+            // Agregar tantos códigos de barras como sea necesario para llenar la página
+            for (let row = 0; row < codesPerColumn; row++) {
+                for (let col = 0; col < codesPerRow; col++) {
+                    // Agregar el nombre del producto
+                    doc.setFontSize(10);
+                    doc.text(productDetail.name, currentX, currentY - 2); // Posicionar el texto sobre el código
+
+                    // Agregar el código de barras al PDF
+                    doc.addImage(imgData, 'PNG', currentX, currentY, barcodeWidth, barcodeHeight);
+
+                    // Actualizar la posición para el siguiente código de barras
+                    currentX += barcodeWidth + spaceBetween;
+                    codeCount++;
+
+                    // Verificar si se necesita agregar una nueva página
+                    if (codeCount % (codesPerRow * codesPerColumn) === 0) {
+                        doc.addPage(); // Crear una nueva página
+                        currentX = margin;
+                        currentY = margin;
+                    };
+                };
+
+                // Moverse a la siguiente fila
+                currentX = margin;
+                currentY += barcodeHeight + spaceBetween;
+            };
+        
+            // Agregar el nombre del producto al PDF
+            // doc.setFontSize(18);
+            // doc.text(productDetail.name, 10, 10);
+            //-------------
+            // Agregar el precio del producto
+            // doc.setFontSize(12);
+            // doc.text(`Precio: $${productDetail.price}`, 10, 20);
+    
+            // Agregar la categoría del producto
+            // const category = productDetail.category && productDetail.category.length > 0 ? productDetail.category[0].name : 'No tiene categoría';
+            // doc.text(`Categoría: ${category}`, 10, 30);
+    
+            // Guardar el PDF
+            doc.save(`${productDetail.name} - Código De Barras.pdf`);
+        };
+    };
+
     useEffect(() => {
         dispatch(getProductById(id));
     }, [dispatch, id]);
@@ -45,8 +118,13 @@ const DetailProduct = () => {
             productDetail.color.forEach(color => {
                 color.size.forEach(size => {
                     const barcodeId = productDetail._id;
+                    const productName = productDetail.name;
+
                     if (barcodeRefs.current[barcodeId]) {
-                        JsBarcode(barcodeRefs.current[barcodeId], barcodeId, { format: 'CODE128' });
+                        JsBarcode(barcodeRefs.current[barcodeId], barcodeId, { 
+                            format: 'CODE128',
+                            text: productName 
+                        });
                     }
                 });
             });
@@ -59,6 +137,7 @@ const DetailProduct = () => {
                 <div className="title">
                     <h2>Detalle del producto</h2>
                     <div className="titleButtons">
+                        <button onClick={generatePDF}><img src={iconPDF} alt=""/></button>
                         {productDetail.active ? <button><Link to={`/main_window/products/edit/${id}`}>Editar</Link></button> : ''}
                         {!productDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Añadir</button> : <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>}
                         <button><Link to={`/main_window/products/management`}>Atrás</Link></button>
