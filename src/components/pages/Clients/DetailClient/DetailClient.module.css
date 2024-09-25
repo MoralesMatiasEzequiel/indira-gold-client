@@ -5,6 +5,14 @@
     align-items: flex-start; /* Asegúrate de que los elementos hijos se alineen al principio */
 }
 
+.contentInactive {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    opacity: 0.4;
+}
+
 .column {
     height: 90%;
     width: 50%;

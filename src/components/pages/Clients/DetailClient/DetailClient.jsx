@@ -105,10 +105,14 @@ const DetailClient = () => {
     };
 
     const handleDelete = () => {
-        dispatch(deleteClient(id));
-        navigate('/main_window/clients');
+        dispatch(deleteClient(id)).then(() => {
+            navigate('/main_window/clients');
+            setTimeout(() => {
+                navigate(`/main_window/clients/${id}`);
+            }, 50);
+            setShowDeleteModal(false);
+        });
     };
-
     const formatNumber = (number) => {
         return number.toLocaleString('es-ES', {
             minimumFractionDigits: 0,
@@ -131,9 +135,8 @@ const DetailClient = () => {
                                 <button><Link to={`/main_window/clients`}>Atrás</Link></button>
                             </div>
                         </div>
-                        <div className={`container ${style.content}`}>
+                        <div className={!clientDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}>
                             <div className={style.column}>
-                                {/* <p><span>ID de cliente:&nbsp;</span>{id}</p> */}
                                 {clientDetail.dni && <p><span>DNI:&nbsp;</span>{clientDetail.dni}</p>}
                                 {clientDetail.name && <p><span>Nombre:&nbsp;</span>{clientDetail.name}</p>}
                                 {clientDetail.lastname && <p><span>Apellido:&nbsp;</span>{clientDetail.lastname}</p>}
