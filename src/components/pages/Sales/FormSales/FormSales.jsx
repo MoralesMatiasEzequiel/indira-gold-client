@@ -102,15 +102,21 @@ const FormSales = () => {
 
     const loadProductOptions = (inputValue, callback) => {
         const productOptions = transformProductOptions(products);
-        // console.log(productOptions);
-
-        const filteredOptions = productOptions.filter(product => {
+    
+        const filteredOptions = productOptions.filter(product => {            
             const key = `${product.productId}_${product.colorId}_${product.sizeId}_${product.price}`;
             const selectedQuantity = selectedProductQuantities[key] || 0;
             const availableStock = product.stock - selectedQuantity;
-
-            return availableStock > 0 && product.label.toLowerCase().includes(inputValue.toLowerCase());
+    
+            const inputValueLower = inputValue.toLowerCase();
+    
+            // Comprobar si coincide con el nombre o con el ID del producto
+            return (
+                availableStock > 0 &&
+                (product.label.toLowerCase().includes(inputValueLower) || product.productId.toLowerCase().includes(inputValueLower))
+            );
         });
+    
         callback(filteredOptions);
     };
 
@@ -625,8 +631,7 @@ const FormSales = () => {
                                                 }}
                                             />
                                             <button type="button" onClick={handleShowClientForm} className={style.addClient}><img src={add} alt=""/></button>
-                                        </div>
-                                        
+                                        </div>                                        
                                     </div>
                                 </div>
                                 <div className={style.labelInput}>
@@ -776,8 +781,7 @@ const FormSales = () => {
                                 <div className={style.total}>
                                     <div className={style.left}>Total</div>
                                     <div className={style.right}>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
-                                </div>
-                            
+                                </div>                           
                                 <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                             </div> 
                         </form>
