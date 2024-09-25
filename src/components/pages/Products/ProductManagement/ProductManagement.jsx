@@ -4,7 +4,7 @@ import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
-import { getAllProducts, getProducts, getProductByName } from "../../../../redux/productActions.js";
+import { getAllProducts, getProducts, getProductByName, getActiveProductsByName } from "../../../../redux/productActions.js";
 import { getCategories } from "../../../../redux/categoryActions.js";
 
 
@@ -125,8 +125,10 @@ const ProductManagement = () => {
     useEffect(() => {
         if (name) {
             dispatch(getProductByName(name));
+            dispatch(getActiveProductsByName(name));
         } else {
-            dispatch(getProductByName('')); 
+            dispatch(getProductByName(''));
+            dispatch(getActiveProductsByName(''))
         }
     }, [name, dispatch]);
     

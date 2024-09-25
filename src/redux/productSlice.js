@@ -32,6 +32,10 @@ export const productSlice = createSlice({
         getProductsByNameReducer: (state, action) => {
             const query = action.payload.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const regex = new RegExp(query, 'i');
+            state.products = state.productsCopy.filter(product => {
+                const name = product.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return regex.test(name);
+            });
             state.allProducts = state.allProductsCopy.filter(product => {
                     const name = product.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                     return regex.test(name);

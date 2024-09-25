@@ -108,6 +108,18 @@ export const getProductByName = (productName) => {
     };
 };
 
+export const getActiveProductsByName = (productName) => {
+    return async (dispatch) => {
+        try {
+            const { data } = await axios.get(`/products/?name=${productName}&`);
+            dispatch(getProductsReducer(data));
+        } catch (error) {
+            dispatch(getProductsByNameReducer(productName));
+        }
+        
+    };
+};
+
 export const getSoldProducts = () => {
     return async (dispatch) => {
         const { data } = await axios.get("/products/sold");
