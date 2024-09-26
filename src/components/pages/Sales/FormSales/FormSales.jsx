@@ -377,7 +377,6 @@ const FormSales = () => {
             dispatch(putAddProducts(clientData));
         }
         
-        console.log(saleData);
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
             dispatch(getSales());
