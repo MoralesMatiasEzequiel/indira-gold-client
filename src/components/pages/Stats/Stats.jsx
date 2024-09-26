@@ -15,12 +15,18 @@ const Stats = () => {
     const dispatch = useDispatch();
     
     useEffect(() => {
-        dispatch(getSalesBalance()).catch(() => {dispatch(getSalesBalanceLocal())});
+        // dispatch(getSalesBalance()).catch(() => {dispatch(getSalesBalanceLocal())});
+        // dispatch(getSalesOnline()).catch(() => {dispatch(getSalesOnlineLocal())});
+        // dispatch(getSoldProducts()).catch(() => {dispatch(getSoldProductsLocal())});
+        // dispatch(getTopFiveProducts()).catch(() => {dispatch(getTopFiveProductsLocal())});
+        // dispatch(getSalesLocal()).catch(() => {dispatch(getSalesLocalLocal())});
+        dispatch(getSalesLocal());
+        dispatch(getSalesBalance());
         dispatch(getCategories());
-        dispatch(getSalesOnline()).catch(() => {dispatch(getSalesOnlineLocal())});
-        dispatch(getSalesLocal()).catch(() => {dispatch(getSalesLocalLocal())});
-        dispatch(getSoldProducts()).catch(() => {dispatch(getSoldProductsLocal())});
-        dispatch(getTopFiveProducts()).catch(() => {dispatch(getTopFiveProductsLocal())});
+        dispatch(getSalesOnline());
+        dispatch(getSalesLocal());
+        dispatch(getSoldProducts());
+        dispatch(getTopFiveProducts());
     }, [dispatch]);
 
     return(
