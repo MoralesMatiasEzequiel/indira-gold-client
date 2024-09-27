@@ -1,6 +1,7 @@
 import axios from "axios";
 import { saveToIndexedDB, saveProductsToIndexedDB, saveAllProductsToIndexedDB, getFromIndexedDB, getAllProductsFromIndexedDB, getProductsFromIndexedDB } from '../services/indexedDB.js';
 import { getProductsReducer, getAllProductsReducer, getProductByIdReducer, getProductsByNameReducer, getSoldProductsReducer, getSoldProductsLocalReducer, getTopFiveProductsReducer, getTopFiveProductsLocalReducer } from "./productSlice.js";
+import { imgurClientId } from "../assets/enviromentVars.js";
 
 // export const getProducts = () => {
 //     return async (dispatch) => {
@@ -189,7 +190,10 @@ export const uploadImageToImgur = (compressedFile) => async (dispatch) => {
 
         const response = await axios.post('https://api.imgur.com/3/image', formData, {
             headers: {
-                Authorization: 'Client-ID 0617c6580ae7dc3',
+
+                //Usar este para testeos
+                Authorization: `Client-ID ${imgurClientId}`,
+                
                 'Content-Type': 'multipart/form-data'
             },
             timeout: 10000, // Establece un tiempo de espera de 10 segundos
