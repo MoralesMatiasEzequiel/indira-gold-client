@@ -8,6 +8,7 @@ import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
 import { getProducts, getProductById, putProduct, uploadImageToImgur } from '../../../../redux/productActions.js';
 import imageCompression from 'browser-image-compression';
+import { ToastContainer, toast } from 'react-toastify';
 
 const PutProduct = () => {
 
@@ -79,7 +80,8 @@ const PutProduct = () => {
     const [imagePreview, setImagePreview] = useState(imgProduct);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
-    const [actionType, setActionType] = useState(null);    
+    const [actionType, setActionType] = useState(null);  
+    const [imageLoading, setImageLoading] = useState(false);  
 
     // console.log(editProduct);
  
@@ -305,6 +307,7 @@ const PutProduct = () => {
 
         if (file) {
             try {
+                setImageLoading(true);
                 // Configuración para la compresión
                 const options = {
                     maxSizeMB: 1,
@@ -334,6 +337,7 @@ const PutProduct = () => {
 
                     setEditProduct(updatedProduct);
                     setImagePreview(imageUrl);
+                    setImageLoading(false);
                 } else {
                     // Guardar el link de la imagen global
                     updatedProduct.imageGlobal = imageUrl;
@@ -348,9 +352,12 @@ const PutProduct = () => {
                     setEditProduct(updatedProduct);
                     setImageGlobal(imageUrl);
                     setImagePreview(imageUrl);
+                    setImageLoading(false);
                 }
             } catch (error) {
                 console.error('Error al comprimir o subir la imagen:', error);
+                toast.error('Error al subir la imagen, intentar nuevamente más tarde');
+                setImageLoading(false);
             }
         }
     };
@@ -699,7 +706,7 @@ const PutProduct = () => {
                                             <li key="unique" className={style.list}>
                                                 <div className={style.addImg}>
                                                     <label className={style.buttonImg} htmlFor={'imageUniqueProduct'}>
-                                                        <img className={style.imgProduct} src={imageGlobal || imgProduct} alt="image-product" />
+                                                        {imageLoading ? <p>Cargando...</p> : <img className={style.imgProduct} src={imageGlobal || imgProduct} alt="image-product" />}
                                                     </label>
                                                     <input 
                                                         className={style.inputImage} 
@@ -720,7 +727,7 @@ const PutProduct = () => {
                                                     <div className={style.addImg}>
                                                         <span className={style.spanList}>{color.colorName}</span>
                                                         <label className={style.buttonImg} htmlFor={`imageProduct-${index}`}>
-                                                            <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
+                                                            {imageLoading ? <p>Cargando...</p> : <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />}
                                                         </label>
                                                         <input 
                                                             className={style.inputImage} 
@@ -777,6 +784,7 @@ const PutProduct = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };
