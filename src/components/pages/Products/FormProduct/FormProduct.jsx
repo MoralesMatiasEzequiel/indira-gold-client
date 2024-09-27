@@ -9,6 +9,7 @@ import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
 import { postProduct, uploadImageToImgur } from '../../../../redux/productActions.js';
 import imageCompression from 'browser-image-compression';
+import { ToastContainer, toast } from 'react-toastify';
 
 const FormProduct = () => {
     
@@ -46,6 +47,7 @@ const FormProduct = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [actionType, setActionType] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    const [imageLoading, setImageLoading] = useState(false);
 // console.log(newProduct); 
 
     const handleSetForm = () => {
@@ -382,6 +384,8 @@ const FormProduct = () => {
 
         if (file) {
             try {
+                
+                setImageLoading(true);
                 // Configuración para la compresión
                 const options = {
                     maxSizeMB: 1,
@@ -411,6 +415,7 @@ const FormProduct = () => {
 
                     setNewProduct(updatedProduct);
                     setImagePreview(imageUrl);
+                    setImageLoading(false);
                 } else {
                     // Guardar el link de la imagen global
                     updatedProduct.imageGlobal = imageUrl;
@@ -425,9 +430,12 @@ const FormProduct = () => {
                     setNewProduct(updatedProduct);
                     setImageGlobal(imageUrl);
                     setImagePreview(imageUrl);
+                    setImageLoading(false);
                 }
             } catch (error) {
                 console.error('Error al comprimir o subir la imagen:', error);
+                toast.error('Error al subir la imagen, intentar nuevamente más tarde');
+                setImageLoading(false);
             }
         }
     };
@@ -783,7 +791,7 @@ const FormProduct = () => {
                                             <li key="unique" className={style.list}>
                                                 <div className={style.addImg}>
                                                     <label className={style.buttonImg} htmlFor={'imageUniqueProduct'}>
-                                                        <img className={style.imgProduct} src={imageGlobal || imgProduct} alt="image-product" />
+                                                        {imageLoading ? <p>Cargando...</p> : <img className={style.imgProduct} src={imageGlobal || imgProduct} alt="image-product" />}
                                                     </label>
                                                     <input 
                                                         className={style.inputImage} 
@@ -804,7 +812,7 @@ const FormProduct = () => {
                                                     <div className={style.addImg}>
                                                         <span className={style.spanList}>{color.colorName}</span>
                                                         <label className={style.buttonImg} htmlFor={`imageProduct-${index}`}>
-                                                            <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />
+                                                            {imageLoading ? <p>Cargando...</p> : <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />}
                                                         </label>
                                                         <input 
                                                             className={style.inputImage} 
@@ -860,6 +868,7 @@ const FormProduct = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };
