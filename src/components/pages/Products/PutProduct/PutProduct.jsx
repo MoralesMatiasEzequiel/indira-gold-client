@@ -6,7 +6,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
-import { getProducts, getProductById, putProduct } from '../../../../redux/productActions.js';
+import { getProducts, getProductById, putProduct, uploadImageToImgur } from '../../../../redux/productActions.js';
 import imageCompression from 'browser-image-compression';
 
 const PutProduct = () => {
@@ -64,6 +64,8 @@ const PutProduct = () => {
             // Inicializa selectedCategory con la categoría del producto
             const categoryId = productDetail.category?.[0]?._id || '';
             setSelectedCategory(categoryId);
+            setImageGlobal(productDetail.imageGlobal);
+            setImagePreview(productDetail.imageGlobal);
         }
     }, [dispatch, id, productDetail]);
 
@@ -78,8 +80,8 @@ const PutProduct = () => {
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(editProduct.category ? editProduct.category[0]._id : null);
     const [actionType, setActionType] = useState(null);    
-// console.log(editProduct);
 
+    // console.log(editProduct);
  
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -156,22 +158,23 @@ const PutProduct = () => {
         }
     };
 
-    const deleteColor = (index) => {
-        const updatedColors = [...colors];
-        const colorToDelete = updatedColors.splice(index, 1)[0];
+    // const deleteColor = (index) => {
+    //     const updatedColors = [...colors];
+    //     const colorToDelete = updatedColors.splice(index, 1)[0];
         
-        setColors(updatedColors);
+    //     setColors(updatedColors);
         
-        // Filtra los colores en el estado editProduct para eliminar el color correspondiente
-        const filteredProductColors = editProduct.color.filter(color => color.colorName !== colorToDelete);
+    //     // Filtra los colores en el estado editProduct para eliminar el color correspondiente
+    //     const filteredProductColors = editProduct.color.filter(color => color.colorName !== colorToDelete);
         
-        setEditProduct(prevState => ({
-            ...prevState,
-            color: filteredProductColors
-        }));
-    };
+    //     setEditProduct(prevState => ({
+    //         ...prevState,
+    //         color: filteredProductColors
+    //     }));
+    // };
 
     //-----------SIZE-----------//
+    
     const handleInputSizeChange = (event) => {
         setNewSize(event.target.value);
     };
@@ -202,29 +205,30 @@ const PutProduct = () => {
         // validateForm();
     }; 
 
-    const deleteSize = (index) => {
-        const updatedSizes = [...sizes];
-        const sizeToDelete = updatedSizes.splice(index, 1)[0];
+    // const deleteSize = (index) => {
+    //     const updatedSizes = [...sizes];
+    //     const sizeToDelete = updatedSizes.splice(index, 1)[0];
     
-        setSizes(updatedSizes);
+    //     setSizes(updatedSizes);
     
-        // Actualiza el estado editProduct para reflejar la eliminación del talle
-        const updatedProductColors = editProduct.color.map(color => {
-            return {
-                ...color,
-                size: color.size.filter(size => size.sizeName !== sizeToDelete)
-            };
-        });
+    //     // Actualiza el estado editProduct para reflejar la eliminación del talle
+    //     const updatedProductColors = editProduct.color.map(color => {
+    //         return {
+    //             ...color,
+    //             size: color.size.filter(size => size.sizeName !== sizeToDelete)
+    //         };
+    //     });
     
-        setEditProduct(prevState => ({
-            ...prevState,
-            color: updatedProductColors
-        }));
+    //     setEditProduct(prevState => ({
+    //         ...prevState,
+    //         color: updatedProductColors
+    //     }));
     
-        // validateForm();
-    };
+    //     // validateForm();
+    // };
 
     //-----------COMBINACION(COLOR/SIZE)-----------//
+    
     const generateCombinations = () => {
         return colors?.flatMap(color =>
             sizes.map(size => ({ color, size }))
@@ -298,64 +302,119 @@ const PutProduct = () => {
 
     const handleImageChange = async (event, colorIndex) => {
         const file = event.target.files[0];
-    
+
         if (file) {
             try {
                 // Configuración para la compresión
                 const options = {
-                    maxSizeMB: 1, // Tamaño máximo de la imagen en MB
-                    maxWidthOrHeight: 1920, // Dimensión máxima de la imagen
-                    useWebWorker: true, // Habilitar el uso de web workers para mejorar el rendimiento
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1920,
+                    useWebWorker: true,
                 };
 
                 // Comprimir la imagen
                 const compressedFile = await imageCompression(file, options);
-                // const compressedFile = await imageCompression(file, options);
-    
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const updatedProduct = { ...editProduct };
-        
-                    if (colorIndex !== undefined) {
-                        // Subir imagen específica por color
-                        updatedProduct.color[colorIndex].imageFile = compressedFile;
-                        updatedProduct.color[colorIndex].image = reader.result;
-        
-                        // Eliminar imagen global si hay una
-                        if (updatedProduct.imageGlobal) {
-                            updatedProduct.imageGlobal = null;
-                            updatedProduct.imageGlobalPreview = null;
-                            setImageGlobal(null);
-                        };
-        
-                        setEditProduct(updatedProduct);
-                        setImagePreview(reader.result);
-    
-                    } else {
-                        // Subir imagen global
-                        updatedProduct.imageGlobal = file;
-                        updatedProduct.imageGlobalPreview = reader.result;
-        
-                        // Eliminar imágenes específicas de cada color
-                        updatedProduct.color = updatedProduct.color.map(color => ({
-                            ...color,
-                            imageFile: null,
-                            image: null
-                        }));
-        
-                        setEditProduct(updatedProduct);
-                        setImageGlobal(reader.result);
-                        setImagePreview(reader.result);
-                    };
-                    // validateForm();
-                };
-                reader.readAsDataURL(compressedFile);
-                
+
+                // Despachar la acción de subir la imagen a Imgur
+                const imageUrl = await dispatch(uploadImageToImgur(compressedFile));
+
+                // Actualizar el estado con la URL de la imagen
+                const updatedProduct = { ...editProduct };
+
+                if (colorIndex !== undefined) {
+                    // Guardar el link de la imagen para un color específico
+                    updatedProduct.color[colorIndex].image = imageUrl;
+
+                    // Eliminar imagen global si hay una
+                    if (updatedProduct.imageGlobal) {
+                        updatedProduct.imageGlobal = null;
+                        updatedProduct.imageGlobalPreview = null;
+                        setImageGlobal(null);
+                    }
+
+                    setEditProduct(updatedProduct);
+                    setImagePreview(imageUrl);
+                } else {
+                    // Guardar el link de la imagen global
+                    updatedProduct.imageGlobal = imageUrl;
+                    updatedProduct.imageGlobalPreview = imageUrl;
+
+                    // Eliminar imágenes específicas de cada color
+                    updatedProduct.color = updatedProduct.color.map(color => ({
+                        ...color,
+                        image: null,
+                    }));
+
+                    setEditProduct(updatedProduct);
+                    setImageGlobal(imageUrl);
+                    setImagePreview(imageUrl);
+                }
             } catch (error) {
-                console.error('Error compressing the image:', error);
-            };
-        } 
+                console.error('Error al comprimir o subir la imagen:', error);
+            }
+        }
     };
+
+    // const handleImageChange = async (event, colorIndex) => {
+    //     const file = event.target.files[0];
+    
+    //     if (file) {
+    //         try {
+    //             // Configuración para la compresión
+    //             const options = {
+    //                 maxSizeMB: 1, // Tamaño máximo de la imagen en MB
+    //                 maxWidthOrHeight: 1920, // Dimensión máxima de la imagen
+    //                 useWebWorker: true, // Habilitar el uso de web workers para mejorar el rendimiento
+    //             };
+
+    //             // Comprimir la imagen
+    //             const compressedFile = await imageCompression(file, options);
+    //             // const compressedFile = await imageCompression(file, options);
+    
+    //             const reader = new FileReader();
+    //             reader.onloadend = () => {
+    //                 const updatedProduct = { ...editProduct };
+        
+    //                 if (colorIndex !== undefined) {
+    //                     // Subir imagen específica por color
+    //                     updatedProduct.color[colorIndex].imageFile = compressedFile;
+    //                     updatedProduct.color[colorIndex].image = reader.result;
+        
+    //                     // Eliminar imagen global si hay una
+    //                     if (updatedProduct.imageGlobal) {
+    //                         updatedProduct.imageGlobal = null;
+    //                         updatedProduct.imageGlobalPreview = null;
+    //                         setImageGlobal(null);
+    //                     };
+        
+    //                     setEditProduct(updatedProduct);
+    //                     setImagePreview(reader.result);
+    
+    //                 } else {
+    //                     // Subir imagen global
+    //                     updatedProduct.imageGlobal = file;
+    //                     updatedProduct.imageGlobalPreview = reader.result;
+        
+    //                     // Eliminar imágenes específicas de cada color
+    //                     updatedProduct.color = updatedProduct.color.map(color => ({
+    //                         ...color,
+    //                         imageFile: null,
+    //                         image: null
+    //                     }));
+        
+    //                     setEditProduct(updatedProduct);
+    //                     setImageGlobal(reader.result);
+    //                     setImagePreview(reader.result);
+    //                 };
+    //                 // validateForm();
+    //             };
+    //             reader.readAsDataURL(compressedFile);
+                
+    //         } catch (error) {
+    //             console.error('Error compressing the image:', error);
+    //         };
+    //     } 
+    // };
      
     const deleteImage = (index) => {
         const updatedProduct = { ...editProduct };
@@ -409,43 +468,20 @@ const PutProduct = () => {
     //-----------SUBMIT-----------//
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const formData = new FormData();
         
-        // Verificar y preservar la imagen global si no fue modificada
-        if (editProduct.imageGlobal) {
-            formData.append('imageGlobal', editProduct.imageGlobal);
-        } else if (productDetail.imageGlobal) {
-            formData.append('imageGlobal', productDetail.imageGlobal);
+        const productData = {
+            _id: editProduct._id,
+            name: editProduct.name,
+            color: editProduct.color, // No es necesario convertirlo en JSON, ya es un array
+            supplier: editProduct.supplier,
+            price: editProduct.price,
+            category: editProduct.category,
+            description: editProduct.description,
+            imageGlobal: editProduct.imageGlobal || null, // Si existe la imagen global, la añadimos
         }
     
-        // Verificar y preservar las imágenes de cada color si no fueron modificadas
-        editProduct.color.forEach((color) => {
-            // Busca el color original en productDetail
-            const originalColor = productDetail.color.find(c => c._id === color._id);
-    
-            if (color.imageFile) {
-                formData.append('images', color.imageFile);
-            } else if (originalColor && originalColor.image) {
-                // Preservar imagen existente si no se ha modificado
-                formData.append('images', originalColor.image);
-            }
-        });
-    
-        // Agregar los demás campos al formData
-        formData.append("_id", editProduct._id);
-        formData.append("name", editProduct.name);
-        formData.append("color", JSON.stringify(editProduct.color));
-        formData.append("supplier", JSON.stringify(editProduct.supplier));
-        formData.append("price", editProduct.price);
-        formData.append("category", JSON.stringify(editProduct.category));
-        formData.append("description", editProduct.description);
-        formData.append("active", editProduct.active);
-    
-        // Revisión final para asegurarte de que todo esté en el formData
-        // console.log([...formData.entries()]);
-    
         try {
-            const response = await dispatch(putProduct(formData));
+            const response = await dispatch(putProduct(productData));
     
             if (response.data) {
                 console.log("Successfully edited product");
@@ -458,6 +494,58 @@ const PutProduct = () => {
             console.error("Error editing product:", error);
         };
     };
+
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     const formData = new FormData();
+        
+    //     // Verificar y preservar la imagen global si no fue modificada
+    //     if (editProduct.imageGlobal) {
+    //         formData.append('imageGlobal', editProduct.imageGlobal);
+    //     } else if (productDetail.imageGlobal) {
+    //         formData.append('imageGlobal', productDetail.imageGlobal);
+    //     }
+    
+    //     // Verificar y preservar las imágenes de cada color si no fueron modificadas
+    //     editProduct.color.forEach((color) => {
+    //         // Busca el color original en productDetail
+    //         const originalColor = productDetail.color.find(c => c._id === color._id);
+    
+    //         if (color.imageFile) {
+    //             formData.append('images', color.imageFile);
+    //         } else if (originalColor && originalColor.image) {
+    //             // Preservar imagen existente si no se ha modificado
+    //             formData.append('images', originalColor.image);
+    //         }
+    //     });
+    
+    //     // Agregar los demás campos al formData
+    //     formData.append("_id", editProduct._id);
+    //     formData.append("name", editProduct.name);
+    //     formData.append("color", JSON.stringify(editProduct.color));
+    //     formData.append("supplier", JSON.stringify(editProduct.supplier));
+    //     formData.append("price", editProduct.price);
+    //     formData.append("category", JSON.stringify(editProduct.category));
+    //     formData.append("description", editProduct.description);
+    //     formData.append("active", editProduct.active);
+    
+    //     // Revisión final para asegurarte de que todo esté en el formData
+    //     // console.log([...formData.entries()]);
+    
+    //     try {
+    //         const response = await dispatch(putProduct(formData));
+    
+    //         if (response.data) {
+    //             console.log("Successfully edited product");
+    //             dispatch(getProducts());
+    //             // dispatch(getProductById(id));
+    //             dispatch(getCategories());
+    //             navigate('/main_window/products/succes/put');
+    //         };
+    //     } catch (error) {
+    //         console.error("Error editing product:", error);
+    //     };
+    // };
     
     return (
         <div className="page">

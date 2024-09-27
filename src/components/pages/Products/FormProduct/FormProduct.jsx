@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
-import { postProduct } from '../../../../redux/productActions.js';
+import { postProduct, uploadImageToImgur } from '../../../../redux/productActions.js';
 import imageCompression from 'browser-image-compression';
 
 const FormProduct = () => {
@@ -179,6 +179,7 @@ const FormProduct = () => {
             sizes.map(size => ({ color, size }))
         );
     };
+    
     const combinations = generateCombinations();
 
     //-----------STOCK-----------//
@@ -250,6 +251,7 @@ const FormProduct = () => {
     //     setNewProduct(updatedProduct);
     //     validateForm();
     // };
+    
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
         const updatedProduct = { ...newProduct };
@@ -377,62 +379,117 @@ const FormProduct = () => {
 
     const handleImageChange = async (event, colorIndex) => {
         const file = event.target.files[0];
-    
+
         if (file) {
             try {
                 // Configuración para la compresión
                 const options = {
-                    maxSizeMB: 1, // Tamaño máximo de la imagen en MB
-                    maxWidthOrHeight: 1920, // Dimensión máxima de la imagen
-                    useWebWorker: true, // Habilitar el uso de web workers para mejorar el rendimiento
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1920,
+                    useWebWorker: true,
                 };
-    
+
                 // Comprimir la imagen
                 const compressedFile = await imageCompression(file, options);
-    
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const updatedProduct = { ...newProduct };
-    
-                    if (colorIndex !== undefined) {
-                        // Subir imagen específica por color
-                        updatedProduct.color[colorIndex].imageFile = compressedFile;
-                        updatedProduct.color[colorIndex].image = reader.result;
-    
-                        // Eliminar imagen global si hay una
-                        if (updatedProduct.imageGlobal) {
-                            updatedProduct.imageGlobal = null;
-                            updatedProduct.imageGlobalPreview = null;
-                            setImageGlobal(null);
-                        }
-    
-                        setNewProduct(updatedProduct);
-                        setImagePreview(reader.result);
-                    } else {
-                        // Subir imagen global
-                        updatedProduct.imageGlobal = compressedFile;
-                        updatedProduct.imageGlobalPreview = reader.result;
-    
-                        // Eliminar imágenes específicas de cada color
-                        updatedProduct.color = updatedProduct.color.map(color => ({
-                            ...color,
-                            imageFile: null,
-                            image: null
-                        }));
-    
-                        setNewProduct(updatedProduct);
-                        setImageGlobal(reader.result);
-                        setImagePreview(reader.result);
+
+                // Despachar la acción de subir la imagen a Imgur
+                const imageUrl = await dispatch(uploadImageToImgur(compressedFile));
+
+                // Actualizar el estado con la URL de la imagen
+                const updatedProduct = { ...newProduct };
+
+                if (colorIndex !== undefined) {
+                    // Guardar el link de la imagen para un color específico
+                    updatedProduct.color[colorIndex].image = imageUrl;
+
+                    // Eliminar imagen global si hay una
+                    if (updatedProduct.imageGlobal) {
+                        updatedProduct.imageGlobal = null;
+                        updatedProduct.imageGlobalPreview = null;
+                        setImageGlobal(null);
                     }
-                };
-                // console.log('Original file size:', file.size / 1024 / 1024, 'MB');
-                // console.log('Compressed file size:', compressedFile.size / 1024 / 1024, 'MB');
-                reader.readAsDataURL(compressedFile);
+
+                    setNewProduct(updatedProduct);
+                    setImagePreview(imageUrl);
+                } else {
+                    // Guardar el link de la imagen global
+                    updatedProduct.imageGlobal = imageUrl;
+                    updatedProduct.imageGlobalPreview = imageUrl;
+
+                    // Eliminar imágenes específicas de cada color
+                    updatedProduct.color = updatedProduct.color.map(color => ({
+                        ...color,
+                        image: null,
+                    }));
+
+                    setNewProduct(updatedProduct);
+                    setImageGlobal(imageUrl);
+                    setImagePreview(imageUrl);
+                }
             } catch (error) {
-                console.error('Error compressing the image:', error);
+                console.error('Error al comprimir o subir la imagen:', error);
             }
         }
     };
+
+    // const handleImageChange = async (event, colorIndex) => {
+    //     const file = event.target.files[0];
+    
+    //     if (file) {
+    //         try {
+    //             // Configuración para la compresión
+    //             const options = {
+    //                 maxSizeMB: 1, // Tamaño máximo de la imagen en MB
+    //                 maxWidthOrHeight: 1920, // Dimensión máxima de la imagen
+    //                 useWebWorker: true, // Habilitar el uso de web workers para mejorar el rendimiento
+    //             };
+    
+    //             // Comprimir la imagen
+    //             const compressedFile = await imageCompression(file, options);
+    
+    //             const reader = new FileReader();
+    //             reader.onloadend = () => {
+    //                 const updatedProduct = { ...newProduct };
+    
+    //                 if (colorIndex !== undefined) {
+    //                     // Subir imagen específica por color
+    //                     updatedProduct.color[colorIndex].imageFile = compressedFile;
+    //                     updatedProduct.color[colorIndex].image = reader.result;
+    
+    //                     // Eliminar imagen global si hay una
+    //                     if (updatedProduct.imageGlobal) {
+    //                         updatedProduct.imageGlobal = null;
+    //                         updatedProduct.imageGlobalPreview = null;
+    //                         setImageGlobal(null);
+    //                     }
+    
+    //                     setNewProduct(updatedProduct);
+    //                     setImagePreview(reader.result);
+    //                 } else {
+    //                     // Subir imagen global
+    //                     updatedProduct.imageGlobal = compressedFile;
+    //                     updatedProduct.imageGlobalPreview = reader.result;
+    
+    //                     // Eliminar imágenes específicas de cada color
+    //                     updatedProduct.color = updatedProduct.color.map(color => ({
+    //                         ...color,
+    //                         imageFile: null,
+    //                         image: null
+    //                     }));
+    
+    //                     setNewProduct(updatedProduct);
+    //                     setImageGlobal(reader.result);
+    //                     setImagePreview(reader.result);
+    //                 }
+    //             };
+    //             // console.log('Original file size:', file.size / 1024 / 1024, 'MB');
+    //             // console.log('Compressed file size:', compressedFile.size / 1024 / 1024, 'MB');
+    //             reader.readAsDataURL(compressedFile);
+    //         } catch (error) {
+    //             console.error('Error compressing the image:', error);
+    //         }
+    //     }
+    // };
 
     const deleteImage = (index) => {
         const updatedProduct = { ...newProduct };
@@ -487,46 +544,80 @@ const FormProduct = () => {
     //-----------SUBMIT-----------//
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const formData = new FormData();
-
-        // Agregar la imagen global si existe.
-        if (newProduct.imageGlobal) {
-            formData.append('imageGlobal', newProduct.imageGlobal);
-        };
-
-        newProduct.color.forEach((color, index) => {
-            if (color.imageFile) {
-                formData.append('images', color.imageFile);
-            }
-        });
     
-        formData.append("name", newProduct.name);
-        formData.append("color", JSON.stringify(newProduct.color));
-        formData.append("supplier", JSON.stringify(newProduct.supplier));
-        formData.append("price", newProduct.price);
-        formData.append("category", JSON.stringify(newProduct.category));
-        formData.append("description", newProduct.description);
-
-        // Log de FormData
-        // for (const pair of formData.entries()) {
-        //     console.log(`${pair[0]}, ${pair[1]}`);
-        // };
-
+        // Crear un objeto que contendrá los datos del producto
+        const productData = {
+            name: newProduct.name,
+            color: newProduct.color, // No es necesario convertirlo en JSON, ya es un array
+            supplier: newProduct.supplier,
+            price: newProduct.price,
+            category: newProduct.category,
+            description: newProduct.description,
+            imageGlobal: newProduct.imageGlobal || null, // Si existe la imagen global, la añadimos
+        };
+    
+        // // Log del objeto productData para revisar
+        // console.log(productData);
+    
         try {
-            const response = await dispatch(postProduct(formData));
+            // Enviar la petición como un objeto JSON
+            const response = await dispatch(postProduct(productData));
     
             if (response.data) {
                 console.log("Product successfully saved");
                 setColors([]);
                 setSizes([]);
                 setImageGlobal(null);
-                setNewProduct(initialProductState); // Reset form
-                navigate('/main_window/products/succes/post');
+                setNewProduct(initialProductState); // Resetear el formulario
+                navigate('/main_window/products/success/post');
             }
         } catch (error) {
             console.error("Error saving product:", error);
         }
-    };    
+    };
+
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     const formData = new FormData();
+
+    //     // Agregar la imagen global si existe.
+    //     if (newProduct.imageGlobal) {
+    //         formData.append('imageGlobal', newProduct.imageGlobal);
+    //     };
+
+    //     newProduct.color.forEach((color, index) => {
+    //         if (color.imageFile) {
+    //             formData.append('images', color.imageFile);
+    //         }
+    //     });
+    
+    //     formData.append("name", newProduct.name);
+    //     formData.append("color", JSON.stringify(newProduct.color));
+    //     formData.append("supplier", JSON.stringify(newProduct.supplier));
+    //     formData.append("price", newProduct.price);
+    //     formData.append("category", JSON.stringify(newProduct.category));
+    //     formData.append("description", newProduct.description);
+
+    //     // Log de FormData
+    //     // for (const pair of formData.entries()) {
+    //     //     console.log(`${pair[0]}, ${pair[1]}`);
+    //     // };
+
+    //     try {
+    //         const response = await dispatch(postProduct(formData));
+    
+    //         if (response.data) {
+    //             console.log("Product successfully saved");
+    //             setColors([]);
+    //             setSizes([]);
+    //             setImageGlobal(null);
+    //             setNewProduct(initialProductState); // Reset form
+    //             navigate('/main_window/products/succes/post');
+    //         }
+    //     } catch (error) {
+    //         console.error("Error saving product:", error);
+    //     }
+    // };    
 
     useEffect(() => {
         validateForm();

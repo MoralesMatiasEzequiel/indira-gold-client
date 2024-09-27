@@ -146,7 +146,7 @@ export const getTopFiveProductsLocal = () => {
     };
 };
 
-export const postProduct = (productData) => {
+/* export const postProduct = (productData) => {
     return async (dispatch) => {     
         const response = await axios.post('/products', productData, {
             headers: {
@@ -155,9 +155,16 @@ export const postProduct = (productData) => {
         });
         return response;
     };
+}; */
+
+export const postProduct = (productData) => {
+    return async (dispatch) => {     
+        const response = await axios.post('/products', productData);
+        return response;
+    };
 };
 
-export const putProduct = (productData) => {    
+/* export const putProduct = (productData) => {    
     return async (dispatch) => {     
         const response = await axios.put('/products', productData, {
             headers: {
@@ -166,6 +173,38 @@ export const putProduct = (productData) => {
         });
         return response;
     };
+}; */
+
+export const putProduct = (productData) => {    
+    return async (dispatch) => {     
+        const response = await axios.put('/products', productData);
+        return response;
+    };
+};
+
+export const uploadImageToImgur = (compressedFile) => async (dispatch) => {
+    try {
+        const formData = new FormData();
+        formData.append('image', compressedFile);
+
+        const response = await axios.post('https://api.imgur.com/3/image', formData, {
+            headers: {
+                Authorization: 'Client-ID 0617c6580ae7dc3',
+                'Content-Type': 'multipart/form-data'
+            },
+            timeout: 10000, // Establece un tiempo de espera de 10 segundos
+        });
+
+        if (response.data.success) {
+            const imageUrl = response.data.data.link;
+            return imageUrl;
+        } else {
+            throw new Error('Error al subir la imagen a Imgur');
+        }
+    } catch (error) {
+        console.error('Error en la subida de imagen a Imgur:', error);
+        throw error;
+    }
 };
 
 export const putProductStatus = (productId) => {    
