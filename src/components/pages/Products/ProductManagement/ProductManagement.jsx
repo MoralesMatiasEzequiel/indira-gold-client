@@ -116,17 +116,17 @@ const ProductManagement = () => {
         setCurrentPage(1); // Resetear a la primera página al cambiar la categoría
     };
 
-    const getImageUrl = (imagePath) => {
-        if (!imagePath) return '';
+    // const getImageUrl = (imagePath) => {
+    //     if (!imagePath) return '';
         
-        // Reemplazar barras invertidas por barras inclinadas
-        const correctedPath = imagePath.replace(/\\/g, '/');
+    //     // Reemplazar barras invertidas por barras inclinadas
+    //     const correctedPath = imagePath.replace(/\\/g, '/');
         
-        // URL base para los archivos estáticos
-        const baseUrl = 'http://localhost:3001/';
+    //     // URL base para los archivos estáticos
+    //     const baseUrl = 'http://localhost:3001/';
         
-        return `${baseUrl}${correctedPath}`;
-    };
+    //     return `${baseUrl}${correctedPath}`;
+    // };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -235,11 +235,11 @@ const ProductManagement = () => {
                                                 <td className={style.tdContainerImage}>
                                                     {product.imageGlobal ? (
                                                         <div>
-                                                            <img className={style.imageProduct} src={getImageUrl(product.imageGlobal)} alt="Product Image" />
+                                                            <img className={style.imageProduct} src={product.imageGlobal} alt="Product Image" />
                                                         </div>
                                                     ) : (
                                                         <div className={style.containerSize}>
-                                                            <img src={getImageUrl(color.image) || imgProduct} alt="Product Image" className={style.imageProduct} />
+                                                            <img src={color.image || imgProduct} alt="Product Image" className={style.imageProduct} />
                                                         </div>
                                                     )}
                                                 </td>

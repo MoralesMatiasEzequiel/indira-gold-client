@@ -15,7 +15,6 @@ const DetailSale = () => {
     let { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const sales = useSelector(state => state.sales.sales);
     const saleDetail = useSelector(state => state.sales.saleDetail);
     const products = useSelector(state => state.products.products);
     const [purchasedProducts, setPurchasedProducts] = useState([]);

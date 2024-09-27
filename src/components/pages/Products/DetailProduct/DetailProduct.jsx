@@ -31,12 +31,12 @@ const DetailProduct = () => {
         navigate('/main_window/products/management');
     };
 
-    const getImageUrl = (imagePath) => {
-        if (!imagePath) return '';
-        // URL base para los archivos estáticos
-        const baseUrl = 'http://localhost:3001/';
-        return `${baseUrl}${imagePath}`;
-    };
+    // const getImageUrl = (imagePath) => {
+    //     if (!imagePath) return '';
+    //     // URL base para los archivos estáticos
+    //     const baseUrl = 'http://localhost:3001/';
+    //     return `${baseUrl}${imagePath}`;
+    // };
 
     const generatePDF = () => {
         const doc = new jsPDF('portrait', 'mm', 'a4'); // Configurar el documento en A4
@@ -149,10 +149,10 @@ const DetailProduct = () => {
                     <div className={!productDetail.active ? style.columnInactive : style.column}>
                         <div className={style.containerImgProduct}>
                             {productDetail.imageGlobal 
-                            ? <img className={style.imgProduct} src={getImageUrl(productDetail.imageGlobal) || imgProduct} alt="Product Image"/> 
+                            ? <img className={style.imgProduct} src={productDetail.imageGlobal || imgProduct} alt="Product Image"/> 
                             : productDetail.color?.map(color => (
                                 color.image 
-                                ? (<img key={color.image} className={style.imgProduct} src={getImageUrl(color.image)} alt="Product Image" />) 
+                                ? (<img key={color.image} className={style.imgProduct} src={color.image} alt="Product Image" />) 
                                 : <img src={imgProduct} className={style.imgProduct} alt="Product Image" />
                             ))}                          
                         </div>                      
