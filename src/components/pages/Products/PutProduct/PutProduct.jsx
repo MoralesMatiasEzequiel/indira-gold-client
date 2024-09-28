@@ -621,36 +621,6 @@ const PutProduct = () => {
                                                 </span>
                                                 {sizeState ? (
                                                     <>
-                                                        <span className={style.spansinMed} htmlFor="width">Ancho:</span>
-                                                        <input 
-                                                            className={style.inputsinMed}
-                                                            min='0'
-                                                            type="number" 
-                                                            name="width" 
-                                                            placeholder='0' 
-                                                            value={sizeState?.measurements.width || ''}
-                                                            onChange={(event) => handleStockChange(combination, event)} 
-                                                        />
-                                                        <span className={style.spansinMed} htmlFor="long">Largo:</span>
-                                                        <input 
-                                                            className={style.inputsinMed} 
-                                                            min='0'
-                                                            type="number" 
-                                                            name="long" 
-                                                            placeholder='0' 
-                                                            value={sizeState?.measurements.long || ''}
-                                                            onChange={(event) => handleStockChange(combination, event)} 
-                                                        />
-                                                        <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
-                                                        <input 
-                                                            className={style.inputsinMed} 
-                                                            min='0'
-                                                            type="number" 
-                                                            name="rise" 
-                                                            placeholder='0' 
-                                                            value={sizeState?.measurements.rise || ''}
-                                                            onChange={(event) => handleStockChange(combination, event)} 
-                                                        />
                                                         <span className={style.spansinMed} htmlFor="stock">Stock:</span>
                                                         <input 
                                                             className={style.inputsinStock} 
@@ -664,6 +634,39 @@ const PutProduct = () => {
                                                                     handleStockChange(combination, { target: { name: 'stock', value } });
                                                                 }
                                                             }} 
+                                                        />
+                                                        <span className={style.spansinMed} htmlFor="width">Ancho:</span>
+                                                        <input 
+                                                            className={style.inputsinMed}
+                                                            min='0'
+                                                            type="number" 
+                                                            name="width" 
+                                                            placeholder='0' 
+                                                            value={sizeState?.measurements.width || ''}
+                                                            onChange={(event) => handleStockChange(combination, event)} 
+                                                            onWheel={(event) => event.target.blur()} // Esto evita que el scroll cambie el valor
+                                                        />
+                                                        <span className={style.spansinMed} htmlFor="long">Largo:</span>
+                                                        <input 
+                                                            className={style.inputsinMed} 
+                                                            min='0'
+                                                            type="number" 
+                                                            name="long" 
+                                                            placeholder='0' 
+                                                            value={sizeState?.measurements.long || ''}
+                                                            onChange={(event) => handleStockChange(combination, event)}
+                                                            onWheel={(event) => event.target.blur()} // Esto evita que el scroll cambie el valor
+                                                        />
+                                                        <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
+                                                        <input 
+                                                            className={style.inputsinMed} 
+                                                            min='0'
+                                                            type="number" 
+                                                            name="rise" 
+                                                            placeholder='0' 
+                                                            value={sizeState?.measurements.rise || ''}
+                                                            onChange={(event) => handleStockChange(combination, event)} 
+                                                            onWheel={(event) => event.target.blur()} // Esto evita que el scroll cambie el valor
                                                         />
                                                     </>
                                                 ) : (

@@ -705,36 +705,6 @@ const FormProduct = () => {
                                                     <span className={style.spanList}>
                                                         Color {combination.color} - Talle {combination.size}
                                                     </span>
-                                                    <span className={style.spansinMed} htmlFor="width">Ancho:</span>
-                                                    <input
-                                                        className={style.inputsinMed}
-                                                        min='0'
-                                                        type="number"
-                                                        name="width"
-                                                        placeholder='0'
-                                                        value={widthValue}
-                                                        onChange={(event) => handleStockChange(combination, event)}
-                                                    />
-                                                    <span className={style.spansinMed} htmlFor="long">Largo:</span>
-                                                    <input
-                                                        className={style.inputsinMed}
-                                                        min='0'
-                                                        type="number"
-                                                        name="long"
-                                                        placeholder='0'
-                                                        value={longValue}
-                                                        onChange={(event) => handleStockChange(combination, event)}
-                                                    />
-                                                    <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
-                                                    <input
-                                                        className={style.inputsinMed}
-                                                        min='0'
-                                                        type="number"
-                                                        name="rise"
-                                                        placeholder='0'
-                                                        value={riseValue}
-                                                        onChange={(event) => handleStockChange(combination, event)}
-                                                    />
                                                     <span className={style.spansinMed} htmlFor="stock">*Stock:</span>
                                                     <input
                                                         className={style.inputsinStock}
@@ -753,6 +723,39 @@ const FormProduct = () => {
                                                                 handleStockChange(combination, { target: { name: 'stock', value } });
                                                             }
                                                         }}
+                                                    />
+                                                    <span className={style.spansinMed} htmlFor="width">Ancho:</span>
+                                                    <input
+                                                        className={style.inputsinMed}
+                                                        min='0'
+                                                        type="number"
+                                                        name="width"
+                                                        placeholder='0'
+                                                        value={widthValue}
+                                                        onChange={(event) => handleStockChange(combination, event)}
+                                                        onWheel={(event) => event.target.blur()} // Esto evita que el scroll cambie el valor
+                                                    />
+                                                    <span className={style.spansinMed} htmlFor="long">Largo:</span>
+                                                    <input
+                                                        className={style.inputsinMed}
+                                                        min='0'
+                                                        type="number"
+                                                        name="long"
+                                                        placeholder='0'
+                                                        value={longValue}
+                                                        onChange={(event) => handleStockChange(combination, event)}
+                                                        onWheel={(event) => event.target.blur()} // Esto evita que el scroll cambie el valor
+                                                    />
+                                                    <span className={style.spansinMed} htmlFor="rise">Tiro:</span>
+                                                    <input
+                                                        className={style.inputsinMed}
+                                                        min='0'
+                                                        type="number"
+                                                        name="rise"
+                                                        placeholder='0'
+                                                        value={riseValue}
+                                                        onChange={(event) => handleStockChange(combination, event)}
+                                                        onWheel={(event) => event.target.blur()} // Esto evita que el scroll cambie el valor
                                                     />
                                                 </li>
                                             );
