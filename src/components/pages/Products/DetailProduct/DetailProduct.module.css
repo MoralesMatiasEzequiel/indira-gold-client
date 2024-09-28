@@ -38,8 +38,8 @@
 .columnInactive {
     opacity: 0.4;
     height: 90%;
-    /* width: 50%; */
-    padding: 0 2rem;
+    width: 50%;
+    padding: 0 1rem;
     box-sizing: border-box;
     display: flex; /* Asegura que los hijos se alineen correctamente si es necesario */
     flex-direction: column; /* Alinea los elementos en una columna si necesitas que la columna sea vertical */
