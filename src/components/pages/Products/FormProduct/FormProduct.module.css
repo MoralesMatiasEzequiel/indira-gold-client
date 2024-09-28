@@ -336,6 +336,10 @@
     justify-content: center;
 }
 
+.addImgChild{
+    width: 50%;
+}
+
 .buttonImg{
     cursor: pointer;
 }

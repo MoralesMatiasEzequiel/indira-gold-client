@@ -810,17 +810,19 @@ const FormProduct = () => {
                                             newProduct.color?.map((color, index) => (
                                                 <li key={color.colorName} className={style.list}>
                                                     <div className={style.addImg}>
-                                                        <span className={style.spanList}>{color.colorName}</span>
-                                                        <label className={style.buttonImg} htmlFor={`imageProduct-${index}`}>
-                                                            {imageLoading ? <p>Cargando...</p> : <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />}
-                                                        </label>
-                                                        <input 
-                                                            className={style.inputImage} 
-                                                            type="file" 
-                                                            accept="image/*" 
-                                                            id={`imageProduct-${index}`}
-                                                            onChange={(event) => handleImageChange(event, index)} 
-                                                        />
+                                                        <div className={style.addImgChild}><span className={style.spanList}>{color.colorName}</span></div>
+                                                        <div className={style.addImgChild}>
+                                                            <label className={style.buttonImg} htmlFor={`imageProduct-${index}`}>
+                                                                {imageLoading ? <p>Cargando...</p> : <img className={style.imgProduct} src={color.image || imageGlobal || imgProduct} alt="image-product" />}
+                                                            </label>
+                                                            <input 
+                                                                className={style.inputImage} 
+                                                                type="file" 
+                                                                accept="image/*" 
+                                                                id={`imageProduct-${index}`}
+                                                                onChange={(event) => handleImageChange(event, index)} 
+                                                            />
+                                                        </div>
                                                     </div>
                                                     <button type="button" className={style.buttonDelete} onClick={() => deleteImage(index)}>
                                                         <img src={x} alt="x" />
