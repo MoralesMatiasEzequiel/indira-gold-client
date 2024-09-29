@@ -1,6 +1,6 @@
 const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const { exec } = require('child_process');
+//const path = require('path');
+//const { exec } = require('child_process');
 
 let mainWindow;
 
@@ -28,15 +28,15 @@ let mainWindow;
 //   });
 // };
 
-const checkDockerAvailable = (callback) => {
-  exec('docker info', (err, stdout, stderr) => {
-    if (err) {
-      console.error('Docker no está disponible. Asegúrate de que Docker esté corriendo.');
-      return;
-    }
-    callback();
-  });
-};
+// const checkDockerAvailable = (callback) => {
+//   exec('docker info', (err, stdout, stderr) => {
+//     if (err) {
+//       console.error('Docker no está disponible. Asegúrate de que Docker esté corriendo.');
+//       return;
+//     }
+//     callback();
+//   });
+// };
 
 // const startDockerContainer = () => {
 //   // Añade manualmente la ruta de Docker al PATH en tu código
@@ -69,31 +69,31 @@ const checkDockerAvailable = (callback) => {
 //     });
 //   });
 // };
-const startDockerContainer = () => {
-  const projectPath = 'C:/Users/Frida/Desktop/Indira Gold/indira-gold-project';
+// const startDockerContainer = () => {
+//   const projectPath = 'C:/Users/Frida/Desktop/Indira Gold/indira-gold-project';
   
-  console.log('Checking if Docker is available...');
-  exec('docker info', (err, stdout, stderr) => {
-    if (err) {
-      console.error('Docker no está disponible o no está corriendo.');
-      return;
-    }
-    console.log('Docker está disponible.');
+//   console.log('Checking if Docker is available...');
+//   exec('docker info', (err, stdout, stderr) => {
+//     if (err) {
+//       console.error('Docker no está disponible o no está corriendo.');
+//       return;
+//     }
+//     console.log('Docker está disponible.');
 
-    console.log(`Changing directory to ${projectPath}...`);
-    exec(`cd ${projectPath} && docker compose up -d`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error starting Docker container: ${error}`);
-        if (stderr) {
-          console.error(`Error output: ${stderr}`);
-        }
-      } else {
-        console.log('Docker container started successfully');
-        console.log(stdout);
-      }
-    });
-  });
-};
+//     console.log(`Changing directory to ${projectPath}...`);
+//     exec(`cd ${projectPath} && docker compose up -d`, (error, stdout, stderr) => {
+//       if (error) {
+//         console.error(`Error starting Docker container: ${error}`);
+//         if (stderr) {
+//           console.error(`Error output: ${stderr}`);
+//         }
+//       } else {
+//         console.log('Docker container started successfully');
+//         console.log(stdout);
+//       }
+//     });
+//   });
+// };
 
 
 
@@ -126,7 +126,7 @@ const createWindow = () => {
 // Algunas API solo pueden usarse después de que ocurra este evento.
 app.whenReady().then(() => {
   // Inicia el contenedor Docker
-  startDockerContainer();
+  //startDockerContainer();
 
   // Crea la ventana de la aplicación
   createWindow();
