@@ -254,22 +254,31 @@ const DetailSale = () => {
     
     
     const handleDelete = () => {
-
+        const groupedProducts = {};
+    
+        // Agrupar productos iguales
         purchasedProducts.forEach((product) => {
             const key = `${product._id}_${product.selectedColor._id}_${product.selectedSize._id}`;
-
+            if (!groupedProducts[key]) {
+                groupedProducts[key] = { ...product, quantity: 1 };
+            } else {
+                groupedProducts[key].quantity += 1;
+            }
+        });
+    
+        Object.values(groupedProducts).forEach((product) => {
+            // Incrementar el stock con la cantidad correcta
             dispatch(increaseStock({
                 _id: product._id,
                 idColor: product.selectedColor._id,
                 idSize: product.selectedSize._id,
-                stockToIncrease: 1
+                stockToIncrease: product.quantity // Incrementar stock por la cantidad de productos iguales
             }))
             .catch(error => {
                 console.error("Error incrementando el stock:", error);
             });
-
+    
             if(saleDetail.client){
-
                 let clientData = {
                     _id: saleDetail.client._id,
                     purchasesToRemove: [
@@ -279,21 +288,23 @@ const DetailSale = () => {
                             sizeId: product.selectedSize._id
                         }
                     ]
-                }
+                };
                 dispatch(putRemovePurchases(clientData));
-            };
-        })
-
-        dispatch(deleteSale(id)).then(
-            dispatch(getSales()).then(
-                navigate('/')
-            )
-        )
-        .catch(
-            dispatch(getSales()).then(
-                navigate('/')
-        ));
-    }
+            }
+        });
+    
+        // Eliminar la venta
+        dispatch(deleteSale(id)).then(() => {
+            dispatch(getSales()).then(() => {
+                navigate('/');
+            });
+        }).catch(() => {
+            dispatch(getSales()).then(() => {
+                navigate('/');
+            });
+        });
+    };
+    
 
     return(
         <div className="page">
