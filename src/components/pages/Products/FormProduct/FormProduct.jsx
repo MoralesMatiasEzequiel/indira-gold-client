@@ -577,7 +577,7 @@ const FormProduct = () => {
                 setSizes([]);
                 setImageGlobal(null);
                 setNewProduct(initialProductState); // Resetear el formulario
-                navigate('/main_window/products/success/post');
+                navigate('/main_window/products/succes/post');
             }
         } catch (error) {
             console.error("Error saving product:", error);
