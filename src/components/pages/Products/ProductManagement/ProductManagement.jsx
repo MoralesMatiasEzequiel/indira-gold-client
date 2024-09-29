@@ -181,9 +181,11 @@ const ProductManagement = () => {
                             <span className={style.spanCheckbox}>Productos activos</span>
                             <input className={style.inputCheckbox} type="checkbox" name="all" id="all" checked={productFilter === 'all'} onChange={() => handleCheckboxChange('all')} />
                             <span className={style.spanCheckbox}>Todos los productos</span>
-                            <input className="filterSearch" type="search" name="searchIDProduct" id="searchIDProduct" onChange={(e) => setProductId(e.target.value)} onKeyDown={handleKeyDown} placeholder="Buscar código" autoComplete="off" />
                         </div>
                         <div className={style.containerSelected}>
+                            <div>
+                                <input className={style.searchCode} type="search" name="searchIDProduct" id="searchIDProduct" onChange={(e) => setProductId(e.target.value)} onKeyDown={handleKeyDown} placeholder="🔍︎ Buscar código" autoComplete="off" />
+                            </div>  
                             <select name="category" value={category} onChange={handleInputChangeCategories}>
                                 <option value="allCategories">Todas las categorías</option>
                                 {categories && categories.length > 0 ? (
