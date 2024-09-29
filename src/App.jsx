@@ -10,8 +10,8 @@ import PutSale from "./components/pages/Sales/PutSale/PutSale.jsx";
 import Products from "./components/pages/Products/Products.jsx";
 import DetailProduct from "./components/pages/Products/DetailProduct/DetailProduct.jsx";
 import FormProduct from "./components/pages/Products/FormProduct/FormProduct.jsx";
-import SuccesPostProduct from './components/pages/Products/SuccesProduct/SuccesPostProduct.jsx';
-import SuccesPutProduct from './components/pages/Products/SuccesProduct/SuccesPutProduct.jsx';
+import SuccessPostProduct from './components/pages/Products/SuccessProduct/SuccessPostProduct.jsx';
+import SuccessPutProduct from './components/pages/Products/SuccessProduct/SuccessPutProduct.jsx';
 import ProductManagement from "./components/pages/Products/ProductManagement/ProductManagement.jsx";
 import PutProduct from "./components/pages/Products/PutProduct/PutProduct.jsx";
 import PutPriceProducts from "./components/pages/Products/PutPriceProduct/PutPriceProducts.jsx";
@@ -67,8 +67,8 @@ const App = () => {
           <Route path='/main_window/products' element={<Products />}/>
           <Route path='/main_window/products/:id' element={<DetailProduct />}/>
           <Route path='/main_window/products/form' element={<FormProduct />}/>
-          <Route path='/main_window/products/succes/post' element={<SuccesPostProduct />}/>
-          <Route path='/main_window/products/succes/put' element={<SuccesPutProduct />}/>
+          <Route path='/main_window/products/success/post' element={<SuccessPostProduct />}/>
+          <Route path='/main_window/products/success/put' element={<SuccessPutProduct />}/>
           <Route path='/main_window/products/management' element={<ProductManagement/>}/>
           <Route path='/main_window/products/edit/:id' element={<PutProduct />}/>
           <Route path='/main_window/products/edit/price' element={<PutPriceProducts />}/>
