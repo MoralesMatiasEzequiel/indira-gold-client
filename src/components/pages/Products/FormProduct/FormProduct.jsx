@@ -48,6 +48,8 @@ const FormProduct = () => {
     const [actionType, setActionType] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [imageLoading, setImageLoading] = useState(false);
+    const [isClearDisabled, setIsClearDisabled] = useState(true);
+
 // console.log(newProduct); 
 
     const handleSetForm = () => {
@@ -56,6 +58,7 @@ const FormProduct = () => {
         setSizes([]);
         setImageGlobal(null);
         setIsSubmitDisabled(true);
+        setIsClearDisabled(true);
     };
 
     const validateForm = () => {
@@ -77,6 +80,10 @@ const FormProduct = () => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+
+        if (event.target.value) {
+            setIsClearDisabled(false);
+        }
 
         if(name === 'name'){
             setNewProduct({
@@ -116,6 +123,10 @@ const FormProduct = () => {
     };
 
     const handleKeyDown = (event) => {
+        if (event.target.value) {
+            setIsClearDisabled(false);
+        }
+
         if (event.key === 'Enter') {
             event.preventDefault();
             addColor();
@@ -125,6 +136,9 @@ const FormProduct = () => {
 
     //-----------COLOR-----------//
     const handleInputColorChange = (event) => {
+        if(event.target.value) {
+            setIsClearDisabled(false);
+        }
         setNewColor(event.target.value);
     };
 
@@ -157,6 +171,9 @@ const FormProduct = () => {
 
     //-----------SIZE-----------//
     const handleInputSizeChange = (event) => {
+        if(event.target.value) {
+            setIsClearDisabled(false);
+        }
         setNewSize(event.target.value);
     };
 
@@ -255,6 +272,9 @@ const FormProduct = () => {
     // };
     
     const handleStockChange = (combination, event) => {
+        if(event.target.value) {
+            setIsClearDisabled(false);
+        }
         const { name, value } = event.target;
         const updatedProduct = { ...newProduct };
         const sizeToUpdate = combination.size; // Extraer el tamaño
@@ -362,6 +382,11 @@ const FormProduct = () => {
 
     //-----------SUPPLIER-----------//
     const handleSupplierChange = (event) => {
+
+        if(event.target.value) {
+            setIsClearDisabled(false);
+        }
+
         const { name, value } = event.target;
     
         const updatedProduct = {
@@ -380,6 +405,11 @@ const FormProduct = () => {
     };
 
     const handleImageChange = async (event, colorIndex) => {
+
+        if(event.target.value) {
+            setIsClearDisabled(false);
+        }
+
         const file = event.target.files[0];
 
         if (file) {
@@ -577,6 +607,7 @@ const FormProduct = () => {
                 setSizes([]);
                 setImageGlobal(null);
                 setNewProduct(initialProductState); // Resetear el formulario
+                setIsClearDisabled(true);
                 navigate('/main_window/products/success/post');
             }
         } catch (error) {
@@ -637,7 +668,7 @@ const FormProduct = () => {
                 <div className="title">
                     <h2>NUEVO PRODUCTO</h2>
                     <div className="titleButtons">
-                        <button onClick={handleSetForm}><img src={iconClear} alt="" /></button>
+                        <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button>
                     </div>
                 </div>
                 <div className="container">
