@@ -21,11 +21,35 @@
 }
 
 .containerSelected{
+    display: flex;
+    align-items: center;
     padding-bottom: 20px;
+}
+
+.containerSelected div{
+    padding-right: 20px;
 }
 
 .containerSelected label{
     margin-right: 5px;
+}
+
+.searchCode{
+    border: none;
+    width: 8rem;
+    border-bottom: 1px solid #797979;
+    padding-right: 0px;
+    padding-bottom: 2px;
+    text-align: left;
+    font-size: 0.75rem;
+}
+
+.searchCode::placeholder {
+    font-style: italic; 
+}
+
+.searchCode:focus {
+    outline: none; 
 }
 
 .inactive{
