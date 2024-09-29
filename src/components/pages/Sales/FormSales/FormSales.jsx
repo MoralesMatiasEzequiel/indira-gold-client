@@ -44,6 +44,7 @@ const FormSales = () => {
     const [saleMade, setSaleMade] = useState(false);
     const [saleResponse, setSaleResponse] = useState(null);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    const [isClearDisabled, setIsClearDisabled] = useState(true);
 
     const initialSaleState = {
         client: '',
@@ -65,7 +66,7 @@ const FormSales = () => {
         setPaymentMethod(null);
         setSelectedProducts([{ productId: null, colorId: null, sizeId: null, price: null, category: null }]);
         setSubtotal(0);
-        
+        setIsClearDisabled(true);
     };
 
     const transformProductOptions = (products) => {        
@@ -220,6 +221,11 @@ const FormSales = () => {
     };
 
     const handleProductChange = (selectedOption, index) => {
+
+        if(selectedOption) {
+            setIsClearDisabled(false);
+        }
+
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts];
             newSelectedProducts[index] = selectedOption ? { ...selectedOption } : { productId: null, colorId: null, sizeId: null, price: null, category: null };
@@ -269,6 +275,11 @@ const FormSales = () => {
     };
 
     const handleClientChange = (selectedOption) => {
+
+        if(selectedOption) {
+            setIsClearDisabled(false);
+        }
+
         setSelectedClient(selectedOption);
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
@@ -278,6 +289,11 @@ const FormSales = () => {
     };
 
     const handleInputChange = (e) => {
+
+        if(e.target.value) {
+            setIsClearDisabled(false);
+        }
+
         const { name, value } = e.target;
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
@@ -287,6 +303,11 @@ const FormSales = () => {
     };
 
     const handlePaymentMethodChange = (selectedOption) => {
+
+        if(selectedOption) {
+            setIsClearDisabled(false);
+        }
+
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
             paymentMethod: selectedOption ? selectedOption.value : ''
@@ -386,6 +407,7 @@ const FormSales = () => {
             setSubtotal(0);
             setSelectedClient(null);
             setIsSubmitDisabled(true);
+            setIsClearDisabled(true);
 
             toggleSaleMade();
         });
@@ -602,7 +624,7 @@ const FormSales = () => {
                     <div className="title">
                         <h2>Nueva venta</h2>
                         <div className="titleButtons">
-                            <button onClick={handleSetForm}><img src={iconClear} alt="" /></button>
+                            <button onClick={handleSetForm} disabled={isClearDisabled}><img src={iconClear} alt="" /></button>
                         </div>
                     </div>
                     <div className="container" style={{ display: saleMade ? 'none' : 'block' }}>

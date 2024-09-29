@@ -226,7 +226,7 @@ const PutPriceProducts = () => {
                         </div>
                         <div className={style.labelInput}>
                             <div className={style.left}>
-                                <label htmlFor="porcentage">Porentaje %</label>
+                                <label htmlFor="porcentage">Porcentaje %</label>
                             </div>
                             <div className={style.right}>
                                 <input 
