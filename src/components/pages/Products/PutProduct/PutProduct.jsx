@@ -495,7 +495,7 @@ const PutProduct = () => {
                 dispatch(getProducts());
                 // dispatch(getProductById(id));
                 dispatch(getCategories());
-                navigate('/main_window/products/succes/put');
+                navigate('/main_window/products/success/put');
             };
         } catch (error) {
             console.error("Error editing product:", error);
