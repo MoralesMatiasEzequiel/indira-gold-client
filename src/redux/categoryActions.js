@@ -8,43 +8,58 @@ export const getCategories = () => {
         try {
             const { data } = await axios.get("/category");
             
-            if (data) {
-                dispatch(getCategoriesReducer(data));
-                const key = 0;
-                await saveCategoriesToIndexedDB('category', data, key);
-            } else {
-                console.log("No llegó data de GetSales");
-            };
+            dispatch(getCategoriesReducer(data));
 
         } catch (error) {
-            // Intentar obtener los datos locales de IndexedDB como un respaldo
-            const { success, data: category } = await getCategoriesFromIndexedDB('category');
-            if (success && Array.isArray(category) && category.length > 0) {
-                // Obtener la última posición del array
-                const lastCategory = category[category.length - 1];
-                dispatch(getCategoriesReducer(lastCategory)); // Despachar solo el último elemento
-                return true;
-            } else {
-                console.error("Error retrieving category from IndexedDB.");
-            };
-
-            console.error("Error retrieving sales from server:", error.message);
+            console.error("Error retrieving category from server: ", error.message);
+            return null;
         }
     };
 };
 
 // export const getCategories = () => {
 //     return async (dispatch) => {
-//         const { data } = await axios.get("/category");
-//         dispatch(getCategoriesReducer(data));
+//         try {
+//             const { data } = await axios.get("/category");
+            
+//             if (data) {
+//                 dispatch(getCategoriesReducer(data));
+//                 const key = 0;
+//                 await saveCategoriesToIndexedDB('category', data, key);
+//             } else {
+//                 console.log("No llegó data de GetCategories");
+//             };
+
+//         } catch (error) {
+//             // Intentar obtener los datos locales de IndexedDB como un respaldo
+//             const { success, data: category } = await getCategoriesFromIndexedDB('category');
+//             if (success && Array.isArray(category) && category.length > 0) {
+//                 // Obtener la última posición del array
+//                 const lastCategory = category[category.length - 1];
+//                 dispatch(getCategoriesReducer(lastCategory)); // Despachar solo el último elemento
+//                 return true;
+//             } else {
+//                 console.error("Error retrieving category from IndexedDB.");
+//             };
+
+//             console.error("Error retrieving sales from server:", error.message);
+//         }
 //     };
 // };
 
 export const postCategory = (categoryData) => {
     return async (dispatch) => {
-        const { data } = await axios.post('/category', categoryData);
-        dispatch(postCategoryReducer(data));
-        return data;
+        try {
+            const { data } = await axios.post('/category', categoryData);
+
+            dispatch(postCategoryReducer(data));
+
+            return data;
+
+        } catch (error) {
+            console.error("Error creating category: ", error.message);
+            return null;
+        }
     };
 };
 
