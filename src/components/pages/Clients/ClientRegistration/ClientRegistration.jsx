@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getMonthlySalesByClient } from '../../../../redux/saleActions.js';
 import { getClientByName, getClientByLastname, getClientByDni, getClients } from "../../../../redux/clientActions.js";
 import detail from '../../../../assets/img/detail.png';
@@ -10,6 +10,7 @@ const ClientRegistration = () => {
 
     const clients = useSelector(state => state.clients.clients);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [dni, setDni] = useState('');
     const [name, setName] = useState('');
@@ -202,9 +203,9 @@ const ClientRegistration = () => {
                                         <td>{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Información no disponible offline'}</td>    
                                         <td>{client.active ? "Activo" : "Inactivo"}</td>
                                         <td>
-                                            <Link to={`/main_window/clients/${client._id}`}>
+                                            <div onClick={() => navigate(`/main_window/clients/${client._id}`)}>
                                                 <img src={detail} alt="" className="detailImg" />
-                                            </Link>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

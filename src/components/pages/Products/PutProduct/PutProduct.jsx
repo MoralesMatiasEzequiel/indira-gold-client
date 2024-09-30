@@ -2,7 +2,7 @@ import style from './PutProduct.module.css';
 import x from '../../Sales/FormSales/img/x.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import FormCategory from '../FormCategory/FormCategory.jsx';
 import { getCategories } from '../../../../redux/categoryActions.js';
@@ -560,7 +560,7 @@ const PutProduct = () => {
                 <div className="title">
                     <h2>EDITAR PRODUCTO</h2>
                     <div className="titleButtons">
-                        <button><Link to={`/main_window/products/${id}`}>Atrás</Link></button>
+                        <button onClick={() => navigate(`/main_window/products/${id}`)}>Atrás</button>
                     </div>
                 </div>
                 <div className="container">

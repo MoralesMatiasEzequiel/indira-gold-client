@@ -3,7 +3,7 @@ import detail from '../../../../assets/img/detail.png';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getAllProducts, getProducts, getProductByName, getActiveProductsByName } from "../../../../redux/productActions.js";
 import { getCategories } from "../../../../redux/categoryActions.js";
@@ -271,9 +271,9 @@ const ProductManagement = () => {
                                                     }
                                                 </td>
                                                 <td className={style.tdInside}>
-                                                    <Link to={`/main_window/products/${product._id}`}>
+                                                    <a onClick={() => navigate(`/main_window/products/${product._id}`)}>
                                                         <img src={detail} alt="" className='detailImg' />
-                                                    </Link>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         </React.Fragment>

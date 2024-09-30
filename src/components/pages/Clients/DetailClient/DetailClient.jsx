@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getClientById, getClientByIdLocal, deleteClient, clearClientDetail } from '../../../../redux/clientActions.js';
 import { getProductById } from '../../../../redux/productActions.js';
 import style from "./DetailClient.module.css";
@@ -130,9 +130,9 @@ const DetailClient = () => {
                         <div className="title">
                             <h2>Detalle del Cliente</h2>
                             <div className="titleButtons">
-                                {clientDetail.active ? <button><Link to={`/main_window/clients/edit/${id}`}>Editar</Link></button> : ''}
+                                {clientDetail.active ? <button onClick={() => navigate(`/main_window/clients/edit/${id}`)}>Editar</button> : ''}
                                 {!clientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
-                                <button><Link to={`/main_window/clients`}>Atrás</Link></button>
+                                <button onClick={() => navigate(`/main_window/clients`)}>Atrás</button>
                             </div>
                         </div>
                         <div className={!clientDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}>
