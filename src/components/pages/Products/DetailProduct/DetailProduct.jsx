@@ -40,74 +40,65 @@ const DetailProduct = () => {
 
     const generatePDF = () => {
         const doc = new jsPDF('portrait', 'mm', 'a4'); // Configurar el documento en A4
-
+    
         const barcodeCanvas = barcodeRefs.current[productDetail._id];
-        const barcodeWidth = 50; // Ancho máximo del código de barras en mm (5 cm)
-        const barcodeHeight = 20; // Alto del código de barras en mm
     
         // Verifica que el canvas tenga un código de barras generado
         if (barcodeCanvas) {
             const imgData = barcodeCanvas.toDataURL("image/png");
-
+    
+            // Dimensiones originales del canvas del código de barras
+            const originalWidth = barcodeCanvas.width;
+            const originalHeight = barcodeCanvas.height;
+    
             // Dimensiones de la página A4
             const pageWidth = 210; // mm
             const pageHeight = 297; // mm
-
-            // Definir márgenes y espacios entre códigos
+    
+            // Configurar el ancho de cada código de barras en 70 mm
+            const barcodeWidth = 70;
+            const barcodeHeight = (originalHeight / originalWidth) * barcodeWidth; // Mantener proporción
+    
+            // Definir márgenes y espacio entre códigos
             const margin = 10; // mm
-            const spaceBetween = 10; // Espacio entre códigos
-
+            const spaceBetween = 10; // Espacio entre códigos en mm
+    
             // Calcular cuántos códigos de barras caben en una fila y cuántas filas
             const codesPerRow = Math.floor((pageWidth - 2 * margin) / (barcodeWidth + spaceBetween));
             const codesPerColumn = Math.floor((pageHeight - 2 * margin) / (barcodeHeight + spaceBetween));
-
+    
             let currentX = margin;
             let currentY = margin;
-            let codeCount = 0;
-
-            // Agregar tantos códigos de barras como sea necesario para llenar la página
+    
+            // Agregar tantos códigos de barras como quepan en la página
             for (let row = 0; row < codesPerColumn; row++) {
                 for (let col = 0; col < codesPerRow; col++) {
-                    // Agregar el nombre del producto
-                    doc.setFontSize(10);
-                    doc.text(productDetail.name, currentX, currentY - 2); // Posicionar el texto sobre el código
-
                     // Agregar el código de barras al PDF
                     doc.addImage(imgData, 'PNG', currentX, currentY, barcodeWidth, barcodeHeight);
-
-                    // Actualizar la posición para el siguiente código de barras
-                    currentX += barcodeWidth + spaceBetween;
-                    codeCount++;
-
-                    // Verificar si se necesita agregar una nueva página
-                    if (codeCount % (codesPerRow * codesPerColumn) === 0) {
-                        doc.addPage(); // Crear una nueva página
-                        currentX = margin;
-                        currentY = margin;
-                    };
-                };
-
-                // Moverse a la siguiente fila
-                currentX = margin;
-                currentY += barcodeHeight + spaceBetween;
-            };
-        
-            // Agregar el nombre del producto al PDF
-            // doc.setFontSize(18);
-            // doc.text(productDetail.name, 10, 10);
-            //-------------
-            // Agregar el precio del producto
-            // doc.setFontSize(12);
-            // doc.text(`Precio: $${productDetail.price}`, 10, 20);
     
-            // Agregar la categoría del producto
-            // const category = productDetail.category && productDetail.category.length > 0 ? productDetail.category[0].name : 'No tiene categoría';
-            // doc.text(`Categoría: ${category}`, 10, 30);
+                    // Actualizar la posición horizontal para el siguiente código de barras
+                    currentX += barcodeWidth + spaceBetween;
+    
+                    // Si es la última columna de la fila, saltar a la siguiente fila
+                    if (col === codesPerRow - 1) {
+                        currentX = margin;
+                        currentY += barcodeHeight + spaceBetween;
+                    }
+                }
+    
+                // Si se llega al final de la página, agregar una nueva página
+                if (row === codesPerColumn - 1) {
+                    doc.addPage();
+                    currentX = margin;
+                    currentY = margin;
+                }
+            }
     
             // Guardar el PDF
-            doc.save(`${productDetail.name} - Código De Barras.pdf`);
-        };
+            doc.save(`${productDetail.name} - Códigos De Barras.pdf`);
+        }
     };
+    
 
     useEffect(() => {
         dispatch(getProductById(id));
