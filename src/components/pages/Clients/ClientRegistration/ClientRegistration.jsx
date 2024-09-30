@@ -42,9 +42,11 @@ const ClientRegistration = () => {
             if (!loadedClientIds.has(client._id)) { // Verifica si el ID ya fue cargado
                 dispatch(getMonthlySalesByClient(client._id))
                     .then(response => {
+                        // Asegúrate de que response sea válido y tenga la propiedad totalProducts
+                        const totalProducts = response?.totalProducts || 0; // Si no existe, asigna 0
                         setMonthlySales(prevState => ({
                             ...prevState,
-                            [client._id]: response.totalProducts
+                            [client._id]: totalProducts
                         }));
                         setLoadedClientIds(prevIds => new Set(prevIds).add(client._id)); // Agrega el ID al conjunto de IDs cargados
                     })
