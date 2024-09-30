@@ -81,7 +81,7 @@ h1 img{
     height: 3rem;
 }
 
-.subMenu a div p{
+.subMenu  div p{
     letter-spacing: 0;
     font-size: 1rem;
     font-weight: 300;

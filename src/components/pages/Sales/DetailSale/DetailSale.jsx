@@ -304,7 +304,6 @@ const DetailSale = () => {
             });
         });
     };
-    
 
     return(
         <div className="page">
@@ -318,7 +317,7 @@ const DetailSale = () => {
                                 <button onClick={generatePDF}><img src={print} alt=""/></button>
                                 <button><Link to={`/main_window/sales/edit/${id}`}>Cambio</Link></button>
                                 <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>
-                                <button><Link to={`/`}>Atrás</Link></button>
+                                <button onClick={() => navigate('/')}>Atrás</button>
                             </div>
                         </div>
                         <div className={`container ${style.content}`}>
