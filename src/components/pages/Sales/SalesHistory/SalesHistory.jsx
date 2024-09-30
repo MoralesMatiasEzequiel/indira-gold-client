@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getSales, searchSales, getSalesByOrderNumber, getSalesByClient } from '../../../../redux/saleActions.js';
 import detail from '../../../../assets/img/detail.png';
 
 const SalesHistory = () => {
     const sales = useSelector(state => state.sales.sales);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [orderNumber, setOrderNumber] = useState('');
     const [client, setClient] = useState('');
@@ -176,9 +177,9 @@ const SalesHistory = () => {
                                     <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
                                     <td className="center">$ {formatNumber(sale.totalPrice)}</td>
                                     <td>
-                                        <Link to={`/main_window/sales/${sale._id}`}>
+                                        <a onClick={() => navigate(`/main_window/sales/${sale._id}`)}>
                                             <img src={detail} alt="" className="detailImg" />
-                                        </Link>
+                                        </a>
                                     </td>
                                 </tr>
                             ))}
