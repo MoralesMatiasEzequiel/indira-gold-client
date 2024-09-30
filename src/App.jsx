@@ -1,7 +1,7 @@
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import SideBar from "./components/common/SideBar.jsx"; 
 import Stats from "./components/pages/Stats/Stats.jsx";
 import Sales from "./components/pages/Sales/Sales.jsx";
@@ -18,42 +18,42 @@ import PutPriceProducts from "./components/pages/Products/PutPriceProduct/PutPri
 import Clients from "./components/pages/Clients/Clients.jsx";
 import DetailClient from "./components/pages/Clients/DetailClient/DetailClient.jsx";
 import PutClient from "./components/pages/Clients/PutClient/PutClient.jsx";
-import { ToastContainer, toast } from 'react-toastify';
-import { initializeAppData , syncData } from './services/syncService.js';
-import initDB, { processPendingRequests } from './services/indexedDB.js';
+import { ToastContainer } from 'react-toastify';
+// import { initializeAppData , syncData } from './services/syncService.js';
+// import initDB, { processPendingRequests } from './services/indexedDB.js';
 
 
 const App = () => {
-  const [isOnline, setIsOnline] = useState(window.navigator.onLine);
+  // const [isOnline, setIsOnline] = useState(window.navigator.onLine);
 
-  useEffect(() => {
-    const initializeDB = async () => {
-      await initDB();
-    };
-    initializeDB();
+  // useEffect(() => {
+  //   const initializeDB = async () => {
+  //     await initDB();
+  //   };
+  //   initializeDB();
     
-    initializeAppData();
+  //   initializeAppData();
 
-    const handleOnline = () => {
-        setIsOnline(true);
-        syncData(); // Sincroniza cuando la conexión se restaura
-        processPendingRequests();
-        toast.success('Conexión restablecida');
-    };
+  //   const handleOnline = () => {
+  //       setIsOnline(true);
+  //       syncData(); // Sincroniza cuando la conexión se restaura
+  //       processPendingRequests();
+  //       toast.success('Conexión restablecida');
+  //   };
 
-    const handleOffline = () => {
-        setIsOnline(false);
-        toast.error('Estás sin conexión');
-    };
+  //   const handleOffline = () => {
+  //       setIsOnline(false);
+  //       toast.error('Estás sin conexión');
+  //   };
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+  //   window.addEventListener('online', handleOnline);
+  //   window.addEventListener('offline', handleOffline);
 
-    return () => {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
+  //   return () => {
+  //       window.removeEventListener('online', handleOnline);
+  //       window.removeEventListener('offline', handleOffline);
+  //   };
+  // }, []);
 
   return (
     <div className="App">

@@ -16,6 +16,8 @@ api.interceptors.response.use(
     if (!error.response) {
       if (!toastId) {
         toastId = toast.error('No hay conexión con el servidor. Reiniciar Docker.', {
+          autoClose: false, // Mantener el toast visible
+          closeOnClick: false, // No cerrar al hacer clic
           onClose: () => (toastId = null), // Resetear el ID del toast cuando se cierra
         });
       }
