@@ -324,8 +324,9 @@ td a{
     justify-content: center;
 }
 
-td a img.detailImg{
+td img.detailImg{
     width: 1rem;
+    cursor: pointer;
 }
 
 tbody tr:nth-child(even) {

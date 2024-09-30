@@ -1,6 +1,6 @@
 import style from './PutClient.module.css';
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getClients, getClientById, putClient } from '../../../../redux/clientActions';
 
@@ -84,7 +84,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                 <div className="title">
                     <h2>EDITAR CLIENTE</h2>
                     <div className="titleButtons">
-                        <button><Link to={`/main_window/clients/${id}`}>Atrás</Link></button>
+                        <button onClick={() => navigate(`/main_window/clients/${id}`)}>Atrás</button>
                     </div>
                 </div>
                 <div className="container">
