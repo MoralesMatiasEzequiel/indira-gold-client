@@ -5,7 +5,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import JsBarcode from 'jsbarcode';
 import jsPDF from 'jspdf';
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, putProductStatus } from '../../../../redux/productActions.js';
 
 
@@ -138,9 +138,9 @@ const DetailProduct = () => {
                     <h2>Detalle del producto</h2>
                     <div className="titleButtons">
                         <button onClick={generatePDF}><img src={iconPDF} alt=""/></button>
-                        {productDetail.active ? <button><Link to={`/main_window/products/edit/${id}`}>Editar</Link></button> : ''}
+                        {productDetail.active ? <button onClick={() => navigate(`/main_window/products/edit/${id}`)}>Editar</button> : ''}
                         {!productDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Añadir</button> : <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>}
-                        <button><Link to={`/main_window/products/management`}>Atrás</Link></button>
+                        <button onClick={() => navigate(`/main_window/products/management`)}>Atrás</button>
                     </div>
                 </div>
                 <div className={`container ${style.content}`}>
