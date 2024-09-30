@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { putRemovePurchases } from '../../../../redux/clientActions.js';
 import { getSales, getSaleById, getSaleByIdLocal, clearSaleDetail, deleteSale } from '../../../../redux/saleActions.js';
 import { getProductById, increaseStock } from '../../../../redux/productActions.js';
@@ -315,7 +315,7 @@ const DetailSale = () => {
                             <h2>Detalle de la venta</h2>
                             <div className="titleButtons">
                                 <button onClick={generatePDF}><img src={print} alt=""/></button>
-                                <button><Link to={`/main_window/sales/edit/${id}`}>Cambio</Link></button>
+                                <button onClick={() => navigate(`/main_window/sales/edit/${id}`)}>Cambio</button>
                                 <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>
                                 <button onClick={() => navigate('/')}>Atrás</button>
                             </div>
@@ -328,9 +328,9 @@ const DetailSale = () => {
                                 {saleDetail.client
                                 ?  <p>
                                         <span>Cliente:&nbsp;</span>{saleDetail.client.dni} - {saleDetail.client.name} {saleDetail.client.lastname}
-                                        <Link to={`/main_window/clients/${saleDetail.client._id}`}>
+                                        <a onClick={() => navigate(`/main_window/clients/${saleDetail.client._id}`)}>
                                             <img src={detail} alt=""/>
-                                        </Link>
+                                        </a>
                                     </p>
                                 : <p><span>Cliente:&nbsp;</span> Anónimo</p>}
                                 {saleDetail.paymentMethod && <p><span>Modo de pago:&nbsp;</span> {saleDetail.paymentMethod}</p>}

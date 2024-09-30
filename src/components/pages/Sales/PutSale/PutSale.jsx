@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getSaleById, clearSaleDetail, putSale } from '../../../../redux/saleActions.js';
 import { getProducts, getProductById, reduceStock, increaseStock } from '../../../../redux/productActions.js';
 import { putRemovePurchases, putAddProducts } from '../../../../redux/clientActions.js';
@@ -347,7 +347,7 @@ const PutSale = () => {
                 <div className="title">
                     <h2>Editar venta</h2>
                     <div className="titleButtons">
-                        <button><Link to={`/main_window/sales/${id}`}>Atrás</Link></button>
+                        <button onClick={() => navigate(`/main_window/sales/${id}`)}>Atrás</button>
                     </div>
                 </div>
                 <div className={`container ${style.content}`}>
@@ -356,9 +356,9 @@ const PutSale = () => {
                         {saleDetail.client
                             ?  <p>
                                     <span>Cliente:&nbsp;</span>{saleDetail.client.dni} - {saleDetail.client.name} {saleDetail.client.lastname}
-                                    <Link to={`/main_window/clients/${saleDetail.client._id}`}>
+                                    <a onClick={() => navigate(`/main_window/clients/${saleDetail.client._id}`)}>
                                         <img src={detail} alt=""/>
-                                    </Link>
+                                    </a>
                                 </p>
                             : <p><span>Cliente:&nbsp;</span> Anónimo</p>}
                         {saleDetail.paymentMethod && <p><span>Modo de pago:&nbsp;</span> {saleDetail.paymentMethod}</p>}
