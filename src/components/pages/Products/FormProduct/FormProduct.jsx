@@ -739,21 +739,12 @@ const FormProduct = () => {
                                                     <span className={style.spansinMed} htmlFor="stock">*Stock:</span>
                                                     <input
                                                         className={style.inputsinStock}
-                                                        type="text" // Tipo texto
+                                                        type="number" // Tipo texto
+                                                        name="stock"
                                                         placeholder='0'
-                                                        onKeyDown={(event) => {
-                                                            // Solo permite teclas numéricas
-                                                            if (!/[\d]/.test(event.key)) {
-                                                                event.preventDefault();
-                                                            }
-                                                        }}
-                                                        onChange={(event) => {
-                                                            const value = event.target.value;
-                                                            // Actualiza solo si es un número
-                                                            if (/^\d*$/.test(value)) {
-                                                                handleStockChange(combination, { target: { name: 'stock', value } });
-                                                            }
-                                                        }}
+                                                        min='0'
+                                                        onChange={(event) => handleStockChange(combination, event)}
+                                                        onWheel={(event) => event.target.blur()} // Esto evita que el scroll cambie el valor
                                                     />
                                                     <span className={style.spansinMed} htmlFor="width">Ancho:</span>
                                                     <input
