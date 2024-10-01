@@ -113,12 +113,6 @@ const FormProduct = () => {
                 description: value
             });
         };
-        // else{
-        //     setNewProduct({
-        //         ...newProduct,
-        //         [name]: value
-        //     });
-        // }
         validateForm();
     };
 
@@ -238,76 +232,6 @@ const FormProduct = () => {
     
     const combinations = generateCombinations();
 
-    //-----------STOCK-----------//
-    // const handleStockChange = (combination, event) => {
-    //     const { name, value } = event.target;
-    
-    //     const updatedProduct = { ...newProduct };
-    //     const sizeToUpdate = combination.size; // Extraer el tamaño
-    
-    //     //Se encuentra el índice de color existente o se añade uno nuevo si no existe
-    //     let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
-    
-    //     if (colorIndex === -1) {
-    //         updatedProduct.color.push({
-    //             colorName: combination.color,
-    //             size: [],
-    //             image: ''
-    //         });
-    
-    //         //Se reasigna el índice para el color recién añadido
-    //         colorIndex = updatedProduct.color.length - 1;
-    //     };
-    
-    //     //idem
-    //     let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
-    
-    //     if (sizeIndex === -1) {
-    //         updatedProduct.color[colorIndex].size.push({
-    //             sizeName: combination.size,
-    //             measurements: {
-    //                 width: '',
-    //                 long: '',
-    //                 rise: ''
-    //             },
-    //             code: 'CÓDIGO QR',
-    //             stock: 0
-    //         });    
-    //         //idem
-    //         sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
-    //     };
-    
-    //     //Se actualiza las medidas (width, long, rise) y el stock
-    //     if (name === 'width' || name === 'long' || name === 'rise') {
-    //         updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
-
-    //         // Refleja el cambio en todas las combinaciones con el mismo tamaño
-    //         // Actualizar todos los tamaños que coinciden
-    //     updatedProduct.color.forEach(color => {
-    //         const matchingSizeIndex = color.size.findIndex(item => item.sizeName === sizeToUpdate);
-    //         if (matchingSizeIndex !== -1 && color.colorName !== combination.color) {
-    //             color.size[matchingSizeIndex].measurements[name] = value;
-    //         }
-    //     });
-
-    //     } else if (name === 'stock') {
-    //         if (value > 0) {
-    //             updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
-    //         } else {
-    //             //Si el stock es 0, eliminamos el objeto del array size
-    //             updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
-    //         }
-    //     };
-    
-    //     // i el array size está vacío después de eliminar el objeto, eliminamos el objeto color
-    //     if (updatedProduct.color[colorIndex].size.length === 0) {
-    //         updatedProduct.color.splice(colorIndex, 1);
-    //     };
-    
-    //     setNewProduct(updatedProduct);
-    //     validateForm();
-    // };
-    
     const handleStockChange = (combination, event) => {
         const { name, value } = event.target;
         const updatedProduct = { ...newProduct };
@@ -451,65 +375,6 @@ const FormProduct = () => {
         }
     };
 
-    // const handleImageChange = async (event, colorIndex) => {
-    //     const file = event.target.files[0];
-    
-    //     if (file) {
-    //         try {
-    //             // Configuración para la compresión
-    //             const options = {
-    //                 maxSizeMB: 1, // Tamaño máximo de la imagen en MB
-    //                 maxWidthOrHeight: 1920, // Dimensión máxima de la imagen
-    //                 useWebWorker: true, // Habilitar el uso de web workers para mejorar el rendimiento
-    //             };
-    
-    //             // Comprimir la imagen
-    //             const compressedFile = await imageCompression(file, options);
-    
-    //             const reader = new FileReader();
-    //             reader.onloadend = () => {
-    //                 const updatedProduct = { ...newProduct };
-    
-    //                 if (colorIndex !== undefined) {
-    //                     // Subir imagen específica por color
-    //                     updatedProduct.color[colorIndex].imageFile = compressedFile;
-    //                     updatedProduct.color[colorIndex].image = reader.result;
-    
-    //                     // Eliminar imagen global si hay una
-    //                     if (updatedProduct.imageGlobal) {
-    //                         updatedProduct.imageGlobal = null;
-    //                         updatedProduct.imageGlobalPreview = null;
-    //                         setImageGlobal(null);
-    //                     }
-    
-    //                     setNewProduct(updatedProduct);
-    //                     setImagePreview(reader.result);
-    //                 } else {
-    //                     // Subir imagen global
-    //                     updatedProduct.imageGlobal = compressedFile;
-    //                     updatedProduct.imageGlobalPreview = reader.result;
-    
-    //                     // Eliminar imágenes específicas de cada color
-    //                     updatedProduct.color = updatedProduct.color.map(color => ({
-    //                         ...color,
-    //                         imageFile: null,
-    //                         image: null
-    //                     }));
-    
-    //                     setNewProduct(updatedProduct);
-    //                     setImageGlobal(reader.result);
-    //                     setImagePreview(reader.result);
-    //                 }
-    //             };
-    //             // console.log('Original file size:', file.size / 1024 / 1024, 'MB');
-    //             // console.log('Compressed file size:', compressedFile.size / 1024 / 1024, 'MB');
-    //             reader.readAsDataURL(compressedFile);
-    //         } catch (error) {
-    //             console.error('Error compressing the image:', error);
-    //         }
-    //     }
-    // };
-
     const deleteImage = (index) => {
         const updatedProduct = { ...newProduct };
     
@@ -595,49 +460,6 @@ const FormProduct = () => {
             console.error("Error saving product:", error);
         }
     };
-
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-    //     const formData = new FormData();
-
-    //     // Agregar la imagen global si existe.
-    //     if (newProduct.imageGlobal) {
-    //         formData.append('imageGlobal', newProduct.imageGlobal);
-    //     };
-
-    //     newProduct.color.forEach((color, index) => {
-    //         if (color.imageFile) {
-    //             formData.append('images', color.imageFile);
-    //         }
-    //     });
-    
-    //     formData.append("name", newProduct.name);
-    //     formData.append("color", JSON.stringify(newProduct.color));
-    //     formData.append("supplier", JSON.stringify(newProduct.supplier));
-    //     formData.append("price", newProduct.price);
-    //     formData.append("category", JSON.stringify(newProduct.category));
-    //     formData.append("description", newProduct.description);
-
-    //     // Log de FormData
-    //     // for (const pair of formData.entries()) {
-    //     //     console.log(`${pair[0]}, ${pair[1]}`);
-    //     // };
-
-    //     try {
-    //         const response = await dispatch(postProduct(formData));
-    
-    //         if (response.data) {
-    //             console.log("Product successfully saved");
-    //             setColors([]);
-    //             setSizes([]);
-    //             setImageGlobal(null);
-    //             setNewProduct(initialProductState); // Reset form
-    //             navigate('/main_window/products/success/post');
-    //         }
-    //     } catch (error) {
-    //         console.error("Error saving product:", error);
-    //     }
-    // };    
 
     useEffect(() => {
         validateForm();

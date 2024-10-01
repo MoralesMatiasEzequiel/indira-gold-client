@@ -86,14 +86,7 @@ const PutPriceProducts = () => {
         });
         validateForm();
     };
-
-    // const deleteProduct = (index) => {
-    //     setNewPrice(prevState => {
-    //         const updatedProducts = prevState.products.filter((_, i) => i !== index);
-    //         return { ...prevState, products: updatedProducts };
-    //     });
-    // };
-
+    
     const handleCategoryChange = (selectedCategory) => {
         const array = selectedCategory ? [selectedCategory] : [];
         setNewPrice({
