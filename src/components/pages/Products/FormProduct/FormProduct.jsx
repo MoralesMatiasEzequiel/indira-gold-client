@@ -50,7 +50,7 @@ const FormProduct = () => {
     const [imageLoading, setImageLoading] = useState(false);
     const [isClearDisabled, setIsClearDisabled] = useState(true);
 
-// console.log(newProduct); 
+//console.log(newProduct); 
 
     const handleSetForm = () => {
         setNewProduct(initialProductState);
@@ -144,23 +144,27 @@ const FormProduct = () => {
 
     const addColor = () => {
         if (newColor !== '') {
-            setColors([...colors, newColor]);
+            // Añadir el nuevo color
+            const updatedProduct = { ...newProduct };
+            updatedProduct.color.push({
+                colorName: newColor,
+                size: [], // Inicialmente vacío
+                image: ''
+            });
+            setNewProduct(updatedProduct);
+            setColors([...colors, newColor]); // Actualiza el estado local de colores
             setNewColor('');
-        };
-        validateForm();
+            validateForm();
+        }
     };
     
     const deleteColor = (index) => {
         const updatedColors = [...colors];
+        const colorToDelete = updatedColors[index]; 
         updatedColors.splice(index, 1);
         setColors(updatedColors);
     
-        const updatedProductsColor = [...newProduct.color];
-    
-        // Se busca el color a eliminar basado en el índice de colors
-        const colorToDelete = colors[index]; 
-        // Y aca filtramos el array color de newProduct para eliminar el objeto correspondiente
-        const filteredProductsColor = updatedProductsColor.filter(item => item.colorName !== colorToDelete);
+        const filteredProductsColor = newProduct.color.filter(item => item.colorName !== colorToDelete);
     
         setNewProduct({
             ...newProduct,
@@ -176,21 +180,54 @@ const FormProduct = () => {
         }
         setNewSize(event.target.value);
     };
-
     const addSize = () => {
         if (newSize !== '') {
-            setSizes([...sizes, newSize]);
+            const updatedProduct = { ...newProduct };
+    
+            // Asegúrate de que cada color tenga este nuevo tamaño
+            updatedProduct.color.forEach(color => {
+                const sizeExists = color.size.some(size => size.sizeName === newSize);
+                if (!sizeExists) {
+                    color.size.push({
+                        sizeName: newSize,
+                        measurements: {
+                            width: '',
+                            long: '',
+                            rise: ''
+                        },
+                        code: '',
+                        stock: 0 // Inicializa en 0
+                    });
+                }
+            });
+    
+            setNewProduct(updatedProduct);
+            setSizes([...sizes, newSize]); // Actualiza el estado local de tamaños
             setNewSize('');
-        };
-        validateForm();
+            validateForm();
+        }
     };
+    
 
     const deleteSize = (index) => {
         const updatedSizes = [...sizes];
+        const sizeToDelete = updatedSizes[index];
         updatedSizes.splice(index, 1);
         setSizes(updatedSizes);
+    
+        // Eliminar el tamaño de todos los colores
+        const updatedProductColors = newProduct.color.map(color => ({
+            ...color,
+            size: color.size.filter(size => size.sizeName !== sizeToDelete)
+        }));
+    
+        setNewProduct({
+            ...newProduct,
+            color: updatedProductColors
+        });
         validateForm();
     };
+    
 
     //-----------COMBINACION(COLOR/SIZE)-----------//
     const generateCombinations = () => {
@@ -272,113 +309,57 @@ const FormProduct = () => {
     // };
     
     const handleStockChange = (combination, event) => {
-        if(event.target.value) {
-            setIsClearDisabled(false);
-        }
         const { name, value } = event.target;
         const updatedProduct = { ...newProduct };
-        const sizeToUpdate = combination.size; // Extraer el tamaño
+        const sizeToUpdate = combination.size;
     
         // Se encuentra el índice de color existente
         let colorIndex = updatedProduct.color.findIndex(item => item.colorName === combination.color);
     
-        // Si el color no existe, lo añadimos solo si el stock es mayor a 0
+        // Si el color no existe, lo añadimos
         if (colorIndex === -1) {
-            // Solo se añade si el stock va a ser mayor a 0 en algún momento
-            if (name === 'stock' && value > 0) {
-                updatedProduct.color.push({
-                    colorName: combination.color,
-                    size: [],
-                    image: ''
-                });
-                colorIndex = updatedProduct.color.length - 1;
-            } else {
-                return; // No hacer nada si no se agrega
-            }
+            updatedProduct.color.push({
+                colorName: combination.color,
+                size: [],
+                image: ''
+            });
+            colorIndex = updatedProduct.color.length - 1;
         }
     
         // Verificar el índice del tamaño
         let sizeIndex = updatedProduct.color[colorIndex].size.findIndex(item => item.sizeName === combination.size);
     
+        // Si el tamaño no existe, lo añadimos
         if (sizeIndex === -1) {
-            // Solo añadir si el stock va a ser mayor a 0 en algún momento
-            if (name === 'stock' && value > 0) {
-                updatedProduct.color[colorIndex].size.push({
-                    sizeName: combination.size,
-                    measurements: {
-                        width: '',
-                        long: '',
-                        rise: ''
-                    },
-                    code: '',
-                    stock: 0
-                });
-                sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
-            } else {
-                // Si no hay stock, simplemente no añadimos
-                sizeIndex = -1; // Dejar el índice como -1 para evitar operaciones no deseadas
-            }
+            updatedProduct.color[colorIndex].size.push({
+                sizeName: combination.size,
+                measurements: {
+                    width: '',
+                    long: '',
+                    rise: ''
+                },
+                code: '',
+                stock: 0 // Inicializa el stock en 0
+            });
+            sizeIndex = updatedProduct.color[colorIndex].size.length - 1;
         }
     
-        // Actualizar las medidas (width, long, rise) sin afectar el stock
+        // Actualizar las medidas (width, long, rise) o el stock
         if (name === 'width' || name === 'long' || name === 'rise') {
-            // Si existe, actualizar la medida
             if (sizeIndex !== -1) {
                 updatedProduct.color[colorIndex].size[sizeIndex].measurements[name] = value;
             }
-    
-            // Reflejar el cambio en otras combinaciones con el mismo tamaño
-            updatedProduct.color.forEach(color => {
-                const matchingSizeIndex = color.size.findIndex(item => item.sizeName === sizeToUpdate);
-                if (matchingSizeIndex !== -1 && color.colorName !== combination.color) {
-                    color.size[matchingSizeIndex].measurements[name] = value;
-                }
-            });
-    
         } else if (name === 'stock') {
-            // Solo actualizar el stock
-            if (value > 0) {
-                updatedProduct.color[colorIndex].size[sizeIndex].stock = value;
-    
-                // Verificar si necesitamos añadir el objeto de color al array
-                if (colorIndex === -1) {
-                    updatedProduct.color.push({
-                        colorName: combination.color,
-                        size: [],
-                        image: ''
-                    });
-                    colorIndex = updatedProduct.color.length - 1;
-                }
-    
-                // Verificar el índice del tamaño para asegurarnos de que esté presente
-                if (sizeIndex === -1) {
-                    updatedProduct.color[colorIndex].size.push({
-                        sizeName: combination.size,
-                        measurements: {
-                            width: '',
-                            long: '',
-                            rise: ''
-                        },
-                        code: '',
-                        stock: value // Ahora el stock es mayor que 0
-                    });
-                }
-            } else {
-                // Si el stock es 0, eliminamos el tamaño
-                if (sizeIndex !== -1) {
-                    updatedProduct.color[colorIndex].size.splice(sizeIndex, 1);
-                }
+            if (sizeIndex !== -1) {
+                updatedProduct.color[colorIndex].size[sizeIndex].stock = value; // Actualizar el stock
             }
-        }
-    
-        // Eliminar el color si el array size está vacío
-        if (updatedProduct.color[colorIndex].size.length === 0) {
-            updatedProduct.color.splice(colorIndex, 1);
         }
     
         setNewProduct(updatedProduct);
         validateForm();
     };
+    
+    
 
     //-----------SUPPLIER-----------//
     const handleSupplierChange = (event) => {
