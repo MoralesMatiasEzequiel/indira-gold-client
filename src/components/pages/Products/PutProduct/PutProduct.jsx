@@ -160,20 +160,20 @@ const PutProduct = () => {
         }
     };
 
-    // const deleteColor = (index) => {
-    //     const updatedColors = [...colors];
-    //     const colorToDelete = updatedColors.splice(index, 1)[0];
+    const deleteColor = (index) => {
+        const updatedColors = [...colors];
+        const colorToDelete = updatedColors.splice(index, 1)[0];
         
-    //     setColors(updatedColors);
+        setColors(updatedColors);
         
-    //     // Filtra los colores en el estado editProduct para eliminar el color correspondiente
-    //     const filteredProductColors = editProduct.color.filter(color => color.colorName !== colorToDelete);
+        // Filtra los colores en el estado editProduct para eliminar el color correspondiente
+        const filteredProductColors = editProduct.color.filter(color => color.colorName !== colorToDelete);
         
-    //     setEditProduct(prevState => ({
-    //         ...prevState,
-    //         color: filteredProductColors
-    //     }));
-    // };
+        setEditProduct(prevState => ({
+            ...prevState,
+            color: filteredProductColors
+        }));
+    };
 
     //-----------SIZE-----------//
     
@@ -207,27 +207,27 @@ const PutProduct = () => {
         // validateForm();
     }; 
 
-    // const deleteSize = (index) => {
-    //     const updatedSizes = [...sizes];
-    //     const sizeToDelete = updatedSizes.splice(index, 1)[0];
+    const deleteSize = (index) => {
+        const updatedSizes = [...sizes];
+        const sizeToDelete = updatedSizes.splice(index, 1)[0];
     
-    //     setSizes(updatedSizes);
+        setSizes(updatedSizes);
     
-    //     // Actualiza el estado editProduct para reflejar la eliminación del talle
-    //     const updatedProductColors = editProduct.color.map(color => {
-    //         return {
-    //             ...color,
-    //             size: color.size.filter(size => size.sizeName !== sizeToDelete)
-    //         };
-    //     });
+        // Actualiza el estado editProduct para reflejar la eliminación del talle
+        const updatedProductColors = editProduct.color.map(color => {
+            return {
+                ...color,
+                size: color.size.filter(size => size.sizeName !== sizeToDelete)
+            };
+        });
     
-    //     setEditProduct(prevState => ({
-    //         ...prevState,
-    //         color: updatedProductColors
-    //     }));
+        setEditProduct(prevState => ({
+            ...prevState,
+            color: updatedProductColors
+        }));
     
-    //     // validateForm();
-    // };
+        // validateForm();
+    };
 
     //-----------COMBINACION(COLOR/SIZE)-----------//
     
@@ -578,9 +578,9 @@ const PutProduct = () => {
                                             {colors?.map((color, colorIndex) => (
                                                 <li key={colorIndex} className={style.list}>
                                                     <span className={style.spanList}>{color}</span>
-                                                    {/* <button type="button" className={style.buttonDelete} onClick={() => deleteColor(colorIndex)}>
+                                                    <button type="button" className={style.buttonDelete} onClick={() => deleteColor(colorIndex)}>
                                                         <img src={x} alt="x" />
-                                                    </button> */}
+                                                    </button>
                                                 </li>
                                             ))}
                                         </ol>
@@ -595,9 +595,9 @@ const PutProduct = () => {
                                             {sizes.map((size, index) => (
                                                 <li key={index} className={style.list}>
                                                     <span className={style.spanList}>{size}</span>
-                                                    {/* <button type="button" className={style.buttonDelete} onClick={() => deleteSize(index)}>
+                                                    <button type="button" className={style.buttonDelete} onClick={() => deleteSize(index)}>
                                                         <img src={x} alt="x" />
-                                                    </button> */}
+                                                    </button>
                                                 </li>
                                             ))}
                                         </ol>
