@@ -776,6 +776,11 @@ const FormSales = () => {
                                                     menuPortal: base => ({ ...base, zIndex: 9999 }),
                                                     ...productInputStyles
                                                 }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                      e.preventDefault(); // Evita seleccionar con Enter
+                                                    }
+                                                }}
                                             />
                                         </div>
                                         {index ? <button type="button" onClick={() => handleRemoveProduct(index)} className={style.removeProduct}><img src={x} alt=""/></button> : ''}
