@@ -31,6 +31,13 @@ const DetailProduct = () => {
         navigate('/main_window/products/management');
     };
 
+    // const getImageUrl = (imagePath) => {
+    //     if (!imagePath) return '';
+    //     // URL base para los archivos estáticos
+    //     const baseUrl = 'http://localhost:3001/';
+    //     return `${baseUrl}${imagePath}`;
+    // };
+
     const generatePDF = () => {
         const doc = new jsPDF('portrait', 'mm', 'a4'); // Configurar el documento en A4
     

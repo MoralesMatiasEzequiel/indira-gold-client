@@ -158,11 +158,8 @@ const PutSale = () => {
         if (!loading && saleDetail && saleDetail.products) {
             const updatedProducts = [];
             saleDetail.products.forEach((product) => {
-                console.log(product);
                 dispatch(getProductById(product.productId)).then((response) => {
-                    console.log(response);
-                    if (response && response.error && response.error.status === 404) {
-                        
+                    if (response.error && response.error.status === 404) {
                         updatedProducts.push({
                             name: 'Producto no disponible',
                             selectedColor: null,
@@ -240,7 +237,7 @@ const PutSale = () => {
     
         // Calcular los productos a enviar con la información necesaria
         const productsData = [
-            ...purchasedProducts?.map(product => ({
+            ...purchasedProducts.map(product => ({
                 productId: product._id,
                 colorId: product.selectedColor._id,
                 sizeId: product.selectedSize._id,
@@ -373,7 +370,7 @@ const PutSale = () => {
                                 <div className={style.section}>
                                     <p className={style.products}><span>Productos Comprados:</span></p>
                                     <ul>
-                                        {purchasedProducts?.map((product, index) => (
+                                        {purchasedProducts.map((product, index) => (
                                             <li key={index}>
                                                 {`${product.name} - ${product.selectedColor?.colorName} - Talle ${product.selectedSize?.sizeName} - Precio $${formatNumber(product.price)}`}
                                                 <button type="button" onClick={() => handleRemoveProduct(index, true)}>

@@ -119,11 +119,6 @@ const SalesHistory = () => {
                         ▸
                     </button>
                 </div>
-                <div className="titleButtons">
-                    <button onClick={() => navigate(`/main_window/sales/filtered`)}>
-                        Historial
-                    </button>
-                </div>                
             </div>
             <div className="container">
                 <div className="tableContainer">
