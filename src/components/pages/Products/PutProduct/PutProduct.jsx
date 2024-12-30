@@ -361,6 +361,67 @@ const PutProduct = () => {
             }
         }
     };
+
+    // const handleImageChange = async (event, colorIndex) => {
+    //     const file = event.target.files[0];
+    
+    //     if (file) {
+    //         try {
+    //             // Configuración para la compresión
+    //             const options = {
+    //                 maxSizeMB: 1, // Tamaño máximo de la imagen en MB
+    //                 maxWidthOrHeight: 1920, // Dimensión máxima de la imagen
+    //                 useWebWorker: true, // Habilitar el uso de web workers para mejorar el rendimiento
+    //             };
+
+    //             // Comprimir la imagen
+    //             const compressedFile = await imageCompression(file, options);
+    //             // const compressedFile = await imageCompression(file, options);
+    
+    //             const reader = new FileReader();
+    //             reader.onloadend = () => {
+    //                 const updatedProduct = { ...editProduct };
+        
+    //                 if (colorIndex !== undefined) {
+    //                     // Subir imagen específica por color
+    //                     updatedProduct.color[colorIndex].imageFile = compressedFile;
+    //                     updatedProduct.color[colorIndex].image = reader.result;
+        
+    //                     // Eliminar imagen global si hay una
+    //                     if (updatedProduct.imageGlobal) {
+    //                         updatedProduct.imageGlobal = null;
+    //                         updatedProduct.imageGlobalPreview = null;
+    //                         setImageGlobal(null);
+    //                     };
+        
+    //                     setEditProduct(updatedProduct);
+    //                     setImagePreview(reader.result);
+    
+    //                 } else {
+    //                     // Subir imagen global
+    //                     updatedProduct.imageGlobal = file;
+    //                     updatedProduct.imageGlobalPreview = reader.result;
+        
+    //                     // Eliminar imágenes específicas de cada color
+    //                     updatedProduct.color = updatedProduct.color.map(color => ({
+    //                         ...color,
+    //                         imageFile: null,
+    //                         image: null
+    //                     }));
+        
+    //                     setEditProduct(updatedProduct);
+    //                     setImageGlobal(reader.result);
+    //                     setImagePreview(reader.result);
+    //                 };
+    //                 // validateForm();
+    //             };
+    //             reader.readAsDataURL(compressedFile);
+                
+    //         } catch (error) {
+    //             console.error('Error compressing the image:', error);
+    //         };
+    //     } 
+    // };
      
     const deleteImage = (index) => {
         const updatedProduct = { ...editProduct };
@@ -440,6 +501,58 @@ const PutProduct = () => {
             console.error("Error editing product:", error);
         };
     };
+
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     const formData = new FormData();
+        
+    //     // Verificar y preservar la imagen global si no fue modificada
+    //     if (editProduct.imageGlobal) {
+    //         formData.append('imageGlobal', editProduct.imageGlobal);
+    //     } else if (productDetail.imageGlobal) {
+    //         formData.append('imageGlobal', productDetail.imageGlobal);
+    //     }
+    
+    //     // Verificar y preservar las imágenes de cada color si no fueron modificadas
+    //     editProduct.color.forEach((color) => {
+    //         // Busca el color original en productDetail
+    //         const originalColor = productDetail.color.find(c => c._id === color._id);
+    
+    //         if (color.imageFile) {
+    //             formData.append('images', color.imageFile);
+    //         } else if (originalColor && originalColor.image) {
+    //             // Preservar imagen existente si no se ha modificado
+    //             formData.append('images', originalColor.image);
+    //         }
+    //     });
+    
+    //     // Agregar los demás campos al formData
+    //     formData.append("_id", editProduct._id);
+    //     formData.append("name", editProduct.name);
+    //     formData.append("color", JSON.stringify(editProduct.color));
+    //     formData.append("supplier", JSON.stringify(editProduct.supplier));
+    //     formData.append("price", editProduct.price);
+    //     formData.append("category", JSON.stringify(editProduct.category));
+    //     formData.append("description", editProduct.description);
+    //     formData.append("active", editProduct.active);
+    
+    //     // Revisión final para asegurarte de que todo esté en el formData
+    //     // console.log([...formData.entries()]);
+    
+    //     try {
+    //         const response = await dispatch(putProduct(formData));
+    
+    //         if (response.data) {
+    //             console.log("Successfully edited product");
+    //             dispatch(getProducts());
+    //             // dispatch(getProductById(id));
+    //             dispatch(getCategories());
+    //             navigate('/main_window/products/succes/put');
+    //         };
+    //     } catch (error) {
+    //         console.error("Error editing product:", error);
+    //     };
+    // };
     
     return (
         <div className="page">

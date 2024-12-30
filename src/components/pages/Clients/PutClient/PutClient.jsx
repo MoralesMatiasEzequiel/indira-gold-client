@@ -43,6 +43,22 @@ const PutClient = ({ onClientAdded = () => {}}) => {
         }));
     };
 
+    //-----------SUBMIT-----------//
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     dispatch(putClient(editClient)).then((response) => {
+    //         onClientAdded(response);
+    //         dispatch(getClients());   
+    //         dispatch(getClientById(id));   
+    //         // setEditClient({}); // Reset form
+    //     });
+        
+    //     if (onClientAdded) {
+    //         onClientAdded();
+    //     };
+    //     navigate('/main_window/clients/:id');
+    // };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -135,7 +151,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                 <button className={style.buttonSubmit} type="submit">Editar</button>
                             </div>
                         </div>                       
-                        
+                        {/* <button type="submit"><Link to={`/main_window/clients/${id}`}>Editar</Link></button> */}
                     </form>
                 </div>
             </div>
