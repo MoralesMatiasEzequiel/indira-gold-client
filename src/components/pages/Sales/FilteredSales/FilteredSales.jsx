@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { getSales, searchSales, getSalesByOrderNumber, getSalesByClient } from '../../../../redux/saleActions.js';
+import { getSales, searchSales, getSalesByOrderNumber, getSalesByClient, filterSales } from '../../../../redux/saleActions.js';
 import detail from '../../../../assets/img/detail.png';
 
 const FilteredSales = () => {
     const sales = useSelector(state => state.sales.sales);
+    const filteredSales = useSelector(state => state.sales.salesCopy);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -22,20 +23,31 @@ const FilteredSales = () => {
         .sort((a, b) => b - a);
     const months = Array.from(new Set(sales.map(sale => monthNames[new Date(sale.date).getMonth()]))).reverse();
 
-    const [selectedMonth, setSelectedMonth] = useState('');
-    const [selectedYear, setSelectedYear] = useState('');
-
+    const lastSaleDate = sales.length > 0 ? new Date(sales[0].date) : new Date();
+    const [selectedMonth, setSelectedMonth] = useState(lastSaleDate.getMonth());
+    const [selectedYear, setSelectedYear] = useState(lastSaleDate.getFullYear());
+    
+    useEffect(() => {
+        if (sales.length > 0) {
+            const sortedSales = [...sales].sort((a, b) => new Date(b.date) - new Date(a.date)); // Orden descendente
+            const lastSaleDate = new Date(sortedSales[0].date); // Última fecha disponible
+    
+            setSelectedMonth(lastSaleDate.getMonth());
+            setSelectedYear(lastSaleDate.getFullYear());
+    
+            // Filtrar automáticamente por último mes y año
+            dispatch(filterSales(lastSaleDate.getMonth(), lastSaleDate.getFullYear()));
+        }
+    }, [sales, dispatch]);
 
     const handleMonthChange = (value) => {
         setSelectedMonth(value);
-        console.log(selectedMonth);
-        //filterSales(value, selectedYear);
+        dispatch(filterSales(value, selectedYear));
     };
     
     const handleYearChange = (value) => {
         setSelectedYear(value);
-        console.log(selectedYear);
-        //filterSales(selectedMonth, value);
+        dispatch(filterSales(selectedMonth, value));
     };
 
     const itemsPerPage = 20;
@@ -51,6 +63,7 @@ const FilteredSales = () => {
             }
             else { dispatch(getSales()); }
         });
+
     }, [orderNumber, client, dispatch]);
 
     const handleChangeOrderNumber = (event) => {
@@ -69,7 +82,7 @@ const FilteredSales = () => {
         return formattedDate;
     };
 
-    const sortedSales = [...sales].sort((a, b) => {
+    const sortedSales = [...filteredSales].sort((a, b) => {
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
         return sortByDate === 'asc' ? dateA - dateB : dateB - dateA;
@@ -82,6 +95,8 @@ const FilteredSales = () => {
         if (newPage > 0 && newPage <= totalPages) {
             setCurrentPage(newPage);
         }
+
+        console.log(selectedMonth, selectedYear);
     };
 
     const getPageButtons = () => {
@@ -141,11 +156,13 @@ const FilteredSales = () => {
                         </button>
                     </div>
                     <div>
-                        <select onChange={(event) => handleMonthChange(event.target.value)}>
-                            {months?.map((month, index) => (
-                                <option key={index} value={index}>{month}</option>
-                            ))}
-                        </select>
+                    <select onChange={(event) => handleMonthChange(event.target.value)}>
+                        {months?.map((month, index) => (
+                            <option key={index} value={monthNames.indexOf(month)}>
+                                {month}
+                            </option>
+                        ))}
+                    </select>
                         <select onChange={(event) => handleYearChange(event.target.value)}>
                             {years?.map((year, index) => (
                                 <option key={index} value={year}>{year}</option>

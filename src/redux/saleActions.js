@@ -1,5 +1,5 @@
 import axios from '../services/axios.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer, filterSalesReducer } from "./saleSlice.js";
 
 export const getSales = () => {
     return async (dispatch) => {
@@ -171,3 +171,15 @@ export const deleteSale = (saleId) => {
         };
     };
 };
+
+export const filterSales = (month, year) => {
+    return async (dispatch) => {
+
+        const date = {
+            month: month,
+            year: year
+        }
+
+        dispatch(filterSalesReducer(date));
+    }
+} 

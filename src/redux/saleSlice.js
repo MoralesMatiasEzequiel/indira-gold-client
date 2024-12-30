@@ -64,10 +64,25 @@ export const saleSlice = createSlice({
             const saleIdToDelete = action.payload;
             state.sales = state.sales.filter(sale => sale._id !== saleIdToDelete);
             state.salesCopy = state.salesCopy.filter(sale => sale._id !== saleIdToDelete);
-        }
+        },
+
+        filterSalesReducer: (state, action) => {
+            const filteredSales = state.sales.filter((sale) => {
+                const saleDate = new Date(sale.date);
+                const saleMonth = saleDate.getMonth(); // Índice del mes
+                const saleYear = saleDate.getFullYear();
+        
+                return (
+                    (action.payload.month === '' || saleMonth === parseInt(action.payload.month)) &&
+                    (action.payload.year === '' || saleYear === parseInt(action.payload.year))
+                );
+            });
+        
+            state.salesCopy = filteredSales;
+        },
     }
 });
 
-export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesLocalLocalReducer, getSalesBalanceReducer, getSalesBalanceLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer } = saleSlice.actions;
+export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesLocalLocalReducer, getSalesBalanceReducer, getSalesBalanceLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer, filterSalesReducer } = saleSlice.actions;
 
 export default saleSlice.reducer;
