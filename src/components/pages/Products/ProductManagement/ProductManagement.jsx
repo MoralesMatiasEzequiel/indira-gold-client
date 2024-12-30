@@ -116,18 +116,6 @@ const ProductManagement = () => {
         setCurrentPage(1); // Resetear a la primera página al cambiar la categoría
     };
 
-    // const getImageUrl = (imagePath) => {
-    //     if (!imagePath) return '';
-        
-    //     // Reemplazar barras invertidas por barras inclinadas
-    //     const correctedPath = imagePath.replace(/\\/g, '/');
-        
-    //     // URL base para los archivos estáticos
-    //     const baseUrl = 'http://localhost:3001/';
-        
-    //     return `${baseUrl}${correctedPath}`;
-    // };
-
     useEffect(() => {
         const fetchProducts = async () => {
             try {
