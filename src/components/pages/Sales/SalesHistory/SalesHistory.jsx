@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { getSales, searchSales, getSalesByOrderNumber, getSalesByClient } from '../../../../redux/saleActions.js';
 import detail from '../../../../assets/img/detail.png';
+import history from '../../../../assets/img/history.png';
 
 const SalesHistory = () => {
     const sales = useSelector(state => state.sales.sales);
@@ -121,7 +122,7 @@ const SalesHistory = () => {
                 </div>
                 <div className="titleButtons">
                     <button onClick={() => navigate(`/main_window/sales/filtered`)}>
-                        Historial
+                        <img src={history} alt=""/>
                     </button>
                 </div>                
             </div>

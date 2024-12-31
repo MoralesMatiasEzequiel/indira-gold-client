@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { getSales, searchSales, getSalesByOrderNumber, getSalesByClient, filterSales } from '../../../../redux/saleActions.js';
 import detail from '../../../../assets/img/detail.png';
+import style from "./FilteredSales.module.css";
 
 const FilteredSales = () => {
     const sales = useSelector(state => state.sales.sales);
@@ -14,6 +15,7 @@ const FilteredSales = () => {
     const [client, setClient] = useState('');
     const [sortByDate, setSortByDate] = useState('desc');
     const [currentPage, setCurrentPage] = useState(1);
+    const [total, setTotal] = useState(0);
 
     const monthNames = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
@@ -37,6 +39,7 @@ const FilteredSales = () => {
     
             // Filtrar automáticamente por último mes y año
             dispatch(filterSales(lastSaleDate.getMonth(), lastSaleDate.getFullYear()));
+
         }
     }, [sales, dispatch]);
 
@@ -65,6 +68,11 @@ const FilteredSales = () => {
         });
 
     }, [orderNumber, client, dispatch]);
+
+    useEffect(() => {
+        const newSubtotal = filteredSales.reduce((acc, sale) => acc + sale.totalWithFee, 0);
+        setTotal(formatNumber(newSubtotal));
+    }, [filteredSales]);
 
     const handleChangeOrderNumber = (event) => {
         setOrderNumber(event.target.value);
@@ -156,18 +164,22 @@ const FilteredSales = () => {
                         </button>
                     </div>
                     <div>
-                    <select onChange={(event) => handleMonthChange(event.target.value)}>
-                        {months?.map((month, index) => (
-                            <option key={index} value={monthNames.indexOf(month)}>
-                                {month}
-                            </option>
-                        ))}
-                    </select>
-                        <select onChange={(event) => handleYearChange(event.target.value)}>
-                            {years?.map((year, index) => (
-                                <option key={index} value={year}>{year}</option>
-                            ))}
-                        </select>
+                        <div class="custom-select-wrapper">
+                            <select onChange={(event) => handleMonthChange(event.target.value)}>
+                                {months?.map((month, index) => (
+                                    <option key={index} value={monthNames.indexOf(month)}>
+                                        {month}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div class="custom-select-wrapper">
+                            <select onChange={(event) => handleYearChange(event.target.value)}>
+                                {years?.map((year, index) => (
+                                    <option key={index} value={year}>{year}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div className="container">
@@ -235,6 +247,10 @@ const FilteredSales = () => {
                                 ))}
                             </tbody>
                         </table>
+                        
+                    </div>
+                    <div className={style.total}>
+                        <div className={style.totalContent}>Total: <span>${total}</span></div>
                     </div>
                 </div>
             </div>
