@@ -7,7 +7,8 @@ import { useSelector } from "react-redux";
 
 const WeeklyMetric = () => {
 
-    const salesBalance = useSelector(state => state.sales.salesBalance);
+    // const salesBalance = useSelector(state => state.sales.salesBalance);
+    const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
     const totalRevenue = salesBalance.weekly?.totalRevenue ?? 0;
 
     let displayRevenue = totalRevenue;

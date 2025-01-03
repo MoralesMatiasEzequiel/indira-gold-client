@@ -1,5 +1,5 @@
 import axios from '../services/axios.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesBalanceReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer, filterSalesReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer, filterSalesReducer, calculateSalesBalanceReducer } from "./saleSlice.js";
 
 export const getSales = () => {
     return async (dispatch) => {
@@ -69,18 +69,24 @@ export const getSalesLocal = () => {
     };
 };
 
-export const getSalesBalance = () => {
+// export const getSalesBalance = () => {
+//     return async (dispatch) => {
+//         try {
+//             const { data } = await axios.get("/sale/balance");
+
+//             dispatch(getSalesBalanceReducer(data));
+
+//         } catch (error) {
+//             console.error("Error retrieving sales balances from the server:", error.message);
+//             return null;
+//         }
+//     };
+// };
+
+export const calculateSalesBalance = () => {
     return async (dispatch) => {
-        try {
-            const { data } = await axios.get("/sale/balance");
-
-            dispatch(getSalesBalanceReducer(data));
-
-        } catch (error) {
-            console.error("Error retrieving sales balances from the server:", error.message);
-            return null;
-        }
-    };
+        dispatch(calculateSalesBalanceReducer());
+    }
 };
 
 export const getMonthlySalesByClient = (id) => {
@@ -182,4 +188,4 @@ export const filterSales = (month, year) => {
 
         dispatch(filterSalesReducer(date));
     }
-} 
+};

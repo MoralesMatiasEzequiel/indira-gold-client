@@ -15,8 +15,12 @@ const DetailSale = () => {
     let { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const saleDetail = useSelector(state => state.sales.saleDetail);
     const products = useSelector(state => state.products.products);
+    // console.log(saleDetail.date);
+    
+
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [productsLoading, setProductsLoading] = useState(false);
@@ -112,8 +116,16 @@ const DetailSale = () => {
         });
     };
 
-    const formatDate = (date) => {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    const formatDate = (date) => {        
+        const options = { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            timeZone: 'UTC' 
+        };
+
         const formattedDate = new Date(date).toLocaleDateString('es-ES', options).replace(',', ' -');
         return formattedDate;
     };

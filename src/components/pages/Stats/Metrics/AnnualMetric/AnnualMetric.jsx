@@ -7,8 +7,10 @@ import { useSelector } from "react-redux";
 
 const AnnualMetric = () => {
 
-    const salesBalance = useSelector(state => state.sales.salesBalance);
-    const totalRevenue = salesBalance.annually?.totalRevenue ?? 0;
+    // const salesBalance = useSelector(state => state.sales.salesBalance);
+    const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
+    const totalRevenue = salesBalance.annually?.totalRevenue ?? 0; //Si el valor obtenido es null o undefined mostramos '0'.
+    // console.log(salesBalance);    
 
     let displayRevenue = totalRevenue;
     let suffix = '';

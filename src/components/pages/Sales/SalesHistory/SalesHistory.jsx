@@ -7,6 +7,7 @@ import history from '../../../../assets/img/history.png';
 
 const SalesHistory = () => {
     const sales = useSelector(state => state.sales.sales);
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -40,8 +41,16 @@ const SalesHistory = () => {
         setCurrentPage(1);
     };
 
-    const formatDate = (date) => {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    const formatDate = (date) => {        
+        const options = { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            timeZone: 'UTC' 
+        };
+
         const formattedDate = new Date(date).toLocaleDateString('es-ES', options).replace(',', ' -');
         return formattedDate;
     };

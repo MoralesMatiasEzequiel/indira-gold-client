@@ -104,7 +104,7 @@ const FilteredSales = () => {
             setCurrentPage(newPage);
         }
 
-        console.log(selectedMonth, selectedYear);
+        // console.log(selectedMonth, selectedYear);
     };
 
     const getPageButtons = () => {

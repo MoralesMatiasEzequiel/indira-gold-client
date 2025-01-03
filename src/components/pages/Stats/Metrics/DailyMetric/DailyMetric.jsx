@@ -7,8 +7,9 @@ import { useSelector } from "react-redux";
 
 const DailyMetric = () => {
 
-    const salesBalance = useSelector(state => state.sales.salesBalance);
-    const totalRevenue = salesBalance.daily?.totalRevenue ?? 0;  //Si el valor obtenido es null o undefined mostramos '0'.
+    // const salesBalance = useSelector(state => state.sales.salesBalance);
+    const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
+    const totalRevenue = salesBalance.daily?.totalRevenue ?? 0;  
     // const totalRevenue = ~~salesBalance.daily?.totalRevenue; //Con el operador de doble tilde "~~" obtenemos el número entero.
 
     let displayRevenue = totalRevenue;

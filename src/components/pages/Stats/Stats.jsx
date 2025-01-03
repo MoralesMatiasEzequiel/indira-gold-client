@@ -6,7 +6,7 @@ import Metrics from './Metrics/Metrics.jsx'
 import Rating from './Rating/Rating.jsx';
 import Piechart from './PieChart/PieChart.jsx'
 import { getCategories } from '../../../redux/categoryActions.js';
-import { getSalesBalance, getSalesBalanceLocal, getSalesOnline, getSalesLocal, getSalesOnlineLocal, getSalesLocalLocal } from '../../../redux/saleActions.js';
+import { getSalesBalance, getSalesOnline, getSalesLocal, getSalesOnlineLocal, getSalesLocalLocal, calculateSalesBalance } from '../../../redux/saleActions.js';
 import { getSoldProducts, getSoldProductsLocal, getTopFiveProducts, getTopFiveProductsLocal } from '../../../redux/productActions.js';
 
 
@@ -20,13 +20,14 @@ const Stats = () => {
         // dispatch(getSoldProducts()).catch(() => {dispatch(getSoldProductsLocal())});
         // dispatch(getTopFiveProducts()).catch(() => {dispatch(getTopFiveProductsLocal())});
         // dispatch(getSalesLocal()).catch(() => {dispatch(getSalesLocalLocal())});
+        // dispatch(getSalesBalance());
         dispatch(getSalesLocal());
-        dispatch(getSalesBalance());
         dispatch(getCategories());
         dispatch(getSalesOnline());
         dispatch(getSalesLocal());
         dispatch(getSoldProducts());
         dispatch(getTopFiveProducts());
+        dispatch(calculateSalesBalance());
     }, [dispatch]);
 
     return(

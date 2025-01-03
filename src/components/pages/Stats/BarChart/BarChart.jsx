@@ -39,20 +39,48 @@ const BarChart = () => {
         ];
     };
 
+    // const countSalesByMonth = (sales) => {
+    //     const salesCount = [0, 0, 0, 0];
+    //     const currentDate = new Date();
+    //     const currentMonth = currentDate.getMonth();
+    //     const currentYear = currentDate.getFullYear();
+        
+    //     sales.forEach(sale => {
+    //         const saleDate = new Date(sale.date);
+    //         const saleMonth = saleDate.getMonth();
+    //         const saleYear = saleDate.getFullYear();
+    //         const monthDiff = (currentMonth - saleMonth + 12) % 12;
+    
+    //         // Asegúrate de que las ventas sean del año actual y dentro de los últimos 4 meses
+    //         if (saleYear === currentYear && monthDiff < 4) {
+    //             salesCount[3 - monthDiff]++;
+    //         }
+    //     });
+    //     return salesCount;
+    // };
     const countSalesByMonth = (sales) => {
         const salesCount = [0, 0, 0, 0];
-        const currentMonth = new Date().getMonth();
-        
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+    
         sales.forEach(sale => {
-            const saleMonth = new Date(sale.date).getMonth();
-            const monthDiff = (currentMonth - saleMonth + 12) % 12;
-            if (monthDiff < 4) {
-                salesCount[3 - monthDiff]++;
+            const saleDate = new Date(sale.date);
+            const saleMonth = saleDate.getMonth();
+            const saleYear = saleDate.getFullYear();
+    
+            // Calcula la diferencia total en meses, considerando el año
+            const totalMonthsDiff = (currentYear - saleYear) * 12 + (currentMonth - saleMonth);
+    
+            // Verifica que la venta esté dentro de los últimos 4 meses
+            if (totalMonthsDiff >= 0 && totalMonthsDiff < 4) {
+                salesCount[3 - totalMonthsDiff]++;
             }
         });
+    
         return salesCount;
     };
-
+    
     const lastFourMonths = getLastFourMonths();
     const onlineSalesCount = countSalesByMonth(salesOnline);
     const localSalesCount = countSalesByMonth(salesLocal);
@@ -61,6 +89,7 @@ const BarChart = () => {
         responsive: true,
         maintainAspectRatio: false,
     };
+
     const barCharData = {
         labels: lastFourMonths,
         datasets: [

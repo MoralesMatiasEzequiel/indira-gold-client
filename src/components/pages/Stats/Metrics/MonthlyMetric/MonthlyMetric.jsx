@@ -7,7 +7,8 @@ import { useSelector } from "react-redux";
 
 const MonthlyMetric = () => {
 
-    const salesBalance = useSelector(state => state.sales.salesBalance);
+    // const salesBalance = useSelector(state => state.sales.salesBalance);
+    const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
     const totalRevenue = salesBalance.monthly?.totalRevenue ?? 0;
 
     let displayRevenue = totalRevenue;
