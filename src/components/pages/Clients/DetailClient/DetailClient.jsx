@@ -11,7 +11,7 @@ const DetailClient = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const clientDetail = useSelector(state => state.clients.clientDetail);    
+    const clientDetail = useSelector(state => state.clients.clientDetail);        
     const products = useSelector(state => state.products.products);
     
     const [purchasedProducts, setPurchasedProducts] = useState([]);
@@ -96,12 +96,16 @@ const DetailClient = () => {
     };
 
     const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('es-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        }).replace(/\//g, '-');
+        const options = { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric', 
+            timeZone: 'UTC' 
+        };
+
+        const formattedDate = new Date(dateString).toLocaleDateString('es-ES', options).replace(/\//g, '-');
+        
+        return formattedDate;
     };
 
     const handleDelete = () => {
