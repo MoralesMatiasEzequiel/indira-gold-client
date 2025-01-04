@@ -17,13 +17,12 @@ const FilteredSales = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [total, setTotal] = useState(0);
 
-    const monthNames = [
+    const months = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
     const years = Array.from(new Set(sales.map(sale => new Date(sale.date).getFullYear())))
         .sort((a, b) => b - a);
-    const months = Array.from(new Set(sales.map(sale => monthNames[new Date(sale.date).getMonth()]))).reverse();
 
     const lastSaleDate = sales.length > 0 ? new Date(sales[0].date) : new Date();
     const [selectedMonth, setSelectedMonth] = useState(lastSaleDate.getMonth());
@@ -85,7 +84,15 @@ const FilteredSales = () => {
     };
 
     const formatDate = (date) => {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const options = { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            timeZone: 'UTC' 
+        };
+
         const formattedDate = new Date(date).toLocaleDateString('es-ES', options).replace(',', ' -');
         return formattedDate;
     };
@@ -164,17 +171,17 @@ const FilteredSales = () => {
                         </button>
                     </div>
                     <div>
-                        <div class="custom-select-wrapper">
-                            <select onChange={(event) => handleMonthChange(event.target.value)}>
+                        <div className="custom-select-wrapper">
+                            <select onChange={(event) => handleMonthChange(event.target.value)} value={selectedMonth}>
                                 {months?.map((month, index) => (
-                                    <option key={index} value={monthNames.indexOf(month)}>
+                                    <option key={index} value={index}>
                                         {month}
                                     </option>
                                 ))}
                             </select>
                         </div>
-                        <div class="custom-select-wrapper">
-                            <select onChange={(event) => handleYearChange(event.target.value)}>
+                        <div className="custom-select-wrapper">
+                            <select onChange={(event) => handleYearChange(event.target.value)} value={selectedYear}> 
                                 {years?.map((year, index) => (
                                     <option key={index} value={year}>{year}</option>
                                 ))}
@@ -183,75 +190,83 @@ const FilteredSales = () => {
                     </div>
                 </div>
                 <div className="container">
-                    <div className="tableContainer">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <div className="withFilter">
-                                            <span>Fecha y hora</span>
-                                            <button className="sort" onClick={() => setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc')}>{sortByDate === 'asc' ? '▴' : '▾'}</button>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div className="withFilter">
-                                            <span>Orden</span>
-                                            <input
-                                                type="search"
-                                                name="searchOrder"
-                                                onChange={handleChangeOrderNumber}
-                                                value={orderNumber}
-                                                placeholder="Buscar"
-                                                autoComplete="off"
-                                                className="filterSearch"
-                                            />
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div className="withFilter">
-                                            <span>Cliente</span>
-                                            <input
-                                                type="search"
-                                                name="searchClient"
-                                                onChange={handleChangeClient}
-                                                value={client}
-                                                placeholder="Buscar"
-                                                autoComplete="off"
-                                                className="filterSearch"
-                                            />
-                                        </div>
-                                    </th>
-                                    <th>Productos</th>
-                                    <th>Medio de pago</th>
-                                    <th>Descuento</th>
-                                    <th>Total</th>
-                                    <th>Detalle</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {paginatedSales.map(sale => (
-                                    <tr key={sale._id}>
-                                        <td>{formatDate(sale.date)}</td>
-                                        <td className="center">{sale.orderNumber}</td>
-                                        <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
-                                        <td className="center">{sale.products.length}</td>
-                                        <td>{sale.paymentMethod}</td>
-                                        <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
-                                        <td className="center">$ {formatNumber(sale.totalPrice)}</td>
-                                        <td>
-                                            <a onClick={() => navigate(`/main_window/sales/${sale._id}`)}>
-                                                <img src={detail} alt="" className="detailImg" />
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        
-                    </div>
-                    <div className={style.total}>
-                        <div className={style.totalContent}>Total: <span>${total}</span></div>
-                    </div>
+                    {filteredSales.length > 0 ? 
+                        <>
+                            <div className="tableContainer">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div className="withFilter">
+                                                    <span>Fecha y hora</span>
+                                                    <button className="sort" onClick={() => setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc')}>{sortByDate === 'asc' ? '▴' : '▾'}</button>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div className="withFilter">
+                                                    <span>Orden</span>
+                                                    <input
+                                                        type="search"
+                                                        name="searchOrder"
+                                                        onChange={handleChangeOrderNumber}
+                                                        value={orderNumber}
+                                                        placeholder="Buscar"
+                                                        autoComplete="off"
+                                                        className="filterSearch"
+                                                    />
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div className="withFilter">
+                                                    <span>Cliente</span>
+                                                    <input
+                                                        type="search"
+                                                        name="searchClient"
+                                                        onChange={handleChangeClient}
+                                                        value={client}
+                                                        placeholder="Buscar"
+                                                        autoComplete="off"
+                                                        className="filterSearch"
+                                                    />
+                                                </div>
+                                            </th>
+                                            <th>Productos</th>
+                                            <th>Medio de pago</th>
+                                            <th>Descuento</th>
+                                            <th>Total</th>
+                                            <th>Detalle</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {paginatedSales.map(sale => (
+                                            <tr key={sale._id}>
+                                                <td>{formatDate(sale.date)}</td>
+                                                <td className="center">{sale.orderNumber}</td>
+                                                <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
+                                                <td className="center">{sale.products.length}</td>
+                                                <td>{sale.paymentMethod}</td>
+                                                <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
+                                                <td className="center">$ {formatNumber(sale.totalPrice)}</td>
+                                                <td>
+                                                    <a onClick={() => navigate(`/main_window/sales/${sale._id}`)}>
+                                                        <img src={detail} alt="" className="detailImg" />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                            <div className={style.total}>
+                                <div className={style.totalContent}>Total: <span>${total}</span></div>
+                            </div>
+                        </> : 
+                        <div className={style.noSales}>
+                            <p>No hay ventas registradas en esta fecha.</p>
+                        </div>
+                    }
+                    
                 </div>
             </div>
         </div>

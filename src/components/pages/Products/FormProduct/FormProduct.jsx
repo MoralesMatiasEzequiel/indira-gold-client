@@ -24,7 +24,7 @@ const FormProduct = () => {
             phone: ''
         },
         price: '',
-        category: [],
+        category: '',
         description: ''
     };
 
