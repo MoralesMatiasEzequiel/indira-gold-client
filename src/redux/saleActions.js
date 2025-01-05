@@ -1,5 +1,5 @@
 import axios from '../services/axios.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer, filterSalesReducer, calculateSalesBalanceReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, fetchSalesYearsReducer, deleteSaleReducer, filterSalesReducer, calculateSalesBalanceReducer, calculateSalesAnnualBalanceReducer } from "./saleSlice.js";
 
 export const getSales = () => {
     return async (dispatch) => {
@@ -83,9 +83,21 @@ export const getSalesLocal = () => {
 //     };
 // };
 
+export const fetchSalesYears  = () => {
+    return async (dispatch) => {
+        dispatch(fetchSalesYearsReducer());
+    }
+};
+
 export const calculateSalesBalance = () => {
     return async (dispatch) => {
         dispatch(calculateSalesBalanceReducer());
+    }
+};
+
+export const calculateSalesAnnualBalance = (year) => {
+    return async (dispatch) => {
+        dispatch(calculateSalesAnnualBalanceReducer(year));
     }
 };
 

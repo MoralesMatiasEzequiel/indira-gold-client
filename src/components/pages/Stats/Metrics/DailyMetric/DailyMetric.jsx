@@ -5,7 +5,7 @@ import React from 'react';
 import { useSelector } from "react-redux";
 
 
-const DailyMetric = () => {
+const DailyMetric = ({ isCurrentYear }) => {
 
     // const salesBalance = useSelector(state => state.sales.salesBalance);
     const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
@@ -22,9 +22,11 @@ const DailyMetric = () => {
         suffix = 'M';
     };
 
+    const cardClass = isCurrentYear ? style.card : style.cardInactive;
+
     return(
         <div>
-            <div className={style.card}>
+            <div className={cardClass}>
                 <div className={style.titleBalance}>
                     <p>Diario</p>
                 </div>
