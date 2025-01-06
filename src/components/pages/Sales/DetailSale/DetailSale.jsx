@@ -18,8 +18,6 @@ const DetailSale = () => {
 
     const saleDetail = useSelector(state => state.sales.saleDetail);
     const products = useSelector(state => state.products.products);
-    // console.log(saleDetail.date);
-    
 
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -350,6 +348,8 @@ const DetailSale = () => {
                                 {saleDetail.soldAt && <p><span>Tipo de venta:&nbsp;</span> {saleDetail.soldAt}</p>}
                                 {saleDetail.subTotal && <p><span>Subtotal:&nbsp;</span> ${formatNumber(saleDetail.subTotal)}.</p>}
                                 {<p><span>Descuento:&nbsp;</span> {saleDetail.discount}% {`(- $${saleDetail.discountApplied})`}</p>}
+                                {<p><span>Retención:&nbsp;</span> {saleDetail.paymentFee}% {`(- $${saleDetail.paymentFeeApplied})`}</p>}
+                                {saleDetail.totalWithFee && <p><span>Total con retención:&nbsp;</span> ${formatNumber(saleDetail.totalWithFee)}.</p>}
                                 {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${formatNumber(saleDetail.totalPrice)}.</p>}
                             </div>
                             <div className={style.column}>
