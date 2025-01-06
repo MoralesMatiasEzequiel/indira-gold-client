@@ -16,6 +16,7 @@ const FilteredSales = () => {
     const [sortByDate, setSortByDate] = useState('desc');
     const [currentPage, setCurrentPage] = useState(1);
     const [total, setTotal] = useState(0);
+    const [totalWithFee, setTotalWithFee] = useState(0);
 
     const months = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
@@ -69,8 +70,11 @@ const FilteredSales = () => {
     }, [orderNumber, client, dispatch]);
 
     useEffect(() => {
-        const newSubtotal = filteredSales.reduce((acc, sale) => acc + sale.totalWithFee, 0);
+        const newSubtotal = filteredSales.reduce((acc, sale) => acc + sale.totalPrice, 0);
         setTotal(formatNumber(newSubtotal));
+
+        const newSubtotalWithFee = filteredSales.reduce((acc, sale) => acc + sale.totalWithFee, 0);
+        setTotalWithFee(formatNumber(newSubtotalWithFee));
     }, [filteredSales]);
 
     const handleChangeOrderNumber = (event) => {
@@ -260,6 +264,7 @@ const FilteredSales = () => {
                             </div>
                             <div className={style.total}>
                                 <div className={style.totalContent}>Total: <span>${total}</span></div>
+                                <div className={style.totalContent}>Total con retención: <span>${totalWithFee}</span></div>
                             </div>
                         </> : 
                         <div className={style.noSales}>
