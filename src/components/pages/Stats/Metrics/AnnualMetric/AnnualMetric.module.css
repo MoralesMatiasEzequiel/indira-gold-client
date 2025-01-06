@@ -24,8 +24,6 @@
 }
 
 .containerYear{
-    margin: 0;
-    position: relative;
     overflow: hidden;
 }
 
@@ -33,9 +31,7 @@
     -webkit-appearance: none; /* Elimina el estilo predeterminado del navegador */
     -moz-appearance: none;
     appearance: none;
-    background-color: transparent;
-    border: 1px solid #ccc; /* Borde para el select */
-    border-radius: 4px; /* Bordes redondeados */
+    border: none;
 }
 
 .labels{
