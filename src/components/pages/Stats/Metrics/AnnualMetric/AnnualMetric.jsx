@@ -50,8 +50,9 @@ const AnnualMetric = ({ onYearChange }) => { // Recibimos el callback para envia
         <div>
             <div className={style.card}>
                 <div className={style.titleBalance}>
-                    <div>
+                    <div className={style.containerYear}>
                         <select
+                            className={style.selectYear}
                             name="year"
                             id="yearSelect"
                             value={year}

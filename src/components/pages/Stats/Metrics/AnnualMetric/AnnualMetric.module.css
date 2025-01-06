@@ -6,6 +6,8 @@
     border-radius: 3px;
     border: var(--border-dark);
     min-height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .cardContent{
@@ -19,6 +21,21 @@
     display: flex;
     justify-content:space-between;
     font-size: 14px;
+}
+
+.containerYear{
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.selectYear {
+    -webkit-appearance: none; /* Elimina el estilo predeterminado del navegador */
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    border: 1px solid #ccc; /* Borde para el select */
+    border-radius: 4px; /* Bordes redondeados */
 }
 
 .labels{

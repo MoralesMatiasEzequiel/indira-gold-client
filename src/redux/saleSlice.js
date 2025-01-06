@@ -99,7 +99,7 @@ export const saleSlice = createSlice({
             state.sales.forEach(sale => {
                 const saleDate = new Date(sale.date);
                 const totalProductsSold = sale.products.length; // Requiere que cada venta tenga un array de productos
-                const totalRevenue = sale.totalPrice; // Requiere que cada venta tenga un campo totalPrice
+                const totalRevenue = sale.totalWithFee; // Requiere que cada venta tenga un campo totalPrice
         
                 if (saleDate >= startOfDay) {
                     balances.daily.soldProducts += totalProductsSold;
@@ -136,7 +136,7 @@ export const saleSlice = createSlice({
     
                 if (saleDate >= startOfYear && saleDate < endOfYear) {
                     annualBalance.soldProducts += sale.products.length;
-                    annualBalance.totalRevenue += sale.totalPrice;
+                    annualBalance.totalRevenue += sale.totalWithFee;
                 }
             });
         
