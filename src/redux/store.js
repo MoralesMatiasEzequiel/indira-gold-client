@@ -3,6 +3,7 @@ import Products from "./productSlice.js";
 import Clients from "./clientSlice.js";
 import Sales from "./saleSlice.js";
 import Categories from "./categorySlice.js";
+import Debts from "./debtSlice.js";
 
 
 export default configureStore({
@@ -10,7 +11,7 @@ export default configureStore({
         products: Products,
         clients: Clients,
         sales: Sales,
-        categories: Categories
-
+        categories: Categories,
+        debts: Debts
     }
 });

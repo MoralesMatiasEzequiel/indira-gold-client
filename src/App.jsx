@@ -19,6 +19,8 @@ import PutPriceProducts from "./components/pages/Products/PutPriceProduct/PutPri
 import Clients from "./components/pages/Clients/Clients.jsx";
 import DetailClient from "./components/pages/Clients/DetailClient/DetailClient.jsx";
 import PutClient from "./components/pages/Clients/PutClient/PutClient.jsx";
+import Debts from './components/pages/Clients/Debts/Debts.jsx';
+import FormDebt from './components/pages/Clients/Debts/FormDebt/FormDebt.jsx';
 import { ToastContainer } from 'react-toastify';
 
 const App = () => {
@@ -44,6 +46,7 @@ const App = () => {
           <Route path='/main_window/clients' element={<Clients />}/>
           <Route path='/main_window/clients/:id' element={<DetailClient />}/>
           <Route path='/main_window/clients/edit/:id' element={<PutClient />}/>
+          <Route path='/main_window/debts' element={<Debts />}/>
         </Routes>
       </div>
       <ToastContainer />

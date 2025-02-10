@@ -12,6 +12,10 @@ const SideBar = () => {
     const [subMenuVisible, setSubMenuVisible] = useState(false);
 
     const handleClick = (name) => {
+        if(name === 'sales'){
+            navigate('/');
+        }
+
         if (name !== 'products') {
             setSubMenuVisible(false);
         }
@@ -20,12 +24,12 @@ const SideBar = () => {
             navigate('/main_window/clients');
         }
 
-        if(name === 'sales'){
-            navigate('/');
-        }
-
         if(name === 'stats'){
             navigate('/main_window/stats');
+        }
+
+        if(name === 'debts'){
+            navigate('/main_window/debts');
         }
     };
 
@@ -109,6 +113,16 @@ const SideBar = () => {
                                 <div className={style.text}>
                                     <div>
                                         <p>Estadísticas</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                        <div className={`${style.NavLink} ${location.pathname === '/main_window/debts' ? style.selected : ''}`} onClick={() => handleClick('debts')}>
+                            <li>
+                                <div className={style.icon}></div>
+                                <div className={style.text}>
+                                    <div>
+                                        <p>Deudas</p>
                                     </div>
                                 </div>
                             </li>
