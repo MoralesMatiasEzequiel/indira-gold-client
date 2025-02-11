@@ -5,7 +5,7 @@ export const getDebts = () => {
     return async (dispatch) => {
         try {
             const { data } = await axios.get("/debt");
-            console.log(data);
+            // console.log(data);
             
             dispatch(getDebtsReducer(data));
 
@@ -17,6 +17,8 @@ export const getDebts = () => {
 };
 
 export const postDebt = (debtData) => {
+    console.log(debtData);
+    
     return async (dispatch) => { 
         try {
             const response = await axios.post('/debt', debtData);

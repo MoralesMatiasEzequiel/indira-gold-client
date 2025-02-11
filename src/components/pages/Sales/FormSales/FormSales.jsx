@@ -1,5 +1,5 @@
-import style from "./FormSales.module.css"
-import iconClear from "../../../../assets/img/clearForm.png"
+import style from "./FormSales.module.css";
+import iconClear from "../../../../assets/img/clearForm.png";
 import add from "./img/add.png";
 import x from "./img/x.png";
 import close from "../../../../assets/img/x.png";
