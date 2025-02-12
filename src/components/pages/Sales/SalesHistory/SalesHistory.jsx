@@ -182,7 +182,7 @@ const SalesHistory = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedSales.map(sale => (
+                            {paginatedSales?.map(sale => (
                                 <tr key={sale._id}>
                                     <td>{formatDate(sale.date)}</td>
                                     <td className="center">{sale.orderNumber}</td>
