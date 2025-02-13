@@ -150,13 +150,13 @@ const SalesHistory = () => {
                                     <div className="withFilter">
                                         <span>Orden</span>
                                         <input
+                                            className="filterSearch"
                                             type="search"
                                             name="searchOrder"
                                             onChange={handleChangeOrderNumber}
                                             value={orderNumber}
                                             placeholder="Buscar"
                                             autoComplete="off"
-                                            className="filterSearch"
                                         />
                                     </div>
                                 </th>

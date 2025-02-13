@@ -5,7 +5,6 @@ export const getDebts = () => {
     return async (dispatch) => {
         try {
             const { data } = await axios.get("/debt");
-            // console.log(data);
             
             dispatch(getDebtsReducer(data));
 
@@ -16,8 +15,30 @@ export const getDebts = () => {
     };
 };
 
+export const searchDebts = (orderNumber, client) => {
+    return async (dispatch) => {
+        try {
+            let query = '/debt?';
+            if (orderNumber) {
+                query += `orderNumber=${orderNumber}&`;
+            }
+            if (client) {
+                query += `clientName=${client}&`;
+            }
+            console.log(query);
+            
+            const { data } = await axios.get(query);
+
+            dispatch(getDebtsReducer(data));
+
+        } catch (error) {
+            console.error("Debts search error:", error.message);
+            return null;
+        }
+    };
+};
+
 export const postDebt = (debtData) => {
-    console.log(debtData);
     
     return async (dispatch) => { 
         try {

@@ -2,8 +2,7 @@ import style from "./DebtsRegistration.module.css";
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { getDebts } from "../../../../../redux/debtActions.js";
-import { getSales, searchSales, getSalesByOrderNumber, getSalesByClient } from '../../../../../redux/saleActions.js';
+import { getDebts, searchDebts } from "../../../../../redux/debtActions.js";
 import detail from '../../../../../assets/img/detail.png';
 
 const DebtRegistration = () => {
@@ -24,28 +23,19 @@ const DebtRegistration = () => {
     const [sortByDate, setSortByDate] = useState('asc');
 
     useEffect(() => {
-        dispatch(searchSales(orderNumber, client))
-        .catch(() => {
-            if(orderNumber){
-                dispatch(getSalesByOrderNumber(orderNumber));
-            }
-            else if(client){
-                dispatch(getSalesByClient(client));
-            }
-            else { dispatch(getSales()); }
-        });
+        dispatch(searchDebts(orderNumber, client))
     }, [orderNumber, client, dispatch]);
 
     //--- FILTER DATE
-    const sortedDebts = [...debts].sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return sortByDate === 'asc' ? dateA - dateB : dateB - dateA;
-    });
-
     const toggleSortOrder = () => {
         setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc');
     };
+
+    const sortedDebts = [...debts].sort((a, b) => {
+        const dateA = new Date(a.sale.date);
+        const dateB = new Date(b.sale.date);
+        return sortByDate === 'asc' ? dateA - dateB : dateB - dateA;
+    });
 
     const formatDate = (date) => {        
         const options = { 
@@ -66,7 +56,6 @@ const DebtRegistration = () => {
 
     const paginatedDebts = sortedDebts.slice().reverse().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const totalPages = Math.ceil(sortedDebts.length / itemsPerPage);
-console.log(paginatedDebts);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -206,20 +195,20 @@ console.log(paginatedDebts);
                         </thead>
                         <tbody>
                             {paginatedDebts?.map(debt => (
-                                    <tr key={debt._id} className={!debt.active ? style.inactive : ''}>
-                                        <td>{formatDate(debt.sale.date)}</td>
-                                        <td className="center">{debt.sale.orderNumber}</td>
-                                        <td>{debt.sale.client ? `${debt.client.name} ${debt.client.lastname}` : 'Anónimo'}</td>
-                                        <td>{'pago'}</td>
-                                        <td>{debt.remainingBalance}</td>
-                                        <td>{debt.active ? "Activo" : "Inactivo"}</td>
-                                        <td>
-                                            <div onClick={() => navigate(`/main_window/debts/${debt._id}`)}>
-                                                <img src={detail} alt="" className="detailImg" />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                <tr key={debt._id} className={!debt.active ? style.inactive : ''}>
+                                    <td>{formatDate(debt.sale.date)}</td>
+                                    <td className="center">{debt.sale.orderNumber}</td>
+                                    <td>{debt.sale.client ? `${debt.client.name} ${debt.client.lastname}` : 'Anónimo'}</td>
+                                    <td>${debt.paymentMade}</td>
+                                    <td>${debt.remainingBalance}</td>
+                                    <td>{debt.active ? "En deuda" : "Saldado"}</td>
+                                    <td>
+                                        <div onClick={() => navigate(`/main_window/debts/${debt._id}`)}>
+                                            <img src={detail} alt="" className="detailImg" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
