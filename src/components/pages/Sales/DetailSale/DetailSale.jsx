@@ -97,7 +97,6 @@ const DetailSale = () => {
         }
     }, [saleDetail, dispatch, loading]);
     
-
     const getColorById = (product, colorId) => {
         return product?.color?.find(c => c._id === colorId);
     };
@@ -262,7 +261,6 @@ const DetailSale = () => {
         }
     };
     
-    
     const handleDelete = () => {
         const groupedProducts = {};
     
@@ -332,7 +330,6 @@ const DetailSale = () => {
                         </div>
                         <div className={`container ${style.content}`}>
                             {saleDetail.orderNumber && <div className={style.orderNumber}><span>N° de orden:</span> {saleDetail.orderNumber}</div>}
-                            
                             <div className={style.column}>
                                 {saleDetail.date && <p><span>Fecha:&nbsp;</span>{formatDate(saleDetail.date)}</p>}
                                 {saleDetail.client
@@ -346,11 +343,11 @@ const DetailSale = () => {
                                 {saleDetail.paymentMethod && <p><span>Modo de pago:&nbsp;</span> {saleDetail.paymentMethod}</p>}
                                 {/* {saleDetail.paymentMethod && <p>Modo de pago: {saleDetail.paymentMethod.join(', ')}</p>} */}
                                 {saleDetail.soldAt && <p><span>Tipo de venta:&nbsp;</span> {saleDetail.soldAt}</p>}
-                                {saleDetail.subTotal && <p><span>Subtotal:&nbsp;</span> ${formatNumber(saleDetail.subTotal)}.</p>}
+                                {saleDetail.subTotal && <p><span>Subtotal:&nbsp;</span> ${formatNumber(saleDetail.subTotal)}</p>}
                                 {<p><span>Descuento:&nbsp;</span> {saleDetail.discount}% {`(- $${saleDetail.discountApplied})`}</p>}
                                 {<p><span>Retención:&nbsp;</span> {saleDetail.paymentFee}% {`(- $${saleDetail.paymentFeeApplied})`}</p>}
-                                {saleDetail.totalWithFee && <p><span>Total con retención:&nbsp;</span> ${formatNumber(saleDetail.totalWithFee)}.</p>}
-                                {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${formatNumber(saleDetail.totalPrice)}.</p>}
+                                {saleDetail.totalWithFee && <p><span>Total con retención:&nbsp;</span> ${formatNumber(saleDetail.totalWithFee)}</p>}
+                                {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${formatNumber(saleDetail.totalPrice)}</p>}
                             </div>
                             <div className={style.column}>
                                 <p><span>Productos:&nbsp;</span></p>
@@ -358,8 +355,8 @@ const DetailSale = () => {
                                     <div>Cargando productos...</div> 
                                 ) : purchasedProducts?.length ? (
                                     <ul>
-                                        {purchasedProducts.length > 0 ? (
-                                            purchasedProducts.map((product, index) => (
+                                        {purchasedProducts?.length > 0 ? (
+                                            purchasedProducts?.map((product, index) => (
                                                 <li key={index}>
                                                     <p><span>{product.name}</span></p>
                                                     <ul className={style.productList}>

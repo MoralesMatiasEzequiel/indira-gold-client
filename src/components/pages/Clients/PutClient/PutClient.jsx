@@ -16,6 +16,8 @@ const PutClient = ({ onClientAdded = () => {}}) => {
         dispatch(getClientById(id));
     }, [dispatch, id]);
 
+    const [editClient, setEditClient] = useState({});  
+
     useEffect(() => {    
         if (clientDetail && clientDetail._id === id) {        
             const updatedEditClient = {
@@ -30,8 +32,6 @@ const PutClient = ({ onClientAdded = () => {}}) => {
             setEditClient(updatedEditClient);
         }
     }, [dispatch, id, clientDetail]);
-
-    const [editClient, setEditClient] = useState({});  
 
     //-----------CHANGE-----------//
     const handleChange = (event) => {
@@ -135,7 +135,6 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                 <button className={style.buttonSubmit} type="submit">Editar</button>
                             </div>
                         </div>                       
-                        
                     </form>
                 </div>
             </div>

@@ -195,14 +195,14 @@ const ClientRegistration = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedClients.map(client => (
+                            {paginatedClients?.map(client => (
                                     <tr key={client._id} className={!client.active ? style.inactive : ''}>
-                                        <td>{client.dni && client.dni}</td>
+                                        <td className="center">{client.dni && client.dni}</td>
                                         <td>{client.name}</td>
                                         <td>{client.lastname}</td>
-                                        <td>{client.email}</td>
-                                        <td>{client.phone}</td>
-                                        <td>{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Información no disponible offline'}</td>    
+                                        <td className="center">{client.email}</td>
+                                        <td className="center">{client.phone}</td>
+                                        <td className="center">{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Información no disponible offline'}</td>    
                                         <td>{client.active ? "Activo" : "Inactivo"}</td>
                                         <td>
                                             <div onClick={() => navigate(`/main_window/clients/${client._id}`)}>

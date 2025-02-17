@@ -199,9 +199,9 @@ const DebtRegistration = () => {
                                     <td>{formatDate(debt.sale.date)}</td>
                                     <td className="center">{debt.sale.orderNumber}</td>
                                     <td>{debt.sale.client ? `${debt.client.name} ${debt.client.lastname}` : 'Anónimo'}</td>
-                                    <td>${debt.paymentMade}</td>
-                                    <td>${debt.remainingBalance}</td>
-                                    <td>{debt.active ? "En deuda" : "Saldado"}</td>
+                                    <td className="center">${debt.paymentMade}</td>
+                                    <td className="center">${debt.remainingBalance}</td>
+                                    <td className="center">{debt.active ? "En deuda" : "Saldado"}</td>
                                     <td>
                                         <div onClick={() => navigate(`/main_window/debts/${debt._id}`)}>
                                             <img src={detail} alt="" className="detailImg" />
