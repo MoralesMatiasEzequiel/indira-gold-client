@@ -235,7 +235,16 @@ select:focus {
   border: none;
 }
 
-
+.errorMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    color: #ad0000;
+    font-style: italic;    /* Texto en cursiva */
+    font-size: 0.8rem;
+    font-weight: 550;
+}
 
 /*--TABLES--*/
 

@@ -10,6 +10,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     const dispatch = useDispatch();
 
     const sales = useSelector(state => state.sales.sales);
+    const debts = useSelector(state => state.debts.debts);
 
     const initialDebtState = {
         saleId: '',
@@ -27,16 +28,17 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        setIsSubmitDisabled(!(newDebt.saleId && newDebt.saleId !== ''));
-    }, [newDebt.saleId]);
-
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+        let newValue = value === '' ? 0 : parseFloat(value);
+
+        if (name === 'amount' && newValue > totalSale) {
+            newValue = totalSale;
+        }
 
         setNewDebt((prevDebt) => ({
             ...prevDebt,
-            [name]: name === 'amount' ? parseFloat(value) : value,
+            [name]: newValue,
         }));
     };
 
@@ -65,9 +67,9 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
         }));
     };
 
-    const transformSalesOptions = (sales) => {
+    const transformSalesOptions = (sales, debts) => {
         return sales
-            .filter(sale => sale.client) // Filtra las ventas con cliente
+            .filter(sale => sale.client && !debts.some(debt => debt.sale._id === sale._id)) // Filtra las ventas con cliente y ventas que ya tengan deuda
             .map(sale => ({
                 value: sale._id,
                 label: `${sale.orderNumber}`
@@ -75,9 +77,9 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     };
 
     useEffect(() => {
-        setSalesOptions(transformSalesOptions(sales));
+        setSalesOptions(transformSalesOptions(sales, debts));
         // setSelectKey(Date.now());
-    }, [sales]);
+    }, [sales, debts]);
 
     const debtInputStyles = {
         control: (provided, state) => ({
@@ -120,16 +122,13 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     };
 
     const formatNumber = (number) => {
-
-        if(number){
-            return number.toLocaleString('es-ES', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            });
+        if (number !== null && number !== undefined) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
-
-        return null;
+        return '0';
     };
+
+    const balance = (totalSale || 0) - (newDebt.amount || 0);
 
     const handleSetForm = () => {
         setIsSubmitDisabled(true);
@@ -144,6 +143,10 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
         setDebtMade(prevDebtMade => !prevDebtMade);
         handleSetForm();
     };
+
+    useEffect(() => {
+        setIsSubmitDisabled(!(newDebt.saleId && balance > 0));
+    }, [newDebt.saleId, balance]);
     
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -203,6 +206,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                                     menuPortal: base => ({ ...base, zIndex: 9999 }),
                                                     ...debtInputStyles
                                                 }}
+                                                noOptionsMessage={() => 'No hay ventas disponibles'}
                                             />
                                         </div>                                 
                                     </div>
@@ -216,10 +220,11 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                             className={style.discount}
                                             type='number'
                                             name="amount"
-                                            value={newDebt.amount || ''}
+                                            value={newDebt.amount ?? ''}
                                             onChange={handleInputChange}
                                             placeholder='0'
                                             min='0'
+                                            max={totalSale ?? 0}
                                             onWheel={(event) => event.target.blur()}
                                         />
                                     </div>
@@ -243,24 +248,24 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                 <div className={style.subtotal}>
                                     <div className={style.left}>Monto</div>
                                     <div className={style.right}>
-                                        {totalSale === 0 || totalSale === null ? '$0' : `$${formatNumber(totalSale)}`}
+                                        {`$${formatNumber(totalSale)}`}
                                     </div>
                                 </div>   
                                 <div className={style.subtotal}>
                                     <div className={style.left}>Pagado</div>
                                     <div className={style.right}>
-                                        {newDebt.amount ? `-$${formatNumber(newDebt.amount)}` : '-$0'}
+                                        {`-$${formatNumber(newDebt.amount)}`}
                                     </div>
                                 </div>      
                                 <div className={style.total}>
                                     <div className={style.left}>Saldo</div>
                                     <div className={style.right}>
-                                        {totalSale && newDebt.amount ? `$${formatNumber(totalSale - newDebt.amount)}` : totalSale ? `$${formatNumber(totalSale)}` : '$0'}
+                                        {`$${formatNumber(balance)}`}
                                     </div>
                                 </div>                     
                                 <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                             </div> 
-                            {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
+                            {/* {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>} */}
                         </form>
                     </div>
                 </div>

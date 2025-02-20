@@ -199,12 +199,19 @@
     align-items: center;
 }
 
-.inputAddIncome {
-    margin-left: 5px;
-    border: none;
-    justify-content: space-between;
+.containerInputIncome {
+    display: flex;
     align-items: center;    
-    width: 98%;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.inputAddIncome {
+    border: none;
+    width: 100%;
+    margin: 5px;
+    padding: 5px;
+    font-size: 0.75rem;
 }
 
 .inputAddIncome input{

@@ -105,10 +105,10 @@ const DetailDebt = () => {
     }, [debtDetail, dispatch, loading]);
 
     const formatNumber = (number) => {
-        return number.toLocaleString('es-ES', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
+        if (number !== null && number !== undefined) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        return '0';
     };
 
     const formatDate = (date) => {        
@@ -172,7 +172,7 @@ const DetailDebt = () => {
                                                 <li key={index}>
                                                     <ul className={style.productList}>
                                                         {income.date && <li><span>Fecha:&nbsp;</span>{formatDate(income.date) || 'Fecha no encontrada'}</li>}
-                                                        {income.amount && <li><span>Pago:&nbsp;</span> ${income.amount || 'Pago no encontrado'}</li>}
+                                                        {income.amount && <li><span>Pago:&nbsp;</span> ${formatNumber(income.amount) || 'Pago no encontrado'}</li>}
                                                     </ul>
                                                 </li>
                                             ))
@@ -183,7 +183,7 @@ const DetailDebt = () => {
                                 ) : (
                                     <p>No hay pagos disponibles.</p>
                                 )}
-                                {debtDetail.paymentMade && <p><span>Pago total:&nbsp;</span> ${formatNumber(debtDetail.paymentMade)}</p>}
+                                {debtDetail.paymentMade && <p><span>Total abonado:&nbsp;</span> ${formatNumber(debtDetail.paymentMade)}</p>}
                                 {debtDetail.remainingBalance && <p><span>Saldo:&nbsp;</span> ${formatNumber(debtDetail.remainingBalance)}</p>}
                             </div>
                             <div className={style.column}>

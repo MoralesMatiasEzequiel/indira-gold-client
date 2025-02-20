@@ -37,6 +37,13 @@ const DebtRegistration = () => {
         return sortByDate === 'asc' ? dateA - dateB : dateB - dateA;
     });
 
+    const formatNumber = (number) => {
+        if (number !== null && number !== undefined) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        return '0';
+    };
+
     const formatDate = (date) => {        
         const options = { 
             day: '2-digit', 
@@ -199,8 +206,8 @@ const DebtRegistration = () => {
                                     <td>{formatDate(debt.sale.date)}</td>
                                     <td className="center">{debt.sale.orderNumber}</td>
                                     <td>{debt.sale.client ? `${debt.client.name} ${debt.client.lastname}` : 'Anónimo'}</td>
-                                    <td className="center">${debt.paymentMade}</td>
-                                    <td className="center">${debt.remainingBalance}</td>
+                                    <td className="center">${formatNumber(debt.paymentMade)}</td>
+                                    <td className="center">${formatNumber(debt.remainingBalance)}</td>
                                     <td className="center">{debt.active ? "En deuda" : "Saldado"}</td>
                                     <td>
                                         <div onClick={() => navigate(`/main_window/debts/${debt._id}`)}>

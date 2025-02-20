@@ -17,10 +17,10 @@ const NewSale = ({ saleResponse }) => {
     const clientById = useSelector(state => state.clients.clientDetail);
 
     const formatNumber = (number) => {
-        return number.toLocaleString('es-ES', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
+        if (number !== null && number !== undefined) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        return '0';
     };
 
     const formatDate = (date) => {

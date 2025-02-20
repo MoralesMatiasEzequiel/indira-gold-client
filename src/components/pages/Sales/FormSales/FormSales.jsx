@@ -142,15 +142,10 @@ const FormSales = () => {
     };
 
     const formatNumber = (number) => {
-
-        if(number){
-            return number.toLocaleString('es-ES', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            });
+        if (number !== null && number !== undefined) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
-
-        return null;
+        return '0';
     };
 
     const clientInputStyles = {

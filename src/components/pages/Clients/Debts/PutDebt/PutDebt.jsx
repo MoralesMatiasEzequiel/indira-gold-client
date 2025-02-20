@@ -38,7 +38,6 @@ const PutDebt = () => {
                 client: debtDetail.client,
                 saleId: debtDetail.sale._id,
                 income: debtDetail.income,
-                amount: 0,
                 remainingBalance: debtDetail.remainingBalance,
                 paymentMade: debtDetail.paymentMade,
                 active: debtDetail.active
@@ -55,21 +54,33 @@ const PutDebt = () => {
     }, [dispatch, id, debtDetail]);
 
     const validateForm = () => {
-        const isAmount = editDebt.amount !== '';
-        const isSaleId = editDebt.saleId !== '';
-        setIsSubmitDisabled(!(isAmount && isSaleId));
+        const isSaleChanged = editDebt.saleId !== debtDetail?.sale?._id;
+        const isIncomeChanged = JSON.stringify(editDebt.income) !== JSON.stringify(debtDetail?.income);
+    
+        setIsSubmitDisabled(!(isSaleChanged || isIncomeChanged));
     };
+
+    useEffect(() => {
+        validateForm();
+    }, [editDebt]);
+    
 
     //--- HANDLE CHANGE
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+        let newValue = value === '' ? 0 : parseFloat(value);
+
+        if (name === 'amount') {
+            // Validar que el monto no sea mayor al saldo restante
+            if (newValue > editDebt.remainingBalance) {
+                newValue = editDebt.remainingBalance;
+            }
+        }       
 
         setEditDebt((prevDebt) => ({
             ...prevDebt,
-            [name]: name === 'amount' ? parseFloat(value) : value,
+            [name]: newValue,
         }));
-
-        validateForm();
     };
 
     const handleDebtChange = (selectedOption) => {
@@ -79,31 +90,24 @@ const PutDebt = () => {
 
         const sale = sales.find(sale => sale._id === selectedOption.value);
 
-        if (sale.client) {
-            setSelectedClient(`${sale?.client.name} ${sale?.client.lastname}`);
-        } else {
-            setSelectedClient('Anónimo');
-        }
+        setSelectedClient(sale?.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo');
 
-        if (sale.totalWithFee) {
-            setTotalSale(sale.totalWithFee)
-        }
+        setTotalSale(sale.totalWithFee || 0);
 
         setSelectedSale(selectedOption);
-
         setEditDebt((prevEditDebt) => ({
             ...prevEditDebt,
             saleId: selectedOption ? selectedOption.value : ''
         }));
-        validateForm();
     };
 
     const transformSalesOptions = (sales) => {
-        const salesOptions = sales?.map(sale => ({
-            value: sale._id,
-            label: `${sale.orderNumber}`
-        }));
-        return salesOptions;
+        return sales
+            .filter(sale => sale.client) // Filtra las ventas con cliente
+            .map(sale => ({
+                value: sale._id,
+                label: `${sale.orderNumber}`
+            }));
     };
 
     useEffect(() => {
@@ -151,15 +155,10 @@ const PutDebt = () => {
     };
 
     const formatNumber = (number) => {
-
-        if(number){
-            return number.toLocaleString('es-ES', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            });
+        if (number !== null && number !== undefined) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
-
-        return null;
+        return '0';
     };
 
     const formatDate = (date) => {        
@@ -183,27 +182,33 @@ const PutDebt = () => {
 
     const addIncome = () => {
         if (newIncome !== '') {
+            const newIncomeAmount = parseFloat(newIncome);
+    
+            // Verificar que el nuevo ingreso no exceda el saldo restante
+            if (newIncomeAmount > editDebt.remainingBalance) {
+                setErrorMessage('El pago no puede superar el saldo restante.');
+                return;
+            }
+    
             const newIncomeObject = {
-                amount: parseFloat(newIncome),
+                amount: newIncomeAmount,
                 date: new Date(), 
             };
     
+            const updatedPaymentMade = editDebt.paymentMade + newIncomeObject.amount;
+            const updatedRemainingBalance = editDebt.remainingBalance - newIncomeObject.amount;
+    
             setIncomes((prevIncomes) => [...prevIncomes, newIncomeObject]);
     
-            const updatedEditDebt = {
-                ...editDebt,
-                income: [
-                    ...editDebt.income,
-                    newIncomeObject,
-                ],
-                paymentMade: editDebt.paymentMade + newIncomeObject.amount,
-                remainingBalance: editDebt.remainingBalance - newIncomeObject.amount
-            };
-            setEditDebt(updatedEditDebt);
-            if (updatedEditDebt.paymentMade > 0) {
-                setIsSubmitDisabled(false);
-            }
+            setEditDebt((prevDebt) => ({
+                ...prevDebt,
+                income: [...prevDebt.income, newIncomeObject],
+                paymentMade: updatedPaymentMade,
+                remainingBalance: updatedRemainingBalance,
+            }));
+    
             setNewIncome('');
+            setErrorMessage('');
         }
     };
 
@@ -223,13 +228,17 @@ const PutDebt = () => {
         };
         setEditDebt(updatedEditDebt);
     };
-    
 
     const handleKeyDown = (event) => {
+        // Permitir solo números, borrar, y teclas especiales como el backspace y enter
+        if (!/[\d]/.test(event.key) && event.key !== 'Backspace' && event.key !== 'Enter') {
+            event.preventDefault();
+        }
+    
         if (event.key === 'Enter') {
             event.preventDefault();
-            addIncome();
-        };
+            addIncome();  // Tu función para agregar el ingreso
+        }
     };
 
     const handleSetForm = () => {
@@ -247,7 +256,6 @@ const PutDebt = () => {
         const debtData = {
             _id: editDebt._id,
             saleId: editDebt.saleId,
-            amount: editDebt.amount,
         }
 console.log(debtData);
 
@@ -264,7 +272,7 @@ console.log(debtData);
                 console.log("Successfully edited debt");
                 await dispatch(getDebtById(id));
                 dispatch(getDebts());
-                navigate(`/main_window/debts/${_id}`);
+                navigate(`/main_window/debts/${id}`);
             };
 
         } catch (error) {
@@ -326,35 +334,50 @@ console.log(debtData);
                                     {incomes?.map((income, incomeIndex) => (
                                         <li key={incomeIndex} className={style.list}>
                                             <span className={style.spanList1}>Fecha: {formatDate(income.date)}</span>
-                                            <span className={style.spanList2}>Pago: ${income.amount}</span>
+                                            <span className={style.spanList2}>Pago: ${formatNumber(income.amount)}</span>
                                             <button type="button" className={style.buttonDelete} onClick={() => deleteIncome(incomeIndex)}>
                                                 <img src={x} alt="x" />
                                             </button>
                                         </li>
                                     ))}
                                 </ol>
-                                <input className={style.inputAddIncome} type="text" name="income" value={newIncome} onChange={handleInputIncomeChange} onKeyDown={handleKeyDown} placeholder='Agregar nuevo pago' />
-                                <button type="button" className={style.buttonAdd} onClick={addIncome}>+</button>
+                                <div className={style.containerInputIncome}>
+                                    <input 
+                                        className={style.inputAddIncome} 
+                                        type="text" 
+                                        name="income" 
+                                        value={newIncome} 
+                                        onChange={handleInputIncomeChange} 
+                                        onKeyDown={handleKeyDown} 
+                                        placeholder='Agregar nuevo pago'
+                                    />
+                                    <button type="button" className={style.buttonAdd} onClick={addIncome}>+</button>
+                                </div>
                             </div>
+                            {errorMessage && <p className='errorMessage'>{errorMessage}</p>} 
                         </div>
                         <div className={style.column3}>
                             <div className={style.subtotal}>
                                 <div className={style.left}>Monto</div>
-                                <div className={style.right}>${formatNumber(totalSale)}</div>
+                                <div className={style.right}>
+                                    {`$${formatNumber(totalSale)}`}
+                                </div>
                             </div>   
                             <div className={style.subtotal}>
                                 <div className={style.left}>Pagado</div>
                                 <div className={style.right}>
-                                    -${formatNumber(editDebt.paymentMade === 0 || editDebt.paymentMade === null ? '0' : editDebt.paymentMade)}
+                                    {`-$${formatNumber(editDebt.paymentMade)}`}
                                 </div>
                             </div>      
                             <div className={style.total}>
                                 <div className={style.left}>Saldo</div>
-                                <div className={style.right}>${formatNumber(editDebt.remainingBalance)}</div>
+                                <div className={style.right}>
+                                    {`$${formatNumber(editDebt.remainingBalance)}`}
+                                </div>
                             </div>                     
                             <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                         </div> 
-                        {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}                     
+                        {/* {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}                      */}
                     </form>
                 </div>
             </div>
