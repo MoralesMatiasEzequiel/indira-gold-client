@@ -9,12 +9,13 @@
 .salesForm{
     display: flex;
     justify-content: space-between;
-    height: 100%;
+    /* height: 100%; */
     box-sizing: border-box;
 }
 
 .salesForm .column1, .salesForm .column2{
-    width: 35%;
+    width: 50%;
+    margin-bottom: 3rem;
 }
 
 .salesForm .column3{
@@ -31,6 +32,7 @@
 .salesForm .column1 .labelInput{
     display: flex;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
 .salesForm .column1 .labelInput .left{
@@ -139,4 +141,80 @@
 
 .buttonOnClose img{
     width: 0.75rem;
+}
+
+.incomeCard{
+    /* margin-top: 10px; */
+    width: 100%;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+}
+
+.incomeCard ol{
+    max-height: 100px; 
+    overflow-y: auto;
+}
+
+.list{
+    border-bottom: 1px solid #d4d4d4;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.spanList1{
+    margin: 5px;
+    margin-right: auto;
+    padding: 5px;
+    width: 50%;
+    font-size: 0.75rem;
+    border-right: 1px solid #d4d4d4;
+}
+
+.spanList2{
+    font-size: 0.75rem;
+    margin: 5px;
+    padding: 5px;
+    margin-right: auto;
+}
+
+.buttonAdd {
+    background: none;
+    color: #e4b61a;
+    font-weight: bold;
+}
+
+.buttonDelete{
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.buttonDelete img{
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.inputAddIncome {
+    margin-left: 5px;
+    border: none;
+    justify-content: space-between;
+    align-items: center;    
+    width: 98%;
+}
+
+.inputAddIncome input{
+    width: 100%;
+}
+
+.inputAddIncome::placeholder {
+    font-style: italic; 
+}
+
+.inputAddIncome:focus {
+    outline: none; 
 }

@@ -26,12 +26,10 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     const [debtMade, setDebtMade] = useState(false);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-    
-    const validateForm = () => {
-        const isAmount = newDebt.amount !== '';
-        const isSaleId = newDebt.saleId !== '';
-        setIsSubmitDisabled(!(isAmount && isSaleId));
-    };
+
+    useEffect(() => {
+        setIsSubmitDisabled(!(newDebt.saleId && newDebt.saleId !== ''));
+    }, [newDebt.saleId]);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -40,8 +38,6 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
             ...prevDebt,
             [name]: name === 'amount' ? parseFloat(value) : value,
         }));
-
-        validateForm();
     };
 
     const handleDebtChange = (selectedOption) => {
@@ -67,15 +63,15 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
             ...prevNewDebt,
             saleId: selectedOption ? selectedOption.value : ''
         }));
-        validateForm();
     };
 
     const transformSalesOptions = (sales) => {
-        const salesOptions = sales?.map(sale => ({
-            value: sale._id,
-            label: `${sale.orderNumber}`
-        }));
-        return salesOptions;
+        return sales
+            .filter(sale => sale.client) // Filtra las ventas con cliente
+            .map(sale => ({
+                value: sale._id,
+                label: `${sale.orderNumber}`
+            }));
     };
 
     useEffect(() => {
@@ -83,7 +79,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
         // setSelectKey(Date.now());
     }, [sales]);
 
-    const clientInputStyles = {
+    const debtInputStyles = {
         control: (provided, state) => ({
             ...provided,
             minHeight: '20px',
@@ -205,7 +201,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                                 menuPortalTarget={document.body}
                                                 styles={{
                                                     menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                                    ...clientInputStyles
+                                                    ...debtInputStyles
                                                 }}
                                             />
                                         </div>                                 
@@ -224,11 +220,13 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                             onChange={handleInputChange}
                                             placeholder='0'
                                             min='0'
+                                            onWheel={(event) => event.target.blur()}
                                         />
                                     </div>
                                 </div>
                             </div>
                             <div className={style.column2}>
+                            {newDebt.saleId ?
                                 <div className={style.labelInput}>
                                     <div className={style.left}>
                                         <label htmlFor="client">Cliente</label>
@@ -237,19 +235,28 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                         <span>{selectedClient ? selectedClient : "Anónimo"}</span>
                                     </div>
                                 </div>
+                            :
+                                <></>
+                            }
                             </div>
                             <div className={style.column3}>
                                 <div className={style.subtotal}>
                                     <div className={style.left}>Monto</div>
-                                    <div className={style.right}>${formatNumber(totalSale)}</div>
+                                    <div className={style.right}>
+                                        {totalSale === 0 || totalSale === null ? '$0' : `$${formatNumber(totalSale)}`}
+                                    </div>
                                 </div>   
                                 <div className={style.subtotal}>
                                     <div className={style.left}>Pagado</div>
-                                    <div className={style.right}>${formatNumber(newDebt.amount)}</div>
+                                    <div className={style.right}>
+                                        {newDebt.amount ? `-$${formatNumber(newDebt.amount)}` : '-$0'}
+                                    </div>
                                 </div>      
                                 <div className={style.total}>
                                     <div className={style.left}>Saldo</div>
-                                    <div className={style.right}>${formatNumber(totalSale - newDebt.amount)}</div>
+                                    <div className={style.right}>
+                                        {totalSale && newDebt.amount ? `$${formatNumber(totalSale - newDebt.amount)}` : totalSale ? `$${formatNumber(totalSale)}` : '$0'}
+                                    </div>
                                 </div>                     
                                 <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                             </div> 

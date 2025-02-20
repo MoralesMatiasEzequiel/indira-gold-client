@@ -158,11 +158,8 @@ const PutSale = () => {
         if (!loading && saleDetail && saleDetail.products) {
             const updatedProducts = [];
             saleDetail.products.forEach((product) => {
-                console.log(product);
                 dispatch(getProductById(product.productId)).then((response) => {
-                    console.log(response);
                     if (response && response.error && response.error.status === 404) {
-                        
                         updatedProducts.push({
                             name: 'Producto no disponible',
                             selectedColor: null,
@@ -180,7 +177,6 @@ const PutSale = () => {
                             selectedSize,
                             price: product.price // Precio almacenado en la venta
                         });
-                        
                     }
         
                     if (updatedProducts.length === saleDetail.products.length) {

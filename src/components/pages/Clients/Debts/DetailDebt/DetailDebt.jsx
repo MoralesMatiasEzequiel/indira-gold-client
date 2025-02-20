@@ -118,7 +118,7 @@ const DetailDebt = () => {
             year: 'numeric', 
             hour: '2-digit', 
             minute: '2-digit', 
-            timeZone: 'UTC' 
+            // timeZone: 'UTC' 
         };
 
         const formattedDate = new Date(date).toLocaleDateString('es-ES', options).replace(',', ' -');
@@ -172,7 +172,7 @@ const DetailDebt = () => {
                                                 <li key={index}>
                                                     <ul className={style.productList}>
                                                         {income.date && <li><span>Fecha:&nbsp;</span>{formatDate(income.date) || 'Fecha no encontrada'}</li>}
-                                                        {income.amount && <li><span>Pago:&nbsp;</span>{income.amount || 'Pago no encontrado'}</li>}
+                                                        {income.amount && <li><span>Pago:&nbsp;</span> ${income.amount || 'Pago no encontrado'}</li>}
                                                     </ul>
                                                 </li>
                                             ))
