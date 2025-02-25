@@ -183,7 +183,7 @@ const DetailDebt = () => {
                                 ) : (
                                     <p>No hay pagos disponibles.</p>
                                 )}
-                                {debtDetail.paymentMade && <p><span>Total abonado:&nbsp;</span> ${formatNumber(debtDetail.paymentMade)}</p>}
+                                <p><span>Total abonado:&nbsp;</span> ${formatNumber(debtDetail.paymentMade)}</p>
                                 {debtDetail.remainingBalance && <p><span>Saldo:&nbsp;</span> ${formatNumber(debtDetail.remainingBalance)}</p>}
                             </div>
                             <div className={style.column}>

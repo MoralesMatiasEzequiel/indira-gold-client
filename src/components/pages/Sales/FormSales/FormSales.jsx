@@ -71,7 +71,7 @@ const FormSales = () => {
 
     const transformProductOptions = (products) => {        
         let productOptions = [];
-        products.forEach(product => {            
+        products?.forEach(product => {            
             product.color.forEach(color => {
                 color.size.forEach(size => {
                     if (size.stock > 0) {
@@ -93,7 +93,7 @@ const FormSales = () => {
     };
 
     const transformClientOptions = (clients) => {
-        const clientOptions = clients.map(client => ({
+        const clientOptions = clients?.map(client => ({
             value: client._id,
             label: `${client.dni} - ${client.name} ${client.lastname}`
         }));
@@ -760,9 +760,8 @@ const FormSales = () => {
                             </div>
                             <div className={style.column2}>
                                 <label htmlFor="products">Productos</label>
-                                {selectedProducts.map((selectedProduct, index) => (
+                                {selectedProducts?.map((selectedProduct, index) => (
                                     <div key={index} className={style.product}>
-                                        
                                         <div className={style.productSelect}>
                                             <AsyncSelect
                                                 name="products"

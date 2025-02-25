@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import AsyncSelect from 'react-select/async';
-import { getDebts, getDebtById, putDebt, putDebtAmount } from '../../../../../redux/debtActions';
+import { getDebts, getDebtById, putDebt } from '../../../../../redux/debtActions';
 
 const PutDebt = () => {
 
@@ -14,6 +14,7 @@ const PutDebt = () => {
 
     const debtDetail = useSelector(state => state.debts.debtDetail);   
     const sales = useSelector(state => state.sales.sales);  
+    const debts = useSelector(state => state.debts.debts);
 
     useEffect(() => {
         dispatch(getDebtById(id));
@@ -36,20 +37,20 @@ const PutDebt = () => {
             const updatedEditDebt = {
                 _id: debtDetail._id,
                 client: debtDetail.client,
-                saleId: debtDetail.sale._id,
-                income: debtDetail.income,
+                saleId: debtDetail.sale?._id,
+                income: debtDetail.income || [],
                 remainingBalance: debtDetail.remainingBalance,
                 paymentMade: debtDetail.paymentMade,
                 active: debtDetail.active
             };
             setEditDebt(updatedEditDebt);
             setSelectedSale({
-                value: debtDetail.sale._id,
-                label: debtDetail.sale.orderNumber
+                value: debtDetail.sale?._id,
+                label: debtDetail.sale?.orderNumber
             });
-            setTotalSale(debtDetail.sale.totalWithFee);
-            setSelectedClient(`${debtDetail.client.name} ${debtDetail.client.lastname}`);
-            setIncomes(updatedEditDebt.income)
+            setTotalSale(debtDetail.sale?.totalWithFee || 0);
+            setSelectedClient(`${debtDetail.client?.name || ''} ${debtDetail.client?.lastname || ''}`);
+            setIncomes(updatedEditDebt.income);
         }
     }, [dispatch, id, debtDetail]);
 
@@ -63,7 +64,6 @@ const PutDebt = () => {
     useEffect(() => {
         validateForm();
     }, [editDebt]);
-    
 
     //--- HANDLE CHANGE
     const handleInputChange = (event) => {
@@ -102,8 +102,12 @@ const PutDebt = () => {
     };
 
     const transformSalesOptions = (sales) => {
+        // Filtra las ventas que tienen cliente y que no tienen deuda registrada
         return sales
-            .filter(sale => sale.client) // Filtra las ventas con cliente
+            .filter(sale => 
+                sale.client && 
+                !debts.some(debt => debt.sale._id === sale._id)  // Excluye las ventas con deuda registrada
+            )
             .map(sale => ({
                 value: sale._id,
                 label: `${sale.orderNumber}`
@@ -112,7 +116,7 @@ const PutDebt = () => {
 
     useEffect(() => {
         setSalesOptions(transformSalesOptions(sales));
-    }, [sales]);
+    }, [sales, debts]);
 
     const debtInputStyles = {
         control: (provided, state) => ({
@@ -256,6 +260,7 @@ const PutDebt = () => {
         const debtData = {
             _id: editDebt._id,
             saleId: editDebt.saleId,
+            income: editDebt.income
         }
 console.log(debtData);
 

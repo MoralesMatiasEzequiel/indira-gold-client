@@ -71,6 +71,7 @@ export const postDebt = (debtData) => {
 };
 
 export const putDebt = (debtData) => {
+    console.log(debtData);
     
     return async (dispatch) => { 
         try {

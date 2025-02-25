@@ -39,7 +39,6 @@ const NewSale = ({ saleResponse }) => {
     return (
         <div className={style.content}>
             <p className={style.orderNumber}>N° de orden: {orderNumber}</p>
-
             <div className={style.column}>
                 <p><span className={style.key}>Fecha:</span> {formatDate(date)}</p>
                 <p><span className={style.key}>Cliente:</span> {client ? `${clientById.dni} - ${clientById.name} ${clientById.lastname}` : "Anónimo"}</p>

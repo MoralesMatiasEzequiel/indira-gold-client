@@ -115,9 +115,14 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     };
 
     const loadSalesOptions = (inputValue, callback) => {
+        if (!inputValue.trim()) {
+            return callback([]); // No muestra opciones si no se ha ingresado nada
+        }
+    
         const filteredOptions = salesOptions.filter(sale =>
-            sale.label.toLowerCase().includes(inputValue.toLowerCase())
+            sale.label.toLowerCase().startsWith(inputValue.toLowerCase()) // Filtra solo los que comienzan con el input
         );
+    
         callback(filteredOptions);
     };
 
@@ -194,19 +199,21 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                         <div>
                                             <AsyncSelect
                                                 // key={selectKey}
-                                                cacheOptions
                                                 name="orderNumber"
+                                                cacheOptions
                                                 value={selectedSale || ''}
                                                 loadOptions={loadSalesOptions}
                                                 onChange={handleDebtChange}
                                                 placeholder="Buscar venta"
-                                                defaultOptions={salesOptions}
+                                                defaultOptions={[]} // No mostrar opciones hasta que se escriba algo
                                                 menuPortalTarget={document.body}
                                                 styles={{
                                                     menuPortal: base => ({ ...base, zIndex: 9999 }),
                                                     ...debtInputStyles
                                                 }}
-                                                noOptionsMessage={() => 'No hay ventas disponibles'}
+                                                noOptionsMessage={({ inputValue }) => 
+                                                    inputValue.trim() ? "No hay ventas disponibles" : "Ingrese número de orden"
+                                                }
                                             />
                                         </div>                                 
                                     </div>
