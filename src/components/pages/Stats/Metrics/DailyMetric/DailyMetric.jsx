@@ -7,8 +7,9 @@ import { useSelector } from "react-redux";
 
 const DailyMetric = ({ isCurrentYear }) => {
 
-    // const salesBalance = useSelector(state => state.sales.salesBalance);
-    const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
+    const salesBalance = useSelector(state => state.sales.salesBalance);
+    // const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
+    
     const totalRevenue = salesBalance.daily?.totalRevenue ?? 0;  
     // const totalRevenue = ~~salesBalance.daily?.totalRevenue; //Con el operador de doble tilde "~~" obtenemos el número entero.
 
@@ -33,7 +34,7 @@ const DailyMetric = ({ isCurrentYear }) => {
                 <div className={style.cardContent}>
                     <div className={style.labels}>
                         <p className={style.pp}><img className={style.icon} src={iconClothes} alt="icon"/></p>
-                        <div className={style.numberCard}>{salesBalance.daily?.soldProducts}</div>
+                        <div className={style.numberCard}>{salesBalance.daily?.soldProducts || 0}</div>
                         <span className={style.cardName}>productos</span>
                     </div>
                     <div className={style.labels}>

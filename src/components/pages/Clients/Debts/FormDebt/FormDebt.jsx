@@ -28,7 +28,6 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     const [debtMade, setDebtMade] = useState(false);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-console.log();
 
     useEffect(() => {
         dispatch(getDebts()); // Carga las deudas al montar el componente

@@ -7,8 +7,8 @@ import { useSelector } from "react-redux";
 
 const MonthlyMetric = ({ isCurrentYear }) => {
 
-    // const salesBalance = useSelector(state => state.sales.salesBalance);
-    const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
+    const salesBalance = useSelector(state => state.sales.salesBalance);
+    // const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
     const totalRevenue = salesBalance.monthly?.totalRevenue ?? 0;
 
     let displayRevenue = totalRevenue;
@@ -32,7 +32,7 @@ const MonthlyMetric = ({ isCurrentYear }) => {
                 <div className={style.cardContent}>
                     <div className={style.labels}>
                         <p className={style.pp}><img className={style.icon} src={iconClothes} alt="icon"/></p>
-                        <div className={style.numberCard}>{salesBalance.monthly?.soldProducts}</div>
+                        <div className={style.numberCard}>{salesBalance.monthly?.soldProducts || 0}</div>
                         <span className={style.cardName}>productos</span>
                     </div>
                     <div className={style.labels}>

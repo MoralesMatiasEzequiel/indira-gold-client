@@ -8,9 +8,10 @@ export const saleSlice = createSlice({
         saleDetail: {},
         salesOnline: [],
         salesLocal: [],
-        // salesBalance: {},
+        salesBalance: {},
         salesBalanceLocal: {},
         salesAnnualBalance: {},
+        calculateSalesAnnualBalance: {},
         salesYears: []
     },
     reducers: {
@@ -57,9 +58,9 @@ export const saleSlice = createSlice({
         getSalesLocalLocalReducer: (state, action) => {
             state.salesLocal = state.salesCopy.filter(sale => sale.soldAt.includes('Local'));
         },
-        // getSalesBalanceReducer: (state, action) => {
-        //     state.salesBalance = action.payload;
-        // },
+        getSalesBalanceReducer: (state, action) => {
+            state.salesBalance = action.payload;
+        },
         // getSalesBalanceLocalReducer: (state, action) => {
         //     state.salesBalance = state.salesBalance;
         // },
@@ -142,6 +143,9 @@ export const saleSlice = createSlice({
         
             state.salesAnnualBalance = annualBalance;
         },
+        getCalculateSalesAnnualBalanceReducer: (state, action) => {
+            state.calculateSalesAnnualBalance = action.payload;
+        },
         fetchSalesYearsReducer: (state, action) => {
             const years = new Set();  // Usamos un Set para evitar duplicados
 
@@ -156,6 +160,6 @@ export const saleSlice = createSlice({
     }
 });
 
-export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesLocalLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, deleteSaleReducer, filterSalesReducer, calculateSalesBalanceReducer, calculateSalesAnnualBalanceReducer, fetchSalesYearsReducer } = saleSlice.actions;
+export const { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesLocalLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, getSalesBalanceReducer, getCalculateSalesAnnualBalanceReducer, deleteSaleReducer, filterSalesReducer, calculateSalesBalanceReducer, calculateSalesAnnualBalanceReducer, fetchSalesYearsReducer } = saleSlice.actions;
 
 export default saleSlice.reducer;

@@ -1,5 +1,5 @@
 import axios from '../services/axios.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, fetchSalesYearsReducer, deleteSaleReducer, filterSalesReducer, calculateSalesBalanceReducer, calculateSalesAnnualBalanceReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, getSalesBalanceReducer, getCalculateSalesAnnualBalanceReducer, fetchSalesYearsReducer, deleteSaleReducer, filterSalesReducer, calculateSalesBalanceReducer, calculateSalesAnnualBalanceReducer } from "./saleSlice.js";
 
 export const getSales = () => {
     return async (dispatch) => {
@@ -69,19 +69,19 @@ export const getSalesLocal = () => {
     };
 };
 
-// export const getSalesBalance = () => {
-//     return async (dispatch) => {
-//         try {
-//             const { data } = await axios.get("/sale/balance");
+export const getSalesBalance = () => {
+    return async (dispatch) => {
+        try {
+            const { data } = await axios.get("/sale/balance");
 
-//             dispatch(getSalesBalanceReducer(data));
+            dispatch(getSalesBalanceReducer(data));
 
-//         } catch (error) {
-//             console.error("Error retrieving sales balances from the server:", error.message);
-//             return null;
-//         }
-//     };
-// };
+        } catch (error) {
+            console.error("Error retrieving sales balances from the server:", error.message);
+            return null;
+        }
+    };
+};
 
 export const fetchSalesYears  = () => {
     return async (dispatch) => {
@@ -99,6 +99,20 @@ export const calculateSalesAnnualBalance = (year) => {
     return async (dispatch) => {
         dispatch(calculateSalesAnnualBalanceReducer(year));
     }
+};
+
+export const getCalculateSalesAnnualBalance = (year) => {
+    return async (dispatch) => {
+        try {            
+            const { data } = await axios.get(`/sale?year=${year}&`);
+
+            dispatch(getCalculateSalesAnnualBalanceReducer(data));
+
+        } catch (error) {
+            console.error("Sales search error:", error.message);
+            return null;
+        }
+    };
 };
 
 export const getMonthlySalesByClient = (id) => {
@@ -125,6 +139,7 @@ export const searchSales = (orderNumber, client) => {
             if (client) {
                 query += `clientName=${client}&`;
             }
+            
             const { data } = await axios.get(query);
 
             dispatch(getSalesReducer(data));

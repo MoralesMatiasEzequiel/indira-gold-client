@@ -262,7 +262,6 @@ const PutDebt = () => {
             saleId: editDebt.saleId,
             income: editDebt.income
         }
-console.log(debtData);
 
         try {
             const response = await dispatch(putDebt(debtData))
@@ -271,7 +270,6 @@ console.log(debtData);
             //         setErrorMessage(response);
             //     }
             // });
-            console.log(response);
             
             if (response) {
                 console.log("Successfully edited debt");

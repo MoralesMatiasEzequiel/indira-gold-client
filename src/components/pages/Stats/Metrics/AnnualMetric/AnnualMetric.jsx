@@ -3,7 +3,7 @@ import iconClothes from '../img/icons-camiseta.png';
 import iconMoney from '../img/icons-monedas.png';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSalesYears , calculateSalesAnnualBalance } from '../../../../../redux/saleActions';
+import { getCalculateSalesAnnualBalance, fetchSalesYears , calculateSalesAnnualBalance } from '../../../../../redux/saleActions';
 
 
 const AnnualMetric = ({ onYearChange }) => { // Recibimos el callback para enviar el año seleccionado
@@ -13,7 +13,9 @@ const AnnualMetric = ({ onYearChange }) => { // Recibimos el callback para envia
     // const salesBalance = useSelector(state => state.sales.salesBalance);
     // const salesBalance = useSelector(state => state.sales.salesBalanceLocal);
     // const totalRevenue = salesBalance.annually?.totalRevenue ?? 0;
-    const salesAnnualBalance = useSelector(state => state.sales.salesAnnualBalance);   
+    // const salesAnnualBalance = useSelector(state => state.sales.salesAnnualBalance);   
+    const salesAnnualBalance = useSelector(state => state.sales.calculateSalesAnnualBalance);   
+
     const totalRevenue = salesAnnualBalance?.totalRevenue ?? 0; //Si el valor obtenido es null o undefined mostramos '0'.
     const years = useSelector(state => state.sales.salesYears);    
 
@@ -26,7 +28,8 @@ const AnnualMetric = ({ onYearChange }) => { // Recibimos el callback para envia
 
     useEffect(() => {
         if (year) {
-            dispatch(calculateSalesAnnualBalance(year));
+            dispatch(getCalculateSalesAnnualBalance(year));
+            // dispatch(calculateSalesAnnualBalance(year));
         }
     }, [year, dispatch]);
 
@@ -73,7 +76,7 @@ const AnnualMetric = ({ onYearChange }) => { // Recibimos el callback para envia
                     <div className={style.labels}>
                         <p className={style.pp}><img className={style.icon} src={iconClothes} alt="icon"/></p>
                         {/* <div className={style.numberCard}>{salesAnnualBalance.annually?.soldProducts}</div> */}
-                        <div className={style.numberCard}>{salesAnnualBalance?.soldProducts}</div>
+                        <div className={style.numberCard}>{salesAnnualBalance?.soldProducts || 0}</div>
                         <span className={style.cardName}>productos</span>
                     </div>
                     <div className={style.labels}>
