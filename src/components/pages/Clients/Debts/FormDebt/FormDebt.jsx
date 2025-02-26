@@ -33,16 +33,17 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     }, [dispatch]);
 
     const transformSalesOptions = (sales, debts) => {
-        return setSalesOptions(sales
+        return sales
             .filter(sale => sale.client && !debts.some(debt => debt.sale._id === sale._id)) // Filtra las ventas con cliente y ventas que ya tengan deuda
             .map(sale => ({
                 value: sale._id,
                 label: `${sale.orderNumber}`
-            })));
+            }));
     };
 
     useEffect(() => {
-        setSalesOptions(transformSalesOptions(sales, debts));
+        const asa = transformSalesOptions(sales, debts);
+        setSalesOptions(asa);
         // setSelectKey(Date.now());
     }, [sales, debts]);
 
