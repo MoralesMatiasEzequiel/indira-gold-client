@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncSelect from 'react-select/async';
 import { postDebt, getDebts } from '../../../../../redux/debtActions.js';
+import { getSales } from '../../../../../redux/saleActions.js';
 
 const FormDebt = ({ onDebtAdded = () => {} }) => {
 
@@ -21,18 +22,19 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     const [salesOptions, setSalesOptions] = useState([]);
     const [selectedSale, setSelectedSale] = useState(null);
     const [totalSale, setTotalSale] = useState(null);
-    // const [selectKey, setSelectKey] = useState(Date.now());
+    const [selectKey, setSelectKey] = useState(Date.now());
     const [selectedClient, setSelectedClient] = useState(null);
     const [isClearDisabled, setIsClearDisabled] = useState(true);
     const [debtMade, setDebtMade] = useState(false);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
+console.log();
 
     useEffect(() => {
         dispatch(getDebts()); // Carga las deudas al montar el componente
     }, [dispatch]);
 
-    const transformSalesOptions = (sales, debts) => {
+    const filterSales = (sales, debts) => {
         return sales
             .filter(sale => sale.client && !debts.some(debt => debt.sale._id === sale._id)) // Filtra las ventas con cliente y ventas que ya tengan deuda
             .map(sale => ({
@@ -42,9 +44,8 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     };
 
     useEffect(() => {
-        const asa = transformSalesOptions(sales, debts);
-        setSalesOptions(asa);
-        // setSelectKey(Date.now());
+        setSalesOptions(filterSales(sales, debts));
+        setSelectKey(Date.now());
     }, [sales, debts]);
 
     const handleInputChange = (event) => {
@@ -121,22 +122,14 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
 
     const loadSalesOptions = (inputValue, callback) => {
         if (!inputValue.trim()) {
-            return callback([]); // No muestra opciones si no se ha ingresado nada
+            return callback([]);
         }
-
-        // Generar dinámicamente las opciones basadas en ventas actuales y deudas actuales
-        const availableSales = sales
-            .filter(sale => sale.client && !debts.some(debt => debt.sale._id === sale._id))
-            .map(sale => ({
-                value: sale._id,
-                label: `${sale.orderNumber}`
-            }));
-
-        // Filtrar solo los que comienzan con el input
-        const filteredOptions = availableSales.filter(sale =>
+    
+        const updatedSalesOptions = filterSales(sales, debts); // Usa ventas actualizadas
+        const filteredOptions = updatedSalesOptions.filter(sale =>
             sale.label.toLowerCase().startsWith(inputValue.toLowerCase())
         );
-
+    
         callback(filteredOptions);
     };
 
@@ -177,8 +170,12 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
             if (typeof response === 'string') {
                 setErrorMessage(response);
             } else {
-                await dispatch(getDebts()); // Asegura que las deudas se actualicen antes de modificar las opciones
-                setSalesOptions(transformSalesOptions(sales, debts));
+                await dispatch(getDebts()); // Esperamos actualización de deudas
+                await new Promise(resolve => setTimeout(resolve, 200)); // Breve espera
+    
+                dispatch(getSales()); // Si tienes una acción para actualizar las ventas
+                setSalesOptions(filterSales(sales, debts)); // Recalcula opciones de ventas
+    
                 onDebtAdded(response);
             }
         } catch (error) {
@@ -187,6 +184,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     
         handleSetForm();
     };
+    
 
     return (
         <div className="component">
@@ -218,7 +216,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                     <div className={style.right}>
                                         <div>
                                             <AsyncSelect
-                                                // key={selectKey}
+                                                key={selectKey}
                                                 name="orderNumber"
                                                 cacheOptions
                                                 value={selectedSale || ''}
