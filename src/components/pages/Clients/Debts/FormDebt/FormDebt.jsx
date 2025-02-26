@@ -28,6 +28,24 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
 
+    useEffect(() => {
+        dispatch(getDebts()); // Carga las deudas al montar el componente
+    }, [dispatch]);
+
+    const transformSalesOptions = (sales, debts) => {
+        return setSalesOptions(sales
+            .filter(sale => sale.client && !debts.some(debt => debt.sale._id === sale._id)) // Filtra las ventas con cliente y ventas que ya tengan deuda
+            .map(sale => ({
+                value: sale._id,
+                label: `${sale.orderNumber}`
+            })));
+    };
+
+    useEffect(() => {
+        setSalesOptions(transformSalesOptions(sales, debts));
+        // setSelectKey(Date.now());
+    }, [sales, debts]);
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         let newValue = value === '' ? 0 : parseFloat(value);
@@ -67,20 +85,6 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
         }));
     };
 
-    const transformSalesOptions = (sales, debts) => {
-        return sales
-            .filter(sale => sale.client && !debts.some(debt => debt.sale._id === sale._id)) // Filtra las ventas con cliente y ventas que ya tengan deuda
-            .map(sale => ({
-                value: sale._id,
-                label: `${sale.orderNumber}`
-            }));
-    };
-
-    useEffect(() => {
-        setSalesOptions(transformSalesOptions(sales, debts));
-        // setSelectKey(Date.now());
-    }, [sales, debts]);
-
     const debtInputStyles = {
         control: (provided, state) => ({
             ...provided,
@@ -118,11 +122,20 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
         if (!inputValue.trim()) {
             return callback([]); // No muestra opciones si no se ha ingresado nada
         }
-    
-        const filteredOptions = salesOptions.filter(sale =>
-            sale.label.toLowerCase().startsWith(inputValue.toLowerCase()) // Filtra solo los que comienzan con el input
+
+        // Generar dinámicamente las opciones basadas en ventas actuales y deudas actuales
+        const availableSales = sales
+            .filter(sale => sale.client && !debts.some(debt => debt.sale._id === sale._id))
+            .map(sale => ({
+                value: sale._id,
+                label: `${sale.orderNumber}`
+            }));
+
+        // Filtrar solo los que comienzan con el input
+        const filteredOptions = availableSales.filter(sale =>
+            sale.label.toLowerCase().startsWith(inputValue.toLowerCase())
         );
-    
+
         callback(filteredOptions);
     };
 
@@ -153,18 +166,24 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
         setIsSubmitDisabled(!(newDebt.saleId && balance > 0));
     }, [newDebt.saleId, balance]);
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-
-        dispatch(postDebt(newDebt)).then((response) => {
+    
+        try {
+            const response = await dispatch(postDebt(newDebt));
+    
             if (typeof response === 'string') {
                 setErrorMessage(response);
             } else {
+                await dispatch(getDebts()); // Asegura que las deudas se actualicen antes de modificar las opciones
+                setSalesOptions(transformSalesOptions(sales, debts));
                 onDebtAdded(response);
-                dispatch(getDebts());
             }
-        });
+        } catch (error) {
+            console.error("Error al registrar la deuda:", error);
+        }
+    
         handleSetForm();
     };
 

@@ -30,7 +30,7 @@ const PutDebt = () => {
     const [isClearDisabled, setIsClearDisabled] = useState(true);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-    console.log(editDebt);
+    // console.log(editDebt);
 
     useEffect(() => {    
         if (debtDetail && debtDetail._id === id) {        
