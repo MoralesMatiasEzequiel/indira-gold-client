@@ -1,7 +1,7 @@
 import style from './Debts.module.css';
 import React, { useEffect} from 'react';
 import { useDispatch } from "react-redux";
-import { getDebts} from '../../../../redux/debtActions.js';
+import { getDebts, getActiveDebts } from '../../../../redux/debtActions.js';
 import FormDebt from './FormDebt/FormDebt.jsx';
 import DebtRegistration from './DebtsRegistration/DebtsRegistration.jsx';
 
@@ -12,6 +12,7 @@ const Debts = () => {
     
     useEffect(() => {
         dispatch(getDebts());
+        dispatch(getActiveDebts());
     }, [dispatch]);
 
     return(

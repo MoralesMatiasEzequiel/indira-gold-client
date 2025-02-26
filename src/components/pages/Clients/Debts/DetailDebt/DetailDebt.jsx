@@ -3,7 +3,7 @@ import detail from '../../../../../assets/img/detail.png';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from 'react-router-dom';
-import { getDebtById, clearDebtDetail } from '../../../../../redux/debtActions';
+import { getDebtById, clearDebtDetail, deleteDebt } from '../../../../../redux/debtActions';
 import { getProductById } from '../../../../../redux/productActions';
 
 const DetailDebt = () => {
@@ -129,6 +129,16 @@ const DetailDebt = () => {
         setShowDeleteModal(!showDeleteModal);
     };
 
+    const handleDelete = () => {
+        dispatch(deleteDebt(id)).then(() => {
+            navigate('/main_window/debts');
+            setTimeout(() => {
+                navigate(`/main_window/debts/${id}`);
+            }, 50);
+            setShowDeleteModal(false);
+        });
+    };
+
     return (
         <div className="page">
             {
@@ -165,26 +175,22 @@ const DetailDebt = () => {
                                     </p>
                                 }
                                 <p><span>Pagos realizado:&nbsp;</span></p>
-                                {debtDetail.income?.length ? (
-                                    <ul>
-                                        {debtDetail.income?.length > 0 ? (
-                                            debtDetail.income?.map((income, index) => (
-                                                <li key={index}>
-                                                    <ul className={style.productList}>
-                                                        {income.date && <li><span>Fecha:&nbsp;</span>{formatDate(income.date) || 'Fecha no encontrada'}</li>}
-                                                        {income.amount && <li><span>Pago:&nbsp;</span> ${formatNumber(income.amount) || 'Pago no encontrado'}</li>}
-                                                    </ul>
-                                                </li>
-                                            ))
-                                        ) : (
-                                            <div>No hay pagos registrados</div>
-                                        )}
-                                    </ul>
-                                ) : (
-                                    <p>No hay pagos disponibles.</p>
-                                )}
+                                <ul>
+                                    {debtDetail.income?.length > 0 ? (
+                                        debtDetail.income?.map((income, index) => (
+                                            <li key={index}>
+                                                <ul className={style.productList}>
+                                                    {income.date && <li><span>Fecha:&nbsp;</span>{formatDate(income.date) || 'Fecha no encontrada'}</li>}
+                                                    {income.amount && <li><span>Pago:&nbsp;</span> ${formatNumber(income.amount) || 'Pago no encontrado'}</li>}
+                                                </ul>
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <div>No hay pagos registrados</div>
+                                    )}
+                                </ul>
                                 <p><span>Total abonado:&nbsp;</span> ${formatNumber(debtDetail.paymentMade)}</p>
-                                {debtDetail.remainingBalance && <p><span>Saldo:&nbsp;</span> ${formatNumber(debtDetail.remainingBalance)}</p>}
+                                <p><span>Saldo:&nbsp;</span> ${formatNumber(debtDetail.remainingBalance) || 0}</p>
                             </div>
                             <div className={style.column}>
                                 <p><span>Productos:&nbsp;</span></p>
@@ -217,11 +223,11 @@ const DetailDebt = () => {
             }
             <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>
                 <div className={style.deleteContent}>
-                    <p>¿Está seguro que desea {debtDetail.active ? 'desactivar' : 'activar'} este cliente?</p>
-                    {/* <div className={style.deleteButtons}>
+                    <p>¿Está seguro que desea {debtDetail.active ? 'desactivar' : 'activar'} esta deuda?</p>
+                    <div className={style.deleteButtons}>
                         <button onClick={toggleShowDeleteModal}>Cancelar</button>
                         <button onClick={handleDelete} className={debtDetail.active ? 'delete' : 'add'}>{debtDetail.active ? 'Desactivar' : 'Activar'}</button>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </div>

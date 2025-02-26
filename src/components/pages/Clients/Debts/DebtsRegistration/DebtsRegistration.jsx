@@ -2,7 +2,7 @@ import style from "./DebtsRegistration.module.css";
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { getDebts, searchDebts } from "../../../../../redux/debtActions.js";
+import { getDebts, getActiveDebts, searchDebts } from "../../../../../redux/debtActions.js";
 import detail from '../../../../../assets/img/detail.png';
 
 const DebtRegistration = () => {
@@ -12,10 +12,13 @@ const DebtRegistration = () => {
     
     useEffect(() => {
         dispatch(getDebts());
+        dispatch(getActiveDebts());
     }, [dispatch]);
 
-    const debts = useSelector(state => state.debts.debts);
+    const activeDebts = useSelector(state => state.debts.debts);
+    const allDebts = useSelector(state => state.debts.allDebts);
 
+    const [debtFilter, setDebtFilter] = useState('active');
     const [orderNumber, setOrderNumber] = useState('');
     const [client, setClient] = useState('');
     const [loadedDebtIds, setLoadedDebtIds] = useState(new Set()); // Estado para rastrear IDs ya cargados
@@ -26,12 +29,18 @@ const DebtRegistration = () => {
         dispatch(searchDebts(orderNumber, client))
     }, [orderNumber, client, dispatch]);
 
+    const filteredDebt = () => {
+        let debts = debtFilter === 'active' ? activeDebts : allDebts;
+
+        return debts;
+    };
+
     //--- FILTER DATE
     const toggleSortOrder = () => {
         setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc');
     };
 
-    const sortedDebts = [...debts].sort((a, b) => {
+    const sortedDebts = [...activeDebts].sort((a, b) => {
         const dateA = new Date(a.sale.date);
         const dateB = new Date(b.sale.date);
         return sortByDate === 'asc' ? dateA - dateB : dateB - dateA;
@@ -61,8 +70,14 @@ const DebtRegistration = () => {
     //--- PAGINADO
     const itemsPerPage = 20;
 
-    const paginatedDebts = sortedDebts.slice().reverse().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    const totalPages = Math.ceil(sortedDebts.length / itemsPerPage);
+    // Obtener deudas filtradas
+    const debtsForPagination = filteredDebt();
+
+    const paginatedDebts = Array.isArray(debtsForPagination) ? debtsForPagination.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
+    const totalPages = Math.ceil(debtsForPagination.length / itemsPerPage);
+
+    // const paginatedDebts = sortedDebts.slice().reverse().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    // const totalPages = Math.ceil(sortedDebts.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -103,6 +118,11 @@ const DebtRegistration = () => {
         }
 
         return buttons;
+    };
+
+    const handleCheckboxChange = (option) => {
+        setDebtFilter(option);
+        setCurrentPage(1); // Resetear a la primera página al cambiar el filtro
     };
 
     //--- ORDER
@@ -156,6 +176,14 @@ const DebtRegistration = () => {
                 </div>
             </div>
             <div className="container">
+                <div className={style.containerFilters}>
+                    <div className={style.containerInputCheckbox}>
+                        <input className={style.inputCheckbox} type="checkbox" name="active" id="active" checked={debtFilter === 'active'} onChange={() => handleCheckboxChange('active')} />
+                        <span>Deudas pendientes</span>
+                        <input className={style.inputCheckbox} type="checkbox" name="all" id="all" checked={debtFilter === 'all'} onChange={() => handleCheckboxChange('all')} />
+                        <span>Todos las deudas</span>
+                    </div>
+                </div>  
                 <div className="tableContainer">
                     <table>
                         <thead>
@@ -208,7 +236,7 @@ const DebtRegistration = () => {
                                     <td>{debt.sale.client ? `${debt.client.name} ${debt.client.lastname}` : 'Anónimo'}</td>
                                     <td className="center">${formatNumber(debt.paymentMade)}</td>
                                     <td className="center">${formatNumber(debt.remainingBalance)}</td>
-                                    <td className="center">{debt.active ? "En deuda" : "Saldado"}</td>
+                                    <td className={debt.remainingBalance > 0 ? "debt" : "sattled"}>{debt.remainingBalance > 0 ? "En deuda" : "Saldado"}</td>
                                     <td>
                                         <div onClick={() => navigate(`/main_window/debts/${debt._id}`)}>
                                             <img src={detail} alt="" className="detailImg" />

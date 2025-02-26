@@ -323,6 +323,18 @@ th.center, td.center{
     text-align: center;
 }
 
+td.debt {
+    background-color: #ad0000bb;
+    text-align: center;
+    color: white;
+}
+
+td.sattled {
+    background-color: #00ad3abb;
+    text-align: center;
+    color: white;
+}
+
 th, td{
     border: var(--border-light);
     padding: 0.5rem;

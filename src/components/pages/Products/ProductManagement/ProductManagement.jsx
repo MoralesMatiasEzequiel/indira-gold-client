@@ -166,9 +166,9 @@ const ProductManagement = () => {
                     <div className={style.containerFilters}>
                         <div className={style.containerInputCheckbox}>
                             <input className={style.inputCheckbox} type="checkbox" name="active" id="active" checked={productFilter === 'active'} onChange={() => handleCheckboxChange('active')} />
-                            <span className={style.spanCheckbox}>Productos activos</span>
+                            <span>Productos activos</span>
                             <input className={style.inputCheckbox} type="checkbox" name="all" id="all" checked={productFilter === 'all'} onChange={() => handleCheckboxChange('all')} />
-                            <span className={style.spanCheckbox}>Todos los productos</span>
+                            <span>Todos los productos</span>
                         </div>
                         <div className={style.containerSelected}>
                             <div>

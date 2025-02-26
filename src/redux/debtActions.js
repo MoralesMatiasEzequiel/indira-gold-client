@@ -1,7 +1,21 @@
 import axios from "axios";
-import { getDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer } from "./debtSlice.js";
+import { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer } from "./debtSlice.js";
 
 export const getDebts = () => {
+    return async (dispatch) => {
+        try {
+            const { data } = await axios.get("/debt/all");
+            
+            dispatch(getAllDebtsReducer(data));
+
+        } catch (error) {
+            console.error("Error retrieving debt from server: ", error.message);
+            return null;
+        }
+    };
+};
+
+export const getActiveDebts = () => {
     return async (dispatch) => {
         try {
             const { data } = await axios.get("/debt");
@@ -9,7 +23,7 @@ export const getDebts = () => {
             dispatch(getDebtsReducer(data));
 
         } catch (error) {
-            console.error("Error retrieving debt from server: ", error.message);
+            console.error("Error retrieving active debt from server: ", error.message);
             return null;
         }
     };
@@ -96,8 +110,14 @@ export const putDebtAmount = (debtData) => {
     };
 };
 
-// export const deleteCategoryById = (categoryId) => {
-//     return async (dispatch) =>{
-//         const { data } = await axios.put(`/category/deactive/${categoryId}`);
-//     };
-// };
+export const deleteDebt = (debtId) => {
+    return async (dispatch) => {
+        try {
+        const { data } = await axios.put(`/debt/${debtId}`);
+        return data;
+    } catch (error) {
+        console.error("Error updated status debt: " + error.message);         
+        return null;
+    }
+    }
+};

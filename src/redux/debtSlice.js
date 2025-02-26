@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const debtSlice = createSlice({
     name: "debt",
     initialState: {
+        allDebts: [],
         debts: [],
         debtsCopy: [],
         debtDetail: {},
@@ -11,6 +12,9 @@ export const debtSlice = createSlice({
         getDebtsReducer: (state, action) => {
             state.debts = action.payload;
             state.debtsCopy = action.payload;
+        },
+        getAllDebtsReducer: (state, action) => {
+            state.allDebts = action.payload;
         },
         getDebtByIdReducer: (state, action) => {
             if(typeof action.payload === "string" || typeof action.payload === "number"){
@@ -26,6 +30,6 @@ export const debtSlice = createSlice({
     }
 });
 
-export const { getDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer } = debtSlice.actions;
+export const { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer } = debtSlice.actions;
 
 export default debtSlice.reducer;
