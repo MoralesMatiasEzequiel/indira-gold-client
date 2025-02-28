@@ -7,6 +7,7 @@ export const debtSlice = createSlice({
         debts: [],
         debtsCopy: [],
         debtDetail: {},
+        debtsBalance: {}
     },
     reducers: {
         getDebtsReducer: (state, action) => {
@@ -27,9 +28,13 @@ export const debtSlice = createSlice({
         clearDebtDetailReducer: (state, action) => {
             state.debtDetail = {};
         },
+        getDebtsBalanceReducer: (state, action) => {
+            state.debtsBalance = action.payload;
+            state.debtsCopy = action.payload;
+        },
     }
 });
 
-export const { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer } = debtSlice.actions;
+export const { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer, getDebtsBalanceReducer } = debtSlice.actions;
 
 export default debtSlice.reducer;

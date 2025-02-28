@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer } from "./debtSlice.js";
+import { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer, getDebtsBalanceReducer } from "./debtSlice.js";
 
 export const getDebts = () => {
     return async (dispatch) => {
@@ -66,6 +66,20 @@ export const searchDebts = (orderNumber, client) => {
 
         } catch (error) {
             console.error("Debts search error:", error.message);
+            return null;
+        }
+    };
+};
+
+export const getDebtsBalance = (month, year) => {
+    return async (dispatch) => {
+        try {            
+            const { data } = await axios.get(`/debt/filtered?month=${month}&year=${year}`);
+
+            dispatch(getDebtsBalanceReducer(data));
+
+        } catch (error) {
+            console.error("Balance debts were not found. Error:", error.message);
             return null;
         }
     };

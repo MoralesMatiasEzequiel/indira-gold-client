@@ -181,7 +181,7 @@ const DetailDebt = () => {
                                             <li key={index}>
                                                 <ul className={style.productList}>
                                                     {income.date && <li><span>Fecha:&nbsp;</span>{formatDate(income.date) || 'Fecha no encontrada'}</li>}
-                                                    {income.amount && <li><span>Pago:&nbsp;</span> ${formatNumber(income.amount) || 'Pago no encontrado'}</li>}
+                                                    <li><span>Pago:&nbsp;</span> ${formatNumber(income.amount) || 'Pago no encontrado'}</li>
                                                 </ul>
                                             </li>
                                         ))

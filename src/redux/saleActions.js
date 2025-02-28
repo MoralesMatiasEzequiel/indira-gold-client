@@ -1,5 +1,5 @@
 import axios from '../services/axios.js';
-import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, getSalesBalanceReducer, getCalculateSalesAnnualBalanceReducer, fetchSalesYearsReducer, deleteSaleReducer, filterSalesReducer, calculateSalesBalanceReducer, calculateSalesAnnualBalanceReducer } from "./saleSlice.js";
+import { getSalesReducer, getSaleByIdReducer, clearSaleDetailReducer, getSalesOnlineReducer, getSalesOnlineLocalReducer, getSalesLocalReducer, getSalesByClientReducer, getSalesByOrderNumberReducer, getSalesBalanceReducer, getCalculateSalesAnnualBalanceReducer, fetchSalesYearsReducer, deleteSaleReducer, filterSalesReducer, getSalesByMonthAndYearReducer, getSalesBalanceMonthYearReducer, calculateSalesBalanceReducer, calculateSalesAnnualBalanceReducer } from "./saleSlice.js";
 
 export const getSales = () => {
     return async (dispatch) => {
@@ -216,3 +216,32 @@ export const filterSales = (month, year) => {
         dispatch(filterSalesReducer(date));
     }
 };
+
+export const getSalesByMonthAndYear = (month, year) => {
+    return async (dispatch) => {
+        try {            
+            const { data } = await axios.get(`/sale/filtered?month=${month}&year=${year}`);
+
+            dispatch(getSalesByMonthAndYearReducer(data));
+
+        } catch (error) {
+            console.error("Sales were not found. Error:", error.message);
+            return null;
+        }
+    };
+};
+
+export const getSalesBalanceByMonthAndYear = (month, year) => {
+    return async (dispatch) => {
+        try {            
+            const { data } = await axios.get(`/sale/balanceTotals?month=${month}&year=${year}`);
+
+            dispatch(getSalesBalanceMonthYearReducer(data));
+
+        } catch (error) {
+            console.error("Sales balance month and year were not found. Error:", error.message);
+            return null;
+        }
+    };
+};
+
