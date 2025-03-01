@@ -146,6 +146,12 @@ const ProductManagement = () => {
         dispatch(getCategories());
     }, [dispatch]);
     
+    const formatNumber = (number) => {
+        if (number !== null && number !== undefined) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        return '0';
+    };
 
     return (
         <div className="page">
@@ -177,7 +183,7 @@ const ProductManagement = () => {
                             <select name="category" value={category} onChange={handleInputChangeCategories}>
                                 <option value="allCategories">Todas las categorías</option>
                                 {categories && categories.length > 0 ? (
-                                    categories.map((category) => (
+                                    categories?.map((category) => (
                                         <option key={category._id} value={category.name}>{category.name}</option>
                                     ))
                                 ) : (
@@ -208,7 +214,7 @@ const ProductManagement = () => {
                             </thead>
                             <tbody>
                                 {paginatedProducts?.map((product) => (
-                                    product.color.map((color, colorIndex) => (
+                                    product.color?.map((color, colorIndex) => (
                                         <React.Fragment key={`${product._id}-${colorIndex}`}>
                                             <tr className={!product.active ? style.inactive : ''}>
                                                 {/* <td>{colorIndex === 0 ? product.name : ''}</td> */}
@@ -218,7 +224,7 @@ const ProductManagement = () => {
                                                     </div>
                                                 </td>
                                                 <td className={style.tdInside}>
-                                                    <div className={style.containerColor}>
+                                                    <div className={style.containerInfoGral}>
                                                         <span>{color.colorName}</span>
                                                     </div>
                                                 </td>
@@ -234,26 +240,26 @@ const ProductManagement = () => {
                                                     )}
                                                 </td>
                                                 <td className={style.tdInside}>
-                                                    {color.size.map((size, sizeIndex) => (
-                                                        <div key={sizeIndex} className={style.containerSizeName}>
+                                                    {color.size?.map((size, sizeIndex) => (
+                                                        <div key={sizeIndex} className={style.containerInfoGral}>
                                                             <span>{size.sizeName}</span>
                                                         </div>
                                                     ))}
                                                 </td>
                                                 <td className={style.tdInside}>
-                                                    {color.size.map((size, sizeIndex) => (
-                                                        <div key={sizeIndex} className={style.containerSizeName}>
-                                                            <span>{size.stock}</span>
+                                                    {color.size?.map((size, sizeIndex) => (
+                                                        <div key={sizeIndex} className={style.containerInfoGral}>
+                                                            <span>{formatNumber(size.stock)}</span>
                                                         </div>
                                                     ))}
                                                 </td>
                                                 <td className={style.tdInside}>
                                                     <div className={style.containerInfoGral}>
-                                                        <span>{colorIndex === 0 ? `$ ${product.price}` : ''}</span>
+                                                        <span>{colorIndex === 0 ? `$${formatNumber(product.price)}` : ''}</span>
                                                     </div>
                                                 </td>
                                                 <td className={style.tdInside}>
-                                                    {product.category.length > 0 
+                                                    {product.category?.length > 0 
                                                         ? <div className={style.containerInfoGral}><span>{colorIndex === 0 && product.category[0].name}</span></div>
                                                         : <div className={style.containerInfoGral}><span>Sin categoría</span></div>
                                                     }
