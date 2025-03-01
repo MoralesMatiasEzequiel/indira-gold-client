@@ -17,22 +17,20 @@ const FilteredSales = () => {
     //--- BALANCES
     const salesBalanceMonthYear = useSelector(state => state.sales.salesBalanceMonthYear);
     const debtsBalanceMonthYear = useSelector(state => state.debts.debtsBalance);
-console.log('sales balance:', salesBalanceMonthYear);
-console.log('debts balance:', debtsBalanceMonthYear);
-
+    // console.log(debtsBalanceMonthYear);
+    
 
     const [loading, setLoading] = useState(true);
     const [orderNumber, setOrderNumber] = useState('');
     const [client, setClient] = useState('');
     const [sortByDate, setSortByDate] = useState('desc');
     const [currentPage, setCurrentPage] = useState(1);
-    const [total, setTotal] = useState(0);
-    const [totalWithFee, setTotalWithFee] = useState(0);
 
     const months = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
+
     const years = Array.from(new Set(sales?.map(sale => new Date(sale.date).getFullYear())))
         .sort((a, b) => b - a);
 
@@ -64,13 +62,22 @@ console.log('debts balance:', debtsBalanceMonthYear);
         setSelectedMonth(value);
         // dispatch(filterSales(value, selectedYear));
         dispatch(getSalesByMonthAndYear(value, selectedYear));
+        dispatch(getSalesBalanceByMonthAndYear(value, selectedYear));
+        dispatch(getDebtsBalance(value, selectedYear));
     };
     
     const handleYearChange = (value) => {
         setSelectedYear(value);
         // dispatch(filterSales(selectedMonth, value));
         dispatch(getSalesByMonthAndYear(selectedMonth, value));
+        dispatch(getSalesBalanceByMonthAndYear(selectedMonth, value));
+        dispatch(getDebtsBalance(selectedMonth, value));
     };
+
+    useEffect(() => {
+        dispatch(getSalesBalanceByMonthAndYear(selectedMonth, selectedYear));
+        dispatch(getDebtsBalance(selectedMonth, selectedYear));
+    }, [selectedMonth, selectedYear, dispatch]);
 
     const itemsPerPage = 20;
 
@@ -87,14 +94,6 @@ console.log('debts balance:', debtsBalanceMonthYear);
         });
 
     }, [orderNumber, client, dispatch]);
-
-    useEffect(() => {
-        const newSubtotal = filteredSales.reduce((acc, sale) => acc + sale.totalPrice, 0);
-        setTotal(formatNumber(newSubtotal));
-
-        const newSubtotalWithFee = filteredSales.reduce((acc, sale) => acc + sale.totalWithFee, 0);
-        setTotalWithFee(formatNumber(newSubtotalWithFee));
-    }, [filteredSales]);
 
     const handleChangeOrderNumber = (event) => {
         setOrderNumber(event.target.value);
@@ -281,18 +280,18 @@ console.log('debts balance:', debtsBalanceMonthYear);
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className={style.total}>
-                                    <div className={style.totalContent}>Total de las ventas: <span>${formatNumber(salesBalanceMonthYear.totalSales)}</span></div>
-                                    <div className={style.totalContent}>Retenciones: <span>-${formatNumber(salesBalanceMonthYear.totalPaymentFee)}</span></div>
-                                    <div className={style.totalContent}>Pago de deudas: <span>${formatNumber(debtsBalanceMonthYear.totalAmount)}</span></div>
-                                    <div className={style.totalContent}>Deudas: <span>-${formatNumber(debtsBalanceMonthYear.totalDebts)}</span></div>
-                                    <div className={style.totalContent}>Total ingreso bruto: <span>${formatNumber(salesBalanceMonthYear.totalSales + debtsBalanceMonthYear.totalAmount - salesBalanceMonthYear.totalPaymentFee - debtsBalanceMonthYear.totalDebts)}</span></div>
-                                </div>
                             </> : 
                             <div className={style.noSales}>
                                 <p>No hay ventas registradas en esta fecha.</p>
                             </div>
                         }
+                        <div className={style.total}>
+                            <div className={style.totalContent}>Total de las ventas: <span>${formatNumber(salesBalanceMonthYear.totalSales)}</span></div>
+                            <div className={style.totalContent}>Retenciones: <span>-${formatNumber(salesBalanceMonthYear.totalPaymentFee)}</span></div>
+                            <div className={style.totalContent}>Pago de deudas: <span>${formatNumber(debtsBalanceMonthYear.totalAmount)}</span></div>
+                            <div className={style.totalContent}>Deudas: <span>-${formatNumber(debtsBalanceMonthYear.totalDebts)}</span></div>
+                            <div className={style.totalContent}>Total ingreso bruto: <span>${formatNumber((salesBalanceMonthYear.totalSales + debtsBalanceMonthYear.totalAmount - salesBalanceMonthYear.totalPaymentFee - debtsBalanceMonthYear.totalDebts) || 0)}</span></div>
+                        </div>
                     </div>
                 </div>
             )}

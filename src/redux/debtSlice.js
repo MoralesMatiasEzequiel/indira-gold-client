@@ -30,7 +30,6 @@ export const debtSlice = createSlice({
         },
         getDebtsBalanceReducer: (state, action) => {
             state.debtsBalance = action.payload;
-            state.debtsCopy = action.payload;
         },
     }
 });
