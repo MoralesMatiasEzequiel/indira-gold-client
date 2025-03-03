@@ -42,9 +42,9 @@ const FormClient = ({ onClientAdded = () => {} }) => {
             } else {
                 onClientAdded(response);
                 dispatch(getClients());
-                setNewClient(initialClientState);
             }
         });
+        handleSetForm();
     };
 
     return (

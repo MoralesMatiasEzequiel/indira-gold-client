@@ -11,7 +11,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     const dispatch = useDispatch();
 
     const sales = useSelector(state => state.sales.sales);
-    const debts = useSelector(state => state.debts.debts);
+    const allDebts = useSelector(state => state.debts.allDebts);
 
     const initialDebtState = {
         saleId: '',
@@ -33,9 +33,15 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
         dispatch(getDebts()); // Carga las deudas al montar el componente
     }, [dispatch]);
 
-    const filterSales = (sales, debts) => {
+    const filterSales = (sales, allDebts) => {
+        sales = Array.isArray(sales) ? sales : [];
+        allDebts = Array.isArray(allDebts) ? allDebts : []; 
+        
         return sales
-            .filter(sale => sale.client && !debts.some(debt => debt.sale._id === sale._id)) // Filtra las ventas con cliente y ventas que ya tengan deuda
+            .filter(sale => 
+                sale.client &&  // Filtra ventas con cliente
+                !allDebts.some(debt => debt.sale._id === sale._id)  // No tengan deuda
+            )
             .map(sale => ({
                 value: sale._id,
                 label: `${sale.orderNumber}`
@@ -43,9 +49,9 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     };
 
     useEffect(() => {
-        setSalesOptions(filterSales(sales, debts));
+        setSalesOptions(filterSales(sales, allDebts));
         setSelectKey(Date.now());
-    }, [sales, debts]);
+    }, [sales, allDebts]);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -124,7 +130,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
             return callback([]);
         }
     
-        const updatedSalesOptions = filterSales(sales, debts); // Usa ventas actualizadas
+        const updatedSalesOptions = filterSales(sales, allDebts); // Usa ventas actualizadas
         const filteredOptions = updatedSalesOptions.filter(sale =>
             sale.label.toLowerCase().startsWith(inputValue.toLowerCase())
         );
@@ -156,8 +162,8 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
     };
 
     useEffect(() => {
-        setIsSubmitDisabled(!(newDebt.saleId && balance > 0));
-    }, [newDebt.saleId, balance]);
+        setIsSubmitDisabled(!(newDebt.saleId && newDebt.amount !== null));
+    }, [newDebt.saleId, newDebt.amount]);
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -169,13 +175,10 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
             if (typeof response === 'string') {
                 setErrorMessage(response);
             } else {
-                await dispatch(getDebts()); // Esperamos actualización de deudas
-                await new Promise(resolve => setTimeout(resolve, 200)); // Breve espera
-    
+                onDebtAdded(response.data);
+                await dispatch(getDebts()); // Esperamos actualización de deudas    
                 dispatch(getSales()); // Si tienes una acción para actualizar las ventas
-                setSalesOptions(filterSales(sales, debts)); // Recalcula opciones de ventas
-    
-                onDebtAdded(response);
+                setSalesOptions(filterSales(sales, allDebts)); // Recalcula opciones de ventas
             }
         } catch (error) {
             console.error("Error al registrar la deuda:", error);

@@ -40,12 +40,6 @@ const DebtRegistration = () => {
         setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc');
     };
 
-    const sortedDebts = [...activeDebts].sort((a, b) => {
-        const dateA = new Date(a.sale.date);
-        const dateB = new Date(b.sale.date);
-        return sortByDate === 'asc' ? dateA - dateB : dateB - dateA;
-    });
-
     const formatNumber = (number) => {
         if (number !== null && number !== undefined) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -68,16 +62,17 @@ const DebtRegistration = () => {
     };
 
     //--- PAGINADO
-    const itemsPerPage = 20;
+    const itemsPerPage = 5;
 
-    // Obtener deudas filtradas
-    const debtsForPagination = filteredDebt();
+    //--- FILTROS
+    const debtsForPagination = [...filteredDebt()]?.sort((a, b) => {
+        const dateA = new Date(a.sale.date);
+        const dateB = new Date(b.sale.date);
+        return sortByDate === 'asc' ? dateA - dateB : dateB - dateA;
+    });
 
     const paginatedDebts = Array.isArray(debtsForPagination) ? debtsForPagination.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
-    const totalPages = Math.ceil(debtsForPagination.length / itemsPerPage);
-
-    // const paginatedDebts = sortedDebts.slice().reverse().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    // const totalPages = Math.ceil(sortedDebts.length / itemsPerPage);
+    const totalPages = Math.ceil(debtsForPagination?.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {

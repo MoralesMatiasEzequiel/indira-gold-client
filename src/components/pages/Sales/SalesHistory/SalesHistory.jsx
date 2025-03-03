@@ -6,6 +6,7 @@ import detail from '../../../../assets/img/detail.png';
 import history from '../../../../assets/img/history.png';
 
 const SalesHistory = () => {
+    
     const sales = useSelector(state => state.sales.sales);
     
     const dispatch = useDispatch();
