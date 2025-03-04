@@ -149,7 +149,6 @@ h2{
 }
 
 .container {
-    
     flex: 1; /* Para que ocupe todo el espacio disponible en la columna */
     padding: 1.5rem;
     box-sizing: border-box;

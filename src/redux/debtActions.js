@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer, getDebtsBalanceReducer } from "./debtSlice.js";
+import { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer, getDebtsBalanceReducer, createDebtSuccess } from "./debtSlice.js";
 
 export const getDebts = () => {
     return async (dispatch) => {
@@ -90,7 +90,10 @@ export const postDebt = (debtData) => {
     return async (dispatch) => { 
         try {
             const response = await axios.post('/debt', debtData);
-            return response;
+            const debt = response.data; 
+        
+            dispatch(createDebtSuccess(debt)); 
+            // return response;
         } catch (error) {
             console.error("Error creating debt: " + error.message);         
             return null;

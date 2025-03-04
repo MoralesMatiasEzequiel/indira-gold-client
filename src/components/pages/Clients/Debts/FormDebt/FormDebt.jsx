@@ -3,7 +3,7 @@ import iconClear from "../../../../../assets/img/clearForm.png";
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncSelect from 'react-select/async';
-import { postDebt, getDebts } from '../../../../../redux/debtActions.js';
+import { postDebt, getDebts, getActiveDebts } from '../../../../../redux/debtActions.js';
 import { getSales } from '../../../../../redux/saleActions.js';
 
 const FormDebt = ({ onDebtAdded = () => {} }) => {
@@ -39,8 +39,8 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
         
         return sales
             .filter(sale => 
-                sale.client &&  // Filtra ventas con cliente
-                !allDebts.some(debt => debt.sale._id === sale._id)  // No tengan deuda
+                sale?.client &&  // Filtra ventas con cliente
+                !allDebts.some(debt => debt?.sale?._id === sale._id)  // No tengan deuda
             )
             .map(sale => ({
                 value: sale._id,
@@ -72,7 +72,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
             setIsClearDisabled(false);
         }
 
-        const sale = sales.find(sale => sale._id === selectedOption.value);
+        const sale = sales.find(sale => sale?._id === selectedOption?.value);
 
         if (sale.client) {
             setSelectedClient(`${sale?.client.name} ${sale?.client.lastname}`);
@@ -175,11 +175,13 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
             if (typeof response === 'string') {
                 setErrorMessage(response);
             } else {
-                onDebtAdded(response.data);
+                onDebtAdded(response);
                 await dispatch(getDebts()); // Esperamos actualización de deudas    
+                await dispatch(getActiveDebts());
                 dispatch(getSales()); // Si tienes una acción para actualizar las ventas
                 setSalesOptions(filterSales(sales, allDebts)); // Recalcula opciones de ventas
             }
+
         } catch (error) {
             console.error("Error al registrar la deuda:", error);
         }
@@ -264,7 +266,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                         <label htmlFor="client">Cliente</label>
                                     </div>
                                     <div className={style.right}>
-                                        <span>{selectedClient ? selectedClient : "Anónimo"}</span>
+                                        <label className={style.labelClient}>{selectedClient ? selectedClient : "Anónimo"}</label>
                                     </div>
                                 </div>
                             :

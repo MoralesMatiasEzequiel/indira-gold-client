@@ -31,9 +31,12 @@ export const debtSlice = createSlice({
         getDebtsBalanceReducer: (state, action) => {
             state.debtsBalance = action.payload;
         },
+        createDebtSuccess: (state, action) => {
+            state.allDebts.unshift(action.payload); // Agrega la nueva deuda al inicio del array
+        },
     }
 });
 
-export const { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer, getDebtsBalanceReducer } = debtSlice.actions;
+export const { getDebtsReducer, getAllDebtsReducer, getDebtByIdReducer, clearDebtDetailReducer, getDebtsBalanceReducer, createDebtSuccess } = debtSlice.actions;
 
 export default debtSlice.reducer;

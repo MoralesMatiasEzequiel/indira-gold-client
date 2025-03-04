@@ -23,7 +23,7 @@ const DebtRegistration = () => {
     const [client, setClient] = useState('');
     const [loadedDebtIds, setLoadedDebtIds] = useState(new Set()); // Estado para rastrear IDs ya cargados
     const [currentPage, setCurrentPage] = useState(1);
-    const [sortByDate, setSortByDate] = useState('asc');
+    const [sortByDate, setSortByDate] = useState('desc');
 
     useEffect(() => {
         dispatch(searchDebts(orderNumber, client))
@@ -226,9 +226,9 @@ const DebtRegistration = () => {
                         <tbody>
                             {paginatedDebts?.map(debt => (
                                 <tr key={debt._id} className={!debt.active ? style.inactive : ''}>
-                                    <td>{formatDate(debt.sale.date)}</td>
-                                    <td className="center">{debt.sale.orderNumber}</td>
-                                    <td>{debt.sale.client ? `${debt.client.name} ${debt.client.lastname}` : 'Anónimo'}</td>
+                                    <td>{formatDate(debt.sale?.date)}</td>
+                                    <td className="center">{debt.sale?.orderNumber}</td>
+                                    <td>{debt.sale?.client ? `${debt.client?.name} ${debt.client?.lastname}` : 'Anónimo'}</td>
                                     <td className="center">${formatNumber(debt.paymentMade)}</td>
                                     <td className="center">${formatNumber(debt.remainingBalance)}</td>
                                     <td className={debt.remainingBalance > 0 ? "debt" : "sattled"}>{debt.remainingBalance > 0 ? "En deuda" : "Saldado"}</td>

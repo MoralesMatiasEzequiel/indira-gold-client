@@ -331,7 +331,7 @@ const PutDebt = () => {
                                     <label htmlFor="client">Cliente:</label>
                                 </div>
                                 <div className={style.right}>
-                                    <span>{selectedClient ? selectedClient : "Anónimo"}</span>
+                                    <label>{selectedClient ? selectedClient : "Anónimo"}</label>
                                 </div>
                             </div>
                             <div className={style.labelInput}>

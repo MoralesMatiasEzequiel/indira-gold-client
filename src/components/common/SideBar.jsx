@@ -107,22 +107,22 @@ const SideBar = () => {
                                 </div>
                             </li>
                         </div>
-                        <div className={`${style.NavLink} ${location.pathname === '/main_window/stats' ? style.selected : ''}`} onClick={() => handleClick('stats')}>
-                            <li>
-                                <div className={style.icon}></div>
-                                <div className={style.text}>
-                                    <div>
-                                        <p>Estadísticas</p>
-                                    </div>
-                                </div>
-                            </li>
-                        </div>
                         <div className={`${style.NavLink} ${location.pathname === '/main_window/debts' ? style.selected : ''}`} onClick={() => handleClick('debts')}>
                             <li>
                                 <div className={style.icon}></div>
                                 <div className={style.text}>
                                     <div>
                                         <p>Deudas</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                        <div className={`${style.NavLink} ${location.pathname === '/main_window/stats' ? style.selected : ''}`} onClick={() => handleClick('stats')}>
+                            <li>
+                                <div className={style.icon}></div>
+                                <div className={style.text}>
+                                    <div>
+                                        <p>Estadísticas</p>
                                     </div>
                                 </div>
                             </li>
