@@ -336,7 +336,7 @@ const DetailSale = () => {
                                 ?  <p>
                                         <span>Cliente:&nbsp;</span>{saleDetail.client.dni} - {saleDetail.client.name} {saleDetail.client.lastname}
                                         <a onClick={() => navigate(`/main_window/clients/${saleDetail.client._id}`)}>
-                                            <img src={detail} alt=""/>
+                                            <img className="detailImg" src={detail} alt=""/>
                                         </a>
                                     </p>
                                 : <p><span>Cliente:&nbsp;</span> Anónimo</p>}

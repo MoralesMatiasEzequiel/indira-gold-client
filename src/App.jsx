@@ -22,6 +22,7 @@ import PutClient from "./components/pages/Clients/PutClient/PutClient.jsx";
 import Debts from './components/pages/Clients/Debts/Debts.jsx';
 import DetailDebt from './components/pages/Clients/Debts/DetailDebt/DetailDebt.jsx';
 import PutDebt from './components/pages/Clients/Debts/PutDebt/PutDebt.jsx';
+import DebtSettled from './components/pages/Clients/Debts/DebtSettled/DebtSettled.jsx';
 import { ToastContainer } from 'react-toastify';
 
 const App = () => {
@@ -50,6 +51,7 @@ const App = () => {
           <Route path='/main_window/debts' element={<Debts />}/>
           <Route path='/main_window/debts/:id' element={<DetailDebt />}/>
           <Route path='/main_window/debts/edit/:id' element={<PutDebt />}/>
+          <Route path='/main_window/debts/success' element={<DebtSettled />}/>
         </Routes>
       </div>
       <ToastContainer />

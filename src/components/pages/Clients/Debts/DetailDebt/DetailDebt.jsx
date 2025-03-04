@@ -162,7 +162,7 @@ const DetailDebt = () => {
                                 ?  <p>
                                         <span>Cliente:&nbsp;</span>{debtDetail.client.dni} - {debtDetail.client.name} {debtDetail.client.lastname}
                                         <a onClick={() => navigate(`/main_window/clients/${debtDetail.client._id}`)}>
-                                            <img src={detail} alt=""/>
+                                            <img className="detailImg" src={detail} alt=""/>
                                         </a>
                                     </p>
                                 : <p><span>Cliente:&nbsp;</span> Anónimo</p>}
@@ -170,7 +170,7 @@ const DetailDebt = () => {
                                     <p>
                                         <span>Total de la venta:&nbsp;</span> ${formatNumber(debtDetail.sale.totalPrice)}
                                         <a onClick={() => navigate(`/main_window/sales/${debtDetail.sale._id}`)}>
-                                            <img src={detail} alt=""/>
+                                            <img className="detailImg" src={detail} alt=""/>
                                         </a>
                                     </p>
                                 }

@@ -270,8 +270,15 @@ const PutDebt = () => {
             //         setErrorMessage(response);
             //     }
             // });
+
+            if (response.data.remainingBalance === 0) {
+                console.log("Debt successfully settled");
+                await dispatch(getDebtById(id));
+                dispatch(getDebts());
+                navigate(`/main_window/debts/success`);
+            };
             
-            if (response) {
+            if (response.data.remainingBalance > 0) {
                 console.log("Successfully edited debt");
                 await dispatch(getDebtById(id));
                 dispatch(getDebts());
