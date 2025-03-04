@@ -64,6 +64,8 @@ const FormClient = ({ onClientAdded = () => {} }) => {
                                 value={newClient.dni} 
                                 onChange={handleChange} 
                                 required 
+                                min={0}
+                                onWheel={(event) => event.target.blur()}
                             />
                         </div>
                         <div className={style.labelInput}>
@@ -110,6 +112,8 @@ const FormClient = ({ onClientAdded = () => {} }) => {
                                 value={newClient.phone} 
                                 onChange={handleChange} 
                                 required 
+                                min={0}
+                                onWheel={(event) => event.target.blur()}
                             />
                         </div>
                         {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
