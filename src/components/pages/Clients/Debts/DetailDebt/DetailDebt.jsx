@@ -118,6 +118,20 @@ const DetailDebt = () => {
             year: 'numeric', 
             hour: '2-digit', 
             minute: '2-digit', 
+            timeZone: 'UTC' 
+        };
+
+        const formattedDate = new Date(date).toLocaleDateString('es-ES', options).replace(',', ' -');
+        return formattedDate;
+    };
+
+    const formatDate2 = (date) => {        
+        const options = { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
             // timeZone: 'UTC' 
         };
 
@@ -180,7 +194,7 @@ const DetailDebt = () => {
                                         debtDetail.income?.map((income, index) => (
                                             <li key={index}>
                                                 <ul className={style.productList}>
-                                                    {income.date && <li><span>Fecha:&nbsp;</span>{formatDate(income.date) || 'Fecha no encontrada'}</li>}
+                                                    {income.date && <li><span>Fecha:&nbsp;</span>{formatDate2(income.date) || 'Fecha no encontrada'}</li>}
                                                     <li><span>Pago:&nbsp;</span> ${formatNumber(income.amount) || 'Pago no encontrado'}</li>
                                                 </ul>
                                             </li>
