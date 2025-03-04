@@ -294,7 +294,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                 </div>                     
                                 <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                             </div> 
-                            {/* {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>} */}
+                            {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
                         </form>
                     </div>
                 </div>

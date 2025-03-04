@@ -314,7 +314,7 @@ const FormSales = () => {
         const isClientSelected = selectedClient !== null;
         const isPaymentMethodSelected = newSale.paymentMethod !== '';
         const isSoldAtSelected = newSale.soldAt !== '';
-        const areProductsSelected = selectedProducts.some(product => product !== null);
+        const areProductsSelected = selectedProducts.some(product => product.price !== null);
         setIsSubmitDisabled(!(isClientSelected && isPaymentMethodSelected && isSoldAtSelected && areProductsSelected));
     };
 
@@ -330,8 +330,6 @@ const FormSales = () => {
     const DropdownIndicator = (props) => {
         return null;
     };
-
-    const customNoOptionsMessage = () => "Nombre del producto buscado";
 
     const handleShowClientForm = () => {
         setShowClientForm(!showClientForm);
@@ -652,6 +650,9 @@ const FormSales = () => {
                                                     menuPortal: base => ({ ...base, zIndex: 9999 }),
                                                     ...clientInputStyles
                                                 }}
+                                                noOptionsMessage={({ inputValue }) => 
+                                                    inputValue.trim() ? "No hay clientes registrados con ese nombre" : "Ingrese nombre de cliente"
+                                                }
                                             />
                                             <button type="button" onClick={handleShowClientForm} className={style.addClient}><img src={add} alt=""/></button>
                                         </div>                                        
@@ -771,7 +772,9 @@ const FormSales = () => {
                                                 placeholder="Buscar Producto"
                                                 ref={(element) => productRefs.current[index] = element}
                                                 components={{DropdownIndicator}}
-                                                noOptionsMessage={customNoOptionsMessage}
+                                                noOptionsMessage={({ inputValue }) => 
+                                                    inputValue.trim() ? "No hay productos registrados con ese nombre" : "Ingrese nombre del producto"
+                                                }
                                                 menuPortalTarget={document.body}
                                                 styles={{
                                                     menuPortal: base => ({ ...base, zIndex: 9999 }),
