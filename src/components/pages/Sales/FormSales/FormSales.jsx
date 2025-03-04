@@ -102,6 +102,7 @@ const FormSales = () => {
     };
 
     const loadProductOptions = (inputValue, callback) => {
+        
         const productOptions = transformProductOptions(products);
     
         const filteredOptions = productOptions.filter(product => {            
@@ -111,7 +112,7 @@ const FormSales = () => {
     
             const inputValueLower = inputValue.toLowerCase();
     
-            // Comprobar si coincide con el nombre o con el ID del producto
+            // Comprobar si coincide con el nombre o con el ID del producto (para el caso de utilizar la lectora de código de barra)
             return (
                 availableStock > 0 &&
                 (product.label.toLowerCase().includes(inputValueLower) || product.productId.toLowerCase().includes(inputValueLower))
@@ -772,9 +773,6 @@ const FormSales = () => {
                                                 placeholder="Buscar Producto"
                                                 ref={(element) => productRefs.current[index] = element}
                                                 components={{DropdownIndicator}}
-                                                noOptionsMessage={({ inputValue }) => 
-                                                    inputValue.trim() ? "No hay productos registrados con ese nombre" : "Ingrese nombre del producto"
-                                                }
                                                 menuPortalTarget={document.body}
                                                 styles={{
                                                     menuPortal: base => ({ ...base, zIndex: 9999 }),
@@ -785,6 +783,9 @@ const FormSales = () => {
                                                       e.preventDefault(); // Evita seleccionar con Enter
                                                     }
                                                 }}
+                                                noOptionsMessage={({ inputValue }) => 
+                                                    inputValue.trim() ? "No hay productos registrados con ese nombre" : "Ingrese nombre del producto"
+                                                }
                                             />
                                         </div>
                                         {index ? <button type="button" onClick={() => handleRemoveProduct(index)} className={style.removeProduct}><img src={x} alt=""/></button> : ''}
