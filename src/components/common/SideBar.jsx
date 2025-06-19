@@ -36,10 +36,12 @@ const SideBar = () => {
 
     const toggleSubMenu = (event) => {
         setSubMenuVisible(!subMenuVisible);
+        setSalesSubMenuVisible(false)
     };
 
     const toggleSalesSubMenu = (event) => {
         setSalesSubMenuVisible(!salesSubMenuVisible);
+        setSubMenuVisible(false);
     };
 
     return (
@@ -52,7 +54,7 @@ const SideBar = () => {
                         <li className={`${style.NavLink} ${salesSubMenuVisible ? style.selected : ''}`} onClick={toggleSalesSubMenu}>
                             <div className={style.icon}><img src={`${salesSubMenuVisible ? itemSelected : item}`} alt=""/></div>
                             <div className={style.text}>
-                                <div className={`${style.NavLink} ${location.pathname.includes('/main_window/sales/form') ? style.selected : ''}` } onClick={() => (navigate('/main_window/sales/form'), setSubMenuVisible(false))}>
+                                <div className={`${style.NavLink} ${location.pathname.includes('/main_window/sales/form') ? style.selected : ''}` } onClick={() => navigate('/main_window/sales/form')}>
                                     <div>
                                         <p>Ventas</p>
                                     </div>
@@ -86,7 +88,7 @@ const SideBar = () => {
                         <li className={`${style.NavLink} ${subMenuVisible ? style.selected : ''}`} onClick={toggleSubMenu}>
                             <div className={style.icon}><img src={`${subMenuVisible ? itemSelected : item}`} alt=""/></div>
                             <div className={style.text}>
-                                <div className={`${style.NavLink} ${location.pathname.includes('/main_window/products/form') ? style.selected : ''}` } onClick={() => (navigate('/main_window/products/form'), setSalesSubMenuVisible(false))}>
+                                <div className={`${style.NavLink} ${location.pathname.includes('/main_window/products/form') ? style.selected : ''}` } onClick={() => navigate('/main_window/products/form')}>
                                     <div>
                                         <p>Productos</p>
                                     </div>
