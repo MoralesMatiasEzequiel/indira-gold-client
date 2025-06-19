@@ -10,10 +10,11 @@ const SideBar = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [subMenuVisible, setSubMenuVisible] = useState(false);
+    const [salesSubMenuVisible, setSalesSubMenuVisible] = useState(true);
 
     const handleClick = (name) => {
-        if(name === 'sales'){
-            navigate('/');
+        if(name !== 'sales'){
+            setSalesSubMenuVisible(false);
         }
 
         if (name !== 'products') {
@@ -37,6 +38,10 @@ const SideBar = () => {
         setSubMenuVisible(!subMenuVisible);
     };
 
+    const toggleSalesSubMenu = (event) => {
+        setSalesSubMenuVisible(!salesSubMenuVisible);
+    };
+
     return (
         <div className={style.div}>
             <div className={style.bg}><img src={bg} alt=""/></div>
@@ -44,20 +49,44 @@ const SideBar = () => {
                 <h1><img src={logo} alt="Indira Gold"/></h1>
                 <div className={style.nav}>
                     <ul>                                
-                        <div className={`${style.NavLink} ${location.pathname === '/' ? style.selected : ''}`}  onClick={() => handleClick('sales')}>
-                            <li>
-                                <div className={style.icon}></div>
-                                <div className={style.text}>
+                        <li className={`${style.NavLink} ${salesSubMenuVisible ? style.selected : ''}`} onClick={toggleSalesSubMenu}>
+                            <div className={style.icon}><img src={`${salesSubMenuVisible ? itemSelected : item}`} alt=""/></div>
+                            <div className={style.text}>
+                                <div className={`${style.NavLink} ${location.pathname.includes('/main_window/sales/form') ? style.selected : ''}` } onClick={() => (navigate('/main_window/sales/form'), setSubMenuVisible(false))}>
                                     <div>
                                         <p>Ventas</p>
                                     </div>
                                 </div>
-                            </li>
-                        </div>
+                            </div>
+                        </li>
+                        {salesSubMenuVisible && (
+                            <div className={`${style.subMenu} ${salesSubMenuVisible ? style.subMenuVisible : ''}`}>
+                                <ul>
+                                    <li onClick={() => navigate('/main_window/sales/form')}>
+                                        <div
+                                            className={`${style.NavLink} ${location.pathname === '/main_window/sales/form' ? style.selected : ''}`}
+                                        >
+                                            <div>
+                                                <p>Nueva Venta</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li onClick={() => navigate('/main_window/sales/history')}>
+                                        <div
+                                            className={`${style.NavLink} ${location.pathname === '/main_window/sales/history' ? style.selected : ''}`}
+                                        >
+                                            <div>
+                                                <p>Historial de Ventas</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
                         <li className={`${style.NavLink} ${subMenuVisible ? style.selected : ''}`} onClick={toggleSubMenu}>
                             <div className={style.icon}><img src={`${subMenuVisible ? itemSelected : item}`} alt=""/></div>
                             <div className={style.text}>
-                                <div className={`${style.NavLink} ${location.pathname.includes('/main_window/products/form') ? style.selected : ''}` } onClick={() => navigate('/main_window/products/form')}>
+                                <div className={`${style.NavLink} ${location.pathname.includes('/main_window/products/form') ? style.selected : ''}` } onClick={() => (navigate('/main_window/products/form'), setSalesSubMenuVisible(false))}>
                                     <div>
                                         <p>Productos</p>
                                     </div>

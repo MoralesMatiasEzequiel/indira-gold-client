@@ -118,89 +118,91 @@ const SalesHistory = () => {
     };
 
     return (
-        <div className="component">
-            <div className="title">
-                <h2>HISTORIAL DE VENTAS</h2>
-                <div className="pagination">
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                        ◂
-                    </button>
-                    {getPageButtons()}
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                        ▸
-                    </button>
+        <div className="page">
+            <div className="component">
+                <div className="title">
+                    <h2>HISTORIAL DE VENTAS</h2>
+                    <div className="pagination">
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                            ◂
+                        </button>
+                        {getPageButtons()}
+                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                            ▸
+                        </button>
+                    </div>
+                    <div className="titleButtons">
+                        <button onClick={() => navigate(`/main_window/sales/filtered`)}>
+                            <img src={history} alt=""/>
+                        </button>
+                    </div>                
                 </div>
-                <div className="titleButtons">
-                    <button onClick={() => navigate(`/main_window/sales/filtered`)}>
-                        <img src={history} alt=""/>
-                    </button>
-                </div>                
-            </div>
-            <div className="container">
-                <div className="tableContainer">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Fecha y hora</span>
-                                        <button className="sort" onClick={toggleSortOrder}>{sortByDate === 'asc' ? '▴' : '▾'}</button>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Orden</span>
-                                        <input
-                                            className="filterSearch"
-                                            type="search"
-                                            name="searchOrder"
-                                            onChange={handleChangeOrderNumber}
-                                            value={orderNumber}
-                                            placeholder="Buscar"
-                                            autoComplete="off"
-                                        />
-                                    </div>
-                                </th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Cliente</span>
-                                        <input
-                                            type="search"
-                                            name="searchClient"
-                                            onChange={handleChangeClient}
-                                            value={client}
-                                            placeholder="Buscar"
-                                            autoComplete="off"
-                                            className="filterSearch"
-                                        />
-                                    </div>
-                                </th>
-                                <th>Productos</th>
-                                <th>Medio de pago</th>
-                                <th>Descuento</th>
-                                <th>Total</th>
-                                <th>Detalle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedSales?.map(sale => (
-                                <tr key={sale._id}>
-                                    <td>{formatDate(sale.date)}</td>
-                                    <td className="center">{sale.orderNumber}</td>
-                                    <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
-                                    <td className="center">{sale.products.length}</td>
-                                    <td>{sale.paymentMethod}</td>
-                                    <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
-                                    <td className="center">$ {formatNumber(sale.totalPrice)}</td>
-                                    <td>
-                                        <a onClick={() => navigate(`/main_window/sales/${sale._id}`)}>
-                                            <img src={detail} alt="" className="detailImg" />
-                                        </a>
-                                    </td>
+                <div className="container">
+                    <div className="tableContainer">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div className="withFilter">
+                                            <span>Fecha y hora</span>
+                                            <button className="sort" onClick={toggleSortOrder}>{sortByDate === 'asc' ? '▴' : '▾'}</button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className="withFilter">
+                                            <span>Orden</span>
+                                            <input
+                                                className="filterSearch"
+                                                type="search"
+                                                name="searchOrder"
+                                                onChange={handleChangeOrderNumber}
+                                                value={orderNumber}
+                                                placeholder="Buscar"
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className="withFilter">
+                                            <span>Cliente</span>
+                                            <input
+                                                type="search"
+                                                name="searchClient"
+                                                onChange={handleChangeClient}
+                                                value={client}
+                                                placeholder="Buscar"
+                                                autoComplete="off"
+                                                className="filterSearch"
+                                            />
+                                        </div>
+                                    </th>
+                                    <th>Productos</th>
+                                    <th>Medio de pago</th>
+                                    <th>Descuento</th>
+                                    <th>Total</th>
+                                    <th>Detalle</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {paginatedSales?.map(sale => (
+                                    <tr key={sale._id}>
+                                        <td>{formatDate(sale.date)}</td>
+                                        <td className="center">{sale.orderNumber}</td>
+                                        <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
+                                        <td className="center">{sale.products.length}</td>
+                                        <td>{sale.paymentMethod}</td>
+                                        <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
+                                        <td className="center">$ {formatNumber(sale.totalPrice)}</td>
+                                        <td>
+                                            <a onClick={() => navigate(`/main_window/sales/${sale._id}`)}>
+                                                <img src={detail} alt="" className="detailImg" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
