@@ -1,6 +1,6 @@
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SideBar from "./components/common/SideBar.jsx"; 
 import Stats from "./components/pages/Stats/Stats.jsx";
