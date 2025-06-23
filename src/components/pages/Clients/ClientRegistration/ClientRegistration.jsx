@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { getMonthlySalesByClient } from '../../../../redux/saleActions.js';
-import { getClientByName, getClientByLastname, getClientByDni, getClients } from "../../../../redux/clientActions.js";
+import { getClientByFullName, getClientByDni, getClients } from "../../../../redux/clientActions.js";
 import detail from '../../../../assets/img/detail.png';
 import style from "./ClientRegistration.module.css";
 
@@ -13,8 +13,7 @@ const ClientRegistration = () => {
     const navigate = useNavigate();
 
     const [dni, setDni] = useState('');
-    const [name, setName] = useState('');
-    const [lastname, setLastname] = useState('');
+    const [fullName, setFullName] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [monthlySales, setMonthlySales] = useState({});
     const [loadedClientIds, setLoadedClientIds] = useState(new Set()); // Estado para rastrear IDs ya cargados
@@ -106,37 +105,25 @@ const ClientRegistration = () => {
         setDni(event.target.value);
     };
 
-    const handleChangeName = (event) => {
-        setName(event.target.value);
-    };
-
-    const handleChangeLastname = (event) => {
-        setLastname(event.target.value);
+    const handleChangeFullName = (event) => {
+        setFullName(event.target.value);
     };
 
     useEffect(() => {
         if (dni) {
             dispatch(getClientByDni(dni));
         } else {
-            dispatch(getClientByName('')); 
+            dispatch(getClientByDni('')); 
         }
     }, [dni, dispatch]);
 
     useEffect(() => {
-        if (name) {
-            dispatch(getClientByName(name));
+        if (fullName) {
+            dispatch(getClientByFullName(fullName));
         } else {
-            dispatch(getClientByName('')); 
+            dispatch(getClientByFullName('')); 
         }
-    }, [name, dispatch]);
-
-    useEffect(() => {
-        if (lastname) {
-            dispatch(getClientByLastname(lastname));
-        } else {
-            dispatch(getClientByLastname('')); 
-        }
-    }, [lastname, dispatch]);
+    }, [fullName, dispatch]);
 
     const toggleSortOrder = () => {
         setSortByProducts(sortByProducts === 'asc' ? 'desc' : 'asc');
@@ -170,15 +157,8 @@ const ClientRegistration = () => {
                                 </th>
                                 <th>
                                     <div className="withFilter">
-                                        <span>Nombre(s)</span>
-                                        <input type="search" name="searchName" onChange={handleChangeName} value={name} placeholder="Buscar" autoComplete="off" className="filterSearch"  
-                                        />
-                                    </div>
-                                </th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Apellido(s)</span>
-                                        <input type="search"name="searchLastname" onChange={handleChangeLastname} value={lastname} placeholder="Buscar" autoComplete="off" className="filterSearch" 
+                                        <span>Nombre(s) y Apellido</span>
+                                        <input type="search" name="searchName" onChange={handleChangeFullName} value={fullName} placeholder="Buscar" autoComplete="off" className="filterSearch"  
                                         />
                                     </div>
                                 </th>
@@ -198,8 +178,7 @@ const ClientRegistration = () => {
                             {paginatedClients?.map(client => (
                                     <tr key={client._id} className={!client.active ? style.inactive : ''}>
                                         <td className="center">{client.dni && client.dni}</td>
-                                        <td>{client.name}</td>
-                                        <td>{client.lastname}</td>
+                                        <td>{client.name} {client.lastname}</td>
                                         <td className="center">{client.email}</td>
                                         <td className="center">{client.phone}</td>
                                         <td className="center">{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Información no disponible offline'}</td>    
