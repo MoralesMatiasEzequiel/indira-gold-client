@@ -149,6 +149,30 @@ const DetailClient = () => {
                                 {clientDetail.phone && <p><span>Teléfono:&nbsp;</span>{clientDetail.phone}</p>}
                                 {clientDetail.date && <p><span>Fecha de suscripción:&nbsp;</span>{formatDate(clientDetail.date)}</p>}
                                 <p><span>Estado:&nbsp;</span>{clientDetail.active ? 'Activo' : 'Inactivo'}</p>
+                                {clientDetail.addresses && clientDetail.addresses.length > 0 && <>
+                                    <p><span>Direcciones:</span></p>
+                                    <ul>
+                                        {clientDetail.addresses.map((address) => {
+                                            return(
+                                                <li className={style.address}>
+                                                    {address.name && <p><span>Nombre:&nbsp;</span>{address.name}</p>}
+                                                    <p><span>Dirección:&nbsp;</span>
+                                                        {`
+                                                            ${address.street && address.street}
+                                                            ${address.number && `N°${address.number}`}
+                                                            ${address.between && `E/ ${address.between}`}
+                                                            ${address.floor && `Piso ${address.floor}`}
+                                                            ${address.apartment && `Dpto. ${address.apartment}`}
+                                                        `}
+                                                    </p>
+                                                    {address.city && <p><span>Ciudad:&nbsp;</span>{address.city}</p>}
+                                                    {address.province && <p><span>Provincia:&nbsp;</span>{address.province}</p>}   
+                                                    {address.postalCode && <p><span>Código postal:&nbsp;</span>{address.postalCode}</p>}    
+                                                    {address.reference && <p><span>Referencia:&nbsp;</span>{address.reference}</p>}                                                    
+                                                </li>
+                                        )})}
+                                    </ul>
+                                </>}
                             </div>
                             <div className={style.column}>
                                 <p><span>Historial de compras:&nbsp;</span></p>
