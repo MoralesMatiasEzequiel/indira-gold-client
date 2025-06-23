@@ -56,32 +56,18 @@ export const getClientByDni = (dni) => {
     };
 };
 
-export const getClientByName = (name) => {
+export const getClientByFullName = (fullName) => {
     return async (dispatch) => {
         try {
-            const { data } = await axios.get(`/clients?name=${name}&`);
+            const { data } = await axios.get(`/clients?fullName=${fullName}&`);
 
             dispatch(getClientsReducer(data));
 
         } catch (error) {
-            console.error("Error retrieving client by server name: ", error.message);
+            console.error("Error retrieving client by server fullName: ", error.message);
             return null;
         }
         
-    };
-};
-
-export const getClientByLastname = (lastname) => {
-    return async (dispatch) => {
-        try {
-            const { data } = await axios.get(`/clients?lastname=${lastname}&`);
-
-            dispatch(getClientsReducer(data));
-
-        } catch (error) {
-            console.error("Error retrieving client by server lastname: ", error.message);
-            return null;
-        }
     };
 };
 
