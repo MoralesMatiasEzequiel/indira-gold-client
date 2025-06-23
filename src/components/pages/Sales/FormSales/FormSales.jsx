@@ -38,6 +38,8 @@ const FormSales = () => {
     const [selectedProductQuantities, setSelectedProductQuantities] = useState({});
     const [selectedClient, setSelectedClient] = useState(null);
     const [clientOptions, setClientOptions] = useState([]);
+    const [withShipping, setWhitShipping] = useState(false);
+    const [selectedAddresses, setSelectedAddresses] = useState([]);
     const [paymentMethod, setPaymentMethod] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
     const [selectKey, setSelectKey] = useState(Date.now());
@@ -47,6 +49,7 @@ const FormSales = () => {
     const [lastDebtAmount, setLastDebtAmount] = useState(0);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [isClearDisabled, setIsClearDisabled] = useState(true);
+console.log(selectedClient);
 
     const initialSaleState = {
         client: '',
@@ -56,7 +59,8 @@ const FormSales = () => {
         discount: '',
         paymentFee: '',
         products: [],
-        debtAmount: ''
+        debtAmount: '',
+        shipment: []
     };
 
     const [newSale, setNewSale] = useState(initialSaleState);
@@ -102,7 +106,7 @@ const FormSales = () => {
             label: `${client.dni} - ${client.name} ${client.lastname}`
         }));
         clientOptions.unshift({ value: '', label: 'Anónimo' });
-        return clientOptions;
+        return clientOptions;        
     };
 
     const loadProductOptions = (inputValue, callback) => {
@@ -381,6 +385,33 @@ const FormSales = () => {
             }));
         }
     };
+
+    const handleShipmentChange = () => {
+        setWhitShipping(!withShipping);
+        if (withShipping) {
+            setSelectedAddresses([]);
+            setNewSale(prev => ({ ...prev, shipment: [] }));
+        }
+    };
+
+    const handleAddressSelect = (e) => {
+        const addressId = e.target.value;
+        const selected = clientAddresses.find(addr => addr._id === addressId);
+
+        if (selected && !selectedAddresses.some(a => a._id === addressId)) {
+            const updated = [...selectedAddresses, selected];
+            setSelectedAddresses(updated);
+            setNewSale(prev => ({ ...prev, shipment: updated }));
+        }
+    };
+
+    const removeAddress = (id) => {
+        const updated = selectedAddresses.filter(addr => addr._id !== id);
+        setSelectedAddresses(updated);
+        setNewSale(prev => ({ ...prev, shipment: updated }));
+    };
+
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -699,6 +730,62 @@ const FormSales = () => {
                                             </div>                                        
                                         </div>
                                     </div>
+                                    <div className={style.containerInputCheckbox}>
+                                        <input 
+                                            className={style.inputCheckbox} 
+                                            type="checkbox" 
+                                            checked={withShipping}
+                                            onChange={handleShipmentChange}
+                                        />
+                                        <span>Con envío</span>
+                                    </div>
+                                    {withShipping && (
+                                        <>
+                                            <div className={style.labelInput}>
+                                                <div className={style.left}>
+                                                    <label htmlFor="debtAmount">Dirección de envío</label>
+                                                </div>
+                                                <div className={style.right}>
+                                                    <select id="shipmentSelect" onChange={handleAddressSelect}>
+                                                        <option value="">Seleccionar dirección</option>
+                                                        {/* {clientAddresses?.map(addr => (
+                                                            <option key={addr._id} value={addr._id}>
+                                                                {addr.name} - {addr.street} {addr.number}, {addr.city}
+                                                            </option>
+                                                        ))} */}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            {withShipping && selectedAddresses?.length > 0 && (
+                                                <div className="formRow">
+                                                    <ul>
+                                                        {selectedAddresses?.map((address) => (
+                                                            <li key={address._id}>
+                                                                <div>
+                                                                    <strong>{address.name}</strong>: {address.street} {address.number} ({address.city})
+                                                                </div>
+                                                                <button type="button" onClick={() => removeAddress(address._id)}>x</button>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                            {/* {clients.addresses?.length > 0 ? (
+                                                <div className="formRow">
+                                                    <ul>
+                                                        {clients.addresses?.map((address, index) => (
+                                                            <li key={index}>
+                                                                <div>{address}</div>
+                                                                <button type="button" onClick={() => removeAddress(index)}>x</button>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            ) : ( 
+                                                <></>
+                                            )}  */}
+                                        </>
+                                    )}
                                     <div className={style.labelInput}>
                                         <div className={style.left}>
                                             <label htmlFor="paymentMethod">Medio de pago</label>
