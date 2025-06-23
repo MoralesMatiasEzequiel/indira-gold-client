@@ -44,6 +44,7 @@ const FormSales = () => {
     const [saleMade, setSaleMade] = useState(false);
     const [saleResponse, setSaleResponse] = useState(null);
     const [newDebt, setNewDebt] = useState(false);
+    const [lastDebtAmount, setLastDebtAmount] = useState(0);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [isClearDisabled, setIsClearDisabled] = useState(true);
 
@@ -431,6 +432,7 @@ const FormSales = () => {
         
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
+            setLastDebtAmount(saleData.debtAmount);
             dispatch(getSales());
             // Resetear el formulario
             setNewSale(initialSaleState);
@@ -656,7 +658,7 @@ const FormSales = () => {
                                 <button className="delete" onClick={toggleSaleMade}>X</button>
                             </div>
                         </div>
-                        <NewSale saleResponse={saleResponse} debtAmount={newSale.debtAmount}/>
+                        <NewSale saleResponse={saleResponse} debtAmount={lastDebtAmount}/>
                     </div>
                 ) : (
                     <div className="component">

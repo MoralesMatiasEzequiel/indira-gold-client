@@ -5,7 +5,11 @@ import style from './NewSale.module.css';
 
 const NewSale = ({ saleResponse, debtAmount }) => {
 
+    if (!saleResponse?.data) return null;
+
     const { client, paymentMethod, installments, discount, products, orderNumber, subTotal, totalPrice, date } = saleResponse.data;
+
+    const safeDebtAmount = debtAmount ?? 0;
 
     const dispatch = useDispatch();
 
@@ -51,7 +55,12 @@ const NewSale = ({ saleResponse, debtAmount }) => {
                 <p><span className={style.key}>Subtotal:</span> ${formatNumber(subTotal)}</p>
                 <p><span className={style.key}>Descuento:</span> {discount}%</p>
                 <p><span className={style.key}>Total:</span> ${formatNumber(totalPrice)}</p>
-                <p><span className={style.key}>Total abonado:</span> ${formatNumber(debtAmount)}</p>
+                {safeDebtAmount > 0 && safeDebtAmount < totalPrice && (
+                    <>
+                        <p><span className={style.key}>Total abonado:</span> ${formatNumber(safeDebtAmount)}</p>
+                        <p><span className={style.key}>Adeuda:</span> ${formatNumber(totalPrice - safeDebtAmount)}</p>
+                    </>
+                )}
             </div>
         </div>
     );
