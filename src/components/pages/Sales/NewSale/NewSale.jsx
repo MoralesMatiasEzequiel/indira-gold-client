@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getClientById } from "../../../../redux/clientActions";
 import style from './NewSale.module.css';
 
-const NewSale = ({ saleResponse }) => {
+const NewSale = ({ saleResponse, debtAmount }) => {
 
     const { client, paymentMethod, installments, discount, products, orderNumber, subTotal, totalPrice, date } = saleResponse.data;
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -50,6 +51,7 @@ const NewSale = ({ saleResponse }) => {
                 <p><span className={style.key}>Subtotal:</span> ${formatNumber(subTotal)}</p>
                 <p><span className={style.key}>Descuento:</span> {discount}%</p>
                 <p><span className={style.key}>Total:</span> ${formatNumber(totalPrice)}</p>
+                <p><span className={style.key}>Total abonado:</span> ${formatNumber(debtAmount)}</p>
             </div>
         </div>
     );

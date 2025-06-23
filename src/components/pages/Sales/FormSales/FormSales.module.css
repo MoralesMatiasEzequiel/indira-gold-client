@@ -171,3 +171,19 @@
 .buttonOnClose img{
     width: 0.75rem;
 }
+
+.containerInputCheckbox{
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.containerInputCheckbox span{
+    padding-right: 10px;
+    font-size: 0.75rem;
+}
+
+.inputCheckbox {
+    cursor: pointer;
+}

@@ -43,6 +43,7 @@ const FormSales = () => {
     const [selectKey, setSelectKey] = useState(Date.now());
     const [saleMade, setSaleMade] = useState(false);
     const [saleResponse, setSaleResponse] = useState(null);
+    const [newDebt, setNewDebt] = useState(false);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [isClearDisabled, setIsClearDisabled] = useState(true);
 
@@ -53,8 +54,10 @@ const FormSales = () => {
         soldAt: '',
         discount: '',
         paymentFee: '',
-        products: []
+        products: [],
+        debtAmount: ''
     };
+
     const [newSale, setNewSale] = useState(initialSaleState);
 
     const productRefs = useRef([]);
@@ -279,22 +282,40 @@ const FormSales = () => {
         setSelectedClient(selectedOption);
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
-            client: selectedOption ? selectedOption.value : ''
+            client: selectedOption ? selectedOption.value : '',
+            debtAmount: "" // Resetear el monto al cambiar cliente
         }));
+        setNewDebt(false); // Desactivar el checkbox al cambiar cliente
         validateForm();
     };
 
     const handleInputChange = (e) => {
+        const { name, value } = e.target;        
+
+        if (name === 'debtAmount') {
+            const numericValue = value === '' ? '' : Number(value);
+
+            // Si es mayor al subtotal, forzamos el máximo permitido
+            const correctedValue = numericValue > subtotal ? subtotal : numericValue;
+
+            setNewSale((prevNewSale) => ({
+                ...prevNewSale,
+                debtAmount: correctedValue,
+            }));
+
+            // Evitamos setear dos veces con este return
+            return;
+        }
+
+        setNewSale((prevNewSale) => ({
+            ...prevNewSale,
+            [name]: name === 'discount' || name === 'paymentFee' || name === 'installments' ? Number(value) : value
+        }));
 
         if(e.target.value) {
             setIsClearDisabled(false);
         }
 
-        const { name, value } = e.target;
-        setNewSale((prevNewSale) => ({
-            ...prevNewSale,
-            [name]: name === 'discount' || name === 'paymentFee' || name === 'installments' ? Number(value) : value
-        }));
         validateForm();
     };
 
@@ -345,6 +366,21 @@ const FormSales = () => {
         handleSetForm();
     };
 
+    const handleCheckboxChange = () => {
+        setNewDebt(prev => !prev); // Alternar el estado del checkbox
+        if (!newDebt) { 
+            setNewSale(prev => ({
+                ...prev,
+                debtAmount: "" 
+            }));
+        } else { 
+            setNewSale(prev => ({
+                ...prev,
+                debtAmount: "" 
+            }));
+        }
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -354,7 +390,8 @@ const FormSales = () => {
             installments: newSale.installments === '' ? 1 : newSale.installments,
             discount: newSale.discount === '' ? 0 : newSale.discount,
             paymentFee: newSale.paymentFee === '' ? 0 : newSale.paymentFee,
-            products: productsToSend
+            products: productsToSend,
+            debtAmount: newDebt ? (newSale.debtAmount === '' ? 0 : Number(newSale.debtAmount)) : 0
         };
 
         const productQuantities = {};
@@ -619,7 +656,7 @@ const FormSales = () => {
                                 <button className="delete" onClick={toggleSaleMade}>X</button>
                             </div>
                         </div>
-                        <NewSale saleResponse={saleResponse}/>
+                        <NewSale saleResponse={saleResponse} debtAmount={newSale.debtAmount}/>
                     </div>
                 ) : (
                     <div className="component">
@@ -695,6 +732,7 @@ const FormSales = () => {
                                                 onChange={handleInputChange}
                                                 className={style.discount}
                                                 type='number'
+                                                onWheel={(e) => e.target.blur()}
                                             />
                                         </div>
                                     </div>
@@ -711,6 +749,7 @@ const FormSales = () => {
                                                 onChange={handleInputChange}
                                                 className={style.discount}
                                                 type='number'
+                                                onWheel={(e) => e.target.blur()}
                                             />
                                         </div>
                                     </div>
@@ -727,6 +766,38 @@ const FormSales = () => {
                                                 onChange={handleInputChange}
                                                 className={style.discount}
                                                 type='number'
+                                                onWheel={(e) => e.target.blur()}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className={style.containerInputCheckbox}>
+                                        <input 
+                                            className={style.inputCheckbox} 
+                                            type="checkbox" 
+                                            name="newDebt" 
+                                            id="newDebt" 
+                                            checked={newDebt}
+                                            onChange={handleCheckboxChange}
+                                            disabled={!selectedClient?.value}
+                                        />
+                                        <span>Nueva deuda</span>
+                                    </div>
+                                    <div className={style.labelInput}>
+                                        <div className={style.left}>
+                                            <label htmlFor="debtAmount">Monto abonado</label>
+                                        </div>
+                                        <div className={style.right}>
+                                            <input 
+                                                className={style.discount}
+                                                type='number'
+                                                name="debtAmount"
+                                                placeholder='0'
+                                                min='0'
+                                                max={subtotal}
+                                                value={newSale.debtAmount}
+                                                onChange={handleInputChange}
+                                                onWheel={(e) => e.target.blur()}
+                                                disabled={!selectedClient?.value || !newDebt} 
                                             />
                                         </div>
                                     </div>
@@ -813,7 +884,27 @@ const FormSales = () => {
                                     <div className={style.total}>
                                         <div className={style.left}>Total</div>
                                         <div className={style.right}>${formatNumber(subtotal * (1 - newSale.discount / 100))}</div>
-                                    </div>                           
+                                    </div>    
+                                    <div className={style.subtotal}>
+                                        <div className={style.left}>Total abonado</div>
+                                        <div className={style.right}>
+                                            ${newSale.debtAmount === 0 
+                                                ? "0" 
+                                                : newSale.debtAmount > 0 
+                                                    ? formatNumber(newSale.debtAmount) 
+                                                    : formatNumber(subtotal * (1 - newSale.discount / 100))}
+                                        </div>
+                                    </div>      
+                                    <div className={style.subtotal}>
+                                        <div className={style.left}>Adeuda</div>
+                                        <div className={style.right}>
+                                            ${newSale.debtAmount === 0 
+                                                ? formatNumber(subtotal * (1 - newSale.discount / 100)) 
+                                                : newSale.debtAmount > 0 && subtotal
+                                                    ? formatNumber((subtotal * (1 - newSale.discount / 100)) - Number(newSale.debtAmount)) 
+                                                    : "0"}
+                                        </div>
+                                    </div>                 
                                     <button type="submit" disabled={isSubmitDisabled}>Aceptar</button>
                                 </div> 
                             </form>
