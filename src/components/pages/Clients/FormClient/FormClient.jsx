@@ -2,6 +2,7 @@ import style from './FormClient.module.css';
 import React, { useState } from 'react';
 import { postClient, getClients } from '../../../../redux/clientActions';
 import { useDispatch } from 'react-redux';
+import x from "./img/x.png";
 
 const FormClient = ({ onClientAdded = () => {} }) => {
 
@@ -12,7 +13,21 @@ const FormClient = ({ onClientAdded = () => {} }) => {
         name: '',
         lastname: '',
         email: '',
-        phone: ''
+        phone: '',
+        addresses: []
+    };
+
+    const initalAddressState = {
+        name: "",
+        street: "",
+        number: "",
+        between: "",
+        floor: "",
+        apartment: "",
+        city: "",
+        province: "",
+        postalCode: "",
+        reference: ""
     };
 
     const [newClient, setNewClient] = useState(initialClientState);
@@ -23,12 +38,35 @@ const FormClient = ({ onClientAdded = () => {} }) => {
         setErrorMessage('');
     };
 
+    const [address, setAddress] = useState(initalAddressState);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
 
         setNewClient((prevClient) => ({
             ...prevClient,
             [name]: value
+        }));
+    };
+
+    const handleAddressChange = (event) => {
+        const { name, value } = event.target;
+        setAddress(prev => ({ ...prev, [name]: value }));
+    };
+
+    const addAddress = () => {
+        setNewClient(prevClient => ({
+            ...prevClient,
+            addresses: [...prevClient.addresses, address]
+        }));
+
+        setAddress(initalAddressState);
+    };
+    
+    const removeAddress = (index) => {
+        setNewClient(prevClient => ({
+            ...prevClient,
+            addresses: prevClient.addresses.filter((_, i) => i !== index)
         }));
     };
 
@@ -90,8 +128,6 @@ const FormClient = ({ onClientAdded = () => {} }) => {
                                 required 
                             />
                         </div>
-                    </div>
-                    <div className={style.column}>
                         <div className={style.labelInput}>
                             <label htmlFor="email">Email</label>
                             <input 
@@ -116,11 +152,88 @@ const FormClient = ({ onClientAdded = () => {} }) => {
                                 onWheel={(event) => event.target.blur()}
                             />
                         </div>
-                        {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
+                        <div className={style.labelInput}><label>Direcciones</label></div>
+                        <div className={style.newAddress}>
+                            {newClient.addresses?.length > 0 ? 
+                                <ul>
+                                    {newClient.addresses.map((address, index) => (
+                                        <li key={index}>
+                                            {address.name && address.name}
+                                            <button type="button" onClick={() => removeAddress(index)}>
+                                                <img src={x} alt="Eliminar" />
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            :
+                                <label style={{fontStyle: "italic"}}>Aún no se han añadido direcciones.</label>}
+                        </div>
                     </div>
-                    
-                    <button type="submit">Agregar</button>
+                    <div className={style.column}>
+                        <div className={style.newAddress}>
+                            <div className={style.labelInput}>
+                                <label htmlFor="addressName">Nombre</label>
+                                <input 
+                                    type="text" 
+                                    id="addressName" 
+                                    name="name" 
+                                    value={address.name} 
+                                    onChange={handleAddressChange}
+                                     
+                                />
+                            </div>
+                            <div className={style.labelInput}>
+                                <label htmlFor="addressStreet">Calle</label>
+                                <input 
+                                    type="text" 
+                                    id="addressStreet" 
+                                    name="street" 
+                                    value={address.street} 
+                                    onChange={handleAddressChange}
+                                />
+                            </div>
+                            <div className={style.variousInputs}>
+                                <label htmlFor="addressNumber">Número</label>
+                                <input 
+                                    type="text" 
+                                    id="addressNumber" 
+                                    name="number" 
+                                    value={address.number} 
+                                    onChange={handleAddressChange}
+                                />
+                                <label htmlFor="addressFloor">Piso</label>
+                                <input 
+                                    type="text" 
+                                    id="addressFloor" 
+                                    name="floor" 
+                                    value={address.floor} 
+                                    onChange={handleAddressChange}
+                                />
+                                <label htmlFor="addressApartment">Departamento</label>
+                                <input 
+                                    type="text" 
+                                    id="addressApartment" 
+                                    name="apartment" 
+                                    value={address.apartment} 
+                                    onChange={handleAddressChange}
+                                />
+                            </div>
+                            <div className={style.labelInput}>
+                                <label htmlFor="addressReference">Referencia</label>
+                                <input 
+                                    type="text" 
+                                    id="addressReference" 
+                                    name="reference" 
+                                    value={address.reference} 
+                                    onChange={handleAddressChange}
+                                />
+                            </div>
+                            <button type="button" onClick={addAddress}>Añadir</button>
+                        </div>
 
+                        {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
+                        <button type="submit">Crear</button>
+                    </div>
                 </form>
 
             </div>
