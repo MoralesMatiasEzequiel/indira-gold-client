@@ -137,10 +137,9 @@
 
 .addClientComponent{
     position: absolute;
-    width: 55%;
-    top: 10rem;
+    width: 70%;
+    top: 12rem;
     right: 1.5rem;
-    height: 13rem;
     display: none;
 }
 
