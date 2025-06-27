@@ -340,8 +340,17 @@ const DetailSale = () => {
                                         </a>
                                     </p>
                                 : <p><span>Cliente:&nbsp;</span> Anónimo</p>}
+                                {saleDetail.shipment?.address && (
+                                    <>
+                                        <p>
+                                            <span>Dirección de envío:&nbsp;</span>{saleDetail.shipment?.address}
+                                        </p>
+                                        <p>
+                                            <span>Costo de envío:&nbsp;</span> ${formatNumber(saleDetail.shipment?.amount)}
+                                        </p>
+                                    </>
+                                )}
                                 {saleDetail.paymentMethod && <p><span>Modo de pago:&nbsp;</span> {saleDetail.paymentMethod}</p>}
-                                {/* {saleDetail.paymentMethod && <p>Modo de pago: {saleDetail.paymentMethod.join(', ')}</p>} */}
                                 {saleDetail.soldAt && <p><span>Tipo de venta:&nbsp;</span> {saleDetail.soldAt}</p>}
                                 {saleDetail.subTotal && <p><span>Subtotal:&nbsp;</span> ${formatNumber(saleDetail.subTotal)}</p>}
                                 {<p><span>Descuento:&nbsp;</span> {saleDetail.discount}% {`(- $${saleDetail.discountApplied})`}</p>}

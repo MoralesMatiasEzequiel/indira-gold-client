@@ -40,7 +40,6 @@ const FormSales = () => {
     const [selectedClient, setSelectedClient] = useState(null);
     const [clientOptions, setClientOptions] = useState([]);
     const [withShipping, setWithShipping] = useState(false);
-    const [selectedAddresses, setSelectedAddresses] = useState([]);
     const [selectedAddressOption, setSelectedAddressOption] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
@@ -61,11 +60,13 @@ const FormSales = () => {
         paymentFee: '',
         products: [],
         debtAmount: '',
-        shipment: []
+        shipment: {
+            address: "",
+            amount: ''
+        }
     };
 
     const [newSale, setNewSale] = useState(initialSaleState);
-console.log(newSale);
 
     const productRefs = useRef([]);
 
@@ -78,7 +79,6 @@ console.log(newSale);
         setSubtotal(0);
         setIsClearDisabled(true);
         setWithShipping(false);
-        setSelectedAddresses([]);
         setSelectedAddressOption(null);
         setNewDebt(false);
         setLastDebtAmount(0);
@@ -294,14 +294,17 @@ console.log(newSale);
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
             client: selectedOption ? selectedOption.value : '',
-            shipment: [],
+            shipment: {
+                address: '',
+                amount: ''
+            },
             debtAmount: "" // Resetear el monto al cambiar cliente
         }));
 
         // Desactivar checkboxs y limpiar selectedAddresses al cambiar cliente:
         setNewDebt(false); 
         setWithShipping(false);
-        setSelectedAddresses([]);
+        setSelectedAddressOption(null);
 
         validateForm();
     };
@@ -321,6 +324,18 @@ console.log(newSale);
             }));
 
             // Evitamos setear dos veces con este return
+            return;
+        }
+
+        if (name === 'shippingCost') {
+            const numericValue = value === '' ? 0 : Number(value);
+            setNewSale((prevNewSale) => ({
+                ...prevNewSale,
+                shipment: {
+                    ...prevNewSale.shipment,
+                    amount: numericValue
+                }
+            }));
             return;
         }
 
@@ -392,8 +407,8 @@ console.log(newSale);
         if (name === "withShipping") {
             setWithShipping(checked);
             if (!checked) {
-                setSelectedAddresses([]);
-                setNewSale(prev => ({ ...prev, shipment: [] }));
+                setSelectedAddressOption(null);
+                setNewSale(prev => ({ ...prev, shipment: { address: "", amount: '' }}));
             }
         }
 
@@ -406,34 +421,10 @@ console.log(newSale);
         }
     };
 
-    //Opcion para <select>:
-    // const handleAddressSelect = (e) => {
-    //     const addressId = e.target.value;
-    //     if (!addressId) return;
-
-    //     const selected = clientById.addresses?.find(address => address._id === addressId);
-
-    //     if (selected && !selectedAddresses.some(a => a._id === addressId)) {
-    //         const updated = [...selectedAddresses, selected];
-    //         setSelectedAddresses(updated);
-    //         setNewSale(prev => ({ ...prev, shipment: updated }));
-    //     }
-
-    //     e.target.value = ""; // Para resetear el select
-    // };
-
-    const removeAddress = (id) => {
-        const updated = selectedAddresses.filter(address => address._id !== id);
-        setSelectedAddresses(updated);
-        setNewSale(prev => ({ ...prev, shipment: updated }));
-    };
-
     const getClientAddressOptions = () => {
         if (!clientById?.addresses?.length) return [];
 
-        return clientById.addresses
-        .filter(address => !selectedAddresses.some(a => a._id === address._id)) // ❌ excluir las seleccionadas
-        .map(address => ({
+        return clientById.addresses.map(address => ({
             value: address._id,
             label: `${address.name} - ${address.street} N° ${address.number}, ${address.city}`,
             fullAddress: address
@@ -450,7 +441,11 @@ console.log(newSale);
             discount: newSale.discount === '' ? 0 : newSale.discount,
             paymentFee: newSale.paymentFee === '' ? 0 : newSale.paymentFee,
             products: productsToSend,
-            debtAmount: newDebt ? (newSale.debtAmount === '' ? 0 : Number(newSale.debtAmount)) : 0
+            debtAmount: newDebt ? (newSale.debtAmount === '' ? 0 : Number(newSale.debtAmount)) : 0,
+            shipment: {
+                address: newSale.shipment.address,
+                amount: newSale.shipment.amount === '' ? 0 : Number(newSale.shipment.amount)
+            }
         };
 
         const productQuantities = {};
@@ -497,6 +492,7 @@ console.log(newSale);
             setSelectedProducts([{ productId: null, colorId: null, sizeId: null, price: null, category: null }]);
             setSubtotal(0);
             setSelectedClient(null);
+            setSelectedAddressOption(null);
             setIsSubmitDisabled(true);
             setIsClearDisabled(true);
 
@@ -768,89 +764,62 @@ console.log(newSale);
                                         />
                                         <span>Con envío</span>
                                     </div>
-                                    {withShipping && selectedClient && clientById.addresses?.length > 0 ? (
-                                        <>
-                                            <div className={style.labelInput}>
-                                                <div className={style.left}>
-                                                    <label htmlFor="shipment">Dirección de envío</label>
-                                                </div>
-                                                <div className={style.right}>
-                                                    {/* <select id="shipment" onChange={handleAddressSelect}>
-                                                        <option value="">Seleccionar</option>
-                                                        {clientById.addresses?.length > 0 && (
-                                                            clientById.addresses?.map(address => (
-                                                                <option key={address._id} value={address._id}>
-                                                                    {address.name} - {address.street} N° {address.number}, {address.city}
-                                                                </option>
-                                                            ))
-                                                        )}
-                                                    </select> */}
-                                                    <Select
-                                                        name="shipment"
-                                                        value={selectedAddressOption}
-                                                        onChange={(selectedOption) => {
-                                                            if (!selectedOption) return;
-                                                            const selected = selectedOption.fullAddress;
-                                                            if (!selectedAddresses.some(a => a._id === selected._id)) {
-                                                                const updated = [...selectedAddresses, selected];
-                                                                setSelectedAddresses(updated);
-                                                                setNewSale(prev => ({ ...prev, shipment: updated }));
-                                                            }
-                                                            setSelectedAddressOption(null); // volver al placeholder
-                                                        }}
-                                                        options={getClientAddressOptions()}
-                                                        menuPortalTarget={document.body}
-                                                        styles={{
-                                                            menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                                            ...clientInputStyles
-                                                        }}
-                                                        onKeyDown={(e) => {
-                                                            if (e.key === 'Enter') {
-                                                            e.preventDefault(); // Evita seleccionar con Enter
-                                                            }
-                                                        }}
-                                                        noOptionsMessage={() => "No hay más direcciones registradas"}
-                                                        placeholder="Seleccionar"
-                                                    />
-                                                </div>
-                                            </div>
-                                            {selectedAddresses?.length > 0 && (
-                                                <div className="formRow">
-                                                    <ul>
-                                                        {selectedAddresses?.map((address) => (
-                                                            <li key={address._id}>
-                                                                <div>
-                                                                    <strong>{address.name}</strong> - {address.street} N° {address.number}, {address.city}
-                                                                </div>
-                                                                <button type="button" onClick={() => removeAddress(address._id)}>x</button>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                            <div className={style.labelInput}>
-                                                <div className={style.left}>
-                                                    <label htmlFor="shippingCost">Costo de envío $</label>
-                                                </div>
-                                                <div className={style.right}>
-                                                    <input 
-                                                        name="shippingCost"
-                                                        placeholder='0'
-                                                        min='0'
-                                                        // value={newSale.installments}
-                                                        // onChange={handleInputChange}
-                                                        className={style.discount}
-                                                        type='number'
-                                                        onWheel={(e) => e.target.blur()}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </>
-                                    ) : withShipping && selectedClient && clientById.addresses?.length === 0 ? (
-                                        <label>No hay direcciones registradas</label>
-                                    ) : (
-                                        <></>
-                                    )}
+                                    <div className={style.labelInput}>
+                                        <div className={style.left}>
+                                            <label htmlFor="shipment">Dirección de envío</label>
+                                        </div>
+                                        <div className={style.right}>
+                                            <Select
+                                                name="shipment"
+                                                value={selectedAddressOption}
+                                                onChange={(selectedOption) => {
+                                                    if (!selectedOption) return;
+                                                    const selected = selectedOption.fullAddress;
+
+                                                    setSelectedAddressOption(selectedOption); // Mostrar seleccionada
+                                                    setNewSale(prev => ({
+                                                        ...prev,
+                                                        shipment: {
+                                                            ...prev.shipment,
+                                                            address: `${selected.name} - ${selected.street} N° ${selected.number}, ${selected.city}`
+                                                        }
+                                                    }));
+                                                }}
+                                                options={getClientAddressOptions()}
+                                                menuPortalTarget={document.body}
+                                                styles={{
+                                                    menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                    ...clientInputStyles
+                                                }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                noOptionsMessage={() => "No hay direcciones registradas"}
+                                                placeholder="Seleccionar"
+                                                isDisabled={!withShipping}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className={style.labelInput}>
+                                        <div className={style.left}>
+                                            <label htmlFor="shippingCost">Costo de envío $</label>
+                                        </div>
+                                        <div className={style.right}>
+                                            <input 
+                                                className={style.discount}
+                                                type='number'
+                                                name="shippingCost"
+                                                placeholder='0'
+                                                min='0'
+                                                value={newSale.shipment.amount}
+                                                onChange={handleInputChange}
+                                                onWheel={(e) => e.target.blur()}
+                                                disabled={!withShipping || selectedAddressOption === null}
+                                            />
+                                        </div>
+                                    </div>
                                     <div className={style.labelInput}>
                                         <div className={style.left}>
                                             <label htmlFor="paymentMethod">Medio de pago</label>
@@ -935,27 +904,25 @@ console.log(newSale);
                                         />  
                                         <span>Nueva deuda</span>
                                     </div>
-                                    {newDebt && selectedClient && (
-                                        <div className={style.labelInput}>
-                                            <div className={style.left}>
-                                                <label htmlFor="debtAmount">Monto abonado</label>
-                                            </div>
-                                            <div className={style.right}>
-                                                <input 
-                                                    className={style.discount}
-                                                    type='number'
-                                                    name="debtAmount"
-                                                    placeholder='0'
-                                                    min='0'
-                                                    max={subtotal}
-                                                    value={newSale.debtAmount}
-                                                    onChange={handleInputChange}
-                                                    onWheel={(e) => e.target.blur()}
-                                                    disabled={!selectedClient?.value || !newDebt} 
-                                                />
-                                            </div>
+                                    <div className={style.labelInput}>
+                                        <div className={style.left}>
+                                            <label htmlFor="debtAmount">Monto abonado</label>
                                         </div>
-                                    )}
+                                        <div className={style.right}>
+                                            <input 
+                                                className={style.discount}
+                                                type='number'
+                                                name="debtAmount"
+                                                placeholder='0'
+                                                min='0'
+                                                max={subtotal}
+                                                value={newSale.debtAmount}
+                                                onChange={handleInputChange}
+                                                onWheel={(e) => e.target.blur()}
+                                                disabled={!newDebt}
+                                            />
+                                        </div>
+                                    </div>
                                     <div className={style.labelInput}>
                                         <div className={style.left}>
                                             <label htmlFor="soldAt">Tipo de venta</label>
@@ -1035,6 +1002,10 @@ console.log(newSale);
                                     <div className={style.discount}>
                                         <div className={style.left}>Total con retención</div>
                                         <div className={style.right}>${formatNumber((subtotal * (1 - newSale.discount / 100)) - ((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100)))}</div>
+                                    </div>
+                                    <div className={style.discount}>
+                                        <div className={style.left}>Costo de envío</div>
+                                        <div className={style.right}>${formatNumber(newSale.shipment?.amount !== '' ?newSale.shipment?.amount : 0)}</div>
                                     </div>
                                     <div className={style.total}>
                                         <div className={style.left}>Total</div>

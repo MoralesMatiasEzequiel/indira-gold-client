@@ -147,6 +147,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                     value={editClient.dni} 
                                     onChange={handleChange} 
                                     required 
+                                    onWheel={(e) => e.target.blur()}
                                 />
                             </div>
                             <div className={style.labelInput}>
@@ -191,6 +192,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                     value={editClient.phone} 
                                     onChange={handleChange} 
                                     required 
+                                    onWheel={(e) => e.target.blur()}
                                 />
                             </div>
                             <div className={style.labelInput}><label>Direcciones</label></div>

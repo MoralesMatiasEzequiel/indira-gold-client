@@ -415,6 +415,7 @@ const PutSale = () => {
                                                     type="number"
                                                     value={editableSubtotal}
                                                     onChange={handleEditableSubtotalChange}
+                                                    onWheel={(e) => e.target.blur()}
                                                 />
                                                 <button type="button" onClick={saveNewSubTotal}>Actualizar</button>
                                             </div>
@@ -433,6 +434,7 @@ const PutSale = () => {
                                             type="number"
                                             value={discount}
                                             onChange={handleDiscountChange}
+                                            onWheel={(e) => e.target.blur()}
                                         />
                                     </p>
                                 </div>
@@ -446,6 +448,7 @@ const PutSale = () => {
                                             type="number"
                                             value={paymentFee}
                                             onChange={handlePaymentFeeChange}
+                                            onWheel={(e) => e.target.blur()}
                                         />
                                     </p>
                                 </div>

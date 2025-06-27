@@ -7,7 +7,7 @@ const NewSale = ({ saleResponse, debtAmount }) => {
 
     if (!saleResponse?.data) return null;
 
-    const { client, paymentMethod, installments, discount, products, orderNumber, subTotal, totalPrice, date } = saleResponse.data;
+    const { client, paymentMethod, installments, discount, products, orderNumber, subTotal, totalPrice, date, shipment } = saleResponse.data;
 
     const safeDebtAmount = debtAmount ?? 0;
 
@@ -59,6 +59,12 @@ const NewSale = ({ saleResponse, debtAmount }) => {
                     <>
                         <p><span className={style.key}>Total abonado:</span> ${formatNumber(safeDebtAmount)}</p>
                         <p><span className={style.key}>Adeuda:</span> ${formatNumber(totalPrice - safeDebtAmount)}</p>
+                    </>
+                )}
+                {shipment?.address !== '' && (
+                    <>
+                        <p><span className={style.key}>Dirección de envío:</span> {shipment?.address}</p>
+                        <p><span className={style.key}>Costo de envío:</span> ${formatNumber(shipment?.amount)}</p>
                     </>
                 )}
             </div>
