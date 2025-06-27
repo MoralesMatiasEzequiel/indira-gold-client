@@ -659,7 +659,7 @@ const PutProduct = () => {
                                 </div>
                                 <div className={style.priceContainer}>
                                     <label htmlFor="price" className={style.nameTitle}>Precio $</label>
-                                    <input type="number" name="price" onChange={handleInputChange} value={editProduct.price} min='0'/>
+                                    <input type="number" name="price" onChange={handleInputChange} value={editProduct.price} min='0' onWheel={(e) => e.target.blur()}/>
                                 </div>    
                                 <div className={style.descriptionContainer}>
                                     <label htmlFor="description" className={style.nameTitle}>Descripción</label>

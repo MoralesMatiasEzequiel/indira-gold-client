@@ -66,22 +66,22 @@ const PutDebt = () => {
     }, [editDebt]);
 
     //--- HANDLE CHANGE
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        let newValue = value === '' ? 0 : parseFloat(value);
+    // const handleInputChange = (event) => {
+    //     const { name, value } = event.target;
+    //     let newValue = value === '' ? 0 : parseFloat(value);
 
-        if (name === 'amount') {
-            // Validar que el monto no sea mayor al saldo restante
-            if (newValue > editDebt.remainingBalance) {
-                newValue = editDebt.remainingBalance;
-            }
-        }       
+    //     if (name === 'amount') {
+    //         // Validar que el monto no sea mayor al saldo restante
+    //         if (newValue > editDebt.remainingBalance) {
+    //             newValue = editDebt.remainingBalance;
+    //         }
+    //     }       
 
-        setEditDebt((prevDebt) => ({
-            ...prevDebt,
-            [name]: newValue,
-        }));
-    };
+    //     setEditDebt((prevDebt) => ({
+    //         ...prevDebt,
+    //         [name]: newValue,
+    //     }));
+    // };
 
     const handleDebtChange = (selectedOption) => {
         if(selectedOption) {

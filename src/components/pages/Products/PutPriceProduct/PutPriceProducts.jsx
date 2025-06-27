@@ -230,6 +230,7 @@ const PutPriceProducts = () => {
                                     onChange={handleInputChange}
                                     className={style.inputPorcentage}
                                     type='number'
+                                    onWheel={(e) => e.target.blur()}
                                 />
                             </div>
                         </div>
