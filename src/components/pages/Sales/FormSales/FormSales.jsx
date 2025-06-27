@@ -488,6 +488,7 @@ const FormSales = () => {
             setSelectedProducts([{ productId: null, colorId: null, sizeId: null, price: null, category: null }]);
             setSubtotal(0);
             setSelectedClient(null);
+            setSelectedAddressOption(null);
             setIsSubmitDisabled(true);
             setIsClearDisabled(true);
 
@@ -997,6 +998,10 @@ const FormSales = () => {
                                     <div className={style.discount}>
                                         <div className={style.left}>Total con retención</div>
                                         <div className={style.right}>${formatNumber((subtotal * (1 - newSale.discount / 100)) - ((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100)))}</div>
+                                    </div>
+                                    <div className={style.discount}>
+                                        <div className={style.left}>Costo de envío</div>
+                                        <div className={style.right}>${formatNumber(newSale.shipment?.amount !== '' ?newSale.shipment?.amount : 0)}</div>
                                     </div>
                                     <div className={style.total}>
                                         <div className={style.left}>Total</div>
