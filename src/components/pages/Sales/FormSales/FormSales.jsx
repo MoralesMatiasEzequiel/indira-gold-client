@@ -441,7 +441,11 @@ const FormSales = () => {
             discount: newSale.discount === '' ? 0 : newSale.discount,
             paymentFee: newSale.paymentFee === '' ? 0 : newSale.paymentFee,
             products: productsToSend,
-            debtAmount: newDebt ? (newSale.debtAmount === '' ? 0 : Number(newSale.debtAmount)) : 0
+            debtAmount: newDebt ? (newSale.debtAmount === '' ? 0 : Number(newSale.debtAmount)) : 0,
+            shipment: {
+                address: newSale.shipment.address,
+                amount: newSale.shipment.amount === '' ? 0 : Number(newSale.shipment.amount)
+            }
         };
 
         const productQuantities = {};
