@@ -357,6 +357,7 @@ const DetailSale = () => {
                                 {<p><span>Retención:&nbsp;</span> {saleDetail.paymentFee}% {`(- $${saleDetail.paymentFeeApplied})`}</p>}
                                 {saleDetail.totalWithFee && <p><span>Total con retención:&nbsp;</span> ${formatNumber(saleDetail.totalWithFee)}</p>}
                                 {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${formatNumber(saleDetail.totalPrice)}</p>}
+                                {saleDetail.debt ? <p><span>Adeuda:&nbsp;</span> ${formatNumber(saleDetail.debt)}</p> : <></>}
                             </div>
                             <div className={style.column}>
                                 <p><span>Productos:&nbsp;</span></p>
