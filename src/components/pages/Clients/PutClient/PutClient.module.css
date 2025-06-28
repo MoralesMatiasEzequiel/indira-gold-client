@@ -36,6 +36,11 @@
 
 .clientForm .variousInputs{
     display: flex;
+    justify-content: space-between;
+}
+
+.clientForm .variousInputs div{
+    display: flex;
     gap: 0.5rem;
 }
 
@@ -46,7 +51,6 @@
 .clientForm .variousInputs input{
     text-align: right;
     width: 3rem;
-    margin-right: 0.5rem;
 }
 
 .clientForm .newAddress{
