@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
+import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSaleById, clearSaleDetail, putSale } from '../../../../redux/saleActions.js';
 import { getProducts, getProductById, reduceStock, increaseStock } from '../../../../redux/productActions.js';
 import { putRemovePurchases, putAddProducts } from '../../../../redux/clientActions.js';
-import AsyncSelect from 'react-select/async';
 import style from "./PutSale.module.css";
 import detail from "../../../../assets/img/detail.png";
 import x from "./img/x.png";
 
 const PutSale = () => {
+
     let { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const saleDetail = useSelector(state => state.sales.saleDetail);
     const products = useSelector(state => state.products.products);
+
+    const [withShipping, setWithShipping] = useState(false);
+    const [shipment, setShipment] = useState({ address: '', amount: '' });
+    const [selectedAddressOption, setSelectedAddressOption] = useState(null);
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [deletedPurchasedProducts, setDeletedPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,6 +35,73 @@ const PutSale = () => {
     const productRefs = useRef([]);
     const [editableSubtotal, setEditableSubtotal] = useState(0); 
     const [isEditingSubtotal, setIsEditingSubtotal] = useState(false);
+
+    const handleCheckbox = (e) => {
+        const { name, checked } = e.target;
+
+        if (name === "withShipping") {
+            setWithShipping(checked);
+            if (!checked) {
+                setSelectedAddressOption(null);
+                setShipment({ address: "", amount: '' });
+            }
+        }
+    };
+
+    const getClientAddressOptions = () => {
+        if (!saleDetail.client?.addresses?.length) return [];
+
+        return saleDetail.client?.addresses?.map(address => ({
+            value: address._id,
+            label: `${address.name} - ${address.street} N° ${address.number}, ${address.city}`,
+            fullAddress: address
+        }));
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === 'shippingCost') {
+            const numericValue = value === '' ? 0 : Number(value);
+            setShipment(prev => ({
+                ...prev,
+                amount: numericValue
+            }));
+        }
+    };
+
+    const clientInputStyles = {
+        control: (provided, state) => ({
+            ...provided,
+            minHeight: '20px',
+            fontSize: '0.75rem',
+            borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            boxShadow: state.isFocused ? '0 0 0 1px #e4b61a' : provided.boxShadow,
+            '&:hover': {
+                borderColor: state.isFocused ? '#e4b61a' : provided.borderColor,
+            }
+        }),
+        input: (provided) => ({
+            ...provided,
+            color: '#3c3c3b',
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: '#797979',
+            fontStyle: 'italic'
+        }),
+        dropdownIndicator: (provided) => ({
+            ...provided,
+            color: '#3c3c3b',
+            padding: 0
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            color: state.isSelected ? '#000' : '#555',
+            padding: '10px',
+            fontSize: '0.75rem'
+        }),
+    };
 
     const transformProductOptions = (products) => {
         let productOptions = [];
@@ -155,6 +229,8 @@ const PutSale = () => {
     }, [dispatch, id]);
 
     useEffect(() => {
+        if (!saleDetail) return;
+
         if (!loading && saleDetail && saleDetail.products) {
             const updatedProducts = [];
             saleDetail.products.forEach((product) => {
@@ -190,6 +266,24 @@ const PutSale = () => {
             });
         } else {
             setPurchasedProducts([]);
+        }
+
+        const hasAddress = saleDetail.shipment !== null;
+        const hasClient = saleDetail.client !== null;
+
+        setWithShipping(hasClient && hasAddress);
+
+        setShipment({
+            address: saleDetail.shipment?.address || '',
+            amount: saleDetail.shipment?.amount || ''
+        });
+
+        if (hasAddress && saleDetail.shipment?.address) {
+            const addressList = getClientAddressOptions() || [];
+            const matched = addressList.find(opt => opt.label === saleDetail?.shipment?.address);
+            if (matched) {
+                setSelectedAddressOption(matched);
+            }
         }
         
     }, [saleDetail, dispatch, loading, discount]);
@@ -251,10 +345,18 @@ const PutSale = () => {
                     price: product.price
                 }))
         ];
+
+        const shipmentData = withShipping && shipment.address !== ''
+        ? {
+            address: shipment.address,
+            amount: shipment.amount || 0
+        }
+        : null;
     
         // Construir objeto de venta
         const saleData = {
             _id: id,
+            shipment: shipmentData,
             products: productsData,
             discount,
             paymentFee,
@@ -329,10 +431,7 @@ const PutSale = () => {
         });
     
         // Realizar la actualización de la venta
-        console.log(saleData);
         dispatch(putSale(saleData)).then(() => {
-            
-    
             // Navegar después de guardar
             navigate(`/main_window/sales/${id}`);
         }).catch(error => {
@@ -366,6 +465,71 @@ const PutSale = () => {
                     <div className={style.row}>
                         <form onSubmit={handleSubmit}>
                             <div className={style.column}>
+                                <div className={style.containerInputCheckbox}>
+                                    <input 
+                                        className={style.inputCheckbox} 
+                                        type="checkbox" 
+                                        name="withShipping"
+                                        checked={withShipping}
+                                        onChange={handleCheckbox}
+                                        disabled={saleDetail?.client === null}
+                                    />
+                                    <span>Con envío</span>
+                                </div>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label htmlFor="shipment">Dirección de envío</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <Select
+                                            name="shipment"
+                                            value={selectedAddressOption}
+                                            onChange={(selectedOption) => {
+                                                if (!selectedOption) return;
+
+                                                const selected = selectedOption.fullAddress;
+
+                                                setSelectedAddressOption(selectedOption);
+                                                setShipment(prev => ({
+                                                    ...prev,
+                                                    address: `${selected.name} - ${selected.street} N° ${selected.number}, ${selected.city}`
+                                                }));
+                                            }}
+                                            options={getClientAddressOptions()}
+                                            menuPortalTarget={document.body}
+                                            styles={{
+                                                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                ...clientInputStyles
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                }
+                                            }}
+                                            noOptionsMessage={() => "No hay direcciones registradas"}
+                                            placeholder="Seleccionar"
+                                            isDisabled={!withShipping}
+                                        />
+                                    </div>
+                                </div>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label htmlFor="shippingCost">Costo de envío $</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <input 
+                                            className={style.discount}
+                                            type='number'
+                                            name="shippingCost"
+                                            placeholder='0'
+                                            min='0'
+                                            value={shipment.amount}
+                                            onChange={handleInputChange}
+                                            onWheel={(e) => e.target.blur()}
+                                            disabled={!withShipping || selectedAddressOption === null}
+                                        />
+                                    </div>
+                                </div>
                                 <div className={style.section}>
                                     <p className={style.products}><span>Productos Comprados:</span></p>
                                     <ul>
