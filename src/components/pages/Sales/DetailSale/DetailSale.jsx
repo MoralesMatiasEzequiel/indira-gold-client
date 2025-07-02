@@ -108,7 +108,8 @@ const DetailSale = () => {
 
     const formatNumber = (number) => {
         if (number !== null && number !== undefined) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            const rounded = Math.round(number); // redondea al entero más cercano
+            return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         return '0';
     };
@@ -353,8 +354,8 @@ const DetailSale = () => {
                                 {saleDetail.paymentMethod && <p><span>Modo de pago:&nbsp;</span> {saleDetail.paymentMethod}</p>}
                                 {saleDetail.soldAt && <p><span>Tipo de venta:&nbsp;</span> {saleDetail.soldAt}</p>}
                                 {saleDetail.subTotal && <p><span>Subtotal:&nbsp;</span> ${formatNumber(saleDetail.subTotal)}</p>}
-                                {<p><span>Descuento:&nbsp;</span> {saleDetail.discount}% {`(- $${saleDetail.discountApplied})`}</p>}
-                                {<p><span>Retención:&nbsp;</span> {saleDetail.paymentFee}% {`(- $${saleDetail.paymentFeeApplied})`}</p>}
+                                {<p><span>Descuento:&nbsp;</span> {saleDetail.discount}% {`(- $${formatNumber(saleDetail.discountApplied)})`}</p>}
+                                {<p><span>Retención:&nbsp;</span> {saleDetail.paymentFee}% {`(- $${formatNumber(saleDetail.paymentFeeApplied)})`}</p>}
                                 {saleDetail.totalWithFee && <p><span>Total con retención:&nbsp;</span> ${formatNumber(saleDetail.totalWithFee)}</p>}
                                 {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${formatNumber(saleDetail.totalPrice)}</p>}
                                 {saleDetail.debt ? <p><span>Adeuda:&nbsp;</span> ${formatNumber(saleDetail.debt)}</p> : <></>}

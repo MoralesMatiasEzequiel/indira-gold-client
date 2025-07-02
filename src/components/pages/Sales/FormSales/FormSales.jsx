@@ -65,6 +65,7 @@ const FormSales = () => {
     };
 
     const [newSale, setNewSale] = useState(initialSaleState);
+console.log(newSale);
 
     const productRefs = useRef([]);
 
@@ -156,9 +157,17 @@ const FormSales = () => {
         return subtotal;
     };
 
+    // const formatNumber = (number) => {
+    //     if (number !== null && number !== undefined) {
+    //         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    //     }
+    //     return '0';
+    // };
+
     const formatNumber = (number) => {
         if (number !== null && number !== undefined) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            const rounded = Math.round(number); // redondea al entero más cercano
+            return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         return '0';
     };
@@ -765,7 +774,7 @@ const FormSales = () => {
                                             <label htmlFor="shipment">Dirección de envío</label>
                                         </div>
                                         <div className={style.right}>
-                                            <Select
+                                            <Select 
                                                 name="shipment"
                                                 value={selectedAddressOption}
                                                 onChange={(selectedOption) => {
@@ -990,11 +999,11 @@ const FormSales = () => {
                                     </div>
                                     <div className={style.discount}>
                                         <div className={style.left}>Retención</div>
-                                        <div className={style.right}>- ${formatNumber((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100))}</div>
+                                        <div className={style.right}>- ${formatNumber(subtotal * newSale.paymentFee / 100)}</div>
                                     </div>
                                     <div className={style.discount}>
                                         <div className={style.left}>Total con retención</div>
-                                        <div className={style.right}>${formatNumber((subtotal * (1 - newSale.discount / 100)) - ((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100)))}</div>
+                                        <div className={style.right}>${formatNumber(newSale.paymentFee ? (subtotal * (1 - newSale.discount / 100)) - ((subtotal * (1 - newSale.discount / 100)) * (newSale.paymentFee / 100)) : '0')}</div>
                                     </div>
                                     <div className={style.discount}>
                                         <div className={style.left}>Costo de envío</div>
