@@ -51,7 +51,6 @@ const FormSales = () => {
     const [lastDebtAmount, setLastDebtAmount] = useState(0);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [isClearDisabled, setIsClearDisabled] = useState(true);
-console.log('SHIPMENT: ', shipment);
 
     const initialSaleState = {
         client: '',
@@ -66,7 +65,6 @@ console.log('SHIPMENT: ', shipment);
     };
 
     const [newSale, setNewSale] = useState(initialSaleState);
-console.log('NEW SALE: ', newSale);
 
     const productRefs = useRef([]);
 
@@ -443,7 +441,6 @@ console.log('NEW SALE: ', newSale);
                 amount: shipment.amount === '' ? 0 : Number(shipment.amount)
             } : null
         };
-console.log('SALE DATA: ', saleData);
 
         const productQuantities = {};
 
