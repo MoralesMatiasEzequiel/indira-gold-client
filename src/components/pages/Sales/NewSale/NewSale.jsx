@@ -61,7 +61,7 @@ const NewSale = ({ saleResponse, debtAmount }) => {
                         <p><span className={style.key}>Adeuda:</span> ${formatNumber(totalPrice - safeDebtAmount)}</p>
                     </>
                 )}
-                {shipment?.address !== '' && (
+                {shipment !== null && (
                     <>
                         <p><span className={style.key}>Dirección de envío:</span> {shipment?.address}</p>
                         <p><span className={style.key}>Costo de envío:</span> ${formatNumber(shipment?.amount)}</p>

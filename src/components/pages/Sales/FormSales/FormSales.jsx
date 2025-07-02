@@ -40,6 +40,7 @@ const FormSales = () => {
     const [selectedClient, setSelectedClient] = useState(null);
     const [clientOptions, setClientOptions] = useState([]);
     const [withShipping, setWithShipping] = useState(false);
+    const [shipment, setShipment] = useState({ address: '', amount: '' });
     const [selectedAddressOption, setSelectedAddressOption] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState(null);
     const [subtotal, setSubtotal] = useState(0);
@@ -60,10 +61,7 @@ const FormSales = () => {
         paymentFee: '',
         products: [],
         debtAmount: '',
-        shipment: {
-            address: "",
-            amount: ''
-        }
+        shipment: null
     };
 
     const [newSale, setNewSale] = useState(initialSaleState);
@@ -79,6 +77,7 @@ const FormSales = () => {
         setSubtotal(0);
         setIsClearDisabled(true);
         setWithShipping(false);
+        setShipment({ address: '', amount: '' });
         setSelectedAddressOption(null);
         setNewDebt(false);
         setLastDebtAmount(0);
@@ -294,10 +293,7 @@ const FormSales = () => {
         setNewSale((prevNewSale) => ({
             ...prevNewSale,
             client: selectedOption ? selectedOption.value : '',
-            shipment: {
-                address: '',
-                amount: ''
-            },
+            shipment: null,
             debtAmount: "" // Resetear el monto al cambiar cliente
         }));
 
@@ -329,12 +325,9 @@ const FormSales = () => {
 
         if (name === 'shippingCost') {
             const numericValue = value === '' ? 0 : Number(value);
-            setNewSale((prevNewSale) => ({
-                ...prevNewSale,
-                shipment: {
-                    ...prevNewSale.shipment,
-                    amount: numericValue
-                }
+            setShipment(prev => ({
+                ...prev,
+                amount: numericValue
             }));
             return;
         }
@@ -408,7 +401,8 @@ const FormSales = () => {
             setWithShipping(checked);
             if (!checked) {
                 setSelectedAddressOption(null);
-                setNewSale(prev => ({ ...prev, shipment: { address: "", amount: '' }}));
+                setShipment({ address: '', amount: '' })
+                setNewSale(prev => ({ ...prev, shipment: null}));
             }
         }
 
@@ -424,7 +418,7 @@ const FormSales = () => {
     const getClientAddressOptions = () => {
         if (!clientById?.addresses?.length) return [];
 
-        return clientById.addresses.map(address => ({
+        return clientById.addresses?.map(address => ({
             value: address._id,
             label: `${address.name} - ${address.street} N° ${address.number}, ${address.city}`,
             fullAddress: address
@@ -442,10 +436,10 @@ const FormSales = () => {
             paymentFee: newSale.paymentFee === '' ? 0 : newSale.paymentFee,
             products: productsToSend,
             debtAmount: newDebt ? (newSale.debtAmount === '' ? 0 : Number(newSale.debtAmount)) : 0,
-            shipment: {
-                address: newSale.shipment.address,
-                amount: newSale.shipment.amount === '' ? 0 : Number(newSale.shipment.amount)
-            }
+            shipment: shipment.address !== ''  ? {
+                address: shipment.address,
+                amount: shipment.amount === '' ? 0 : Number(shipment.amount)
+            } : null
         };
 
         const productQuantities = {};
@@ -493,6 +487,8 @@ const FormSales = () => {
             setSubtotal(0);
             setSelectedClient(null);
             setSelectedAddressOption(null);
+            setWithShipping(false);
+            setShipment({ address: '', amount: '' });
             setIsSubmitDisabled(true);
             setIsClearDisabled(true);
 
@@ -777,12 +773,9 @@ const FormSales = () => {
                                                     const selected = selectedOption.fullAddress;
 
                                                     setSelectedAddressOption(selectedOption); // Mostrar seleccionada
-                                                    setNewSale(prev => ({
+                                                    setShipment(prev => ({
                                                         ...prev,
-                                                        shipment: {
-                                                            ...prev.shipment,
-                                                            address: `${selected.name} - ${selected.street} N° ${selected.number}, ${selected.city}`
-                                                        }
+                                                        address: `${selected.name} - ${selected.street} N° ${selected.number}, ${selected.city}`
                                                     }));
                                                 }}
                                                 options={getClientAddressOptions()}
@@ -813,7 +806,7 @@ const FormSales = () => {
                                                 name="shippingCost"
                                                 placeholder='0'
                                                 min='0'
-                                                value={newSale.shipment.amount}
+                                                value={shipment.amount}
                                                 onChange={handleInputChange}
                                                 onWheel={(e) => e.target.blur()}
                                                 disabled={!withShipping || selectedAddressOption === null}
