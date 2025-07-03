@@ -266,7 +266,7 @@ const FilteredSales = () => {
                                                     <td>{formatDate(sale.date)}</td>
                                                     <td className="center">{sale.orderNumber}</td>
                                                     <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
-                                                    <td className="center">{sale.products.length}</td>
+                                                    <td className="center">{sale.products?.length}</td>
                                                     <td>{sale.paymentMethod}</td>
                                                     <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
                                                     <td className="center">$ {formatNumber(sale.totalPrice)}</td>

@@ -648,7 +648,7 @@ const PutProduct = () => {
                                         onChange={handleInputChange}
                                     >
                                         <option value="" disabled>Seleccionar</option>
-                                        {categories.map((category) => (
+                                        {categories?.map((category) => (
                                             <option key={category._id} value={category._id}>{category.name}</option>
                                         ))}
                                     </select>
@@ -659,7 +659,19 @@ const PutProduct = () => {
                                 </div>
                                 <div className={style.priceContainer}>
                                     <label htmlFor="price" className={style.nameTitle}>Precio $</label>
-                                    <input type="number" name="price" onChange={handleInputChange} value={editProduct.price} min='0' onWheel={(e) => e.target.blur()}/>
+                                    <input 
+                                        type="number" 
+                                        name="price" 
+                                        onChange={handleInputChange} 
+                                        value={editProduct.price} 
+                                        min='0' 
+                                        onKeyDown={(e) => {
+                                            if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                                e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                            }
+                                        }}
+                                        onWheel={(e) => e.target.blur()}
+                                    />
                                 </div>    
                                 <div className={style.descriptionContainer}>
                                     <label htmlFor="description" className={style.nameTitle}>Descripción</label>

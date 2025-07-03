@@ -80,24 +80,6 @@ const DetailDebt = () => {
                         setProductsLoading(false);
                     }
                 })
-            //   .catch(() => {
-            //       const filteredProduct = products.find(p => p._id === product.productId);
-            //       if (filteredProduct) {
-            //           const selectedColor = getColorById(filteredProduct, product.colorId);
-            //           const selectedSize = getSizeById(filteredProduct, product.colorId, product.sizeId);
-    
-            //           updatedProducts.push({ 
-            //               ...filteredProduct, 
-            //               selectedColor, 
-            //               selectedSize,
-            //               price: product.price // Mantener el precio de la venta
-            //           });
-            //       }
-            //       if (updatedProducts.length === debtDetail.products.length) {
-            //           setPurchasedProducts(updatedProducts);
-            //           setProductsLoading(false);
-            //       }
-            //   });
             });
         } else {
             setPurchasedProducts([]);
@@ -106,7 +88,8 @@ const DetailDebt = () => {
 
     const formatNumber = (number) => {
         if (number !== null && number !== undefined) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            const rounded = Math.round(number); // redondea al entero más cercano
+            return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         return '0';
     };

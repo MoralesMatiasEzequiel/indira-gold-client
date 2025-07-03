@@ -144,7 +144,8 @@ const PutSale = () => {
 
     const formatNumber = (number) => {
         if (number !== null && number !== undefined) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            const rounded = Math.round(number); // redondea al entero más cercano
+            return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         return '0';
     };
@@ -527,6 +528,11 @@ const PutSale = () => {
                                             onChange={handleInputChange}
                                             onWheel={(e) => e.target.blur()}
                                             disabled={!withShipping || selectedAddressOption === null}
+                                            onKeyDown={(e) => {
+                                                if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                                    e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                                }
+                                            }}
                                         />
                                     </div>
                                 </div>
@@ -580,6 +586,11 @@ const PutSale = () => {
                                                     value={editableSubtotal}
                                                     onChange={handleEditableSubtotalChange}
                                                     onWheel={(e) => e.target.blur()}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                                            e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                                        }
+                                                    }}
                                                 />
                                                 <button type="button" onClick={saveNewSubTotal}>Actualizar</button>
                                             </div>

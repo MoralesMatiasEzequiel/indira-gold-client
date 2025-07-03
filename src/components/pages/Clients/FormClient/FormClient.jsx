@@ -150,13 +150,18 @@ const FormClient = ({ onClientAdded = () => {} }) => {
                                 required 
                                 min={0}
                                 onWheel={(event) => event.target.blur()}
+                                onKeyDown={(e) => {
+                                    if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                        e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                    }
+                                }}
                             />
                         </div>
                         <div className={style.labelInput}><label>Direcciones</label></div>
                         <div className={style.newAddress}>
                             {newClient.addresses?.length > 0 ? 
                                 <ul>
-                                    {newClient.addresses.map((address, index) => (
+                                    {newClient.addresses?.map((address, index) => (
                                         <li key={index}>
                                             {address.name && address.name}
                                             <button type="button" onClick={() => removeAddress(index)}>

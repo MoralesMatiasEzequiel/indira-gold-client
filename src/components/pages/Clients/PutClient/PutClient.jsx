@@ -193,6 +193,11 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                     onChange={handleChange} 
                                     required 
                                     onWheel={(e) => e.target.blur()}
+                                    onKeyDown={(e) => {
+                                        if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                            e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                        }
+                                    }}
                                 />
                             </div>
                             <div className={style.labelInput}><label>Direcciones</label></div>
