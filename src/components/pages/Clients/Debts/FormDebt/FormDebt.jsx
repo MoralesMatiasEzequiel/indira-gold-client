@@ -140,7 +140,8 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
 
     const formatNumber = (number) => {
         if (number !== null && number !== undefined) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            const rounded = Math.round(number); // redondea al entero más cercano
+            return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
         return '0';
     };
@@ -255,6 +256,11 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                                             min='0'
                                             max={totalSale ?? 0}
                                             onWheel={(event) => event.target.blur()}
+                                            onKeyDown={(e) => {
+                                                if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                                    e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                                }
+                                            }}
                                         />
                                     </div>
                                 </div>

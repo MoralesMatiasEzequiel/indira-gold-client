@@ -161,7 +161,7 @@ const DetailProduct = () => {
                             <div className={style.colorSection}>
                                 <p className={style.colorTag}><span>Color:&nbsp;</span>{color.colorName}</p>
                                 <div className={style.containerColor}>                  
-                                    {color.size.map(size => (
+                                    {color.size?.map(size => (
                                         <div key={size.sizeName} className={style.sizeBlock}>
                                             <p><span>Talle:&nbsp;</span>{size.sizeName}</p>   
                                             <p><span>Stock:&nbsp;</span>{size.stock}</p>                                           

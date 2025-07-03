@@ -681,7 +681,20 @@ const FormProduct = () => {
                                 </div>
                                 <div className={style.priceContainer}>
                                     <label htmlFor="price" className={style.nameTitle}>*Precio $</label>
-                                    <input type="number" name="price" value={newProduct.price} onChange={handleInputChange} placeholder='0' min='0'onWheel={(e) => e.target.blur()} />
+                                    <input 
+                                        type="number" 
+                                        name="price" 
+                                        value={newProduct.price} 
+                                        onChange={handleInputChange} 
+                                        placeholder='0' 
+                                        min='0'
+                                        onWheel={(e) => e.target.blur()}
+                                        onKeyDown={(e) => {
+                                            if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                                e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                            }
+                                        }}
+                                    />
                                 </div>    
                                 <div className={style.descriptionContainer}>
                                     <label htmlFor="description" className={style.nameTitle}>Descripción</label>
