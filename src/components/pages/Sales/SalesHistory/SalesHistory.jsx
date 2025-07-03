@@ -179,7 +179,7 @@ const SalesHistory = () => {
                                     </th>
                                     <th>Productos</th>
                                     <th>Medio de pago</th>
-                                    <th>Descuento</th>
+                                    <th>Deuda</th>
                                     <th>Total</th>
                                     <th>Detalle</th>
                                 </tr>
@@ -192,7 +192,7 @@ const SalesHistory = () => {
                                         <td>{sale.client ? `${sale.client.name} ${sale.client.lastname}` : 'Anónimo'}</td>
                                         <td className="center">{sale.products.length}</td>
                                         <td>{sale.paymentMethod}</td>
-                                        <td className="center">{sale.discount ? `${sale.discount}%` : '-'}</td>
+                                        <td className={`center ${sale.debt > 0 ? "debt" : ""}`}>{sale.debt ? `$${formatNumber(sale.debt)}` : '-'}</td>
                                         <td className="center">$ {formatNumber(sale.totalPrice)}</td>
                                         <td>
                                             <a onClick={() => navigate(`/main_window/sales/${sale._id}`)}>

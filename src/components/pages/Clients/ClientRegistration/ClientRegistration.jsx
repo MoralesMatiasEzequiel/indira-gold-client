@@ -130,68 +130,70 @@ const ClientRegistration = () => {
     };
 
     return(
-        <div className="component">
-            <div className="title">
-                <h2>REGISTRO DE CLIENTES</h2>
-                <div className="pagination">
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                        ◂
-                    </button>
-                    {getPageButtons()}
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                        ▸
-                    </button>
+        <div className="page">
+            <div className="component">
+                <div className="title">
+                    <h2>REGISTRO DE CLIENTES</h2>
+                    <div className="pagination">
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                            ◂
+                        </button>
+                        {getPageButtons()}
+                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                            ▸
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div className="container">
-                <div className="tableContainer">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>DNI</span>
-                                        <input type="search" name="searchDni" onChange={handleChangeDni} value={dni} placeholder="Buscar" autoComplete="off" className="filterSearch"  
-                                        />
-                                    </div>
-                                </th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Nombre(s) y Apellido</span>
-                                        <input type="search" name="searchName" onChange={handleChangeFullName} value={fullName} placeholder="Buscar" autoComplete="off" className="filterSearch"  
-                                        />
-                                    </div>
-                                </th>
-                                <th>Email</th>
-                                <th>Teléfono</th>
-                                <th>
-                                    <div className="withFilter">
-                                        <span>Productos</span>
-                                        <button className="sort" onClick={toggleSortOrder}>{sortByProducts === 'asc' ? '▴' : '▾'}</button>
-                                    </div>
-                                </th>
-                                <th>Estado</th>
-                                <th>Detalle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedClients?.map(client => (
-                                    <tr key={client._id} className={!client.active ? style.inactive : ''}>
-                                        <td className="center">{client.dni && client.dni}</td>
-                                        <td>{client.name} {client.lastname}</td>
-                                        <td className="center">{client.email}</td>
-                                        <td className="center">{client.phone}</td>
-                                        <td className="center">{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Información no disponible offline'}</td>    
-                                        <td>{client.active ? "Activo" : "Inactivo"}</td>
-                                        <td>
-                                            <div onClick={() => navigate(`/main_window/clients/${client._id}`)}>
-                                                <img src={detail} alt="" className="detailImg" />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
+                <div className="container">
+                    <div className="tableContainer">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div className="withFilter">
+                                            <span>DNI</span>
+                                            <input type="search" name="searchDni" onChange={handleChangeDni} value={dni} placeholder="Buscar" autoComplete="off" className="filterSearch"  
+                                            />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className="withFilter">
+                                            <span>Nombre(s) y Apellido</span>
+                                            <input type="search" name="searchName" onChange={handleChangeFullName} value={fullName} placeholder="Buscar" autoComplete="off" className="filterSearch"  
+                                            />
+                                        </div>
+                                    </th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>
+                                        <div className="withFilter">
+                                            <span>Productos</span>
+                                            <button className="sort" onClick={toggleSortOrder}>{sortByProducts === 'asc' ? '▴' : '▾'}</button>
+                                        </div>
+                                    </th>
+                                    <th>Estado</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paginatedClients?.map(client => (
+                                        <tr key={client._id} className={!client.active ? style.inactive : ''}>
+                                            <td className="center">{client.dni && client.dni}</td>
+                                            <td>{client.name} {client.lastname}</td>
+                                            <td className="center">{client.email}</td>
+                                            <td className="center">{client.phone}</td>
+                                            <td className="center">{monthlySales[client._id] !== undefined ? monthlySales[client._id] : 'Información no disponible offline'}</td>    
+                                            <td>{client.active ? "Activo" : "Inactivo"}</td>
+                                            <td>
+                                                <div onClick={() => navigate(`/main_window/clients/${client._id}`)}>
+                                                    <img src={detail} alt="" className="detailImg" />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -138,7 +138,7 @@ const DetailClient = () => {
                             <div className="titleButtons">
                                 {clientDetail.active ? <button onClick={() => navigate(`/main_window/clients/edit/${id}`)}>Editar</button> : ''}
                                 {!clientDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Activar</button> : <button className="delete" onClick={toggleShowDeleteModal}>Desactivar</button>}
-                                <button onClick={() => navigate(`/main_window/clients`)}>Atrás</button>
+                                <button onClick={() => navigate(`/main_window/clients/history`)}>Atrás</button>
                             </div>
                         </div>
                         <div className={!clientDetail.active ? `container ${style.contentInactive}` : `container ${style.content}`}>
@@ -153,9 +153,9 @@ const DetailClient = () => {
                                 {clientDetail.addresses && clientDetail.addresses.length > 0 && <>
                                     <p><span>Direcciones:</span></p>
                                     <ul>
-                                        {clientDetail.addresses.map((address) => {
+                                        {clientDetail.addresses.map((address, index) => {
                                             return(
-                                                <li className={style.address}>
+                                                <li className={style.address} key={index}>
                                                     {address.name && <p><span>Nombre:&nbsp;</span>{address.name}</p>}
                                                     <p><span>Dirección:&nbsp;</span>
                                                         {`
@@ -164,6 +164,7 @@ const DetailClient = () => {
                                                             ${address.between && `E/ ${address.between}`}
                                                             ${address.floor && `Piso ${address.floor}`}
                                                             ${address.apartment && `Dpto. ${address.apartment}`}
+                                                            ${address.between && `Entre ${address.between}`}
                                                         `}
                                                     </p>
                                                     {address.city && <p><span>Ciudad:&nbsp;</span>{address.city}</p>}
