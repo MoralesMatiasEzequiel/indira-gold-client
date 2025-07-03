@@ -65,7 +65,6 @@ const FormSales = () => {
     };
 
     const [newSale, setNewSale] = useState(initialSaleState);
-console.log(newSale);
 
     const productRefs = useRef([]);
 
