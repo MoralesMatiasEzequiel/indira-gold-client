@@ -48,7 +48,7 @@ const FormSales = () => {
     const [saleMade, setSaleMade] = useState(false);
     const [saleResponse, setSaleResponse] = useState(null);
     const [newDebt, setNewDebt] = useState(false);
-    const [lastDebtAmount, setLastDebtAmount] = useState(0);
+    const [savedDebt, setSavedDebt] = useState(0);
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const [isClearDisabled, setIsClearDisabled] = useState(true);
 
@@ -80,7 +80,6 @@ const FormSales = () => {
         setShipment({ address: '', amount: '' });
         setSelectedAddressOption(null);
         setNewDebt(false);
-        setLastDebtAmount(0);
     };
 
     const transformProductOptions = (products) => {        
@@ -487,7 +486,8 @@ const FormSales = () => {
         
         dispatch(postSale(saleData)).then((response) => {
             setSaleResponse(response);
-            setLastDebtAmount(saleData.debtAmount);
+            if (!newDebt) setSavedDebt(0);
+            else setSavedDebt(response.data.totalPrice - saleData.debtAmount);
             dispatch(getSales());
             // Resetear el formulario
             setNewSale(initialSaleState);
@@ -499,7 +499,7 @@ const FormSales = () => {
             setShipment({ address: '', amount: '' });
             setIsSubmitDisabled(true);
             setIsClearDisabled(true);
-
+            setNewDebt(false);
             toggleSaleMade();
         });
     };
@@ -545,6 +545,10 @@ const FormSales = () => {
     
             let clientFound = clients.find(c => c._id === saleResponse.data.client);
             // Información general de la venta
+            if (saleResponse.data.shipment) {
+                totalHeight += calculateLines(`Envío a ${saleResponse.data.shipment?.address || 'N/A'}`) * lineHeight;
+                totalHeight += calculateLines(`Costo de envío: $${saleResponse.data.shipment?.amount || 'N/A'}`) * lineHeight;
+            }
             totalHeight += calculateLines(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`) * lineHeight;
             totalHeight += calculateLines(`Tenés hasta 15 días para realizar el cambio`) * lineHeight;
             totalHeight += calculateLines(``) * lineHeight;
@@ -554,6 +558,9 @@ const FormSales = () => {
             totalHeight += calculateLines(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`) * lineHeight;
             totalHeight += calculateLines(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`) * lineHeight;
             totalHeight += calculateLines(`Total: $${formatNumber(saleResponse.data.totalPrice) || '0.00'}`) * lineHeight;
+            if (savedDebt > 0){
+                totalHeight += calculateLines(`Debe: $${formatNumber(savedDebt)}`) * lineHeight;
+            }
             totalHeight += 6; // Espacio adicional entre secciones
     
             // Calcular espacio para los productos de la venta
@@ -632,6 +639,10 @@ const FormSales = () => {
 
         let clientFound = clients.find(c => c._id === saleResponse.data.client);
     
+        if (saleResponse.data.shipment) {
+            yPos = addWrappedText(`Envío a ${saleResponse.data.shipment?.address || 'N/A'}`, 4, yPos);
+            yPos = addWrappedText(`Costo de envío: $${saleResponse.data.shipment?.amount || 'N/A'}`, 4, yPos);
+        }
         yPos = addWrappedText(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`, 4, yPos);
         yPos = addWrappedText(`Tenés hasta 15 días para realizar el cambio`, 4, yPos);
         yPos = addWrappedText(``, 4, yPos);
@@ -641,6 +652,9 @@ const FormSales = () => {
         yPos = addWrappedText(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`, 4, yPos);
         yPos = addWrappedText(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`, 4, yPos);
         yPos = addWrappedText(`Total: $${formatNumber(saleResponse.data.totalPrice) || '0.00'}`, 4, yPos);
+        if (savedDebt > 0){
+            yPos = addWrappedText(`Debe: $${formatNumber(savedDebt)}`, 4, yPos);
+        }
         yPos += 6;
     
         // Productos de la venta
@@ -716,7 +730,7 @@ const FormSales = () => {
                                 <button className="delete" onClick={toggleSaleMade}>X</button>
                             </div>
                         </div>
-                        <NewSale saleResponse={saleResponse} debtAmount={lastDebtAmount}/>
+                        <NewSale saleResponse={saleResponse} debtAmount={savedDebt}/>
                     </div>
                 ) : (
                     <div className="component">

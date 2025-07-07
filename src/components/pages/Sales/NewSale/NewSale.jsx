@@ -9,8 +9,6 @@ const NewSale = ({ saleResponse, debtAmount }) => {
 
     const { client, paymentMethod, installments, discount, products, orderNumber, subTotal, totalPrice, date, shipment } = saleResponse.data;
 
-    const safeDebtAmount = debtAmount ?? 0;
-
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -56,10 +54,10 @@ const NewSale = ({ saleResponse, debtAmount }) => {
                 <p><span className={style.key}>Subtotal:</span> ${formatNumber(subTotal)}</p>
                 <p><span className={style.key}>Descuento:</span> {discount}%</p>
                 <p><span className={style.key}>Total:</span> ${formatNumber(totalPrice)}</p>
-                {safeDebtAmount > 0 && safeDebtAmount < totalPrice && (
+                {debtAmount > 0 && (
                     <>
-                        <p><span className={style.key}>Total abonado:</span> ${formatNumber(safeDebtAmount)}</p>
-                        <p><span className={style.key}>Adeuda:</span> ${formatNumber(totalPrice - safeDebtAmount)}</p>
+                        <p><span className={style.key}>Abonó:</span> ${formatNumber(totalPrice - debtAmount)}</p>
+                        <p><span className={style.key}>Adeuda:</span> ${formatNumber(debtAmount)}</p>
                     </>
                 )}
                 {shipment !== null && (
