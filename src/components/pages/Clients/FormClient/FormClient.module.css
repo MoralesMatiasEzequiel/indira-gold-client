@@ -51,8 +51,19 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
-    background-color: #dddddd52;
     box-sizing: border-box;
+}
+
+.whiteBackground {
+  background-color: white;
+}
+
+.greyBackground {
+  background-color: #dddddd52;
+}
+
+.addMarginTop {
+  margin-top: 1em;
 }
 
 .clientForm .newAddress ul{

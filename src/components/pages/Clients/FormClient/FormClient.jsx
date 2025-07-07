@@ -94,91 +94,93 @@ const FormClient = ({ onClientAdded = () => {} }) => {
                 <div className="container">
                     <form onSubmit={handleSubmit} className={style.clientForm}>
                         <div className={style.column}>
-                            <div className={style.labelInput}>
-                                <label htmlFor="dni">DNI</label>
-                                <input 
-                                    type="number" 
-                                    id="dni" 
-                                    name="dni" 
-                                    value={newClient.dni} 
-                                    onChange={handleChange} 
-                                    required 
-                                    min={0}
-                                    onWheel={(event) => event.target.blur()}
-                                />
+                            <div className={`${style.newAddress} ${style.whiteBackground}`}>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="dni">DNI</label>
+                                    <input 
+                                        type="number" 
+                                        id="dni" 
+                                        name="dni" 
+                                        value={newClient.dni} 
+                                        onChange={handleChange} 
+                                        required 
+                                        min={0}
+                                        onWheel={(event) => event.target.blur()}
+                                    />
+                                </div>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="name">Nombre(s)</label>
+                                    <input 
+                                        type="text" 
+                                        id="name" 
+                                        name="name" 
+                                        value={newClient.name} 
+                                        onChange={handleChange} 
+                                        required 
+                                    />
+                                </div>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="lastname">Apellido(s)</label>
+                                    <input 
+                                        type="text" 
+                                        id="lastname" 
+                                        name="lastname" 
+                                        value={newClient.lastname} 
+                                        onChange={handleChange} 
+                                        required 
+                                    />
+                                </div>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="email">Email</label>
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        name="email" 
+                                        value={newClient.email} 
+                                        onChange={handleChange} 
+                                        required 
+                                    />
+                                </div>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="phone">Teléfono</label>
+                                    <input 
+                                        type="number" 
+                                        id="phone" 
+                                        name="phone" 
+                                        value={newClient.phone} 
+                                        onChange={handleChange} 
+                                        required 
+                                        min={0}
+                                        onWheel={(event) => event.target.blur()}
+                                        onKeyDown={(e) => {
+                                        if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                            e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                        }
+                                    }}
+                                    />
+                                </div>
+                                <div className={style.labelInput}><label>Direcciones</label></div>
+                                <div className={`${style.newAddress} ${style.addMarginTop}`}>
+                                    {newClient.addresses?.length > 0 ? 
+                                        <ul>
+                                            {newClient.addresses?.map((address, index) => (
+                                                <li key={index}>
+                                                    {address.name && address.name}
+                                                    <button type="button" onClick={() => removeAddress(index)}>
+                                                        <img src={x} alt="Eliminar" />
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    :
+                                        <label style={{fontStyle: "italic"}}>Aún no se han añadido direcciones.</label>}
+                                </div>
+                                {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
+                                <button type="submit">Crear</button>
                             </div>
-                            <div className={style.labelInput}>
-                                <label htmlFor="name">Nombre(s)</label>
-                                <input 
-                                    type="text" 
-                                    id="name" 
-                                    name="name" 
-                                    value={newClient.name} 
-                                    onChange={handleChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className={style.labelInput}>
-                                <label htmlFor="lastname">Apellido(s)</label>
-                                <input 
-                                    type="text" 
-                                    id="lastname" 
-                                    name="lastname" 
-                                    value={newClient.lastname} 
-                                    onChange={handleChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className={style.labelInput}>
-                                <label htmlFor="email">Email</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    name="email" 
-                                    value={newClient.email} 
-                                    onChange={handleChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className={style.labelInput}>
-                                <label htmlFor="phone">Teléfono</label>
-                                <input 
-                                    type="number" 
-                                    id="phone" 
-                                    name="phone" 
-                                    value={newClient.phone} 
-                                    onChange={handleChange} 
-                                    required 
-                                    min={0}
-                                    onWheel={(event) => event.target.blur()}
-                                    onKeyDown={(e) => {
-                                    if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
-                                        e.preventDefault(); // Bloquea decimales, notación científica y negativos
-                                    }
-                                }}
-                                />
-                            </div>
-                            <div className={style.labelInput}><label>Direcciones</label></div>
-                            <div className={style.newAddress}>
-                                {newClient.addresses?.length > 0 ? 
-                                    <ul>
-                                        {newClient.addresses?.map((address, index) => (
-                                            <li key={index}>
-                                                {address.name && address.name}
-                                                <button type="button" onClick={() => removeAddress(index)}>
-                                                    <img src={x} alt="Eliminar" />
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                :
-                                    <label style={{fontStyle: "italic"}}>Aún no se han añadido direcciones.</label>}
-                            </div>
-                            {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
-                            <button type="submit">Crear</button>
                         </div>
                         <div className={style.column}>
-                            <div className={style.newAddress}>
+                            <div className={`${style.newAddress} ${style.greyBackground}`}>
                                 <div className={style.labelInput}>
                                     <label htmlFor="addressName">Nombre</label>
                                     <input 
