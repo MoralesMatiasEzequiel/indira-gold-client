@@ -201,7 +201,6 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                             <button className="delete" onClick={toggleDebtMade}>X</button>
                         </div>
                     </div>
-                    {/* <NewSale saleResponse={saleResponse}/> */}
                 </div>
             ) : (
                 <div className="component">
@@ -269,7 +268,7 @@ const FormDebt = ({ onDebtAdded = () => {} }) => {
                             {newDebt.saleId ?
                                 <div className={style.labelInput}>
                                     <div className={style.left}>
-                                        <label htmlFor="client">Cliente</label>
+                                        <label htmlFor="client">Cliente:</label>
                                     </div>
                                     <div className={style.right}>
                                         <label className={style.labelClient}>{selectedClient ? selectedClient : "Anónimo"}</label>
