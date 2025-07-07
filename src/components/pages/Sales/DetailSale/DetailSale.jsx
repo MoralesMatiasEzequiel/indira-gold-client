@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from 'react-router-dom';
 import { putRemovePurchases } from '../../../../redux/clientActions.js';
-import { getSales, getSaleById, getSaleByIdLocal, clearSaleDetail, deleteSale } from '../../../../redux/saleActions.js';
+import { getSales, getSaleById, getSaleByIdLocal, clearSaleDetail, deleteSale, searchSales } from '../../../../redux/saleActions.js';
 import { getProductById, increaseStock } from '../../../../redux/productActions.js';
 import print from "../../../../assets/img/print.png";
 import detail from "../../../../assets/img/detail.png";
@@ -18,7 +18,6 @@ const DetailSale = () => {
 
     const saleDetail = useSelector(state => state.sales.saleDetail);
     const products = useSelector(state => state.products.products);
-
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [productsLoading, setProductsLoading] = useState(false);
@@ -38,6 +37,7 @@ const DetailSale = () => {
             dispatch(getSaleByIdLocal(id));
             setLoading(false);
         });
+        console.log(saleDetail);
     }, [dispatch, id]);
 
     useEffect(() => {
@@ -158,6 +158,10 @@ const DetailSale = () => {
             totalHeight += 60; // Título
     
             // Información general de la venta
+            if (saleDetail.shipment) {
+                totalHeight += calculateLines(`Envío a ${saleDetail.shipment?.address || 'N/A'}`) * lineHeight;
+                totalHeight += calculateLines(`Costo de envío: $${saleDetail.shipment?.amount || 'N/A'}`) * lineHeight;
+            }
             totalHeight += calculateLines(`Fecha: ${formatDate(saleDetail.orderNumber) || 'N/A'}`) * lineHeight;
             totalHeight += calculateLines(`Tenés hasta 15 días para realizar el cambio`) * lineHeight;
             totalHeight += calculateLines(``) * lineHeight;
@@ -167,6 +171,9 @@ const DetailSale = () => {
             totalHeight += calculateLines(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`) * lineHeight;
             totalHeight += calculateLines(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`) * lineHeight;
             totalHeight += calculateLines(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`) * lineHeight;
+            if (saleDetail.debt){
+                totalHeight += calculateLines(`Debe: $${formatNumber(saleDetail.debt)}`) * lineHeight;
+            }
             totalHeight += 6; // Espacio adicional entre secciones
     
             // Calcular espacio para los productos de la venta
@@ -232,6 +239,9 @@ const DetailSale = () => {
         yPos = addWrappedText(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`, 4, yPos);
         yPos = addWrappedText(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`, 4, yPos);
         yPos = addWrappedText(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`, 4, yPos);
+        if (saleDetail.debt){
+            yPos = addWrappedText(`Debe: $${formatNumber(saleDetail.debt)}`, 4, yPos);
+        }
         yPos += 6;
     
         // Productos de la venta
