@@ -234,6 +234,7 @@ select:focus {
   border: none;
 }
 
+
 .errorMessage {
     display: flex;
     justify-content: center;

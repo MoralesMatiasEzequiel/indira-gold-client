@@ -5,35 +5,40 @@
     box-sizing: border-box;
 }
 
-.salesForm .column1, .salesForm .column2{
+.salesForm .column1 {
     width: 33%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
-.salesForm .column3{
-    width: 25%;
-}
-
-.salesForm .column1{
+.salesForm .column2{
+    width: 33%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.salesForm .column1 .labelInput{
+.salesForm .column3{
+    width: 25%;
+}
+
+.salesForm .column1 .labelInput, .salesForm .column2 .labelInput{
     display: flex;
     align-items: center;
 }
 
-.salesForm .column1 .labelInput .left{
+.salesForm .column1 .labelInput .left, .salesForm .column2 .labelInput .left{
     width: 40%;
 }
 
-.salesForm .column1 .labelInput .right{
+.salesForm .column1 .labelInput .right, .salesForm .column2 .labelInput .right{
     width: 60%;
 }
 
-.salesForm .column1 select, .salesForm .column1 input.discount{
+.salesForm .column1 select, .salesForm .column2 select, .salesForm .column1 input.discount, .salesForm .column2 input.discount{
     width: 100%;
     box-sizing: border-box;
     height: 1.75rem;
@@ -43,7 +48,7 @@
     border-radius: 4px;
 }
 
-.salesForm .column1 input.discount{
+.salesForm .column1 input.discount, .salesForm .column2 input.discount{
     text-align: right;
 }
 
@@ -51,7 +56,7 @@
     position: relative;
 }
 
-.salesForm .column1 .right .soldAt{
+.salesForm .column2 .right .soldAt{
     display: flex;
     justify-content: end;
     gap: 0.5rem;
@@ -70,20 +75,13 @@
     width: 2rem;
 }
 
-.salesForm .column2 label{
-    margin-bottom: 0.5rem;
-}
-
-.salesForm .column2 .product{
-    margin-top: 0.75rem;
+.salesForm .column1 .product{
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.salesForm .column2 .product .productSelect{
-    width: 92%;
-}
 
 .salesForm .removeProduct{
     background: none;
@@ -172,17 +170,54 @@
 }
 
 .containerInputCheckbox{
-    padding-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: start;
 }
 
-.containerInputCheckbox span{
-    padding-right: 10px;
-    font-size: 0.75rem;
+.containerInputCheckbox label{
+    padding-left: 0.5rem;
+}
+
+.containerInputCheckbox label.disabled{
+    cursor: not-allowed;
 }
 
 .inputCheckbox {
     cursor: pointer;
+}
+
+.inputCheckbox:disabled{
+    cursor: not-allowed;
+}
+
+.separator{
+    width: 100%;
+    border: var(--border-light);
+}
+
+.selectedProductsList{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 1rem 1rem;
+    background-color: #dddddd52;
+    box-sizing: border-box;
+}
+
+.selectedProductItem{
+    display: flex;
+    justify-content: space-between;
+}
+
+.selectedProductItem span{
+    font-size: 0.9rem;
+    font-weight: 300;
+}
+
+.debtContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
