@@ -237,42 +237,26 @@ const FormSales = () => {
         }),
     };
 
-    const handleProductChange = (selectedOption, index) => {
-
-        if(selectedOption) {
-            setIsClearDisabled(false);
-        }
-
+    const handleProductAdd = (selectedOption) => {
+        if (!selectedOption) return;
+        
+        setIsClearDisabled(false);
+        
         setSelectedProducts((prevSelectedProducts) => {
-            const newSelectedProducts = [...prevSelectedProducts];
-            newSelectedProducts[index] = selectedOption ? { ...selectedOption } : { productId: null, colorId: null, sizeId: null, price: null, category: null };
-
-            if (index === newSelectedProducts.length - 1 && selectedOption) {
-                newSelectedProducts.push({ productId: null, colorId: null, sizeId: null, price: null, category: null });
-                setTimeout(() => {
-                    productRefs.current[index + 1].focus();
-                }, 0);
-            }
-
-            // Update selectedProductQuantities
+            const newSelectedProducts = [...prevSelectedProducts, { 
+            ...selectedOption,
+            // Agregamos un ID único temporal para manejar duplicados
+            tempId: `${selectedOption.productId}_${Date.now()}`
+            }];
+            
+            // Actualizar cantidades
             setSelectedProductQuantities((prevQuantities) => {
-                const newQuantities = { ...prevQuantities };
-                const key = `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}_${selectedOption.price}_${selectedOption.category}`;
-                
-                if (selectedOption) {
-                    if (newQuantities[key]) {
-                        newQuantities[key]++;
-                    } else {
-                        newQuantities[key] = 1;
-                    }
-                } else {
-                    // Si se eliminó un producto, restar la cantidad seleccionada
-                    if (newQuantities[key]) {
-                        newQuantities[key]--;
-                        if (newQuantities[key] <= 0) delete newQuantities[key];
-                    }
-                }
-                return newQuantities;
+            const newQuantities = { ...prevQuantities };
+            const key = `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}_${selectedOption.price}_${selectedOption.category}`;
+            
+            newQuantities[key] = (newQuantities[key] || 0) + 1;
+            
+            return newQuantities;
             });
 
             setSubtotal(calculateSubtotal(newSelectedProducts));
@@ -283,8 +267,22 @@ const FormSales = () => {
 
     const handleRemoveProduct = (index) => {
         setSelectedProducts((prevSelectedProducts) => {
-            const newSelectedProducts = [...prevSelectedProducts];
-            newSelectedProducts.splice(index, 1);
+            const productToRemove = prevSelectedProducts[index];
+            const newSelectedProducts = prevSelectedProducts.filter((_, i) => i !== index);
+            
+            // Actualizar cantidades al eliminar
+            setSelectedProductQuantities((prevQuantities) => {
+            const newQuantities = { ...prevQuantities };
+            const key = `${productToRemove.productId}_${productToRemove.colorId}_${productToRemove.sizeId}_${productToRemove.price}_${productToRemove.category}`;
+            
+            if (newQuantities[key]) {
+                newQuantities[key]--;
+                if (newQuantities[key] <= 0) delete newQuantities[key];
+            }
+            
+            return newQuantities;
+            });
+
             setSubtotal(calculateSubtotal(newSelectedProducts));
             validateForm();
             return newSelectedProducts;
@@ -780,7 +778,7 @@ const FormSales = () => {
                                             onChange={handleCheckbox}
                                             disabled={!selectedClient?.value}
                                         />
-                                        <span>Con envío</span>
+                                        <label className={!selectedClient?.value ? style.disabled : ""}>Con envío</label>
                                     </div>
                                     <div className={style.labelInput}>
                                         <div className={style.left}>
@@ -814,12 +812,13 @@ const FormSales = () => {
                                                 noOptionsMessage={() => "No hay direcciones registradas"}
                                                 placeholder="Seleccionar"
                                                 isDisabled={!withShipping}
+                                                style={!withShipping ? {cursor: "notAllowed"} : ""}
                                             />
                                         </div>
                                     </div>
                                     <div className={style.labelInput}>
                                         <div className={style.left}>
-                                            <label htmlFor="shippingCost">Costo de envío $</label>
+                                            <label htmlFor="shippingCost">Costo de envío</label>
                                         </div>
                                         <div className={style.right}>
                                             <input 
@@ -835,7 +834,82 @@ const FormSales = () => {
                                             />
                                         </div>
                                     </div>
+                                    <div className={style.separator}></div>
+                                    <div className={style.product}>
+                                        <label htmlFor="products">Productos</label>
+                                        <div className={style.productSelect}>
+                                            <AsyncSelect
+                                            name="products"
+                                            value={null}
+                                            loadOptions={loadProductOptions}
+                                            onChange={handleProductAdd}
+                                            placeholder="Buscar Producto"
+                                            components={{DropdownIndicator}}
+                                            menuPortalTarget={document.body}
+                                            styles={{
+                                                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                                                ...productInputStyles
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') e.preventDefault();
+                                            }}
+                                            noOptionsMessage={({ inputValue }) => 
+                                                inputValue.trim() ? "No hay productos registrados con ese nombre" : "Ingrese nombre del producto"
+                                            }
+                                            />
+                                        </div>
+                                        {selectedProducts.length <= 1 ? <></> : 
+                                            <div className={style.selectedProductsList}>
+                                                {selectedProducts?.map((selectedProduct, index) => (
+                                                    <div key={index} className={style.selectedProductItem}>
+                                                        <span>{selectedProduct.label}</span>
+                                                        {selectedProduct.productId && (
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => handleRemoveProduct(index)} 
+                                                                className={style.removeProduct}
+                                                            >
+                                                                <img src={x} alt="Eliminar producto"/>
+                                                            </button>
+                                                        )}
+                                                        
+                                                    </div>
+                                                ))}
+                                            </div>}
+                                    </div>
+                                </div>
+                                <div className={style.column2}>
                                     <div className={style.labelInput}>
+                                        <div className={style.left}>
+                                            <label htmlFor="soldAt">Tipo de venta</label>
+                                        </div>
+                                        <div className={style.right}>
+                                            <div className={style.soldAt}>
+                                                <label htmlFor="Local">
+                                                    <input
+                                                        type="radio"
+                                                        name="soldAt"
+                                                        value="Local"
+                                                        checked={newSale.soldAt === 'Local'}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                    Local
+                                                </label>
+                                                
+                                                <label htmlFor="Online">
+                                                    <input
+                                                        type="radio"
+                                                        name="soldAt"
+                                                        value="Online"
+                                                        checked={newSale.soldAt === 'Online'}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                    Online
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   <div className={style.labelInput}>
                                         <div className={style.left}>
                                             <label htmlFor="paymentMethod">Medio de pago</label>
                                         </div>
@@ -908,98 +982,38 @@ const FormSales = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className={style.containerInputCheckbox}>
-                                        <input 
-                                            className={style.inputCheckbox} 
-                                            type="checkbox" 
-                                            name="newDebt" 
-                                            checked={newDebt}
-                                            onChange={handleCheckbox}
-                                            disabled={!selectedClient?.value}
-                                        />  
-                                        <span>Nueva deuda</span>
-                                    </div>
-                                    <div className={style.labelInput}>
-                                        <div className={style.left}>
-                                            <label htmlFor="debtAmount">Monto abonado</label>
-                                        </div>
-                                        <div className={style.right}>
+                                    <div className={style.debtContainer}>
+                                        <div className={style.containerInputCheckbox}>
                                             <input 
-                                                className={style.discount}
-                                                type='number'
-                                                name="debtAmount"
-                                                placeholder='0'
-                                                min='0'
-                                                max={subtotal}
-                                                value={newSale.debtAmount}
-                                                onChange={handleInputChange}
-                                                onWheel={(e) => e.target.blur()}
-                                                disabled={!newDebt}
-                                            />
+                                                className={style.inputCheckbox} 
+                                                type="checkbox" 
+                                                name="newDebt" 
+                                                checked={newDebt}
+                                                onChange={handleCheckbox}
+                                                disabled={!selectedClient?.value}
+                                            />  
+                                            <label className={!selectedClient?.value ? style.disabled : ""}>Nueva deuda</label>
                                         </div>
-                                    </div>
-                                    <div className={style.labelInput}>
-                                        <div className={style.left}>
-                                            <label htmlFor="soldAt">Tipo de venta</label>
-                                        </div>
-                                        <div className={style.right}>
-                                            <div className={style.soldAt}>
-                                                <label htmlFor="Local">
-                                                    <input
-                                                        type="radio"
-                                                        name="soldAt"
-                                                        value="Local"
-                                                        checked={newSale.soldAt === 'Local'}
-                                                        onChange={handleInputChange}
-                                                    />
-                                                    Local
-                                                </label>
-                                                
-                                                <label htmlFor="Online">
-                                                    <input
-                                                        type="radio"
-                                                        name="soldAt"
-                                                        value="Online"
-                                                        checked={newSale.soldAt === 'Online'}
-                                                        onChange={handleInputChange}
-                                                    />
-                                                    Online
-                                                </label>
+                                        <div className={style.labelInput}>
+                                            <div className={style.left}>
+                                                <label htmlFor="debtAmount">Monto abonado</label>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={style.column2}>
-                                    <label htmlFor="products">Productos</label>
-                                    {selectedProducts?.map((selectedProduct, index) => (
-                                        <div key={index} className={style.product}>
-                                            <div className={style.productSelect}>
-                                                <AsyncSelect
-                                                    name="products"
-                                                    value={selectedProduct.productId ? selectedProduct : null}
-                                                    loadOptions={loadProductOptions}
-                                                    onChange={(selectedOption) => handleProductChange(selectedOption, index)}
-                                                    placeholder="Buscar Producto"
-                                                    ref={(element) => productRefs.current[index] = element}
-                                                    components={{DropdownIndicator}}
-                                                    menuPortalTarget={document.body}
-                                                    styles={{
-                                                        menuPortal: base => ({ ...base, zIndex: 9999 }),
-                                                        ...productInputStyles
-                                                    }}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                        e.preventDefault(); // Evita seleccionar con Enter
-                                                        }
-                                                    }}
-                                                    noOptionsMessage={({ inputValue }) => 
-                                                        inputValue.trim() ? "No hay productos registrados con ese nombre" : "Ingrese nombre del producto"
-                                                    }
+                                            <div className={style.right}>
+                                                <input 
+                                                    className={style.discount}
+                                                    type='number'
+                                                    name="debtAmount"
+                                                    placeholder='0'
+                                                    min='0'
+                                                    max={subtotal}
+                                                    value={newSale.debtAmount}
+                                                    onChange={handleInputChange}
+                                                    onWheel={(e) => e.target.blur()}
+                                                    disabled={!newDebt}
                                                 />
                                             </div>
-                                            {index ? <button type="button" onClick={() => handleRemoveProduct(index)} className={style.removeProduct}><img src={x} alt=""/></button> : ''}
                                         </div>
-                                    ))}
+                                    </div>
                                 </div>
                                 <div className={style.column3}>
                                     <div className={style.subtotal}>
