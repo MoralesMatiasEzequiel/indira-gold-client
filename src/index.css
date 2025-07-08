@@ -42,6 +42,11 @@ table {
     border-spacing: 0;
 }
 
+/*--Evita el sombreado azul (selección de texto)--*/
+* {
+  user-select: none;
+}
+
 /*--FONTS--*/
 
 @font-face {
