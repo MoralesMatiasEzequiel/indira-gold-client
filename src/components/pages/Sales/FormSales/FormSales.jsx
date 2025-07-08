@@ -1,8 +1,8 @@
 import style from "./FormSales.module.css";
 import iconClear from "../../../../assets/img/clearForm.png";
 import add from "./img/add.png";
+import rest from "./img/rest.png"
 import x from "./img/x.png";
-import close from "../../../../assets/img/x.png";
 import React, { useState, useRef, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
@@ -765,7 +765,7 @@ const FormSales = () => {
                                                         inputValue.trim() ? "No hay clientes registrados con ese nombre" : "Ingrese nombre de cliente"
                                                     }
                                                 />
-                                                <button type="button" onClick={handleShowClientForm} className={style.addClient}><img src={add} alt=""/></button>
+                                                <button type="button" onClick={handleShowClientForm} className={style.addClient}><img src={showClientForm ? rest : add} alt=""/></button>
                                             </div>                                        
                                         </div>
                                     </div>
@@ -1064,7 +1064,6 @@ const FormSales = () => {
                                 </div> 
                             </form>
                             <div className={`${style.addClientComponent} ${showClientForm ? style.addClientComponentBorder : ''}`}>
-                                <button className={style.buttonOnClose} type='button' onClick={handleCloseClientForm}><img src={close} alt=""/></button>
                                 {showClientForm && <FormClient onClientAdded={handleClientAdded}/>}
                             </div>
                         </div>
