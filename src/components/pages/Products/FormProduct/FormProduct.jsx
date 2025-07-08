@@ -210,7 +210,7 @@ const FormProduct = () => {
         setSizes(updatedSizes);
     
         // Eliminar el tamaño de todos los colores
-        const updatedProductColors = newProduct.color.map(color => ({
+        const updatedProductColors = newProduct.color?.map(color => ({
             ...color,
             size: color.size.filter(size => size.sizeName !== sizeToDelete)
         }));
