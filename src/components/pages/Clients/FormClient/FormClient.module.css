@@ -4,6 +4,15 @@
     height: 100%;
 }
 
+.containerMessage{
+    margin-bottom: 1em;
+}
+
+.mensagge{
+    font-size: 0.8em;
+    margin-bottom: 10em;
+}
+
 .clientForm .column{
     width: 50%;
     display: flex;
