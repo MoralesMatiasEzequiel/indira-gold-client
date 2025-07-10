@@ -3,7 +3,7 @@ import iconClear from "../../../../assets/img/clearForm.png";
 import add from "./img/add.png";
 import rest from "./img/rest.png"
 import x from "./img/x.png";
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -65,8 +65,6 @@ const FormSales = () => {
     };
 
     const [newSale, setNewSale] = useState(initialSaleState);
-
-    const productRefs = useRef([]);
 
     const handleSetForm = () => {
         setIsSubmitDisabled(true);
@@ -420,13 +418,45 @@ const FormSales = () => {
         }
     };
 
+    const formatAddress = (address) => {
+        if (!address) return '';
+
+        const parts = [
+            address.name,
+            address.street ? `Calle: ${address.street}` : null,
+            address.number ? `N° ${address.number}` : null,
+            address.between ? `E/ ${address.between}` : null,
+            address.floor ? `Piso: ${address.floor}` : null,
+            address.apartment ? `Dpto: ${address.apartment}` : null,
+            address.city ? `Ciudad: ${address.city}` : null,
+            address.postalCode ? `CP: ${address.postalCode}` : null,
+            address.province ? `Provincia: ${address.province}` : null,
+            address.reference ? `Referencia: ${address.reference}` : null,
+        ];
+
+        return parts.filter(Boolean).join(', ');
+    };
+
     const getClientAddressOptions = () => {
         if (!clientById?.addresses?.length) return [];
 
         return clientById.addresses?.map(address => ({
             value: address._id,
-            label: `${address.name} - ${address.street} N° ${address.number}, ${address.city}`,
+            label: formatAddress(address),
             fullAddress: address
+        }));
+    };
+
+    const handleAddressChange = (selectedOption) => {
+        if (!selectedOption) return;
+
+        const address = selectedOption.fullAddress;
+
+        setSelectedAddressOption(selectedOption);
+
+        setShipment(prev => ({
+            ...prev,
+            address: formatAddress(address),
         }));
     };
 
@@ -788,16 +818,7 @@ const FormSales = () => {
                                             <Select 
                                                 name="shipment"
                                                 value={selectedAddressOption}
-                                                onChange={(selectedOption) => {
-                                                    if (!selectedOption) return;
-                                                    const selected = selectedOption.fullAddress;
-
-                                                    setSelectedAddressOption(selectedOption); // Mostrar seleccionada
-                                                    setShipment(prev => ({
-                                                        ...prev,
-                                                        address: `${selected.name} - ${selected.street} N° ${selected.number}, ${selected.city}`
-                                                    }));
-                                                }}
+                                                onChange={handleAddressChange}
                                                 options={getClientAddressOptions()}
                                                 menuPortalTarget={document.body}
                                                 styles={{
@@ -809,7 +830,7 @@ const FormSales = () => {
                                                         e.preventDefault();
                                                     }
                                                 }}
-                                                noOptionsMessage={() => "No hay direcciones registradas"}
+                                                noOptionsMessage={() => "No tiene direcciones registradas"}
                                                 placeholder="Seleccionar"
                                                 isDisabled={!withShipping}
                                                 style={!withShipping ? {cursor: "notAllowed"} : ""}
