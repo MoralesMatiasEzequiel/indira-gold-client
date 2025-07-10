@@ -36,6 +36,7 @@
 .row p a img, .section ul img, .section .productSelectorDiv button img{
     width: 1rem;
     margin-left: 0.5rem;
+    cursor: pointer;
 }
 
 .column {
@@ -44,6 +45,98 @@
 
 .column p span, .column div span, .row form .column .section label span{
     font-weight: 600;
+}
+
+.containerInputCheckbox{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.containerInputCheckbox label{
+    padding-left: 0.5rem;
+}
+
+.containerInputCheckbox label.disabled{
+    cursor: not-allowed;
+}
+
+.inputCheckbox {
+    margin-left: 0px !important;
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    appearance: none;
+    border: 2px solid #e4b61a;
+    border-radius: 3px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 16px; /* Tamaño del ✔ */
+}
+
+.inputCheckbox:checked::before {
+    content: "✔";
+    color: #333;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.inputCheckbox:disabled{
+    cursor: not-allowed;
+}
+
+.column .labelInput{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.column .labelInput .left{
+    width: 45%;
+}
+
+.column .labelInput .right{
+    width: 55%;
+}
+
+.left label {
+    font-weight: 600;
+}
+
+.discount {
+    width: 100%;
+    box-sizing: border-box;
+    height: 1.75rem;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+    border: lightgrey solid 1px;
+    border-radius: 4px;
+    text-align: right;
+}
+
+.buttonEdit {
+    background: none !important;
+    margin-left: 0.5rem;
+    border: none !important;
+    padding: 0 !important;
+    align-items: center;
+}
+
+.buttonEdit img{
+    width: 1rem;
+}
+
+.total{
+    color: var(--gold);
+}
+
+.totalAmount{
+    font-weight: 400;
+    border-bottom: none;
 }
 
 .section label.products{
@@ -90,6 +183,10 @@
 
 .section button{
     font-size: 0.75rem;
+}
+
+.section input {
+    width: 70%;
 }
 
 .section .productSelector{

@@ -930,7 +930,7 @@ const FormSales = () => {
                                             </div>
                                         </div>
                                     </div>
-                                   <div className={style.labelInput}>
+                                    <div className={style.labelInput}>
                                         <div className={style.left}>
                                             <label htmlFor="paymentMethod">Medio de pago</label>
                                         </div>

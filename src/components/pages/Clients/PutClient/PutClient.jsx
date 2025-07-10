@@ -204,7 +204,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                             <div className={style.newAddress}>
                                 {editClient.addresses?.length > 0 ? 
                                     <ul>
-                                        {editClient.addresses.map((address, index) => (
+                                        {editClient.addresses?.map((address, index) => (
                                             <li key={index}>
                                                 {address.name && address.name}
                                                 <div>

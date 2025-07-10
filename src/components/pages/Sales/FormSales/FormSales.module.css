@@ -103,7 +103,7 @@
 
 .salesForm .column3 .subtotal, .column3 .discount, .column3 .total{
     display: flex;
-    border-bottom: var(--border-light);
+    border-bottom: var(--border-light) !important;
     padding-bottom: 0.75rem;
 }
 
