@@ -341,36 +341,93 @@ const DetailSale = () => {
                         </div>
                         <div className={`container ${style.content}`}>
                             {saleDetail.orderNumber && <div className={style.orderNumber}><span>N° de orden:</span> {saleDetail.orderNumber}</div>}
-                            <div className={style.column}>
-                                {saleDetail.date && <p><span>Fecha:&nbsp;</span>{formatDate(saleDetail.date)}</p>}
-                                {saleDetail.client
-                                ?  <p>
-                                        <span>Cliente:&nbsp;</span>{saleDetail.client.dni} - {saleDetail.client.name} {saleDetail.client.lastname}
-                                        <a onClick={() => navigate(`/main_window/clients/${saleDetail.client._id}`)}>
-                                            <img className="detailImg" src={detail} alt=""/>
-                                        </a>
+                            <div className={`${style.column} ${style.column1Width}`}>
+                                {saleDetail.date && (
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Fecha:</span>
+                                        <span className={style.value}>{formatDate(saleDetail.date)}</span>
                                     </p>
-                                : <p><span>Cliente:&nbsp;</span> Anónimo</p>}
+                                )}
+                                {saleDetail.client
+                                    ?  
+                                        <p className={style.detailRow}>
+                                            <span className={style.label}>Cliente:</span>
+                                            <span className={style.value}>{saleDetail.client.dni} - {saleDetail.client.name} {saleDetail.client.lastname}</span>
+                                            <a onClick={() => navigate(`/main_window/clients/${saleDetail.client._id}`)}>
+                                                <img className="detailImg" src={detail} alt=""/>
+                                            </a>
+                                        </p>
+                                    : 
+                                        <p className={style.detailRow}>
+                                            <span className={style.label}>Cliente:</span>
+                                            <span className={style.value}>Anónimo</span>
+                                        </p>
+                                }
                                 {saleDetail.shipment?.address && (
                                     <>
-                                        <p>
-                                            <span>Dirección de envío:&nbsp;</span>{saleDetail.shipment?.address}
+                                        <p className={style.detailRow}>
+                                            <span className={style.label}>Dirección de envío:</span>
+                                            <span className={style.value}>{saleDetail.shipment?.address}</span>
                                         </p>
-                                        <p>
-                                            <span>Costo de envío:&nbsp;</span> ${formatNumber(saleDetail.shipment?.amount)}
+                                        <p className={style.detailRow}>
+                                            <span className={style.label}>Costo de envío:</span>
+                                            <span className={style.value}>${formatNumber(saleDetail.shipment?.amount)}</span>
                                         </p>
                                     </>
                                 )}
-                                {saleDetail.paymentMethod && <p><span>Modo de pago:&nbsp;</span> {saleDetail.paymentMethod}</p>}
-                                {saleDetail.soldAt && <p><span>Tipo de venta:&nbsp;</span> {saleDetail.soldAt}</p>}
-                                {saleDetail.subTotal && <p><span>Subtotal:&nbsp;</span> ${formatNumber(saleDetail.subTotal)}</p>}
-                                {<p><span>Descuento:&nbsp;</span> {saleDetail.discount}% {`(- $${formatNumber(saleDetail.discountApplied)})`}</p>}
-                                {<p><span>Retención:&nbsp;</span> {saleDetail.paymentFee}% {`(- $${formatNumber(saleDetail.paymentFeeApplied)})`}</p>}
-                                {saleDetail.totalWithFee && <p><span>Total con retención:&nbsp;</span> ${formatNumber(saleDetail.totalWithFee)}</p>}
-                                {saleDetail.totalPrice && <p><span>Total:&nbsp;</span> ${formatNumber(saleDetail.totalPrice)}</p>}
-                                {saleDetail.debt ? <p><span>Adeuda:&nbsp;</span> ${formatNumber(saleDetail.debt)}</p> : <></>}
+                                {saleDetail.paymentMethod && 
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Modo de pago:</span>
+                                        <span className={style.value}>{saleDetail.paymentMethod}</span>
+                                    </p>
+                                }
+                                {saleDetail.soldAt && 
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Tipo de venta:</span>
+                                        <span className={style.value}>{saleDetail.soldAt}</span>
+                                    </p>
+                                }
+                                {saleDetail.subTotal && 
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Subtotal:</span>
+                                        <span className={style.value}>${formatNumber(saleDetail.subTotal)}</span>
+                                    </p>
+                                }
+                                {
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Descuento:</span>
+                                        <span className={style.value}>{saleDetail.discount}% {`(- $${formatNumber(saleDetail.discountApplied)})`}</span>
+                                    </p>
+                                }
+                                {
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Retención:</span>
+                                        <span className={style.value}>{saleDetail.paymentFee}% {`(- $${formatNumber(saleDetail.paymentFeeApplied)})`}</span>
+                                    </p>
+                                }
+                                {saleDetail.totalWithFee && 
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Total con retención:</span>
+                                        <span className={style.value}>${formatNumber(saleDetail.totalWithFee)}</span>
+                                    </p>
+                                }
+                                {saleDetail.totalPrice && 
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Total:</span>
+                                        <span className={style.value}>${formatNumber(saleDetail.totalPrice)}</span>
+                                    </p>
+                                }
+                                {saleDetail.debt 
+                                ? 
+                                    <p className={style.detailRow}>
+                                        <span className={style.label}>Adeuda:</span>
+                                        <span className={style.value}>${formatNumber(saleDetail.debt)}</span>
+                                    </p>
+                                :   
+                                    <></>
+                                }
                             </div>
-                            <div className={style.column}>
+                            <div className={`${style.column} ${style.column2Width}`}>
                                 <p><span>Productos:&nbsp;</span></p>
                                 {productsLoading ? (
                                     <div>Cargando productos...</div> 
