@@ -1003,36 +1003,34 @@ const FormSales = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className={style.debtContainer}>
-                                        <div className={style.containerInputCheckbox}>
-                                            <input 
-                                                className={style.inputCheckbox} 
-                                                type="checkbox" 
-                                                name="newDebt" 
-                                                checked={newDebt}
-                                                onChange={handleCheckbox}
-                                                disabled={!selectedClient?.value}
-                                            />  
-                                            <label className={!selectedClient?.value ? style.disabled : ""}>Nueva deuda</label>
+                                    <div className={style.containerInputCheckbox}>
+                                        <input 
+                                            className={style.inputCheckbox} 
+                                            type="checkbox" 
+                                            name="newDebt" 
+                                            checked={newDebt}
+                                            onChange={handleCheckbox}
+                                            disabled={!selectedClient?.value}
+                                        />  
+                                        <label className={!selectedClient?.value ? style.disabled : ""}>Nueva deuda</label>
+                                    </div>
+                                    <div className={style.labelInput}>
+                                        <div className={style.left}>
+                                            <label htmlFor="debtAmount">Monto abonado</label>
                                         </div>
-                                        <div className={style.labelInput}>
-                                            <div className={style.left}>
-                                                <label htmlFor="debtAmount">Monto abonado</label>
-                                            </div>
-                                            <div className={style.right}>
-                                                <input 
-                                                    className={style.discount}
-                                                    type='number'
-                                                    name="debtAmount"
-                                                    placeholder='0'
-                                                    min='0'
-                                                    max={subtotal}
-                                                    value={newSale.debtAmount}
-                                                    onChange={handleInputChange}
-                                                    onWheel={(e) => e.target.blur()}
-                                                    disabled={!newDebt}
-                                                />
-                                            </div>
+                                        <div className={style.right}>
+                                            <input 
+                                                className={style.discount}
+                                                type='number'
+                                                name="debtAmount"
+                                                placeholder='0'
+                                                min='0'
+                                                max={subtotal}
+                                                value={newSale.debtAmount}
+                                                onChange={handleInputChange}
+                                                onWheel={(e) => e.target.blur()}
+                                                disabled={!newDebt}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -1043,11 +1041,11 @@ const FormSales = () => {
                                     </div>
                                     <div className={style.discount}>
                                         <div className={style.left}>Descuento</div>
-                                        <div className={style.right}>- ${formatNumber(subtotal * newSale.discount / 100)}</div>
+                                        <div className={style.right}>-${formatNumber(subtotal * newSale.discount / 100)}</div>
                                     </div>
                                     <div className={style.discount}>
                                         <div className={style.left}>Retención</div>
-                                        <div className={style.right}>- ${formatNumber(subtotal * newSale.paymentFee / 100)}</div>
+                                        <div className={style.right}>-${formatNumber(subtotal * newSale.paymentFee / 100)}</div>
                                     </div>
                                     <div className={style.discount}>
                                         <div className={style.left}>Total con retención</div>
