@@ -36,6 +36,25 @@ const PutSale = () => {
     const [editableSubtotal, setEditableSubtotal] = useState(0); 
     const [isEditingSubtotal, setIsEditingSubtotal] = useState(false);
 
+    const formatAddress = (address) => {
+        if (!address) return '';
+
+        const parts = [
+            address.name,
+            address.street ? `Calle: ${address.street}` : null,
+            address.number ? `N° ${address.number}` : null,
+            address.between ? `E/ ${address.between}` : null,
+            address.floor ? `Piso: ${address.floor}` : null,
+            address.apartment ? `Dpto: ${address.apartment}` : null,
+            address.city ? `Ciudad: ${address.city}` : null,
+            address.postalCode ? `CP: ${address.postalCode}` : null,
+            address.province ? `Provincia: ${address.province}` : null,
+            address.reference ? `Referencia: ${address.reference}` : null,
+        ];
+
+        return parts.filter(Boolean).join(', ');
+    };
+    
     const handleCheckbox = (e) => {
         const { name, checked } = e.target;
 
@@ -53,8 +72,21 @@ const PutSale = () => {
 
         return saleDetail.client?.addresses?.map(address => ({
             value: address._id,
-            label: `${address.name} - ${address.street} N° ${address.number}, ${address.city}`,
+            label: formatAddress(address),
             fullAddress: address
+        }));
+    };
+
+    const handleAddressChange = (selectedOption) => {
+        if (!selectedOption) return;
+
+        const address = selectedOption.fullAddress;
+
+        setSelectedAddressOption(selectedOption);
+
+        setShipment(prev => ({
+            ...prev,
+            address: formatAddress(address),
         }));
     };
 
@@ -485,17 +517,7 @@ const PutSale = () => {
                                         <Select
                                             name="shipment"
                                             value={selectedAddressOption}
-                                            onChange={(selectedOption) => {
-                                                if (!selectedOption) return;
-
-                                                const selected = selectedOption.fullAddress;
-
-                                                setSelectedAddressOption(selectedOption);
-                                                setShipment(prev => ({
-                                                    ...prev,
-                                                    address: `${selected.name} - ${selected.street} N° ${selected.number}, ${selected.city}`
-                                                }));
-                                            }}
+                                            onChange={handleAddressChange}
                                             options={getClientAddressOptions()}
                                             menuPortalTarget={document.body}
                                             styles={{
@@ -507,7 +529,7 @@ const PutSale = () => {
                                                     e.preventDefault();
                                                 }
                                             }}
-                                            noOptionsMessage={() => "No hay direcciones registradas"}
+                                            noOptionsMessage={() => "No tiene direcciones registradas"}
                                             placeholder="Seleccionar"
                                             isDisabled={!withShipping}
                                         />

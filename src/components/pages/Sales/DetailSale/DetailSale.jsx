@@ -37,7 +37,6 @@ const DetailSale = () => {
             dispatch(getSaleByIdLocal(id));
             setLoading(false);
         });
-        console.log(saleDetail);
     }, [dispatch, id]);
 
     useEffect(() => {
