@@ -14,15 +14,15 @@
 }
 
 .salesForm .column2{
-    width: 33%;
+    width: 34%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 3rem;
 }
 
 .salesForm .column3{
-    width: 25%;
+    width: 24%;
 }
 
 .salesForm .column1 .labelInput, .salesForm .column2 .labelInput{
@@ -81,7 +81,6 @@
     flex-direction: column;
     gap: 1rem;
 }
-
 
 .salesForm .removeProduct{
     background: none;
@@ -170,6 +169,14 @@
     width: 0.75rem;
 }
 
+.column1 .containerInputCheckbox{
+    margin-bottom: -1rem; /* Ajusta el espacio posterior solo a este */
+}
+
+.column2 .containerInputCheckbox{
+    margin-bottom: -2rem; 
+}
+
 .containerInputCheckbox{
     display: flex;
     align-items: center;
@@ -184,8 +191,32 @@
     cursor: not-allowed;
 }
 
-.inputCheckbox {
+/* .inputCheckbox {
     cursor: pointer;
+    transform: scale(1.4);
+} */
+ 
+.inputCheckbox {
+    margin-left: 0px !important;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    appearance: none;
+    border: 2px solid #e4b61a;
+    border-radius: 3px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 16px; /* Tamaño del ✔ */
+}
+
+.inputCheckbox:checked::before {
+    content: "✔";
+    color: #333;
+    font-size: 16px;
+    line-height: 1;
 }
 
 .inputCheckbox:disabled{
@@ -215,10 +246,4 @@
 .selectedProductItem span{
     font-size: 0.9rem;
     font-weight: 300;
-}
-
-.debtContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
 }
