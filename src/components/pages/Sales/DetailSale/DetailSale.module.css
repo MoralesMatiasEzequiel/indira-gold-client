@@ -18,9 +18,16 @@
 
 .column {
     height: 90%;
-    width: 50%;
     padding: 0 2rem;
     box-sizing: border-box;
+}
+
+.column1Width {
+    width: 60%;
+}
+
+.column2Width {
+    width: 40%;
 }
 
 .column p, .column div, .column div ul{
@@ -33,7 +40,6 @@
 
 .column p{
     display: flex;
-    align-items: center;
 }
 
 .column p a img{
@@ -61,6 +67,26 @@
 
 .column .productList li{
     margin: 1rem 0;
+}
+
+.detailRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    word-break: break-word;
+}
+
+.label {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.value {
+    font-weight: normal !important;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
 }
 
 .deleteModal{
