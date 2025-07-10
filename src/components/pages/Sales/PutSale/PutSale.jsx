@@ -9,6 +9,7 @@ import { putRemovePurchases, putAddProducts } from '../../../../redux/clientActi
 import style from "./PutSale.module.css";
 import detail from "../../../../assets/img/detail.png";
 import x from "./img/x.png";
+import edit from "../../../../assets/img/edit.png";
 
 const PutSale = () => {
 
@@ -507,7 +508,7 @@ const PutSale = () => {
                                         onChange={handleCheckbox}
                                         disabled={saleDetail?.client === null}
                                     />
-                                    <span>Con envío</span>
+                                    <span className={saleDetail?.client === null ? style.disabled : ""}>Con envío</span>
                                 </div>
                                 <div className={style.labelInput}>
                                     <div className={style.left}>
@@ -599,64 +600,94 @@ const PutSale = () => {
                                 </div>
                             </div>
                             <div className={style.column}>
-                                <div className={style.section}>
-                                    <p><span>Subtotal: </span>
-                                        {isEditingSubtotal ? (
-                                            <div>
-                                                <input
-                                                    type="number"
-                                                    value={editableSubtotal}
-                                                    onChange={handleEditableSubtotalChange}
-                                                    onWheel={(e) => e.target.blur()}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
-                                                            e.preventDefault(); // Bloquea decimales, notación científica y negativos
-                                                        }
-                                                    }}
-                                                />
-                                                <button type="button" onClick={saveNewSubTotal}>Actualizar</button>
-                                            </div>
-                                        ) : (
-                                            <div>
-                                                ${formatNumber(subtotal)}
-                                                <button type="button" onClick={handleEditSubtotalToggle}>Editar subtotal</button>
-                                            </div>
-                                        )}
-                                    </p>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label>Subtotal:</label>
+                                    </div>
+                                    {isEditingSubtotal ? (
+                                        <div className={style.right}>
+                                            <input
+                                                className={style.discount}
+                                                type="number"
+                                                value={editableSubtotal}
+                                                onChange={handleEditableSubtotalChange}
+                                                onWheel={(e) => e.target.blur()}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                                        e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                                    }
+                                                }}
+                                            />
+                                            <button type="button" onClick={saveNewSubTotal}>Actualizar</button>
+                                        </div>
+                                    ) : (
+                                        <div className={style.right}>
+                                            <label>${formatNumber(subtotal)}</label>
+                                            <button className={style.buttonEdit} type="button" onClick={handleEditSubtotalToggle}>
+                                                <img src={edit} alt="Editar" />
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className={style.section}>
-                                    <p>
-                                        <label>Descuento (porcentaje):&nbsp;</label>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label>Descuento (%):</label>
+                                    </div>
+                                    <div className={style.right}>
                                         <input
+                                            className={style.discount}
                                             type="number"
                                             value={discount}
                                             onChange={handleDiscountChange}
                                             onWheel={(e) => e.target.blur()}
                                         />
-                                    </p>
+                                    </div>
                                 </div>
-                                <div className={style.section}>
-                                    <p><span>Descuento (en pesos): </span>- ${formatNumber((subtotal * discount) / 100)}</p>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label>Descuento (en $):</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <label>-${formatNumber((subtotal * discount) / 100)}</label>
+                                    </div>
                                 </div>
-                                <div className={style.section}>
-                                    <p>
-                                        <label>Retención (porcentaje):&nbsp;</label>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label>Retención (%):</label>
+                                    </div>
+                                    <div className={style.right}>
                                         <input
+                                            className={style.discount}
                                             type="number"
                                             value={paymentFee}
                                             onChange={handlePaymentFeeChange}
                                             onWheel={(e) => e.target.blur()}
                                         />
-                                    </p>
+                                    </div>
                                 </div>
-                                <div className={style.section}>
-                                    <p><span>Retención (en pesos): </span>- ${formatNumber((total * paymentFee) / 100)}</p>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label>Retención (en $):</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <label>-${formatNumber((total * paymentFee) / 100)}</label>
+                                    </div>
                                 </div>
-                                <div className={style.section}>
-                                    <p><span>Total con Retención: </span>{formatNumber(total - ((total * paymentFee) / 100))}</p>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label>Total con Retención:</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <label>${formatNumber(total - ((total * paymentFee) / 100))}</label>
+                                    </div>
                                 </div>
-                                <div className={style.section}>
-                                    <p><span>Total: </span>{formatNumber(total)}</p>
+                                <div className={style.labelInput}>
+                                    <div className={style.left}>
+                                        <label className={style.total}>Total:</label>
+                                    </div>
+                                    <div className={style.right}>
+                                        <label className={style.totalAmount}>${formatNumber(total)}</label>
+                                    </div>
                                 </div>
                                 <div className={style.section}>
                                     <p>{previousTotal > total ?
