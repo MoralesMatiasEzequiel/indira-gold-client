@@ -1,12 +1,14 @@
 import style from './FormClient.module.css';
 import iconClear from '../../../../assets/img/clearForm.png';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { postClient, getClients } from '../../../../redux/clientActions.js';
 import { useDispatch } from 'react-redux';
 import x from "./img/x.png";
 
 const FormClient = ({ onClientAdded = () => {} }) => {
 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const initialClientState = {
@@ -132,9 +134,11 @@ const FormClient = ({ onClientAdded = () => {} }) => {
             } else {
                 onClientAdded(response);
                 dispatch(getClients());
+                handleSetForm();
+                navigate('/main_window/clients/history');
             }
         });
-        handleSetForm();
+
     };
 
     return (
