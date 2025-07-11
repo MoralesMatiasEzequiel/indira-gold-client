@@ -342,7 +342,7 @@ const FormClient = ({ onClientAdded = () => {} }) => {
                                     onChange={handleAddressChange}
                                 />
                             </div>
-                            <button type="button" onClick={addAddress} disabled={isSubmitAddressDisabled}>Añadir</button>
+                            <button type="button" onClick={addAddress} disabled={isSubmitAddressDisabled} className={style.newAddressButton}>Añadir</button>
                         </div>                            
                     </div>
                 </form>

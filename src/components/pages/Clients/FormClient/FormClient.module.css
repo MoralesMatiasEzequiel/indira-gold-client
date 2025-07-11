@@ -98,7 +98,18 @@
     width: 1rem;
 }
 
-.clientForm .newAddress button{
+.clientForm .newAddressButton{
+    background: none !important;
+    border: solid 2px var(--dark-grey);
+    color: var(--dark-grey);
+}
+
+.clientForm .newAddressButton:hover{
+    background-color: var(--dark-grey) !important;
+    color: white;
+}
+
+.clientForm .newAddressButton:disabled{
     background: none !important;
     border: solid 2px var(--dark-grey);
     color: var(--dark-grey);
