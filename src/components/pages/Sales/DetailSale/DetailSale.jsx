@@ -228,6 +228,11 @@ const DetailSale = () => {
             });
             return y;
         };
+
+        if (saleDetail.shipment) {
+            yPos = addWrappedText(`Envío a ${saleDetail.shipment?.address || 'N/A'}`, 4, yPos);
+            yPos = addWrappedText(`Costo de envío: $${saleDetail.shipment?.amount || 'N/A'}`, 4, yPos);
+        }
     
         yPos = addWrappedText(`Fecha: ${formatDate(saleDetail.date) || 'N/A'}`, 4, yPos);
         yPos = addWrappedText(`Tenés hasta 15 días para realizar el cambio`, 4, yPos);
