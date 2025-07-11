@@ -59,7 +59,6 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
-    background-color: #dddddd52;
     box-sizing: border-box;
 }
 
@@ -102,6 +101,18 @@
     border: solid 2px var(--dark-grey);
     color: var(--dark-grey);
     font-size: 0.8rem;
+    width: 100%;
+}
+
+.clientForm .newAddress .addressButtons button:disabled{
+    background: none !important;
+    border: solid 2px var(--dark-grey);
+    color: var(--dark-grey);
+}
+
+.clientForm .newAddress .addressButtons button:hover{
+    background-color: var(--dark-grey) !important;
+    color: white;
 }
 
 .containerSubmit{
@@ -112,4 +123,26 @@
 
 .buttonSubmit{
     width: 100%;
+}
+
+.whiteBackground {
+  background-color: white;
+}
+
+.greyBackground {
+  background-color: #dddddd52;
+}
+
+.addMarginTop {
+  margin-top: 1em;
+}
+
+
+.containerMessage{
+    margin-bottom: 1em;
+}
+
+.mensagge{
+    font-size: 0.8em;
+    margin-bottom: 10em;
 }

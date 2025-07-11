@@ -49,7 +49,9 @@ const PutClient = ({ onClientAdded = () => {}}) => {
         reference: ""
     };
 
+    const [isSubmitClientDisabled, setIsSubmitClientDisabled] = useState(true);
     const [address, setAddress] = useState(initalAddressState);
+    const [isSubmitAddressDisabled, setIsSubmitAddressDisabled] = useState(true);
 
     const handleAddressChange = (event) => {
         const { name, value } = event.target;
@@ -91,6 +93,23 @@ const PutClient = ({ onClientAdded = () => {}}) => {
             setAddress(initalAddressState);
         }
     };
+
+    useEffect(() => {
+        const isNameValid = editClient.name?.trim() !== '';
+        const isLastnameValid = editClient.lastname?.trim() !== '';
+        const isPhoneValid = editClient.phone?.trim() !== '';
+        const isEmailValid = editClient.email?.trim() !== '';
+        const isDniValid = editClient.dni?.trim() !== '';
+
+        setIsSubmitClientDisabled(!(isNameValid && isLastnameValid && isPhoneValid && isEmailValid && isDniValid));
+    }, [editClient]);
+
+    useEffect(() => {
+        const isNameValid = address.name?.trim() !== '';
+        const isStreetValid = address.street?.trim() !== '';
+
+        setIsSubmitAddressDisabled(!(isNameValid && isStreetValid));
+    }, [address]);
 
     const editExistingAddress = (index) => {
         const addressToEdit = editClient.addresses[index];
@@ -136,96 +155,103 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                     </div>
                 </div>
                 <div className="container">
+                    <div className={style.containerMessage}>
+                        <label className={style.mensagge}>Los campos con (*) son obligatorios</label>
+                    </div>
                     <form onSubmit={handleSubmit} className={style.clientForm}>
                         <div className={style.column}>
-                            <div className={style.labelInput}>
-                                <label htmlFor="dni">DNI</label>
-                                <input 
-                                    type="number" 
-                                    id="dni" 
-                                    name="dni" 
-                                    value={editClient.dni} 
-                                    onChange={handleChange} 
-                                    required 
-                                    onWheel={(e) => e.target.blur()}
-                                />
+                            <div className={`${style.newAddress} ${style.whiteBackground}`}>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="dni">DNI*</label>
+                                    <input 
+                                        type="number" 
+                                        id="dni" 
+                                        name="dni" 
+                                        value={editClient.dni} 
+                                        onChange={handleChange} 
+                                        required 
+                                        onWheel={(e) => e.target.blur()}
+                                    />
+                                </div>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="name">Nombre(s)*</label>
+                                    <input 
+                                        type="text" 
+                                        id="name" 
+                                        name="name" 
+                                        value={editClient.name} 
+                                        onChange={handleChange} 
+                                        required 
+                                    />
+                                </div>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="lastname">Apellido(s)*</label>
+                                    <input 
+                                        type="text" 
+                                        id="lastname" 
+                                        name="lastname" 
+                                        value={editClient.lastname} 
+                                        onChange={handleChange} 
+                                        required 
+                                    />
+                                </div>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="email">Email*</label>
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        name="email" 
+                                        value={editClient.email} 
+                                        onChange={handleChange} 
+                                        required 
+                                    />
+                                </div>
+                                <div className={style.labelInput}>
+                                    <label htmlFor="phone">Teléfono*</label>
+                                    <input 
+                                        type="number" 
+                                        id="phone" 
+                                        name="phone" 
+                                        value={editClient.phone} 
+                                        onChange={handleChange} 
+                                        required 
+                                        onWheel={(e) => e.target.blur()}
+                                        onKeyDown={(e) => {
+                                            if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
+                                                e.preventDefault(); // Bloquea decimales, notación científica y negativos
+                                            }
+                                        }}
+                                    />
+                                </div>
+                                <div className={style.labelInput}><label>Direcciones</label></div>
+                                <div className={style.newAddress}>
+                                    {editClient.addresses?.length > 0 ? 
+                                        <ul>
+                                            {editClient.addresses?.map((address, index) => (
+                                                <li key={index}>
+                                                    {address.name && address.name}
+                                                    <div>
+                                                        <button type="button" onClick={() => editExistingAddress(index)}>
+                                                            <img src={edit} alt="Editar" />
+                                                        </button>
+                                                        <button type="button" onClick={() => removeAddress(index)}>
+                                                            <img src={x} alt="Eliminar" />
+                                                        </button>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    :
+                                        <label style={{fontStyle: "italic"}}>Aún no se han añadido direcciones.</label>}
+                                </div>
+                                <button className={style.buttonSubmit} disabled={isSubmitClientDisabled} type="submit">Editar</button>
                             </div>
-                            <div className={style.labelInput}>
-                                <label htmlFor="name">Nombre(s)</label>
-                                <input 
-                                    type="text" 
-                                    id="name" 
-                                    name="name" 
-                                    value={editClient.name} 
-                                    onChange={handleChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className={style.labelInput}>
-                                <label htmlFor="lastname">Apellido(s)</label>
-                                <input 
-                                    type="text" 
-                                    id="lastname" 
-                                    name="lastname" 
-                                    value={editClient.lastname} 
-                                    onChange={handleChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className={style.labelInput}>
-                                <label htmlFor="email">Email</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    name="email" 
-                                    value={editClient.email} 
-                                    onChange={handleChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className={style.labelInput}>
-                                <label htmlFor="phone">Teléfono</label>
-                                <input 
-                                    type="number" 
-                                    id="phone" 
-                                    name="phone" 
-                                    value={editClient.phone} 
-                                    onChange={handleChange} 
-                                    required 
-                                    onWheel={(e) => e.target.blur()}
-                                    onKeyDown={(e) => {
-                                        if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === '-') {
-                                            e.preventDefault(); // Bloquea decimales, notación científica y negativos
-                                        }
-                                    }}
-                                />
-                            </div>
-                            <div className={style.labelInput}><label>Direcciones</label></div>
-                            <div className={style.newAddress}>
-                                {editClient.addresses?.length > 0 ? 
-                                    <ul>
-                                        {editClient.addresses?.map((address, index) => (
-                                            <li key={index}>
-                                                {address.name && address.name}
-                                                <div>
-                                                    <button type="button" onClick={() => editExistingAddress(index)}>
-                                                        <img src={edit} alt="Editar" />
-                                                    </button>
-                                                    <button type="button" onClick={() => removeAddress(index)}>
-                                                        <img src={x} alt="Eliminar" />
-                                                    </button>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                :
-                                    <label style={{fontStyle: "italic"}}>Aún no se han añadido direcciones.</label>}
-                            </div>
+
                         </div>
                         <div className={style.column}>
-                            <div className={style.newAddress}>
+                            <div className={`${style.newAddress} ${style.greyBackground}`}>
                                 <div className={style.labelInput}>
-                                    <label htmlFor="addressName">Nombre</label>
+                                    <label htmlFor="addressName">Nombre*</label>
                                     <input 
                                         type="text" 
                                         id="addressName" 
@@ -235,7 +261,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                     />
                                 </div>
                                 <div className={style.labelInput}>
-                                    <label htmlFor="addressStreet">Calle</label>
+                                    <label htmlFor="addressStreet">Calle*</label>
                                     <input 
                                         type="text" 
                                         id="addressStreet" 
@@ -327,7 +353,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                     />
                                 </div>
                                 <div className={style.addressButtons}>
-                                    <button type="button" onClick={addAddress}>
+                                    <button type="button" onClick={addAddress} disabled={isSubmitAddressDisabled}>
                                         {editingAddressIndex !== null ? 'Actualizar' : 'Añadir'}
                                     </button>
                                     {editingAddressIndex !== null && (
@@ -339,7 +365,7 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                             </div>
                                         
                             <div className={style.containerSubmit}>
-                                <button className={style.buttonSubmit} type="submit">Editar</button>
+                                
                             </div>
                         </div>                       
                     </form>
