@@ -606,7 +606,7 @@ const PutSale = () => {
                                         <label>Subtotal:</label>
                                     </div>
                                     {isEditingSubtotal ? (
-                                        <div className={style.right}>
+                                        <div className={style.editSubtotal}>
                                             <input
                                                 className={style.discount}
                                                 type="number"
@@ -619,7 +619,7 @@ const PutSale = () => {
                                                     }
                                                 }}
                                             />
-                                            <button type="button" onClick={saveNewSubTotal}>Actualizar</button>
+                                            <button className={style.editSubtotalButton} type="button" onClick={saveNewSubTotal}>Actualizar</button>
                                         </div>
                                     ) : (
                                         <div className={style.right}>
