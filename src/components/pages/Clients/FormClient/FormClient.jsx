@@ -220,10 +220,11 @@ const FormClient = ({ onClientAdded = () => {} }) => {
                                         ))}
                                     </ul>
                                 :
-                                    <label style={{fontStyle: "italic"}}>Aún no se han añadido direcciones.</label>}
+                                    <label style={{fontStyle: "italic"}}>Aún no se han añadido direcciones.</label>
+                                }
                             </div>
                             {errorMessage && <p className={style.errorMessage}>{errorMessage}</p>}
-                            <button type="submit" disabled={isSubmitClientDisabled}>Crear</button>
+                            <button className={style.addMarginTop} type="submit" disabled={isSubmitClientDisabled}>Crear</button>
                         </div>
                     </div>
                     <div className={style.column}>
