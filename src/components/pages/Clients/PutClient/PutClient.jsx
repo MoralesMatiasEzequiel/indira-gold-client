@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getClients, getClientById, putClient } from '../../../../redux/clientActions';
 import x from "./img/x.png";
 import edit from "../../../../assets/img/edit.png";
+import editHover from "../../../../assets/img/editHover.png";
 
 const PutClient = ({ onClientAdded = () => {}}) => {
     const { id } = useParams();
@@ -231,7 +232,12 @@ const PutClient = ({ onClientAdded = () => {}}) => {
                                                 <li key={index}>
                                                     {address.name && address.name}
                                                     <div>
-                                                        <button type="button" onClick={() => editExistingAddress(index)}>
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => editExistingAddress(index)}
+                                                            onMouseEnter={(e) => e.currentTarget.firstChild.src = editHover} 
+                                                            onMouseLeave={(e) => e.currentTarget.firstChild.src = edit}
+                                                        >
                                                             <img src={edit} alt="Editar" />
                                                         </button>
                                                         <button type="button" onClick={() => removeAddress(index)}>
