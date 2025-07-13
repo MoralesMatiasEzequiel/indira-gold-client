@@ -1,38 +1,65 @@
 .containerCheckbox{
+    display: flex;
+    align-items: center;
+    width: 35%;
     margin: 2px;
     padding-top: 10px;
     padding-bottom: 10px;
-    display: flex;
-    align-items: center;
+    gap: 10px;
 }
 
 .containerInputCheckbox{
-    margin-right: 10px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
+    width: 6.6rem;
 }
 
 .inputCheckbox {
+    margin-left: 0px !important;
+    width: 20px !important;
+    height: 20px !important;
     cursor: pointer;
+    appearance: none;
+    border: 2px solid #e4b61a;
+    border-radius: 3px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 16px; /* Tamaño del ✔ */
+}
+
+.inputCheckbox:checked::before {
+    content: "✔";
+    color: #333;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.inputCheckbox:disabled{
+    cursor: not-allowed;
 }
 
 .spanCheckbox{
-    font-size: 0.75rem;
+    padding-left: 0.2rem;
+    font-size: 0.8rem;
 }
 
 .labelInput {
-    margin: 20px;
     display: flex;
     align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .labelInput .left{
-    width: 10%;
+    width: 12%;
 }
 
 .labelInput .right{
-    width: 20%;
+    width: 23%;
 }
 
 .inputPorcentage{
