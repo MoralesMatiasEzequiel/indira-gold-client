@@ -108,6 +108,7 @@
 }
 
 .discount {
+    flex: 1; /* Opcional: el input ocupará el máximo espacio posible */
     width: 100%;
     box-sizing: border-box;
     height: 1.75rem;
@@ -128,6 +129,31 @@
 
 .buttonEdit img{
     width: 1rem;
+}
+
+.editSubtotal {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el input y el botón */
+    width: 55%;
+}
+
+.editSubtotalButton{
+    background: none !important;
+    border: solid 2px var(--dark-grey);
+    color: var(--dark-grey);
+    font-size: 0.75rem;
+}
+
+.editSubtotalButton:hover{
+    background-color: var(--dark-grey) !important;
+    color: white;
+}
+
+.editSubtotalButton:disabled{
+    background: none !important;
+    border: solid 2px var(--dark-grey);
+    color: var(--dark-grey);
 }
 
 .total{
