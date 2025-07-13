@@ -158,6 +158,8 @@ const PutPriceProducts = () => {
                             <div className={style.containerInputCheckbox}>
                                 <input className={style.inputCheckbox} type="checkbox" name="increase" id="increase" checked={adjust === 'increase'} onChange={() => handleAdjustCheckboxChange('increase')} />
                                 <span className={style.spanCheckbox}>Aumentar</span>
+                            </div>
+                            <div className={style.containerInputCheckbox}>
                                 <input className={style.inputCheckbox} type="checkbox" name="decrease" id="decrease" checked={adjust === 'decrease'} onChange={() => handleAdjustCheckboxChange('decrease')} />
                                 <span className={style.spanCheckbox}>Reducir</span>
                             </div>
@@ -173,7 +175,7 @@ const PutPriceProducts = () => {
                             </div>
                             <div className={style.containerInputCheckbox}>
                                 <input className={style.inputCheckbox} type="checkbox" name="allProducts" id="allProducts" checked={selectedOption === 'allProducts'} onChange={() => handleCheckboxChange('allProducts')} />
-                                <span className={style.spanCheckbox}>Todos los productos</span>
+                                <span className={style.spanCheckbox}>Todos</span>
                             </div>                                                
                         </div>
                         <div className={style.labelInput}>
