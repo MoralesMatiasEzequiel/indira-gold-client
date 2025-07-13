@@ -10,6 +10,7 @@ import style from "./PutSale.module.css";
 import detail from "../../../../assets/img/detail.png";
 import x from "./img/x.png";
 import edit from "../../../../assets/img/edit.png";
+import editHover from "../../../../assets/img/editHover.png";
 
 const PutSale = () => {
 
@@ -623,7 +624,13 @@ const PutSale = () => {
                                     ) : (
                                         <div className={style.right}>
                                             <label>${formatNumber(subtotal)}</label>
-                                            <button className={style.buttonEdit} type="button" onClick={handleEditSubtotalToggle}>
+                                            <button 
+                                                className={style.buttonEdit} 
+                                                type="button" 
+                                                onClick={handleEditSubtotalToggle}
+                                                onMouseEnter={(e) => e.currentTarget.firstChild.src = editHover} 
+                                                onMouseLeave={(e) => e.currentTarget.firstChild.src = edit}
+                                            >
                                                 <img src={edit} alt="Editar" />
                                             </button>
                                         </div>
