@@ -367,7 +367,7 @@ const DetailSale = () => {
                                             <span className={style.value}>Anónimo</span>
                                         </p>
                                 }
-                                {saleDetail.shipment?.address && (
+                                {saleDetail.shipment?.address ?
                                     <>
                                         <p className={style.detailRow}>
                                             <span className={style.label}>Dirección de envío:</span>
@@ -378,7 +378,8 @@ const DetailSale = () => {
                                             <span className={style.value}>${formatNumber(saleDetail.shipment?.amount)}</span>
                                         </p>
                                     </>
-                                )}
+                                    : <></>
+                                }
                                 {saleDetail.paymentMethod && 
                                     <p className={style.detailRow}>
                                         <span className={style.label}>Modo de pago:</span>
@@ -391,36 +392,26 @@ const DetailSale = () => {
                                         <span className={style.value}>{saleDetail.soldAt}</span>
                                     </p>
                                 }
-                                {saleDetail.subTotal && 
-                                    <p className={style.detailRow}>
-                                        <span className={style.label}>Subtotal:</span>
-                                        <span className={style.value}>${formatNumber(saleDetail.subTotal)}</span>
-                                    </p>
-                                }
-                                {
-                                    <p className={style.detailRow}>
-                                        <span className={style.label}>Descuento:</span>
-                                        <span className={style.value}>{saleDetail.discount}% {`(- $${formatNumber(saleDetail.discountApplied)})`}</span>
-                                    </p>
-                                }
-                                {
-                                    <p className={style.detailRow}>
-                                        <span className={style.label}>Retención:</span>
-                                        <span className={style.value}>{saleDetail.paymentFee}% {`(- $${formatNumber(saleDetail.paymentFeeApplied)})`}</span>
-                                    </p>
-                                }
-                                {saleDetail.totalWithFee && 
-                                    <p className={style.detailRow}>
-                                        <span className={style.label}>Total con retención:</span>
-                                        <span className={style.value}>${formatNumber(saleDetail.totalWithFee)}</span>
-                                    </p>
-                                }
-                                {saleDetail.totalPrice && 
-                                    <p className={style.detailRow}>
-                                        <span className={style.label}>Total:</span>
-                                        <span className={style.value}>${formatNumber(saleDetail.totalPrice)}</span>
-                                    </p>
-                                }
+                                <p className={style.detailRow}>
+                                    <span className={style.label}>Subtotal:</span>
+                                    <span className={style.value}>${saleDetail.subTotal ? formatNumber(saleDetail.subTotal) : 0}</span>
+                                </p>
+                                <p className={style.detailRow}>
+                                    <span className={style.label}>Descuento:</span>
+                                    <span className={style.value}>{saleDetail.discount}% {`(- $${formatNumber(saleDetail.discountApplied)})`}</span>
+                                </p>
+                                <p className={style.detailRow}>
+                                    <span className={style.label}>Retención:</span>
+                                    <span className={style.value}>{saleDetail.paymentFee}% {`(- $${formatNumber(saleDetail.paymentFeeApplied)})`}</span>
+                                </p> 
+                                <p className={style.detailRow}>
+                                    <span className={style.label}>Total con retención:</span>
+                                    <span className={style.value}>{saleDetail.totalWithFee ? `$${formatNumber(saleDetail.totalWithFee)}` : "No aplica."}</span>
+                                </p>
+                                <p className={style.detailRow}>
+                                    <span className={style.label}>Total:</span>
+                                    <span className={style.value}>${saleDetail.totalPrice ? formatNumber(saleDetail.totalPrice) : 0}</span>
+                                </p>
                                 {saleDetail.debt 
                                 ? 
                                     <p className={style.detailRow}>
