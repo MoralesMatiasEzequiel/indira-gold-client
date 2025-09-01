@@ -1,32 +1,52 @@
-.content{
-    padding: 2rem 5rem;
+/* .content{
+    padding: 2rem 2rem;
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
-    height: 100%;
+} */
+
+.content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start; /* Asegúrate de que los elementos hijos se alineen al principio */
+    padding: 2rem 2rem;
 }
 
-.content p{
-    letter-spacing: 0.05rem;
-    margin: 0;
-}
-
-p.orderNumber{
+.orderNumber {
     width: 100%;
     text-align: center;
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
     margin-bottom: 1rem;
     font-size: 1.5rem;
     font-weight: 600;
     border-bottom: 1px solid var(--gold);
 }
 
-.column{
+/* .column{
     width: 50%;
-    height: 60%;
+    height: 90%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+} */
+
+.column {
+    height: 90%;
+    padding: 0 2rem;
+    box-sizing: border-box;
+}
+
+.column1Width {
+    width: 60%;
+}
+
+.column2Width {
+    width: 40%;
+}
+
+.column p {
+    margin: 2rem 0;
 }
 
 .key{

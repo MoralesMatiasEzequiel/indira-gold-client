@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getMonthlySalesByClient } from '../../../../redux/saleActions.js';
 import { getClientByFullName, getClientByDni, getClients } from "../../../../redux/clientActions.js";
 import detail from '../../../../assets/img/detail.png';
+import visible from "../../../../assets/img/visible.png";
 import style from "./ClientRegistration.module.css";
 
 const ClientRegistration = () => {
@@ -18,6 +19,7 @@ const ClientRegistration = () => {
     const [monthlySales, setMonthlySales] = useState({});
     const [loadedClientIds, setLoadedClientIds] = useState(new Set()); // Estado para rastrear IDs ya cargados
     const [sortByProducts, setSortByProducts] = useState('asc');
+    const [isHovered, setIsHovered] = useState(null);
 
 
     const itemsPerPage = 20;
@@ -129,6 +131,14 @@ const ClientRegistration = () => {
         setSortByProducts(sortByProducts === 'asc' ? 'desc' : 'asc');
     };
 
+    const handleMouseEnter = (clientId) => {
+        setIsHovered(clientId); 
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(null);
+    };
+
     return(
         <div className="page">
             <div className="component">
@@ -186,7 +196,7 @@ const ClientRegistration = () => {
                                             <td>{client.active ? "Activo" : "Inactivo"}</td>
                                             <td>
                                                 <div onClick={() => navigate(`/main_window/clients/${client._id}`)}>
-                                                    <img src={detail} alt="" className="detailImg" />
+                                                    <img src={isHovered === client._id ? visible : detail} alt="detail" className="detailImg" onMouseEnter={() => handleMouseEnter(client._id)} onMouseLeave={handleMouseLeave}/>
                                                 </div>
                                             </td>
                                         </tr>

@@ -1,5 +1,6 @@
 import style from './DetailDebt.module.css';
 import detail from '../../../../../assets/img/detail.png';
+import visible from "../../../../../assets/img/visible.png";
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from 'react-router-dom';
@@ -19,7 +20,8 @@ const DetailDebt = () => {
     const [incomesLoading, setIncomesLoading] = useState(false);
     const [productsLoading, setProductsLoading] = useState(false);
     const [purchasedProducts, setPurchasedProducts] = useState([]);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);    
+    const [showDeleteModal, setShowDeleteModal] = useState(false);   
+    const [isHovered, setIsHovered] = useState(null);
     
     useEffect(() => {
         dispatch(clearDebtDetail());
@@ -32,10 +34,6 @@ const DetailDebt = () => {
         .then(() => {
             setLoading(false);
         })
-        // .catch(() => {
-        //     dispatch(getClientByIdLocal(id));
-        //     setLoading(false);
-        // });
     }, [dispatch, id]);
 
     const getColorById = (product, colorId) => {
@@ -136,6 +134,9 @@ const DetailDebt = () => {
         });
     };
 
+    const handleMouseEnter = (key) => setIsHovered(key);
+    const handleMouseLeave = () => setIsHovered(null);
+
     return (
         <div className="page">
             {
@@ -159,7 +160,7 @@ const DetailDebt = () => {
                                 ?  <p>
                                         <span>Cliente:&nbsp;</span>{debtDetail.client.dni} - {debtDetail.client.name} {debtDetail.client.lastname}
                                         <a onClick={() => navigate(`/main_window/clients/${debtDetail.client._id}`)}>
-                                            <img className="detailImg" src={detail} alt=""/>
+                                            <img className="detailImg" src={isHovered === "client" ? visible : detail} alt="detail" onMouseEnter={() => handleMouseEnter("client")} onMouseLeave={handleMouseLeave}/>
                                         </a>
                                     </p>
                                 : <p><span>Cliente:&nbsp;</span> Anónimo</p>}
@@ -167,7 +168,7 @@ const DetailDebt = () => {
                                     <p>
                                         <span>Total de la venta:&nbsp;</span> ${formatNumber(debtDetail.sale.totalPrice)}
                                         <a onClick={() => navigate(`/main_window/sales/${debtDetail.sale._id}`)}>
-                                            <img className="detailImg" src={detail} alt=""/>
+                                            <img className="detailImg" src={isHovered === "sale" ? visible : detail} alt="detail" onMouseEnter={() => handleMouseEnter("sale")} onMouseLeave={handleMouseLeave}/>
                                         </a>
                                     </p>
                                 }

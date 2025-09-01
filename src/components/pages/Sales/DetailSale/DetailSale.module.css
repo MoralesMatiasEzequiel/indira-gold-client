@@ -9,11 +9,41 @@
 .orderNumber {
     width: 100%;
     text-align: center;
-    padding-bottom: 1rem;
-    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    padding-top: 1rem;
+    margin-bottom: 1rem;
     font-size: 1.5rem;
     font-weight: 600;
     border-bottom: 1px solid var(--gold);
+}
+
+.toolbar {
+  width: 100%; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-left: 2rem;
+}
+
+.toolbar span {
+    font-size: 0.8rem;
+}
+
+.eyeIcon {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.eyeIcon img{
+    width: 1.4rem;
+}
+
+.eyeIcon:hover {
+    background: none;
 }
 
 .column {

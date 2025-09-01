@@ -14,9 +14,10 @@
 }
 
 .salesForm .column2{
+    display: flex;
+    padding-top: 6px; 
     width: 34%;
     box-sizing: border-box;
-    display: flex;
     flex-direction: column;
     gap: 3rem;
 }
@@ -75,6 +76,21 @@
     width: 2rem;
 }
 
+.eyeIcon {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: -3px;
+}
+
+.eyeIcon img{
+    width: 1.5rem;
+}
+
+.eyeIcon:hover {
+    background: none;
+}
+
 .salesForm .column1 .product{
     display: flex;
     width: 100%;
@@ -99,6 +115,11 @@
     font-weight: 300;
     letter-spacing: 0.05rem;
     font-size: 1rem;
+}
+
+.containerShowInfoTicket {
+    display: flex;
+    padding-top: 6px;
 }
 
 .salesForm .column3 .subtotal, .column3 .discount, .column3 .total{

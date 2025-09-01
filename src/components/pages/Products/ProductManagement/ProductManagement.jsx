@@ -1,5 +1,6 @@
 import style from "./ProductManagement.module.css";
 import detail from '../../../../assets/img/detail.png';
+import visible from "../../../../assets/img/visible.png";
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
@@ -25,7 +26,7 @@ const ProductManagement = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true); // Indicador de carga
     const [errorShown, setErrorShown] = useState(false); 
-// console.log(category);
+    const [isHovered, setIsHovered] = useState(null);
 
     const itemsPerPage = 20;
 
@@ -154,6 +155,14 @@ const ProductManagement = () => {
         return '0';
     };
 
+    const handleMouseEnter = (productId) => {
+        setIsHovered(productId); 
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(null);
+    };
+
     return (
         <div className="page">
             <div className="component">
@@ -266,9 +275,11 @@ const ProductManagement = () => {
                                                     }
                                                 </td>
                                                 <td className={style.tdInside}>
-                                                    <a onClick={() => navigate(`/main_window/products/${product._id}`)}>
-                                                        <img src={detail} alt="" className='detailImg' />
-                                                    </a>
+                                                    {colorIndex === 0 && (
+                                                        <a onClick={() => navigate(`/main_window/products/${product._id}`)}>
+                                                            <img src={isHovered === product._id ? visible : detail} alt="detail" className="detailImg" onMouseEnter={() => handleMouseEnter(product._id)} onMouseLeave={handleMouseLeave}/>
+                                                        </a>
+                                                    )}
                                                 </td>
                                             </tr>
                                         </React.Fragment>
