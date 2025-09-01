@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from 'react-router-dom';
-import { putRemovePurchases } from '../../../../redux/clientActions.js';
-import { getSales, getSaleById, getSaleByIdLocal, clearSaleDetail, deleteSale, searchSales } from '../../../../redux/saleActions.js';
-import { getProductById, increaseStock } from '../../../../redux/productActions.js';
+import style from "./DetailSale.module.css";
 import print from "../../../../assets/img/print.png";
 import detail from "../../../../assets/img/detail.png";
 import visible from "../../../../assets/img/visible.png";
 import hide from "../../../../assets/img/hide.png";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
-import style from "./DetailSale.module.css";
+import LoadingScreen from "../../../../LoadingScreen.jsx";
+import { putRemovePurchases } from '../../../../redux/clientActions.js';
+import { getSales, getSaleById, getSaleByIdLocal, clearSaleDetail, deleteSale, searchSales } from '../../../../redux/saleActions.js';
+import { getProductById, increaseStock } from '../../../../redux/productActions.js';
 
 
 const DetailSale = () => {
@@ -385,7 +386,9 @@ const DetailSale = () => {
     return(
         <div className="page">
             {loading ? (
-                <div>Cargando</div>
+                <div className="loadingApp">
+                    <LoadingScreen />
+                </div>
             ) : (
                 <div className="component">
                     <div className="title">
@@ -400,7 +403,7 @@ const DetailSale = () => {
                     <div className={`container ${style.content}`}>
                         {saleDetail.orderNumber && <div className={style.orderNumber}><span>N° de orden:</span> {saleDetail.orderNumber}</div>}
                         <div className={style.toolbar}>
-                            <span>Detalles del ticket:</span>
+                            <span>Mostrar detalles en ticket:</span>
                             <button className={style.eyeIcon} type="button" onClick={() => setShowFinancialDetails(prev => !prev)}>
                                 <img src={showFinancialDetails ? visible : hide} alt=""/>
                             </button>
@@ -529,7 +532,6 @@ const DetailSale = () => {
                 </div>
             </div>
         </div>
-        
     );
 };
 

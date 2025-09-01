@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingSvg = () => {
+const CirclesSvg = () => {
   const size = 10; // radio del círculo
   const gap = 6;   // separación entre círculos
   const duration = 2; // segundos
@@ -147,7 +147,7 @@ const LogoSvg = ({ size = 70, stroke = 14, color = "#f3c52eff" }) => {
   );
 };
 
-const SplashScreen = () => {
+const LoadingScreen = () => {
   return (
     <div
       style={{
@@ -161,9 +161,9 @@ const SplashScreen = () => {
       }}
     >
       <LogoSvg size={70} stroke={14} color="#e4b61a" />
-      <LoadingSvg size={10} gap={6} color="#e4b61a" duration={2} />
+      <CirclesSvg size={10} gap={6} color="#e4b61a" duration={2} />
     </div>
   );
 };
 
-export default SplashScreen;
+export default LoadingScreen;

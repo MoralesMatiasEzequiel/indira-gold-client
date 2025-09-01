@@ -4,6 +4,7 @@ import visible from "../../../../../assets/img/visible.png";
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from 'react-router-dom';
+import LoadingScreen from '../../../../../LoadingScreen.jsx';
 import { getDebtById, clearDebtDetail, deleteDebt } from '../../../../../redux/debtActions';
 import { getProductById } from '../../../../../redux/productActions';
 
@@ -141,7 +142,9 @@ const DetailDebt = () => {
         <div className="page">
             {
                 loading ? (
-                    <div>Cargando</div>
+                    <div className="loadingApp">
+                        <LoadingScreen />
+                    </div>
                 ) : (
                     <div className="component">
                         <div className="title">

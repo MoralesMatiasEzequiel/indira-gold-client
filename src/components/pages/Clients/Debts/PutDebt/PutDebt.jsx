@@ -65,24 +65,6 @@ const PutDebt = () => {
         validateForm();
     }, [editDebt]);
 
-    //--- HANDLE CHANGE
-    // const handleInputChange = (event) => {
-    //     const { name, value } = event.target;
-    //     let newValue = value === '' ? 0 : parseFloat(value);
-
-    //     if (name === 'amount') {
-    //         // Validar que el monto no sea mayor al saldo restante
-    //         if (newValue > editDebt.remainingBalance) {
-    //             newValue = editDebt.remainingBalance;
-    //         }
-    //     }       
-
-    //     setEditDebt((prevDebt) => ({
-    //         ...prevDebt,
-    //         [name]: newValue,
-    //     }));
-    // };
-
     const handleDebtChange = (selectedOption) => {
         if(selectedOption) {
             setIsClearDisabled(false);
@@ -265,12 +247,7 @@ const PutDebt = () => {
         }
 
         try {
-            const response = await dispatch(putDebt(debtData))
-            // .then((response) => {
-            //     if (typeof response === 'string') {
-            //         setErrorMessage(response);
-            //     }
-            // });
+            const response = await dispatch(putDebt(debtData));
 
             if (response.data.remainingBalance === 0) {
                 console.log("Debt successfully settled");

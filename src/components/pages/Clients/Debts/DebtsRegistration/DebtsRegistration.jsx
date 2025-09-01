@@ -136,30 +136,6 @@ const DebtRegistration = () => {
         setCurrentPage(1);
     };
 
-    // useEffect(() => {
-    //     paginatedDebts.forEach(debt => {
-    //         if (!loadedDebtIds.has(debt._id)) { // Verifica si el ID ya fue cargado
-    //             dispatch(getMonthlySalesByClient(debt._id))
-    //                 .then(response => {
-    //                     // Asegúrate de que response sea válido y tenga la propiedad totalProducts
-    //                     const totalProducts = response?.totalProducts || 0; // Si no existe, asigna 0
-    //                     setMonthlySales(prevState => ({
-    //                         ...prevState,
-    //                         [debt._id]: totalProducts
-    //                     }));
-    //                     setLoadedClientIds(prevIds => new Set(prevIds).add(debt._id)); // Agrega el ID al conjunto de IDs cargados
-    //                 })
-    //                 .catch(() => {
-    //                     setMonthlySales(prevState => ({
-    //                         ...prevState,
-    //                         [debt._id]: "Datos no disponibles offline"
-    //                     }));
-    //                     setLoadedClientIds(prevIds => new Set(prevIds).add(debt._id)); // Agrega el ID al conjunto de IDs cargados
-    //                 });;
-    //         }
-    //     });
-    // }, [dispatch, paginatedClients, loadedDebtIds]);
-
     const handleMouseEnter = (debtId) => {
         setIsHovered(debtId); 
     };
