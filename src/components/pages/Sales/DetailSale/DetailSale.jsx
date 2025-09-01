@@ -454,7 +454,7 @@ const DetailSale = () => {
                             {saleDetail.subTotal && 
                                 <p className={style.detailRow}>
                                     <span className={style.label}>Subtotal:</span>
-                                    <span className={style.value}>${formatNumber(saleDetail.subTotal)}</span>
+                                    <span className={style.value}>${saleDetail.subTotal ? formatNumber(saleDetail.subTotal) : 0}</span>
                                 </p>
                             }
                             {
@@ -472,13 +472,13 @@ const DetailSale = () => {
                             {saleDetail.totalWithFee && 
                                 <p className={style.detailRow}>
                                     <span className={style.label}>Total con retención:</span>
-                                    <span className={style.value}>${formatNumber(saleDetail.totalWithFee)}</span>
+                                    <span className={style.value}>{saleDetail.totalWithFee ? `$${formatNumber(saleDetail.totalWithFee)}` : "No aplica."}</span>
                                 </p>
                             }
                             {saleDetail.totalPrice && 
                                 <p className={style.detailRow}>
                                     <span className={style.label}>Total:</span>
-                                    <span className={style.value}>${formatNumber(saleDetail.totalPrice)}</span>
+                                    <span className={style.value}>${saleDetail.totalPrice ? formatNumber(saleDetail.totalPrice) : 0}</span>
                                 </p>
                             }
                             {saleDetail.debt 
