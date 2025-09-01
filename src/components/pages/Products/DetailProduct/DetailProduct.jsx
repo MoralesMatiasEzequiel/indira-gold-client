@@ -2,10 +2,11 @@ import style from './DetailProduct.module.css';
 import imgProduct from '../../../../assets/img/imgProduct.jpeg';
 import iconPDF from "../../../../assets/img/pdf.png";
 import React, { useEffect, useState, useRef } from 'react';
-import JsBarcode from 'jsbarcode';
-import jsPDF from 'jspdf';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import JsBarcode from 'jsbarcode';
+import LoadingScreen from '../../../../LoadingScreen.jsx';
 import { getProductById, putProductStatus } from '../../../../redux/productActions.js';
 
 
@@ -20,6 +21,7 @@ const DetailProduct = () => {
 
     const productDetail = useSelector(state => state.products.productDetail);
 
+    const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const toggleShowDeleteModal = () => {
@@ -92,13 +94,19 @@ const DetailProduct = () => {
         }
     };
     
-
     useEffect(() => {
-        dispatch(getProductById(id));
+        setLoading(true);
+        dispatch(getProductById(id))
+        .then(() => {
+            setLoading(false); 
+        })
+        .catch(() => {
+            setLoading(false);
+        });
     }, [dispatch, id]);
 
     useEffect(() => {
-        if (productDetail && productDetail.color) {
+        if (!loading && productDetail && productDetail.color) {
             productDetail.color.forEach(color => {
                 color.size.forEach(size => {
                     const barcodeId = productDetail._id;
@@ -113,70 +121,76 @@ const DetailProduct = () => {
                 });
             });
         }
-    }, [productDetail]);
+    }, [productDetail, dispatch, loading]);
 
     return(
         <div className="page">
-            <div className="component">
-                <div className="title">
-                    <h2>Detalle del producto</h2>
-                    <div className="titleButtons">
-                        <button onClick={generatePDF}><img src={iconPDF} alt=""/></button>
-                        {productDetail.active ? <button onClick={() => navigate(`/main_window/products/edit/${id}`)}>Editar</button> : ''}
-                        {!productDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Añadir</button> : <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>}
-                        <button onClick={() => navigate(`/main_window/products/management`)}>Atrás</button>
-                    </div>
+            {loading ? (
+                <div className="loadingApp">
+                    <LoadingScreen />
                 </div>
-                <div className={`container ${style.content}`}>
-                    {!productDetail.active && <div className={style.productInactive}><span>Este producto ha sido eliminado</span></div>}
-                    {productDetail.name && <div className={!productDetail.active ? style.nameProductInactive : style.nameProduct}><span>{productDetail.name}</span></div>}
-                    <div className={!productDetail.active ? style.columnInactive : style.column}>
-                        <div className={style.containerImgProduct}>
-                            {productDetail.imageGlobal 
-                            ? <img className={style.imgProduct} src={productDetail.imageGlobal || imgProduct} alt="Product Image"/> 
-                            : productDetail.color?.map(color => (
-                                color.image 
-                                ? (<img key={color.image} className={style.imgProduct} src={color.image} alt="Product Image" />) 
-                                : <img src={imgProduct} className={style.imgProduct} alt="Product Image" />
-                            ))}                          
-                        </div>                      
-                        <p><span>Precio:&nbsp;</span>${productDetail.price}</p>
-                        <p><span>Categoría:&nbsp;</span>{(productDetail.category && productDetail.category.length > 0) ? productDetail.category[0].name : 'No tiene categoría'}</p>
-                        <canvas 
-                            className={style.barcodeCanvas}
-                            ref={el => barcodeRefs.current[productDetail._id] = el} 
-                        />
-                        {productDetail.description ? <p><span>Descripción:&nbsp;</span>{productDetail.description}</p> : ''}
-                        {productDetail.supplier && productDetail.supplier.name.trim() !== '' || productDetail.supplier && productDetail.supplier.phone.trim() !== ''  
-                        ? (
-                            <div className={style.containerSupplier}>
-                                <p><span>Proveedor:</span></p>
-                                <li><span>Nombre:&nbsp;</span>{productDetail.supplier.name}</li>
-                                <li><span>Teléfono:&nbsp;</span>{productDetail.supplier.phone}</li>
-                            </div> 
-                        ) : <span className={style.messageSupplier}>No hay información del proveedor.</span>}
+            ) : (
+                <div className="component">
+                    <div className="title">
+                        <h2>Detalle del producto</h2>
+                        <div className="titleButtons">
+                            <button onClick={generatePDF}><img src={iconPDF} alt=""/></button>
+                            {productDetail.active ? <button onClick={() => navigate(`/main_window/products/edit/${id}`)}>Editar</button> : ''}
+                            {!productDetail.active ? <button className="add" onClick={toggleShowDeleteModal}>Añadir</button> : <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>}
+                            <button onClick={() => navigate(`/main_window/products/management`)}>Atrás</button>
+                        </div>
                     </div>
-                    <div className={!productDetail.active ? style.columnInactive : style.column}>
-                        {productDetail.color?.map(color => (
-                            <div className={style.colorSection}>
-                                <p className={style.colorTag}><span>Color:&nbsp;</span>{color.colorName}</p>
-                                <div className={style.containerColor}>                  
-                                    {color.size?.map(size => (
-                                        <div key={size.sizeName} className={style.sizeBlock}>
-                                            <p><span>Talle:&nbsp;</span>{size.sizeName}</p>   
-                                            <p><span>Stock:&nbsp;</span>{size.stock}</p>                                           
-                                            <p><span>Medidas:</span></p>
-                                            <li><span>Ancho:&nbsp;</span>{size.measurements[0].width ? size.measurements[0].width : '-'}</li>
-                                            <li><span>Largo:&nbsp;</span>{size.measurements[0].long ? size.measurements[0].long : '-'}</li>
-                                            <li><span>Tiro:&nbsp;</span>{size.measurements[0].rise ? size.measurements[0].rise : '-'}</li>
-                                        </div>
-                                    ))}
+                    <div className={`container ${style.content}`}>
+                        {!productDetail.active && <div className={style.productInactive}><span>Este producto ha sido eliminado</span></div>}
+                        {productDetail.name && <div className={!productDetail.active ? style.nameProductInactive : style.nameProduct}><span>{productDetail.name}</span></div>}
+                        <div className={!productDetail.active ? style.columnInactive : style.column}>
+                            <div className={style.containerImgProduct}>
+                                {productDetail.imageGlobal 
+                                ? <img className={style.imgProduct} src={productDetail.imageGlobal || imgProduct} alt="Product Image"/> 
+                                : productDetail.color?.map(color => (
+                                    color.image 
+                                    ? (<img key={color.image} className={style.imgProduct} src={color.image} alt="Product Image" />) 
+                                    : <img src={imgProduct} className={style.imgProduct} alt="Product Image" />
+                                ))}                          
+                            </div>                      
+                            <p><span>Precio:&nbsp;</span>${productDetail.price}</p>
+                            <p><span>Categoría:&nbsp;</span>{(productDetail.category && productDetail.category.length > 0) ? productDetail.category[0].name : 'No tiene categoría'}</p>
+                            <canvas 
+                                className={style.barcodeCanvas}
+                                ref={el => barcodeRefs.current[productDetail._id] = el} 
+                            />
+                            {productDetail.description ? <p><span>Descripción:&nbsp;</span>{productDetail.description}</p> : ''}
+                            {productDetail.supplier && productDetail.supplier.name.trim() !== '' || productDetail.supplier && productDetail.supplier.phone.trim() !== ''  
+                            ? (
+                                <div className={style.containerSupplier}>
+                                    <p><span>Proveedor:</span></p>
+                                    <li><span>Nombre:&nbsp;</span>{productDetail.supplier.name}</li>
+                                    <li><span>Teléfono:&nbsp;</span>{productDetail.supplier.phone}</li>
+                                </div> 
+                            ) : <span className={style.messageSupplier}>No hay información del proveedor.</span>}
+                        </div>
+                        <div className={!productDetail.active ? style.columnInactive : style.column}>
+                            {productDetail.color?.map(color => (
+                                <div className={style.colorSection}>
+                                    <p className={style.colorTag}><span>Color:&nbsp;</span>{color.colorName}</p>
+                                    <div className={style.containerColor}>                  
+                                        {color.size?.map(size => (
+                                            <div key={size.sizeName} className={style.sizeBlock}>
+                                                <p><span>Talle:&nbsp;</span>{size.sizeName}</p>   
+                                                <p><span>Stock:&nbsp;</span>{size.stock}</p>                                           
+                                                <p><span>Medidas:</span></p>
+                                                <li><span>Ancho:&nbsp;</span>{size.measurements[0].width ? size.measurements[0].width : '-'}</li>
+                                                <li><span>Largo:&nbsp;</span>{size.measurements[0].long ? size.measurements[0].long : '-'}</li>
+                                                <li><span>Tiro:&nbsp;</span>{size.measurements[0].rise ? size.measurements[0].rise : '-'}</li>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
             {!productDetail.active 
             ? (
             <div className={`${style.deleteModal} ${showDeleteModal ? style.deleteModalShow : ''}`}>

@@ -3,7 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route } from 'react-router-dom';
-import LogoSvg from "./LogoSvg.jsx";
+import LoadingScreen from "./LoadingScreen.jsx";
 import SideBar from "./components/common/SideBar.jsx"; 
 import Stats from "./components/pages/Stats/Stats.jsx";
 import FormSales from './components/pages/Sales/FormSales/FormSales.jsx';
@@ -64,7 +64,7 @@ const App = () => {
       // ) : (
         !hasFetched ? (
           <div className="loadingApp">
-            <LogoSvg />
+            <LoadingScreen />
           </div>
         ) : (
             <>
