@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { getSales, searchSales, getSalesByOrderNumber, getSalesByClient } from '../../../../redux/saleActions.js';
 import detail from '../../../../assets/img/detail.png';
+import visible from "../../../../assets/img/visible.png";
 import history from '../../../../assets/img/history.png';
 
 const SalesHistory = () => {
@@ -16,6 +17,7 @@ const SalesHistory = () => {
     const [client, setClient] = useState('');
     const [sortByDate, setSortByDate] = useState('desc');
     const [currentPage, setCurrentPage] = useState(1);
+    const [isHovered, setIsHovered] = useState(null);
 
     const itemsPerPage = 20;
 
@@ -118,6 +120,14 @@ const SalesHistory = () => {
         return '0';
     };
 
+    const handleMouseEnter = (saleId) => {
+        setIsHovered(saleId); 
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(null);
+    };
+
     return (
         <div className="page">
             <div className="component">
@@ -196,7 +206,7 @@ const SalesHistory = () => {
                                         <td className="center">$ {formatNumber(sale.totalPrice)}</td>
                                         <td>
                                             <a onClick={() => navigate(`/main_window/sales/${sale._id}`)}>
-                                                <img src={detail} alt="" className="detailImg" />
+                                                <img src={isHovered === sale._id ? visible : detail} alt="detail" className="detailImg" onMouseEnter={() => handleMouseEnter(sale._id)} onMouseLeave={handleMouseLeave}/>
                                             </a>
                                         </td>
                                     </tr>

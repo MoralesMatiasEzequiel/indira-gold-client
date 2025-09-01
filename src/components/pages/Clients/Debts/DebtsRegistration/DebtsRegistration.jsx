@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { getDebts, getActiveDebts, searchDebts } from "../../../../../redux/debtActions.js";
 import detail from '../../../../../assets/img/detail.png';
+import visible from "../../../../../assets/img/visible.png";
+
 
 const DebtRegistration = () => {
 
@@ -24,6 +26,7 @@ const DebtRegistration = () => {
     const [loadedDebtIds, setLoadedDebtIds] = useState(new Set()); // Estado para rastrear IDs ya cargados
     const [currentPage, setCurrentPage] = useState(1);
     const [sortByDate, setSortByDate] = useState('desc');
+    const [isHovered, setIsHovered] = useState(null);
 
     useEffect(() => {
         dispatch(searchDebts(orderNumber, client))
@@ -157,6 +160,14 @@ const DebtRegistration = () => {
     //     });
     // }, [dispatch, paginatedClients, loadedDebtIds]);
 
+    const handleMouseEnter = (debtId) => {
+        setIsHovered(debtId); 
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(null);
+    };
+
     return(
         <div className="component">
             <div className="title">
@@ -235,7 +246,7 @@ const DebtRegistration = () => {
                                     <td className={debt.remainingBalance > 0 ? "debt" : "sattled"}>{debt.remainingBalance > 0 ? "En deuda" : "Saldado"}</td>
                                     <td>
                                         <div onClick={() => navigate(`/main_window/debts/${debt._id}`)}>
-                                            <img src={detail} alt="" className="detailImg" />
+                                            <img src={isHovered === debt._id ? visible : detail} alt="detail" className="detailImg" onMouseEnter={() => handleMouseEnter(debt._id)} onMouseLeave={handleMouseLeave}/>
                                         </div>
                                     </td>
                                 </tr>

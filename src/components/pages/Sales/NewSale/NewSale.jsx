@@ -42,15 +42,21 @@ const NewSale = ({ saleResponse, debtAmount }) => {
 
     return (
         <div className={style.content}>
-            <p className={style.orderNumber}>N° de orden: {orderNumber}</p>
-            <div className={style.column}>
+            <div className={style.orderNumber}><span>N° de orden:</span> {orderNumber}</div>
+            <div className={`${style.column} ${style.column1Width}`}>
                 <p><span className={style.key}>Fecha:</span> {formatDate(date)}</p>
                 <p><span className={style.key}>Cliente:</span> {client ? `${clientById.dni} - ${clientById.name} ${clientById.lastname}` : "Anónimo"}</p>
                 <p><span className={style.key}>Método de Pago:</span> {paymentMethod}</p>
                 <p><span className={style.key}>Cuotas:</span> {installments}</p>
+                {shipment !== null && (
+                    <>
+                        <p><span className={style.key}>Dirección de envío:</span> {shipment?.address}</p>
+                        <p><span className={style.key}>Costo de envío:</span> ${formatNumber(shipment?.amount)}</p>
+                    </>
+                )}
             </div>
-            <div className={style.column}>
-                <p><span className={style.key}>Productos comprados:</span> {products.length}</p>
+            <div className={`${style.column} ${style.column2Width}`}>
+                <p><span className={style.key}>Productos comprados:</span> {products?.length}</p>
                 <p><span className={style.key}>Subtotal:</span> ${formatNumber(subTotal)}</p>
                 <p><span className={style.key}>Descuento:</span> {discount}%</p>
                 <p><span className={style.key}>Total:</span> ${formatNumber(totalPrice)}</p>
@@ -58,12 +64,6 @@ const NewSale = ({ saleResponse, debtAmount }) => {
                     <>
                         <p><span className={style.key}>Abonó:</span> ${formatNumber(totalPrice - debtAmount)}</p>
                         <p><span className={style.key}>Adeuda:</span> ${formatNumber(debtAmount)}</p>
-                    </>
-                )}
-                {shipment !== null && (
-                    <>
-                        <p><span className={style.key}>Dirección de envío:</span> {shipment?.address}</p>
-                        <p><span className={style.key}>Costo de envío:</span> ${formatNumber(shipment?.amount)}</p>
                     </>
                 )}
             </div>
