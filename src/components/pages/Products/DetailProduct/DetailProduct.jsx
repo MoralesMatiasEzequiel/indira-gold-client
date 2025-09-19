@@ -147,10 +147,10 @@ const DetailProduct = () => {
                             <div className={style.containerImgProduct}>
                                 {productDetail.imageGlobal 
                                 ? <img className={style.imgProduct} src={productDetail.imageGlobal || imgProduct} alt="Product Image"/> 
-                                : productDetail.color?.map(color => (
+                                : productDetail.color?.map((color, index) => (
                                     color.image 
                                     ? (<img key={color.image} className={style.imgProduct} src={color.image} alt="Product Image" />) 
-                                    : <img src={imgProduct} className={style.imgProduct} alt="Product Image" />
+                                    : <img key={`fallback-${index}`} src={imgProduct} className={style.imgProduct} alt="Product Image" />
                                 ))}                          
                             </div>                      
                             <p><span>Precio:&nbsp;</span>${productDetail.price}</p>
@@ -171,7 +171,7 @@ const DetailProduct = () => {
                         </div>
                         <div className={!productDetail.active ? style.columnInactive : style.column}>
                             {productDetail.color?.map(color => (
-                                <div className={style.colorSection}>
+                                <div className={style.colorSection} key={color.colorName}>
                                     <p className={style.colorTag}><span>Color:&nbsp;</span>{color.colorName}</p>
                                     <div className={style.containerColor}>                  
                                         {color.size?.map(size => (
