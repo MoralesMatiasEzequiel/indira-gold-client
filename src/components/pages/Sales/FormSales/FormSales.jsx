@@ -75,6 +75,7 @@ const FormSales = () => {
         setSelectedClient(null);
         setPaymentMethod(null);
         setSelectedProducts([{ productId: null, colorId: null, sizeId: null, price: null, category: null }]);
+        setSelectedProductQuantities({}); // <-- limpiar reservas locales
         setSubtotal(0);
         setIsClearDisabled(true);
         setWithShipping(false);
@@ -82,6 +83,8 @@ const FormSales = () => {
         setSelectedAddressOption(null);
         setNewDebt(false);
     };
+
+    const makeKey = ({ productId, colorId, sizeId }) => `${productId}_${colorId}_${sizeId}`;
 
     const transformProductOptions = (products) => {        
         let productOptions = [];
@@ -96,7 +99,7 @@ const FormSales = () => {
                             label: `${product.name} - ${color.colorName} - Talle ${size.sizeName} - $${formatNumber(product.price)}`,
                             price: product.price,
                             stock: size.stock,
-                            category: product.category[0].name
+                            category: product.category[0].name ?? ''
                         });
                     }
                 });
@@ -120,7 +123,8 @@ const FormSales = () => {
         const productOptions = transformProductOptions(products);
     
         const filteredOptions = productOptions.filter(product => {            
-            const key = `${product.productId}_${product.colorId}_${product.sizeId}_${product.price}`;
+            // const key = `${product.productId}_${product.colorId}_${product.sizeId}_${product.price}`;
+            const key = makeKey(product); 
             const selectedQuantity = selectedProductQuantities[key] || 0;
             const availableStock = product.stock - selectedQuantity;
     
@@ -234,8 +238,11 @@ const FormSales = () => {
     const handleProductAdd = (selectedOption) => {
         if (!selectedOption) return;
         
+        const key = makeKey(selectedOption);
+        const selectedQuantity = selectedProductQuantities[key] || 0;
+
         setIsClearDisabled(false);
-        
+
         setSelectedProducts((prevSelectedProducts) => {
             const newSelectedProducts = [...prevSelectedProducts, { 
             ...selectedOption,
@@ -245,13 +252,18 @@ const FormSales = () => {
             
             // Actualizar cantidades
             setSelectedProductQuantities((prevQuantities) => {
-            const newQuantities = { ...prevQuantities };
-            const key = `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}_${selectedOption.price}_${selectedOption.category}`;
-            
-            newQuantities[key] = (newQuantities[key] || 0) + 1;
-            
-            return newQuantities;
+                const newQuantities = { ...prevQuantities };
+                newQuantities[key] = (newQuantities[key] || 0) + 1;
+                return newQuantities;
             });
+            // setSelectedProductQuantities((prevQuantities) => {
+            // const newQuantities = { ...prevQuantities };
+            // const key = `${selectedOption.productId}_${selectedOption.colorId}_${selectedOption.sizeId}_${selectedOption.price}_${selectedOption.category}`;
+            
+            // newQuantities[key] = (newQuantities[key] || 0) + 1;
+            
+            // return newQuantities;
+            // });
 
             setSubtotal(calculateSubtotal(newSelectedProducts));
             validateForm();
@@ -266,16 +278,25 @@ const FormSales = () => {
             
             // Actualizar cantidades al eliminar
             setSelectedProductQuantities((prevQuantities) => {
-            const newQuantities = { ...prevQuantities };
-            const key = `${productToRemove.productId}_${productToRemove.colorId}_${productToRemove.sizeId}_${productToRemove.price}_${productToRemove.category}`;
-            
-            if (newQuantities[key]) {
-                newQuantities[key]--;
-                if (newQuantities[key] <= 0) delete newQuantities[key];
-            }
-            
-            return newQuantities;
+                const newQuantities = { ...prevQuantities };
+                const key = makeKey(productToRemove);
+                if (newQuantities[key]) {
+                    newQuantities[key]--;
+                    if (newQuantities[key] <= 0) delete newQuantities[key];
+                }
+                return newQuantities;
             });
+            // setSelectedProductQuantities((prevQuantities) => {
+            // const newQuantities = { ...prevQuantities };
+            // const key = `${productToRemove.productId}_${productToRemove.colorId}_${productToRemove.sizeId}_${productToRemove.price}_${productToRemove.category}`;
+            
+            // if (newQuantities[key]) {
+            //     newQuantities[key]--;
+            //     if (newQuantities[key] <= 0) delete newQuantities[key];
+            // }
+            
+            // return newQuantities;
+            // });
 
             setSubtotal(calculateSubtotal(newSelectedProducts));
             validateForm();
@@ -897,7 +918,6 @@ const FormSales = () => {
                                                     />
                                                     Local
                                                 </label>
-                                                
                                                 <label htmlFor="Online">
                                                     <input
                                                         type="radio"
