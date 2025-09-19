@@ -8,6 +8,7 @@ import { getProducts, getProductById, reduceStock, increaseStock } from '../../.
 import { putRemovePurchases, putAddProducts } from '../../../../redux/clientActions.js';
 import style from "./PutSale.module.css";
 import detail from "../../../../assets/img/detail.png";
+import visible from "../../../../assets/img/visible.png";
 import x from "./img/x.png";
 import edit from "../../../../assets/img/edit.png";
 import editHover from "../../../../assets/img/editHover.png";
@@ -37,6 +38,7 @@ const PutSale = () => {
     const productRefs = useRef([]);
     const [editableSubtotal, setEditableSubtotal] = useState(0); 
     const [isEditingSubtotal, setIsEditingSubtotal] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     const formatAddress = (address) => {
         if (!address) return '';
@@ -473,6 +475,14 @@ const PutSale = () => {
             console.error("Error actualizando la venta:", error);
         });
     };
+
+    const handleMouseEnter = () => {
+        setIsHovered(true); 
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+    };
     
     return (
         <div className="page">
@@ -490,7 +500,7 @@ const PutSale = () => {
                             ?  <p>
                                     <span>Cliente:&nbsp;</span>{saleDetail.client.dni} - {saleDetail.client.name} {saleDetail.client.lastname}
                                     <a onClick={() => navigate(`/main_window/clients/${saleDetail.client._id}`)}>
-                                        <img src={detail} alt=""/>
+                                        <img className="detailImg" src={isHovered === false ? detail : visible} alt="detail" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}/>
                                     </a>
                                 </p>
                             : <p><span>Cliente:&nbsp;</span> Anónimo</p>}

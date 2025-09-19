@@ -12,7 +12,6 @@ import { putRemovePurchases } from '../../../../redux/clientActions.js';
 import { getSales, getSaleById, getSaleByIdLocal, clearSaleDetail, deleteSale, searchSales } from '../../../../redux/saleActions.js';
 import { getProductById, increaseStock } from '../../../../redux/productActions.js';
 
-
 const DetailSale = () => {
 
     let { id } = useParams();
@@ -72,7 +71,7 @@ const DetailSale = () => {
                     }
     
                     // Actualiza purchasedProducts solo después de que todos los productos hayan sido cargados
-                    if (updatedProducts.length === saleDetail.products.length) {
+                    if (updatedProducts?.length === saleDetail.products?.length) {
                         setPurchasedProducts(updatedProducts);
                         setProductsLoading(false);
                     }
@@ -90,7 +89,7 @@ const DetailSale = () => {
                             price: product.price // Mantener el precio de la venta
                         });
                     }
-                    if (updatedProducts.length === saleDetail.products.length) {
+                    if (updatedProducts?.length === saleDetail.products?.length) {
                         setPurchasedProducts(updatedProducts);
                         setProductsLoading(false);
                     }
@@ -144,193 +143,215 @@ const DetailSale = () => {
         setIsHovered(false);
     };
 
-    const generatePDF = () => {
+    //Abrir PDF en ventana nueva
+    const openAndPrintPDF = (doc) => {
+        const pdfBlob = doc.output("blob");
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const printWindow = window.open(pdfUrl, "_blank", "toolbar=no,menubar=no,location=no,status=no");
+        if (printWindow) {
+            printWindow.onload = () => printWindow.print();
+        } else {
+            alert("Por favor, permite las ventanas emergentes para imprimir el ticket.");
+        }
+    };
+
+    //Función para ajustar texto al ancho del ticket y añadirlo al documento
+    const addWrappedText = (doc, text, x, y, maxLineWidth, lineHeight, fontStyle = "normal") => {
+        doc.setFont("helvetica", fontStyle);
+        const lines = doc.splitTextToSize(text, maxLineWidth);
+        lines.forEach(line => {
+            doc.text(line, x, y);
+            y += lineHeight;
+        });
+        doc.setFont("helvetica", "normal"); // reset
+        return y;
+    };
+
+    // Ticket de CAMBIO/VENTA
+    const printChangeTicket = () => {
         // Variables para el ancho y la altura del papel de ticket (58 mm x 100 aprox)
-        const pageWidth = 58;
+        const pageWidth = 58; 
         const minPageHeight = 100; // Altura mínima en mm
         const lineHeight = 6; // Altura de cada línea de texto en mm
         const maxLineWidth = pageWidth - 8; // Deja un margen de 4 mm en cada lado
-        
+
         // Crear el PDF
         const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
+            orientation: "portrait",
+            unit: "mm",
             format: [pageWidth, minPageHeight]
         });
 
-        // Función para ajustar texto al ancho del ticket
+        // --- Función auxiliar para contar líneas ---
         const calculateLines = (text) => doc.splitTextToSize(text, maxLineWidth).length;
 
-        // -------- FUNCIONES MODULARES DE ALTURA (para calcular la altura del contenido)--------
+        // --- Calcular altura necesaria ---
         const calculateChangeTicketHeight = () => {
-            let totalHeight = 0; // Margen superior inicial
+            let totalHeight = 30; // margen inicial
 
-            // Información general de la venta
-            totalHeight += calculateLines(`Fecha: ${formatDate(saleDetail.date) || 'N/A'}`) * lineHeight;
+            totalHeight += calculateLines("INDIRA GOLD") * lineHeight;
+            totalHeight += calculateLines("Ticket de cambio") * lineHeight;
+            totalHeight += calculateLines(`Fecha: ${formatDate(saleDetail.date) || "N/A"}`) * lineHeight;
             totalHeight += calculateLines(`*Tenés hasta 15 días para realizar el cambio`) * lineHeight;
-            totalHeight += calculateLines(``) * lineHeight;
-            totalHeight += calculateLines(`N° de orden: ${saleDetail.orderNumber || 'N/A'}`) * lineHeight;
-            totalHeight += calculateLines(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`) * lineHeight;
-            totalHeight += calculateLines(`Modo de pago: ${saleDetail.paymentMethod || 'N/A'}`) * lineHeight;
-            totalHeight += calculateLines(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`) * lineHeight;
-            totalHeight += calculateLines(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`) * lineHeight;
-            totalHeight += calculateLines(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`) * lineHeight;
-            if (saleDetail.debt) {
-                totalHeight += calculateLines(`Debe: $${formatNumber(saleDetail.debt)}`) * lineHeight;
-            }
+            totalHeight += calculateLines(`N° de orden: ${saleDetail.orderNumber}`) * lineHeight;
+            totalHeight += calculateLines(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : "Anónimo"}`) * lineHeight;
 
-            totalHeight += 6; // Espacio adicional entre secciones
+            if (showFinancialDetails) {
+                totalHeight += calculateLines(`Modo de pago: ${saleDetail.paymentMethod || "N/A"}`) * lineHeight;
+                totalHeight += calculateLines(`Subtotal: $${formatNumber(saleDetail.subTotal) || "0.00"}`) * lineHeight;
+                totalHeight += calculateLines(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || "0.00"})`) * lineHeight;
+                totalHeight += calculateLines(`Total: $${formatNumber(saleDetail.totalPrice) || "0.00"}`) * lineHeight;
+                if (saleDetail.debt) {
+                    totalHeight += calculateLines(`Debe: $${formatNumber(saleDetail.debt)}`) * lineHeight;
+                }
+            }
 
             if (purchasedProducts?.length) {
-                // totalHeight += lineHeight; // Título de productos
+                totalHeight += lineHeight; // título "Productos"
                 purchasedProducts.forEach(product => {
-                    totalHeight += calculateLines(`${product.name || 'Producto desconocido'}`) * lineHeight;
-                    totalHeight += calculateLines(`Color: ${product.selectedColor?.colorName || 'N/A'}`) * lineHeight;
-                    totalHeight += calculateLines(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`) * lineHeight;
-                    totalHeight += calculateLines(`Precio: $${formatNumber(product.price) || '0.00'}`) * lineHeight;
+                    totalHeight += calculateLines(`• ${product.name || "Producto desconocido"}`) * lineHeight;
+                    totalHeight += calculateLines(`Color: ${product.selectedColor?.colorName || "N/A"}`) * lineHeight;
+                    totalHeight += calculateLines(`Talle: ${product.selectedSize?.sizeName || "N/A"}`) * lineHeight;
+                    if (showFinancialDetails) {
+                        totalHeight += calculateLines(`Precio: $${formatNumber(product.price) || "0.00"}`) * lineHeight;
+                    }
                 });
             }
-            
-            return totalHeight;
-        };
 
-        const calculateShipmentTicketHeight = () => {
-            if (!saleDetail.shipment) return 0;
-           
-            let totalHeight = 20; // separación inicial
-            
-            totalHeight += calculateLines(`Ticket de envío`) * lineHeight;
-            totalHeight += calculateLines(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`) * lineHeight;
-            totalHeight += calculateLines(`Teléfono: ${saleDetail.client?.phone || 'N/A'}`) * lineHeight;
-            totalHeight += calculateLines(`Envío a ${saleDetail.shipment.address}`) * lineHeight;
-            totalHeight += calculateLines(`Costo de envío: $${formatNumber(saleDetail.shipment.amount)}`) * lineHeight;
-            totalHeight += calculateLines(`Fecha: ${formatDate(saleDetail.date)}`) * lineHeight;
-            
-            return totalHeight;
-        };
-
-        const topMargin = 20;
-
-        const calculateContentHeight = () => {
-            let totalHeight = topMargin; // margen superior
-            totalHeight += 20;    // espacio para título principal
-            totalHeight += calculateChangeTicketHeight();
-            totalHeight += calculateShipmentTicketHeight();
-            totalHeight += topMargin; // margen inferior
-            
-            // Ajusta la altura de la página al contenido o un mínimo
             return Math.max(totalHeight, minPageHeight);
         };
 
-        // -------- CONFIG PDF --------
-        // Recalcular la altura de la página en función del contenido
-        const pageHeight = calculateContentHeight();
-        doc.setPage(1); // Asegura que estamos trabajando en la primera página
-        doc.internal.pageSize.setHeight(pageHeight); // Ajusta la altura del documento
+        // Ajustar la altura de la página al contenido
+        const pageHeight = calculateChangeTicketHeight();
+        doc.internal.pageSize.setHeight(pageHeight);
 
-        // Función para ajustar texto al ancho del ticket y añadirlo al documento
-        const addWrappedText = (text, x, y, fontStyle = "normal") => {
-            doc.setFont("helvetica", fontStyle);
-            const lines = doc.splitTextToSize(text, maxLineWidth);
+        // -------- DIBUJAR CONTENIDO --------
+        let yPos = 5;
 
-            lines.forEach(line => {
-                doc.text(line, x, y);
-                y += lineHeight;
-            });
-
-            doc.setFont("helvetica", "normal"); // reset
-
-            return y;
-        };
-
-        let yPos = 20;
-
-        // -------- ENCABEZADO --------
+        // ENCABEZADO
         doc.setFontSize(14);
         doc.setFont("helvetica", "bold");
-        const title = 'INDIRA GOLD';
+        const title = "INDIRA GOLD";
         const titleWidth = doc.getTextWidth(title);
         doc.text(title, (doc.internal.pageSize.getWidth() - titleWidth) / 2, yPos);
-        doc.setFont("helvetica", "normal");
 
-        // -------- TICKET DE CAMBIO --------
-        yPos = 40;
+        // Subtítulo
+        yPos = 15;
         doc.setFontSize(16);
-        const changeTitle = 'Ticket de cambio';
+        const changeTitle = "Ticket de cambio";
         const changeTitleWidth = doc.getTextWidth(changeTitle);
         doc.text(changeTitle, (doc.internal.pageSize.getWidth() - changeTitleWidth) / 2, yPos);
 
-        yPos = 50;
+        yPos = 25;
         doc.setFontSize(12);
 
-        yPos = addWrappedText(`Fecha: ${formatDate(saleDetail.date) || 'N/A'}`, 4, yPos);
-        yPos = addWrappedText(`*Tenés hasta 15 días para realizar el cambio`, 4, yPos);
-        yPos = addWrappedText(``, 4, yPos);
+        // Información venta
+        yPos = addWrappedText(doc, `Fecha: ${formatDate(saleDetail.date) || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, `*Tenés hasta 15 días para realizar el cambio`, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, ``, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, `N° de orden: ${saleDetail.orderNumber || 'N/A'}`, 4, yPos, maxLineWidth, lineHeight, "bold");
+        yPos = addWrappedText(doc, `Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : "Anónimo"}`, 4, yPos, maxLineWidth, lineHeight);
 
-        // N° de orden en negrita
-        yPos = addWrappedText(`N° de orden: ${saleDetail.orderNumber}`, 4, yPos, "bold");
-
-        yPos = addWrappedText(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`, 4, yPos);
-        
         if (showFinancialDetails) {
-            yPos = addWrappedText(`Modo de pago: ${saleDetail.paymentMethod || 'N/A'}`, 4, yPos);
-            yPos = addWrappedText(`Subtotal: $${formatNumber(saleDetail.subTotal) || '0.00'}`, 4, yPos);
-            yPos = addWrappedText(`Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || '0.00'})`, 4, yPos);
-            yPos = addWrappedText(`Total: $${formatNumber(saleDetail.totalPrice) || '0.00'}`, 4, yPos);
+            yPos = addWrappedText(doc, `Modo de pago: ${saleDetail.paymentMethod || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
+            yPos = addWrappedText(doc, `Subtotal: $${formatNumber(saleDetail.subTotal) || "0.00"}`, 4, yPos, maxLineWidth, lineHeight);
+            yPos = addWrappedText(doc, `Descuento: ${saleDetail.discount}% (- $${formatNumber(saleDetail.discountApplied) || "0.00"})`, 4, yPos, maxLineWidth, lineHeight);
+            yPos = addWrappedText(doc, `TOTAL: $${formatNumber(saleDetail.totalPrice) || "0.00"}`, 4, yPos, maxLineWidth, lineHeight, "bold");
             if (saleDetail.debt) {
-                yPos = addWrappedText(`Debe: $${formatNumber(saleDetail.debt)}`, 4, yPos);
+                yPos = addWrappedText(doc, `Debe: $${formatNumber(saleDetail.debt) || "0.00"}`, 4, yPos, maxLineWidth, lineHeight);
             }
         }
         yPos += 6;
 
+        // Productos
         if (purchasedProducts?.length) {
-            yPos = addWrappedText('Productos:', 4, yPos, "bold");
+            yPos = addWrappedText(doc, "Productos:", 4, yPos, maxLineWidth, lineHeight, "bold");
             yPos += 2;
             purchasedProducts.forEach(product => {
-                yPos = addWrappedText(`- ${product.name || 'Producto desconocido'}`, 4, yPos);
-                yPos = addWrappedText(`Color: ${product.selectedColor?.colorName || 'N/A'}`, 4, yPos);
-                yPos = addWrappedText(`Talle: ${product.selectedSize?.sizeName || 'N/A'}`, 4, yPos);
+                yPos = addWrappedText(doc, `• ${product.name || "Producto desconocido"}`, 4, yPos, maxLineWidth, lineHeight);
+                yPos = addWrappedText(doc, `Color: ${product.selectedColor?.colorName || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
+                yPos = addWrappedText(doc, `Talle: ${product.selectedSize?.sizeName || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
                 if (showFinancialDetails) {
-                    yPos = addWrappedText(`Precio: $${formatNumber(product.price) || '0.00'}`, 4, yPos);
+                    yPos = addWrappedText(doc, `Precio: $${formatNumber(product.price) || "0.00"}`, 4, yPos, maxLineWidth, lineHeight);
                 }
                 yPos += 2;
             });
         }
 
-        // -------- TICKET DE ENVÍO (solo si aplica) --------
-        if (saleDetail.shipment) {
-            yPos += 10;
-            doc.setFontSize(16);
-            const shipmentTitle = 'Ticket de envío';
-            const shipmentTitleWidth = doc.getTextWidth(shipmentTitle);
-            doc.text(shipmentTitle, (doc.internal.pageSize.getWidth() - shipmentTitleWidth) / 2, yPos);
-
-            yPos += 10;
-            doc.setFontSize(12);
-
-            yPos = addWrappedText(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : 'Anónimo'}`, 4, yPos);
-            yPos = addWrappedText(`Teléfono: ${saleDetail.client?.phone || 'N/A'}`, 4, yPos);
-            yPos = addWrappedText(`Dirección de envío: ${saleDetail.shipment.address}`, 4, yPos);
-            if (showFinancialDetails) {
-                yPos = addWrappedText(`Costo de envío: $${formatNumber(saleDetail.shipment.amount)}`, 4, yPos);
-            }
-            yPos = addWrappedText(`Fecha: ${formatDate(saleDetail.date)}`, 4, yPos);
-        }
-
-        // -------- ABRIR PDF en una nueva pestaña/ventana--------
-        const pdfBlob = doc.output('blob'); // Crea un Blob del PDF
-        const pdfUrl = URL.createObjectURL(pdfBlob); // Crea una URL del Blob
-        const printWindow = window.open(pdfUrl, "_blank", "toolbar=no,menubar=no,location=no,status=no"); // Abre una nueva ventana sin la barra de herramientas
-
-        if (printWindow) {
-            printWindow.onload = function () {
-                printWindow.print(); // Llama a la función de impresión de la nueva ventana
-            };
-        } else {
-            alert("Por favor, permite las ventanas emergentes para imprimir el ticket.");
-        }
+        // Imprimir
+        openAndPrintPDF(doc);
     };
-    
+
+    //Ticket de ENVÍO
+    const printShipmentTicket = () => {
+        if (!saleDetail.shipment) return;
+
+        const pageWidth = 58;
+        const minPageHeight = 100;
+        const lineHeight = 6;
+        const maxLineWidth = pageWidth - 8;
+
+        const doc = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: [pageWidth, minPageHeight]
+        });
+
+        const calculateLines = (text) => doc.splitTextToSize(text, maxLineWidth).length;
+
+        // --- Calcular altura necesaria ---
+        const calculateShipmentTicketHeight = () => {
+            let totalHeight = 1;
+
+            totalHeight += calculateLines("INDIRA GOLD") * lineHeight;
+            totalHeight += calculateLines("Ticket de envío") * lineHeight;
+            totalHeight += calculateLines(`Fecha: ${formatDate(saleDetail.date) || "N/A"}`) * lineHeight;
+            totalHeight += calculateLines(`Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : "Anónimo"}`) * lineHeight;
+            totalHeight += calculateLines(`Teléfono: ${saleDetail.client?.phone || "N/A"}`) * lineHeight;
+            totalHeight += calculateLines(`Dirección de envío: ${saleDetail.shipment.address || "N/A"}`) * lineHeight;
+            totalHeight += calculateLines(`Costo de envío: ${formatNumber(saleDetail.shipment.amount) || "0.00"}`) * lineHeight;
+
+            return Math.max(totalHeight, minPageHeight);
+        };
+
+        // Ajustar altura
+        const pageHeight = calculateShipmentTicketHeight();
+        doc.internal.pageSize.setHeight(pageHeight);
+
+        // -------- DIBUJAR CONTENIDO --------
+        let yPos = 5;
+
+        // ENCABEZADO
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        const title = "INDIRA GOLD";
+        const titleWidth = doc.getTextWidth(title);
+        doc.text(title, (doc.internal.pageSize.getWidth() - titleWidth) / 2, yPos);
+
+        // Subtítulo
+        yPos = 15;
+        doc.setFontSize(16);
+        const shipmentTitle = "Ticket de envío";
+        const shipmentTitleWidth = doc.getTextWidth(shipmentTitle);
+        doc.text(shipmentTitle, (doc.internal.pageSize.getWidth() - shipmentTitleWidth) / 2, yPos);
+
+        yPos = 25;
+        doc.setFontSize(12);
+
+        // Información envío
+        yPos = addWrappedText(doc, `Fecha: ${formatDate(saleDetail.date) || 'N/A'}`, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, ``, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, `Cliente: ${saleDetail.client ? `${saleDetail.client.name} ${saleDetail.client.lastname}` : "Anónimo"}`, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, `Teléfono: ${saleDetail.client?.phone || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, `Dirección de envío: ${saleDetail.shipment.address || 'N/A'}`, 4, yPos, maxLineWidth, lineHeight);
+        if (showFinancialDetails) {
+            yPos = addWrappedText(doc, `Costo de envío: $${formatNumber(saleDetail.shipment.amount) || '0.00'}`, 4, yPos, maxLineWidth, lineHeight, "bold");
+        }
+
+        // Imprimir
+        openAndPrintPDF(doc);
+    };
+
     const handleDelete = () => {
         const groupedProducts = {};
     
@@ -394,7 +415,7 @@ const DetailSale = () => {
                     <div className="title">
                         <h2>Detalle de la venta</h2>
                         <div className="titleButtons">
-                            <button onClick={generatePDF}><img src={print} alt=""/></button>
+                            <button onClick={printChangeTicket}><img src={print} alt=""/></button>
                             <button onClick={() => navigate(`/main_window/sales/edit/${id}`)}>Cambio</button>
                             <button className="delete" onClick={toggleShowDeleteModal}>Eliminar</button>
                             <button onClick={() => navigate('/main_window/sales/history')}>Atrás</button>
@@ -409,12 +430,10 @@ const DetailSale = () => {
                             </button>
                         </div>
                         <div className={`${style.column} ${style.column1Width}`}>
-                            {saleDetail.date && (
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Fecha:</span>
-                                    <span className={style.value}>{formatDate(saleDetail.date)}</span>
-                                </p>
-                            )}
+                            <p className={style.detailRow}>
+                                <span className={style.label}>Fecha:</span>
+                                <span className={style.value}>{formatDate(saleDetail.date)}</span>
+                            </p>
                             {saleDetail.client
                                 ?  
                                     <p className={style.detailRow}>
@@ -430,69 +449,56 @@ const DetailSale = () => {
                                         <span className={style.value}>Anónimo</span>
                                     </p>
                             }
+                            <p className={style.detailRow}>
+                                <span className={style.label}>Modo de pago:</span>
+                                <span className={style.value}>{saleDetail.paymentMethod}</span>
+                            </p>
+                            <p className={style.detailRow}>
+                                <span className={style.label}>Tipo de venta:</span>
+                                <span className={style.value}>{saleDetail.soldAt}</span>
+                            </p>
+                            <p className={style.detailRow}>
+                                <span className={style.label}>Subtotal:</span>
+                                <span className={style.value}>${saleDetail.subTotal ? formatNumber(saleDetail.subTotal) : '0'}</span>
+                            </p>
+                            <p className={style.detailRow}>
+                                <span className={style.label}>Descuento:</span>
+                                <span className={style.value}>{saleDetail.discount}% {`(- $${formatNumber(saleDetail.discountApplied)})`}</span>
+                            </p>
+                            <p className={style.detailRow}>
+                                <span className={style.label}>Retención:</span>
+                                <span className={style.value}>{saleDetail.paymentFee}% {`(- $${formatNumber(saleDetail.paymentFeeApplied)})`}</span>
+                            </p>
+                            <p className={style.detailRow}>
+                                <span className={style.label}>Total con retención:</span>
+                                <span className={style.value}>{saleDetail.totalWithFee ? `$${formatNumber(saleDetail.totalWithFee)}` : "No aplica."}</span>
+                            </p>
+                            <p className={style.detailRow}>
+                                <span className={style.label}>Total:</span>
+                                <span className={style.value}>${saleDetail.totalPrice ? formatNumber(saleDetail.totalPrice) : '0'}</span>
+                            </p>
+                            {saleDetail.debt ? (
+                                <p className={style.detailRow}>
+                                    <span className={style.label}>Adeuda:</span>
+                                    <span className={style.value}>${formatNumber(saleDetail.debt)}</span>
+                                </p>
+                            ) : (   
+                                <></>
+                            )}
                             {saleDetail.shipment?.address && (
                                 <>
-                                    <p className={style.detailRow}>
-                                        <span className={style.label}>Dirección de envío:</span>
-                                        <span className={style.value}>{saleDetail.shipment?.address}</span>
-                                    </p>
+                                    <div className={style.titleShipment}>
+                                        <h2>Venta con envío</h2>
+                                        <button onClick={printShipmentTicket}><img src={print} alt=""/></button>
+                                    </div>
+                                    <p className={style.titleAddress}>Dirección:</p>
+                                    <span className={style.contentAddress}>• {saleDetail.shipment?.address}</span>
                                     <p className={style.detailRow}>
                                         <span className={style.label}>Costo de envío:</span>
                                         <span className={style.value}>${formatNumber(saleDetail.shipment?.amount)}</span>
                                     </p>
                                 </>
                             )}
-                            {saleDetail.paymentMethod && 
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Modo de pago:</span>
-                                    <span className={style.value}>{saleDetail.paymentMethod}</span>
-                                </p>
-                            }
-                            {saleDetail.soldAt && 
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Tipo de venta:</span>
-                                    <span className={style.value}>{saleDetail.soldAt}</span>
-                                </p>
-                            }
-                            {saleDetail.subTotal && 
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Subtotal:</span>
-                                    <span className={style.value}>${saleDetail.subTotal ? formatNumber(saleDetail.subTotal) : 0}</span>
-                                </p>
-                            }
-                            {
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Descuento:</span>
-                                    <span className={style.value}>{saleDetail.discount}% {`(- $${formatNumber(saleDetail.discountApplied)})`}</span>
-                                </p>
-                            }
-                            {
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Retención:</span>
-                                    <span className={style.value}>{saleDetail.paymentFee}% {`(- $${formatNumber(saleDetail.paymentFeeApplied)})`}</span>
-                                </p>
-                            }
-                            {saleDetail.totalWithFee && 
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Total con retención:</span>
-                                    <span className={style.value}>{saleDetail.totalWithFee ? `$${formatNumber(saleDetail.totalWithFee)}` : "No aplica."}</span>
-                                </p>
-                            }
-                            {saleDetail.totalPrice && 
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Total:</span>
-                                    <span className={style.value}>${saleDetail.totalPrice ? formatNumber(saleDetail.totalPrice) : 0}</span>
-                                </p>
-                            }
-                            {saleDetail.debt 
-                            ? 
-                                <p className={style.detailRow}>
-                                    <span className={style.label}>Adeuda:</span>
-                                    <span className={style.value}>${formatNumber(saleDetail.debt)}</span>
-                                </p>
-                            :   
-                                <></>
-                            }
                         </div>
                         <div className={`${style.column} ${style.column2Width}`}>
                             <p><span>Productos:&nbsp;</span></p>
@@ -507,7 +513,7 @@ const DetailSale = () => {
                                                 <ul className={style.productList}>
                                                     {product.selectedColor && <li><span>Color:&nbsp;</span>{product.selectedColor?.colorName || 'Desconocido'}</li>}
                                                     {product.selectedSize && <li><span>Talle:&nbsp;</span>{product.selectedSize?.sizeName || 'Desconocido'}</li>}
-                                                    {product.price &&<li><span>Precio:&nbsp;</span>${formatNumber(product.price)}</li>}
+                                                    {product.price &&<li><span>Precio:&nbsp;</span>${formatNumber(product.price) || '0.00'}</li>}
                                                 </ul>
                                             </li>
                                         ))

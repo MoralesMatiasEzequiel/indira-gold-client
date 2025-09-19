@@ -52,3 +52,29 @@
 .key{
     font-weight: 600;
 }
+
+.titleShipment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 20px 0 !important;
+    padding-top: 10px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.titleShipment button:hover{
+    background-color: black;
+}
+
+.titleShipment button img{
+    width: 1rem;
+}
+
+.titleAddress {
+    margin: 0 0 10px 0 !important;
+    font-weight: 600 !important;
+}
+
+.contentAddress {
+    font-weight: 500 !important;
+}

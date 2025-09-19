@@ -541,223 +541,67 @@ const FormSales = () => {
         return formattedDate;
     };
 
-    // const generatePDF = () => {
-    //     // Variables para el ancho y la altura del papel de ticket (58 mm x 100 aprox)
-    //     const pageWidth = 58;
-    //     const minPageHeight = 100; // Altura mínima en mm
-    //     const lineHeight = 6; // Altura de cada línea de texto en mm
-    //     const maxLineWidth = pageWidth - 8; // Deja un margen de 4 mm en cada lado
-    
-    //     // Crear el PDF inicialmente sin la altura dinámica
-    //     const doc = new jsPDF({
-    //         orientation: 'portrait',
-    //         unit: 'mm',
-    //         format: [pageWidth, minPageHeight] // Se ajustará más adelante
-    //     });
-    
-    //     // Función para ajustar texto al ancho del ticket
-    //     const calculateLines = (text) => doc.splitTextToSize(text, maxLineWidth).length;
-    
-    //     // Función para calcular la altura del contenido
-    //     const calculateContentHeight = () => {
-    //         let totalHeight = 20; // Margen superior inicial
-    //         totalHeight += 60; // Título
-    
-    //         let clientFound = clients.find(c => c._id === saleResponse.data.client);
-    //         // Información general de la venta
-    //         if (saleResponse.data.shipment) {
-    //             totalHeight += calculateLines(`Envío a ${saleResponse.data.shipment?.address || 'N/A'}`) * lineHeight;
-    //             totalHeight += calculateLines(`Costo de envío: $${saleResponse.data.shipment?.amount || 'N/A'}`) * lineHeight;
-    //         }
-    //         totalHeight += calculateLines(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`) * lineHeight;
-    //         totalHeight += calculateLines(`Tenés hasta 15 días para realizar el cambio`) * lineHeight;
-    //         totalHeight += calculateLines(``) * lineHeight;
-    //         totalHeight += calculateLines(`N° de orden: ${saleResponse.data.orderNumber || 'N/A'}`) * lineHeight;
-    //         totalHeight += calculateLines(`Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`) * lineHeight;
-    //         totalHeight += calculateLines(`Modo de pago: ${saleResponse.data.paymentMethod || 'N/A'}`) * lineHeight;
-    //         totalHeight += calculateLines(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`) * lineHeight;
-    //         totalHeight += calculateLines(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`) * lineHeight;
-    //         totalHeight += calculateLines(`Total: $${formatNumber(saleResponse.data.totalPrice) || '0.00'}`) * lineHeight;
-    //         if (savedDebt > 0){
-    //             totalHeight += calculateLines(`Debe: $${formatNumber(savedDebt)}`) * lineHeight;
-    //         }
-    //         totalHeight += 6; // Espacio adicional entre secciones
-    
-    //         // Calcular espacio para los productos de la venta
-    //         if (saleResponse.data.products?.length) {
-    //             totalHeight += lineHeight; // Título de productos
-    //             saleResponse.data.products.forEach(product => {
-    //                 // Filtrar el producto correspondiente en el array "products"
-    //                 const fullProduct = products.find(p => p._id === product.productId);
-            
-    //                 // Si el producto existe
-    //                 if (fullProduct) {
-    //                     // Encontrar el color correspondiente
-    //                     const selectedColor = fullProduct.color.find(c => c._id === product.colorId);
-    //                     // Encontrar el talle correspondiente
-    //                     const selectedSize = selectedColor?.size.find(s => s._id === product.sizeId);
-            
-    //                     // Calcular las líneas para el nombre, color y talle
-    //                     totalHeight += calculateLines(`${fullProduct.name || 'Producto desconocido'}`) * lineHeight;
-    //                     totalHeight += calculateLines(`Color: ${selectedColor?.colorName || 'N/A'}`) * lineHeight;
-    //                     totalHeight += calculateLines(`Talle: ${selectedSize?.sizeName || 'N/A'}`) * lineHeight;
-    //                 } else {
-    //                     // Manejar el caso donde no se encuentra el producto
-    //                     totalHeight += calculateLines(`Producto desconocido`) * lineHeight;
-    //                     totalHeight += calculateLines(`Color: N/A`) * lineHeight;
-    //                     totalHeight += calculateLines(`Talle: N/A`) * lineHeight;
-    //                 }
-            
-    //                 // Siempre sumar el precio, ya que está presente en saleResponse.data.products
-    //                 totalHeight += calculateLines(`Precio: $${formatNumber(product.price) || '0.00'}`) * lineHeight;
-    //             });
-    //         }
-            
-    
-    //         // Ajusta la altura de la página al contenido o un mínimo
-    //         return Math.max(totalHeight, minPageHeight);
-    //     };
-    
-    //     // Recalcular la altura de la página en función del contenido
-    //     const pageHeight = calculateContentHeight();
-    //     doc.setPage(1); // Asegura que estamos trabajando en la primera página
-    //     doc.internal.pageSize.setHeight(pageHeight); // Ajusta la altura del documento
-    
-    //     const charSpace = 0.5; // Ajusta el espaciado entre caracteres en mm
-    //     doc.setCharSpace(charSpace);
+    //Abrir PDF en ventana nueva
+    const openAndPrintPDF = (doc) => {
+        const pdfBlob = doc.output("blob");
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const printWindow = window.open(pdfUrl, "_blank", "toolbar=no,menubar=no,location=no,status=no");
+        if (printWindow) {
+            printWindow.onload = () => printWindow.print();
+        } else {
+            alert("Por favor, permite las ventanas emergentes para imprimir el ticket.");
+        }
+    };
 
-    //     let yPos = 20;
+    //Función para ajustar texto al ancho del ticket y añadirlo al documento
+    const addWrappedText = (doc, text, x, y, maxLineWidth, lineHeight, fontStyle = "normal") => {
+        doc.setFont("helvetica", fontStyle);
+        const lines = doc.splitTextToSize(text, maxLineWidth);
+        lines.forEach(line => {
+            doc.text(line, x, y);
+            y += lineHeight;
+        });
+        doc.setFont("helvetica", "normal"); // reset
+        return y;
+    };
 
-    //     // Definir el texto y su alineación
-    //     const text = 'INDIRA GOLD';
-    //     const x = (doc.internal.pageSize.getWidth() / 2) - 3; // Posición X centrada
-    //     const textWidth = doc.getTextWidth(text);
-
-    //     // Agregar el texto al PDF, centrado horizontalmente
-    //     doc.text(text, x - (textWidth / 2), yPos);
-
-    //     doc.setCharSpace(0);
-
-    //     yPos = 40;
-    //     // Añade título
-    //     doc.setFontSize(16);
-    //     doc.text('Ticket de cambio', 4, yPos);
-    
-    //     // Información general de la venta
-    //     yPos = 50;
-    //     doc.setFontSize(12);
-    
-    //     // Función para ajustar texto al ancho del ticket y añadirlo al documento
-    //     const addWrappedText = (text, x, y) => {
-    //         const lines = doc.splitTextToSize(text, maxLineWidth);
-    //         lines.forEach(line => {
-    //             doc.text(line, x, y);
-    //             y += lineHeight;
-    //         });
-    //         return y;
-    //     };
-
-    //     let clientFound = clients.find(c => c._id === saleResponse.data.client);
-    
-    //     if (saleResponse.data.shipment) {
-    //         yPos = addWrappedText(`Envío a ${saleResponse.data.shipment?.address || 'N/A'}`, 4, yPos);
-    //         yPos = addWrappedText(`Costo de envío: $${saleResponse.data.shipment?.amount || 'N/A'}`, 4, yPos);
-    //     }
-    //     yPos = addWrappedText(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`, 4, yPos);
-    //     yPos = addWrappedText(`Tenés hasta 15 días para realizar el cambio`, 4, yPos);
-    //     yPos = addWrappedText(``, 4, yPos);
-    //     yPos = addWrappedText(`N° de orden: ${saleResponse.data.orderNumber || 'N/A'}`, 4, yPos);
-    //     yPos = addWrappedText(`Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`, 4, yPos);
-    //     yPos = addWrappedText(`Modo de pago: ${saleResponse.data.paymentMethod || 'N/A'}`, 4, yPos);
-    //     yPos = addWrappedText(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`, 4, yPos);
-    //     yPos = addWrappedText(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`, 4, yPos);
-    //     yPos = addWrappedText(`Total: $${formatNumber(saleResponse.data.totalPrice) || '0.00'}`, 4, yPos);
-    //     if (savedDebt > 0){
-    //         yPos = addWrappedText(`Debe: $${formatNumber(savedDebt)}`, 4, yPos);
-    //     }
-    //     yPos += 6;
-    
-    //     // Productos de la venta
-    //     if (saleResponse.data.products?.length) {
-    //         yPos = addWrappedText('Productos:', 4, yPos);
-    //         yPos += 6;
-
-    //         saleResponse.data.products.forEach(product => {
-
-    //             const fullProduct = products.find(p => p._id === product.productId);
-
-    //             if(fullProduct){
-
-    //                 const selectedColor = fullProduct.color.find(c => c._id === product.colorId);
-    //                     // Encontrar el talle correspondiente
-    //                 const selectedSize = selectedColor?.size.find(s => s._id === product.sizeId);
-
-    //                 yPos = addWrappedText(`${fullProduct.name || 'Producto desconocido'}`, 4, yPos);
-    //                 yPos = addWrappedText(`Color: ${selectedColor?.colorName || 'N/A'}`, 4, yPos);
-    //                 yPos = addWrappedText(`Talle: ${selectedSize?.sizeName || 'N/A'}`, 4, yPos);
-    //             } else {
-    //                 yPos = addWrappedText('Producto desconocido', 4, yPos);
-    //                 yPos = addWrappedText('Color: N/A', 4, yPos);
-    //                 yPos = addWrappedText('Talle: N/A', 4, yPos);
-    //             }
-
-    //             yPos = addWrappedText(`Precio: $${formatNumber(product.price) || '0.00'}`, 4, yPos);
-    //             yPos += 6;
-    //         });
-    //     }
-    
-    //     // Abre el PDF en una nueva pestaña/ventana y activa el diálogo de impresión
-    //     const pdfBlob = doc.output('blob'); // Crea un Blob del PDF
-    //     const pdfUrl = URL.createObjectURL(pdfBlob); // Crea una URL del Blob
-    //     const printWindow = window.open(pdfUrl); // Abre una nueva ventana con el PDF
-    
-    //     if (printWindow) {
-    //         printWindow.onload = function () {
-    //             printWindow.print(); // Llama a la función de impresión de la nueva ventana
-    //         };
-    //     } else {
-    //         alert("Por favor, permite las ventanas emergentes para imprimir el ticket.");
-    //     }
-    // };
-
-    const generatePDF = () => {
+    // Ticket de CAMBIO/VENTA
+    const printChangeTicket = () => {
         // Variables para el ancho y la altura del papel de ticket (58 mm x 100 aprox)
-        const pageWidth = 58;
+        const pageWidth = 58; 
         const minPageHeight = 100; // Altura mínima en mm
         const lineHeight = 6; // Altura de cada línea de texto en mm
         const maxLineWidth = pageWidth - 8; // Deja un margen de 4 mm en cada lado
-        
+
         // Crear el PDF
         const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
+            orientation: "portrait",
+            unit: "mm",
             format: [pageWidth, minPageHeight]
         });
 
-        // Función para ajustar texto al ancho del ticket
+        // --- Función auxiliar para contar líneas ---
         const calculateLines = (text) => doc.splitTextToSize(text, maxLineWidth).length;
 
-        // -------- FUNCIONES MODULARES DE ALTURA (para calcular la altura del contenido)--------
         let clientFound = clients.find(c => c._id === saleResponse.data.client);
-        
-        const calculateChangeTicketHeight = () => {
-            let totalHeight = 0; // Margen superior inicial
 
-            // Información general de la venta
-            totalHeight += calculateLines(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`) * lineHeight;
+        // --- Calcular altura necesaria ---
+        const calculateChangeTicketHeight = () => {
+            let totalHeight = 30; // margen inicial
+
+            totalHeight += calculateLines("INDIRA GOLD") * lineHeight;
+            totalHeight += calculateLines("Ticket de cambio") * lineHeight;
+            totalHeight += calculateLines(`Fecha: ${formatDate(saleResponse.data.date) || "N/A"}`) * lineHeight;
             totalHeight += calculateLines(`*Tenés hasta 15 días para realizar el cambio`) * lineHeight;
-            totalHeight += calculateLines(``) * lineHeight;
             totalHeight += calculateLines(`N° de orden: ${saleResponse.data.orderNumber || 'N/A'}`) * lineHeight;
             totalHeight += calculateLines(`Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`) * lineHeight;
-            totalHeight += calculateLines(`Modo de pago: ${saleResponse.data.paymentMethod || 'N/A'}`) * lineHeight;
-            totalHeight += calculateLines(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`) * lineHeight;
-            totalHeight += calculateLines(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`) * lineHeight;
-            totalHeight += calculateLines(`Total: $${formatNumber(saleResponse.data.totalPrice) || '0.00'}`) * lineHeight;
+            totalHeight += calculateLines(`Modo de pago: ${saleResponse.data.paymentMethod || "N/A"}`) * lineHeight;
+            totalHeight += calculateLines(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || "0.00"}`) * lineHeight;
+            totalHeight += calculateLines(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || "0.00"})`) * lineHeight;
+            totalHeight += calculateLines(`Total: $${formatNumber(saleResponse.data.totalPrice) || "0.00"}`) * lineHeight;
             if (savedDebt > 0){
                 totalHeight += calculateLines(`Debe: $${formatNumber(savedDebt)}`) * lineHeight;
             }
-
-            totalHeight += 6; // Espacio adicional entre secciones
 
             if (saleResponse.data.products?.length) {
                 saleResponse.data.products.forEach(product => {
@@ -786,103 +630,55 @@ const FormSales = () => {
                     totalHeight += calculateLines(`Precio: $${formatNumber(product.price) || '0.00'}`) * lineHeight;
                 });
             }
-            
-            return totalHeight;
-        };
 
-        const calculateShipmentTicketHeight = () => {
-            if (!saleResponse.data.shipment) return 0;
-            
-            let totalHeight = 20; // separación inicial
-            
-            totalHeight += calculateLines(`Ticket de envío`) * lineHeight;
-            totalHeight += calculateLines(`Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`) * lineHeight;
-            totalHeight += calculateLines(`Teléfono: ${clientFound ? `${clientFound.phone}` : 'N/A'}`) * lineHeight;
-            totalHeight += calculateLines(`Envío a ${saleResponse.data.shipment.address}`) * lineHeight;
-            totalHeight += calculateLines(`Costo de envío: $${formatNumber(saleResponse.data.shipment.amount)}`) * lineHeight;
-            totalHeight += calculateLines(`Fecha: ${formatDate(saleResponse.data.date)}`) * lineHeight;
-            
-            return totalHeight;
-        };
-
-        const topMargin = 20;
-
-        const calculateContentHeight = () => {
-            let totalHeight = topMargin; // margen superior
-            totalHeight += 20;    // espacio para título principal
-            totalHeight += calculateChangeTicketHeight();
-            totalHeight += calculateShipmentTicketHeight();
-            totalHeight += topMargin; // margen inferior
-            
-            // Ajusta la altura de la página al contenido o un mínimo
             return Math.max(totalHeight, minPageHeight);
         };
 
-        // -------- CONFIG PDF --------
-        // Recalcular la altura de la página en función del contenido
-        const pageHeight = calculateContentHeight();
-        doc.setPage(1); // Asegura que estamos trabajando en la primera página
-        doc.internal.pageSize.setHeight(pageHeight); // Ajusta la altura del documento
+        // Ajustar la altura de la página al contenido
+        const pageHeight = calculateChangeTicketHeight();
+        doc.internal.pageSize.setHeight(pageHeight);
 
-        // Función para ajustar texto al ancho del ticket y añadirlo al documento
-        const addWrappedText = (text, x, y, fontStyle = "normal") => {
-            doc.setFont("helvetica", fontStyle);
-            const lines = doc.splitTextToSize(text, maxLineWidth);
+        // -------- DIBUJAR CONTENIDO --------
+        let yPos = 5;
 
-            lines.forEach(line => {
-                doc.text(line, x, y);
-                y += lineHeight;
-            });
-
-            doc.setFont("helvetica", "normal"); // reset
-
-            return y;
-        };
-
-        let yPos = 20;
-
-        // -------- ENCABEZADO --------
+        // ENCABEZADO
         doc.setFontSize(14);
         doc.setFont("helvetica", "bold");
-        const title = 'INDIRA GOLD';
+        const title = "INDIRA GOLD";
         const titleWidth = doc.getTextWidth(title);
         doc.text(title, (doc.internal.pageSize.getWidth() - titleWidth) / 2, yPos);
-        doc.setFont("helvetica", "normal");
 
-        // -------- TICKET DE CAMBIO --------
-        yPos = 40;
+        // Subtítulo
+        yPos = 15;
         doc.setFontSize(16);
-        const changeTitle = 'Ticket de cambio';
+        const changeTitle = "Ticket de cambio";
         const changeTitleWidth = doc.getTextWidth(changeTitle);
         doc.text(changeTitle, (doc.internal.pageSize.getWidth() - changeTitleWidth) / 2, yPos);
 
-        yPos = 50;
+        yPos = 25;
         doc.setFontSize(12);
 
-        yPos = addWrappedText(`Fecha: ${formatDate(saleResponse.data.date) || 'N/A'}`, 4, yPos);
-        yPos = addWrappedText(`*Tenés hasta 15 días para realizar el cambio`, 4, yPos);
-        yPos = addWrappedText(``, 4, yPos);
+        // Información venta
+        yPos = addWrappedText(doc, `Fecha: ${formatDate(saleResponse.data.date) || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, `*Tenés hasta 15 días para realizar el cambio`, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, ``, 4, yPos, maxLineWidth, lineHeight);
+        yPos = addWrappedText(doc, `N° de orden: ${saleResponse.data.orderNumber}`, 4, yPos, maxLineWidth, lineHeight, "bold");
+        yPos = addWrappedText(doc, `Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`, 4, yPos, maxLineWidth, lineHeight);
 
-        // N° de orden en negrita
-        yPos = addWrappedText(`N° de orden: ${saleResponse.data.orderNumber}`, 4, yPos, "bold");
-
-        yPos = addWrappedText(`Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`, 4, yPos);
-        
         if (showFinancialDetails) {
-            yPos = addWrappedText(`Modo de pago: ${saleResponse.data.paymentMethod || 'N/A'}`, 4, yPos);
-            yPos = addWrappedText(`Subtotal: $${formatNumber(saleResponse.data.subTotal) || '0.00'}`, 4, yPos);
-            yPos = addWrappedText(`Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || '0.00'})`, 4, yPos);
-            yPos = addWrappedText(`Total: $${formatNumber(saleResponse.data.totalPrice) || '0.00'}`, 4, yPos);
+            yPos = addWrappedText(doc, `Modo de pago: ${saleResponse.data.paymentMethod || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
+            yPos = addWrappedText(doc, `Subtotal: $${formatNumber(saleResponse.data.subTotal) || "0.00"}`, 4, yPos, maxLineWidth, lineHeight);
+            yPos = addWrappedText(doc, `Descuento: ${saleResponse.data.discount}% (- $${formatNumber(saleResponse.data.discountApplied) || "0.00"})`, 4, yPos, maxLineWidth, lineHeight);
+            yPos = addWrappedText(doc, `TOTAL: $${formatNumber(saleResponse.data.totalPrice) || "0.00"}`, 4, yPos, maxLineWidth, lineHeight, "bold");
             if (savedDebt > 0){
-                yPos = addWrappedText(`Debe: $${formatNumber(savedDebt)}`, 4, yPos);
+                yPos = addWrappedText(doc, `Debe: $${formatNumber(savedDebt) || "0.00"}`, 4, yPos, maxLineWidth, lineHeight);
             }
         }
-
         yPos += 6;
 
-        // Productos de la venta
+        // Productos
         if (saleResponse.data.products?.length) {
-            yPos = addWrappedText('Productos:', 4, yPos, "bold");
+            yPos = addWrappedText(doc, "Productos:", 4, yPos, maxLineWidth, lineHeight, "bold");
             yPos += 2;
             saleResponse.data.products.forEach(product => {
                 const fullProduct = products.find(p => p._id === product.productId);
@@ -893,9 +689,9 @@ const FormSales = () => {
                         // Encontrar el talle correspondiente
                     const selectedSize = selectedColor?.size.find(s => s._id === product.sizeId);
 
-                    yPos = addWrappedText(`- ${fullProduct.name || 'Producto desconocido'}`, 4, yPos);
-                    yPos = addWrappedText(`Color: ${selectedColor?.colorName || 'N/A'}`, 4, yPos);
-                    yPos = addWrappedText(`Talle: ${selectedSize?.sizeName || 'N/A'}`, 4, yPos);
+                    yPos = addWrappedText(doc, `• ${fullProduct.name || "Producto desconocido"}`, 4, yPos, maxLineWidth, lineHeight);
+                    yPos = addWrappedText(doc, `Color: ${selectedColor?.colorName || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
+                    yPos = addWrappedText(doc, `Talle: ${selectedSize?.sizeName || "N/A"}`, 4, yPos, maxLineWidth, lineHeight);
                 } else {
                     yPos = addWrappedText('Producto desconocido', 4, yPos);
                     yPos = addWrappedText('Color: N/A', 4, yPos);
@@ -903,44 +699,14 @@ const FormSales = () => {
                 }
                 
                 if (showFinancialDetails) {
-                    yPos = addWrappedText(`Precio: $${formatNumber(product.price) || '0.00'}`, 4, yPos);
+                    yPos = addWrappedText(doc, `Precio: $${formatNumber(product.price) || '0.00'}`, 4, yPos, maxLineWidth, lineHeight);
                 }
                 yPos += 2;
             });
         }
 
-        // -------- TICKET DE ENVÍO (solo si aplica) --------
-        if (saleResponse.data.shipment) {
-            yPos += 10;
-            doc.setFontSize(16);
-            const shipmentTitle = 'Ticket de envío';
-            const shipmentTitleWidth = doc.getTextWidth(shipmentTitle);
-            doc.text(shipmentTitle, (doc.internal.pageSize.getWidth() - shipmentTitleWidth) / 2, yPos);
-
-            yPos += 10;
-            doc.setFontSize(12);
-
-            yPos = addWrappedText(`Cliente: ${clientFound ? `${clientFound.name} ${clientFound.lastname}` : 'Anónimo'}`, 4, yPos);
-            yPos = addWrappedText(`Teléfono: ${clientFound ? `${clientFound.phone}` : 'N/A'}`, 4, yPos);
-            yPos = addWrappedText(`Dirección de envío: ${saleResponse.data.shipment.address}`, 4, yPos);
-            if (showFinancialDetails) {
-                yPos = addWrappedText(`Costo de envío: $${formatNumber(saleResponse.data.shipment.amount)}`, 4, yPos);
-            }
-            yPos = addWrappedText(`Fecha: ${formatDate(saleResponse.data.date)}`, 4, yPos);
-        }
-
-        // -------- ABRIR PDF en una nueva pestaña/ventana--------
-        const pdfBlob = doc.output('blob'); // Crea un Blob del PDF
-        const pdfUrl = URL.createObjectURL(pdfBlob); // Crea una URL del Blob
-        const printWindow = window.open(pdfUrl, "_blank", "toolbar=no,menubar=no,location=no,status=no"); // Abre una nueva ventana sin la barra de herramientas
-
-        if (printWindow) {
-            printWindow.onload = function () {
-                printWindow.print(); // Llama a la función de impresión de la nueva ventana
-            };
-        } else {
-            alert("Por favor, permite las ventanas emergentes para imprimir el ticket.");
-        }
+        // Imprimir
+        openAndPrintPDF(doc);
     };
 
     const handleClientAdded = (newClient) => {
@@ -969,11 +735,11 @@ const FormSales = () => {
                         <div className="title">
                             <h2>NUEVA VENTA REGISTRADA</h2>
                             <div className="titleButtons">
-                                <button onClick={generatePDF}><img src={print} alt=""/></button>
+                                <button onClick={printChangeTicket}><img src={print} alt=""/></button>
                                 <button className="delete" onClick={toggleSaleMade}>X</button>
                             </div>
                         </div>
-                        <NewSale saleResponse={saleResponse} debtAmount={savedDebt}/>
+                        <NewSale saleResponse={saleResponse} debtAmount={savedDebt} showFinancialDetails={showFinancialDetails}/>
                     </div>
                 ) : (
                     <div className="component">
