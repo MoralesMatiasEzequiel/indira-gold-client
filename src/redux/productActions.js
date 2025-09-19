@@ -36,11 +36,9 @@ export const getProductById = (productId) => {
         try {
             const { data } = await axios.get(`/products/${productId}`);
             if(data){
-                console.log("hay data");
                 dispatch(getProductByIdReducer(data));
                 return data;
             } else {
-                console.log("no hay");
                 return Promise.reject("No data received");
             }
             
